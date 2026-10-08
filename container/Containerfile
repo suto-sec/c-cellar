@@ -1,0 +1,25 @@
+# c-cellar lab image: gcc + debugging tools + man pages + VS Code in the browser (code-server) + the app (Python, stdlib only)
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive LANG=C.UTF-8 LC_ALL=C.UTF-8
+
+# The base image strips man pages (dpkg excludes); remove that so `man 2 open` works in the terminal.
+RUN rm -f /etc/dpkg/dpkg.cfg.d/excludes /etc/dpkg/dpkg.cfg.d/docker \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends \
+      build-essential gdb valgrind make python3 curl ca-certificates \
+      man-db manpages manpages-dev manpages-posix manpages-posix-dev \
+      less nano file procps \
+ && (yes | unminimize >/dev/null 2>&1 || true) \
+ && rm -rf /var/lib/apt/lists/*
+
+ARG CODE_SERVER_VERSION=4.140.0
+RUN arch="$(dpkg --print-architecture)" \
+ && curl -fsSL "https://github.com/coder/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server-${CODE_SERVER_VERSION}-linux-${arch}.tar.gz" | tar -xz -C /opt \
+ && ln -s "/opt/code-server-${CODE_SERVER_VERSION}-linux-${arch}/bin/code-server" /usr/local/bin/code-server
+
+# The app, the content and the entrypoint live in the project folder, which `./lab` mounts at /lab:
+# editing them needs no image rebuild.
+WORKDIR /lab
+EXPOSE 8080 8081
+ENTRYPOINT ["/bin/bash", "/lab/container/entrypoint.sh"]

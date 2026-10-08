@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# c-cellar launcher. Works with podman (rootless, preferred) or docker.
+#   ./lab web        build the image if needed and start the lab at http://localhost:8080
+#   ./lab stop       stop it (your progress stays in .progress/)
+#   ./lab build      (re)build the image
+#   ./lab shell      a shell inside the lab environment
+#   ./lab selftest   check all exercises (reference solutions) and all content
+#   ./lab logs       show the server log
+set -euo pipefail
+cd "$(dirname "$(readlink -f "$0")")"
+
+IMAGE=c-cellar
+NAME=c-cellar
+PORT="${LAB_PORT:-8080}"
+VPORT="${LAB_VSCODE_PORT:-8081}"
+
+if [ -n "${LAB_ENGINE:-}" ]; then ENGINE="$LAB_ENGINE"
+elif command -v podman >/dev/null 2>&1; then ENGINE=podman
+elif command -v docker >/dev/null 2>&1; then ENGINE=docker
+else echo "c-cellar needs podman or docker (see README)." >&2; exit 1; fi
+
+# Keep the files you create inside the container owned by you.
+if [ "$ENGINE" = podman ]; then USEROPT=(--userns=keep-id); MOUNT="$PWD:/lab:Z"
+else USEROPT=(--user "$(id -u):$(id -g)"); MOUNT="$PWD:/lab"; fi
+mkdir -p .progress/home .progress/workspace
+
+have_image() { "$ENGINE" image inspect "$IMAGE" >/dev/null 2>&1; }
+build() { "$ENGINE" build -t "$IMAGE" -f container/Containerfile .; }
+stop() { "$ENGINE" rm -f "$NAME" >/dev/null 2>&1 || true; }
+
+case "${1:-help}" in
+  build) build ;;
+  web)
+    have_image || build
+    stop
+    "$ENGINE" run -d --name "$NAME" "${USEROPT[@]}" \
+      -p "127.0.0.1:$PORT:8080" -p "127.0.0.1:$VPORT:8081" \
+      -v "$MOUNT" -e HOME=/lab/.progress/home -e LAB_VSCODE_PORT="$VPORT" "$IMAGE" >/dev/null
+    for _ in $(seq 1 60); do
+      if curl -fs "http://localhost:$PORT/api/config" >/dev/null 2>&1; then
+        echo "c-cellar is running at http://localhost:$PORT"
+        if [ -z "${LAB_NO_OPEN:-}" ]; then (xdg-open "http://localhost:$PORT" || open "http://localhost:$PORT") >/dev/null 2>&1 || true; fi
+        exit 0
+      fi
+      sleep 0.5
+    done
+    echo "c-cellar did not start; see: ./lab logs" >&2; exit 1 ;;
+  stop|reset) stop; echo "stopped" ;;
+  shell)
+    have_image || build
+    "$ENGINE" run --rm -it "${USEROPT[@]}" -v "$MOUNT" -e HOME=/lab/.progress/home "$IMAGE" bash ;;
+  selftest)
+    have_image || build
+    "$ENGINE" run --rm "${USEROPT[@]}" -v "$MOUNT" -e HOME=/tmp -e LAB_PROGRESS=/tmp/selftest "$IMAGE" python3 /lab/app/selftest.py ;;
+  logs) "$ENGINE" logs "$NAME"; echo "--- code-server:"; tail -n 20 .progress/code-server.log 2>/dev/null || true ;;
+  *) sed -n '2,9p' "$0" | sed 's/^# \{0,1\}//' ;;
+esac
