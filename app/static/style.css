@@ -311,3 +311,4 @@ pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } p
 .daybadge.done { background: var(--okbg); color: var(--ok); border: 1px solid var(--ok); }
 .daybadge.todo { background: var(--warnbg); color: var(--warn); border: 1px solid var(--warn); }
 .streakmini b, .streakmini .flame { position: relative; top: -1px; }   /* optical centring with the text beside them */
+:root[data-streakbar="off"] #streak { display: none; }   /* setting: hide the flame and counter in the top bar */

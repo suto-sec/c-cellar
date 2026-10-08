@@ -1134,6 +1134,24 @@ function accentControls() {
   const reset = h("button", { class: "linkbtn", type: "button", onclick: () => { text.value = ""; text.dispatchEvent(new Event("input")); } }, "Reset");
   return h("div", { class: "pop-block" }, h("div", { class: "pop-row" }, h("span", { class: "muted" }, "Accent colour"), reset), h("div", { class: "accentrow" }, picker, text), msg);
 }
+/** Whether the flame and the streak counter show next to "Daily challenge" in the top bar (a setting, shown by default). */
+const STREAKBAR_KEY = "cellar.streakbar";
+function applyStreakBar(show) {
+  document.documentElement.dataset.streakbar = show ? "on" : "off";
+}
+function streakControl() {
+  let show = true;
+  try { show = localStorage.getItem(STREAKBAR_KEY) !== "off"; } catch (e) { /* private window */ }
+  applyStreakBar(show);
+  const opts = [[true, "Show"], [false, "Hide"]].map(([v, label]) => {
+    const input = h("input", { type: "radio", name: "streakbar", value: String(v), checked: v === show, onchange: () => {
+      applyStreakBar(v);
+      try { localStorage.setItem(STREAKBAR_KEY, v ? "on" : "off"); } catch (e) { /* not remembered */ }
+    } });
+    return h("label", { class: "seg" }, input, h("span", {}, label));
+  });
+  return h("div", { class: "pop-block pop-row" }, h("span", { class: "muted" }, "Top-bar streak"), h("div", { class: "segs", role: "radiogroup", "aria-label": "Streak in the top bar" }, opts));
+}
 function initSettings() {
   const btn = $("#settings"), pop = $("#settings-pop");
   let mode = localStorage.getItem("cellar.theme") || "system";
@@ -1144,7 +1162,7 @@ function initSettings() {
   });
   const accent = accentControls();
   pop.replaceChildren(h("div", { class: "pop-title" }, "Settings"), h("div", { class: "pop-row" }, h("span", { class: "muted" }, "Theme"), h("div", { class: "segs", role: "radiogroup", "aria-label": "Theme" }, radios)),
-    accent,
+    accent, streakControl(),
     h("div", { class: "pop-note muted" }, "The code editor follows your system theme."));
   const close = () => { pop.hidden = true; btn.setAttribute("aria-expanded", "false"); };
   btn.addEventListener("click", (e) => { e.stopPropagation(); pop.hidden = !pop.hidden; btn.setAttribute("aria-expanded", String(!pop.hidden)); });
