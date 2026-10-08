@@ -7,6 +7,9 @@
 #   ./lab selftest   check all exercises (reference solutions) and all content
 #   ./lab logs       show the server log
 set -euo pipefail
+case $(uname -s) in
+  MINGW*|MSYS*|CYGWIN*) echo "This script needs a Linux shell. On Windows run it inside WSL (see README: Install > Windows)." >&2; exit 1 ;;
+esac
 cd "$(dirname "$(readlink -f "$0")")"
 
 IMAGE=c-cellar
@@ -18,7 +21,7 @@ TPORT="${LAB_TERM_PORT:-8082}"
 if [ -n "${LAB_ENGINE:-}" ]; then ENGINE="$LAB_ENGINE"
 elif command -v podman >/dev/null 2>&1; then ENGINE=podman
 elif command -v docker >/dev/null 2>&1; then ENGINE=docker
-else echo "c-cellar needs podman or docker (see README)." >&2; exit 1; fi
+else echo "c-cellar needs podman or docker (see README: Install)." >&2; exit 1; fi
 
 # Keep the files you create inside the container owned by you.
 if [ "$ENGINE" = podman ]; then USEROPT=(--userns=keep-id); MOUNT="$PWD:/lab:Z"
@@ -40,7 +43,12 @@ case "${1:-help}" in
     for _ in $(seq 1 60); do
       if curl -fs "http://localhost:$PORT/api/config" >/dev/null 2>&1; then
         echo "c-cellar is running at http://localhost:$PORT"
-        if [ -z "${LAB_NO_OPEN:-}" ]; then (xdg-open "http://localhost:$PORT" || open "http://localhost:$PORT") >/dev/null 2>&1 || true; fi
+        # the default browser: Linux (xdg-open), macOS (open), WSL (wslview or Windows' explorer.exe)
+        if [ -z "${LAB_NO_OPEN:-}" ]; then
+          if grep -qi microsoft /proc/version 2>/dev/null && command -v wslview >/dev/null; then wslview "http://localhost:$PORT" >/dev/null 2>&1 || true
+          elif grep -qi microsoft /proc/version 2>/dev/null && command -v explorer.exe >/dev/null; then explorer.exe "http://localhost:$PORT" >/dev/null 2>&1 || true
+          else (xdg-open "http://localhost:$PORT" || open "http://localhost:$PORT") >/dev/null 2>&1 || true; fi
+        fi
         exit 0
       fi
       sleep 0.5
