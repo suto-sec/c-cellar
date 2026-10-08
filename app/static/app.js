@@ -231,7 +231,8 @@ async function viewExercise(id) {
   const onKey = (e) => { if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); check(); } };
   document.addEventListener("keydown", onKey);
 
-  const url = `${location.protocol}//${location.hostname}:${state.cfg.vscode_port}/?folder=${encodeURIComponent(d.workspace)}`;
+  const payload = encodeURIComponent(JSON.stringify([["openFile", "vscode-remote://" + d.file]]));
+  const url = `${location.protocol}//${location.hostname}:${state.cfg.vscode_port}/?folder=${encodeURIComponent(d.workspace)}&payload=${payload}`;
   const frame = h("iframe", { src: url, title: "VS Code", allow: "clipboard-read; clipboard-write" });
   const left = h("div", { class: "left statement" },
     h("div", { class: "crumbs" }, h("a", { href: "#/coding" }, "Coding"), " › ", d.track === "derusting" ? "C derusting" : "C exercises", " · ", h("span", { class: "tag" }, d.tag), " · ", h("span", { class: "tag" }, d.topic), " ", dots(d.difficulty)),
