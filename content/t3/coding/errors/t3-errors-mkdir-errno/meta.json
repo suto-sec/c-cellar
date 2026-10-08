@@ -1,0 +1,14 @@
+{
+ "id": "t3-errors-mkdir-errno",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "errors",
+ "title": "Tell the errors apart",
+ "stars": 3,
+ "order": 4,
+ "summary": "Different errno values.",
+ "hints": [
+  "Save `errno` right after the failing call if you will call other functions before testing it.",
+  "Chain `if (errno == EEXIST) ... else if (errno == ENOENT) ...`."
+ ]
+}

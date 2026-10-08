@@ -1,0 +1,31 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" a b; echo \"rc=$?\"",
+   "setup": "echo x > a",
+   "stdout": "rc=0\n"
+  },
+  {
+   "cmd": "\"$BIN\" a b; echo \"rc=$?\"; cmp a b && echo same",
+   "setup": "seq 1 1000 > a",
+   "stdout": "rc=0\nsame\n"
+  },
+  {
+   "cmd": "\"$BIN\" nope b 2>&1; echo \"rc=$?\"",
+   "stdout": "cannot open nope: No such file or directory\nrc=1\n"
+  },
+  {
+   "cmd": "\"$BIN\" a no/dir/b 2>&1; echo \"rc=$?\"",
+   "setup": "echo x > a",
+   "stdout": "cannot create no/dir/b: No such file or directory\nrc=2\n"
+  },
+  {
+   "cmd": "\"$BIN\" a 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: strictcopy SRC DST\nrc=3\n"
+  },
+  {
+   "cmd": "\"$BIN\" a b c >/dev/null 2>&1; echo \"rc=$?\"",
+   "stdout": "rc=3\n"
+  }
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "cases": [
+  {
+   "args": [
+    "/usr"
+   ],
+   "stdout": "/usr\n"
+  },
+  {
+   "args": [
+    "/usr/bin"
+   ],
+   "stdout": "/usr/bin\n"
+  },
+  {
+   "cmd": "cd /usr && \"$BIN\" bin",
+   "stdout": "/usr/bin\n"
+  },
+  {
+   "cmd": "cd /usr/bin && \"$BIN\" ..",
+   "stdout": "/usr\n"
+  },
+  {
+   "cmd": "cd /usr && \"$BIN\" .",
+   "stdout": "/usr\n"
+  },
+  {
+   "cmd": "\"$BIN\" /no/such/dir 2>&1; echo \"rc=$?\"",
+   "stdout": "/no/such/dir: No such file or directory\nrc=1\n"
+  }
+ ]
+}

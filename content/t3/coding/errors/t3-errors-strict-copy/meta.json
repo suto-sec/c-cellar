@@ -1,0 +1,14 @@
+{
+ "id": "t3-errors-strict-copy",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "errors",
+ "title": "A copy that checks everything",
+ "stars": 4,
+ "order": 7,
+ "summary": "Distinct exit codes for distinct failures.",
+ "hints": [
+  "Check the result of each `fopen`; each failure has its own message and exit status.",
+  "When the destination fails you must still close the source file."
+ ]
+}

@@ -1,0 +1,42 @@
+{
+ "cases": [
+  {
+   "args": [
+    "/usr"
+   ],
+   "stdout": "directory\n"
+  },
+  {
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d; touch f",
+   "stdout": "directory\n"
+  },
+  {
+   "args": [
+    "f"
+   ],
+   "setup": "touch f",
+   "stdout": "not a directory\n"
+  },
+  {
+   "args": [
+    "nope"
+   ],
+   "stdout": "missing\n"
+  },
+  {
+   "args": [
+    "/usr"
+   ],
+   "stdout": "directory\n"
+  },
+  {
+   "args": [
+    "/etc/passwd"
+   ],
+   "stdout": "not a directory\n"
+  }
+ ]
+}

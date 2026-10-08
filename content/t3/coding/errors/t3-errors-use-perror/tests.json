@@ -1,0 +1,24 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "nope: No such file or directory\nrc=1\n"
+  },
+  {
+   "args": [
+    "f"
+   ],
+   "setup": "echo x > f",
+   "stdout": "opened f\n"
+  },
+  {
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "nope: No such file or directory\nrc=1\n"
+  },
+  {
+   "name": "opening a directory for reading with fopen works",
+   "cmd": "\"$BIN\" /etc 2>&1 >/dev/null | wc -l",
+   "stdout": "0\n"
+  }
+ ]
+}

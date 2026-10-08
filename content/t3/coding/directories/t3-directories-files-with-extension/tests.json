@@ -1,0 +1,36 @@
+{
+ "cases": [
+  {
+   "args": [
+    "d",
+    ".c"
+   ],
+   "setup": "mkdir d; touch d/main.c d/util.c d/util.h",
+   "stdout": "main.c\nutil.c\n"
+  },
+  {
+   "args": [
+    "d",
+    ".c"
+   ],
+   "setup": "mkdir d; touch d/b.c d/a.c d/c.h d/.c d/ac d/x.c.bak",
+   "stdout": "a.c\nb.c\n"
+  },
+  {
+   "args": [
+    "d",
+    ".h"
+   ],
+   "setup": "mkdir d; touch d/b.c d/a.h",
+   "stdout": "a.h\n"
+  },
+  {
+   "args": [
+    "d",
+    ".txt"
+   ],
+   "setup": "mkdir d; touch d/a.c",
+   "stdout": ""
+  }
+ ]
+}

@@ -1,0 +1,25 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" photos && ls -d photos",
+   "stdout": "created photos\nphotos\n"
+  },
+  {
+   "cmd": "\"$BIN\" out && test -d out && echo isdir",
+   "stdout": "created out\nisdir\n"
+  },
+  {
+   "cmd": "umask 022; \"$BIN\" d >/dev/null; stat -c %a d",
+   "stdout": "755\n"
+  },
+  {
+   "cmd": "\"$BIN\" d 2>&1; echo \"rc=$?\"",
+   "setup": "mkdir d",
+   "stdout": "cannot create d: File exists\nrc=1\n"
+  },
+  {
+   "cmd": "\"$BIN\" a/b/c 2>&1; echo \"rc=$?\"",
+   "stdout": "cannot create a/b/c: No such file or directory\nrc=1\n"
+  }
+ ]
+}

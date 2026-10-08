@@ -1,0 +1,14 @@
+{
+ "id": "t3-errors-safe-number",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "errors",
+ "title": "Parse a number safely",
+ "stars": 3,
+ "order": 5,
+ "summary": "strtol, ERANGE and the end pointer.",
+ "hints": [
+  "Set `errno = 0` before calling `strtol`; on overflow it sets `errno` to `ERANGE`.",
+  "`end == text` means no digits were converted; `*end != '\\0'` means there were extra characters."
+ ]
+}

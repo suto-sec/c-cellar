@@ -1,0 +1,14 @@
+{
+ "id": "t3-directories-list-hidden",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "directories",
+ "title": "Only the hidden files",
+ "stars": 3,
+ "order": 6,
+ "summary": "Filtering and sorting names.",
+ "hints": [
+  "A hidden name starts with `'.'`: test `e->d_name[0] == '.'`.",
+  "Exclude exactly the two names `.` and `..` (a name like `..hidden` is hidden and must be listed)."
+ ]
+}

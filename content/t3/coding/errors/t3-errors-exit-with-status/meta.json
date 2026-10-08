@@ -1,0 +1,14 @@
+{
+ "id": "t3-errors-exit-with-status",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "errors",
+ "title": "Choose the exit status",
+ "stars": 2,
+ "order": 3,
+ "summary": "exit() and $?.",
+ "hints": [
+  "`exit(n)` ends the program at once with status `n`; returning `n` from `main` does the same.",
+  "By convention 0 means success and any other number means failure."
+ ]
+}

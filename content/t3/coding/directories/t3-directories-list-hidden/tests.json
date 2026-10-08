@@ -1,0 +1,32 @@
+{
+ "cases": [
+  {
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d; touch d/.env d/main.c d/.git",
+   "stdout": ".env\n.git\n"
+  },
+  {
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d; touch d/.b d/.a d/visible d/.c",
+   "stdout": ".a\n.b\n.c\n"
+  },
+  {
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d; touch d/x d/y",
+   "stdout": ""
+  },
+  {
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d; touch d/..hidden d/.x",
+   "stdout": "..hidden\n.x\n"
+  }
+ ]
+}

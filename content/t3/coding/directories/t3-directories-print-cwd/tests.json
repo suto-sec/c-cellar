@@ -1,0 +1,20 @@
+{
+ "cases": [
+  {
+   "cmd": "cd /usr && \"$BIN\"",
+   "stdout": "/usr\n"
+  },
+  {
+   "cmd": "cd /usr && \"$BIN\"",
+   "stdout": "/usr\n"
+  },
+  {
+   "cmd": "cd /usr/bin && \"$BIN\"",
+   "stdout": "/usr/bin\n"
+  },
+  {
+   "cmd": "cd / && \"$BIN\"",
+   "stdout": "/\n"
+  }
+ ]
+}

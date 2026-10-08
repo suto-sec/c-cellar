@@ -1,0 +1,14 @@
+{
+ "id": "t3-directories-path-state",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "directories",
+ "title": "What is this path?",
+ "stars": 2,
+ "order": 7,
+ "summary": "opendir and errno.",
+ "hints": [
+  "`opendir` returns `NULL` on failure; then `errno` holds the reason.",
+  "Compare `errno` with `ENOTDIR` and `ENOENT` (from `<errno.h>`)."
+ ]
+}

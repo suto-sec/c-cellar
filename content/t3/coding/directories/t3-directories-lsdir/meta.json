@@ -4,13 +4,12 @@
  "track": "derusting",
  "topic": "directories",
  "title": "lsdir: sorted directory listing",
+ "stars": 4,
  "order": 5,
  "summary": "opendir/readdir, skip . and .., collect names and sort them.",
  "hints": [
-  "readdir returns entries in no particular order, so collect the names (strdup!) and sort with qsort before printing.",
-  "Compare with strcmp inside the qsort comparison: the elements are char * so the callback receives char **.",
-  "Skip the entries named \".\" and \"..\" only; hidden files like \".hidden\" are listed."
- ],
- "info": "DIR *d = opendir(path) (NULL on error); struct dirent *e = readdir(d) returns the next entry or NULL; e->d_name is its name; closedir(d).",
- "stars": 4
+  "`readdir` returns entries in no particular order, so collect the names (strdup!) and sort with `qsort` before printing.",
+  "Compare with `strcmp` inside the `qsort` comparison: the elements are `char *` so the callback receives `char **`.",
+  "Skip the entries named `.` and `..` only; hidden files like `.hidden` are listed."
+ ]
 }

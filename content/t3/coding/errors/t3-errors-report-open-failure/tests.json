@@ -1,0 +1,24 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" missing.txt 2>&1; echo \"rc=$?\"",
+   "stdout": "cannot open missing.txt: No such file or directory\nrc=1\n"
+  },
+  {
+   "args": [
+    "f"
+   ],
+   "setup": "echo x > f",
+   "stdout": "opened f\n"
+  },
+  {
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "cannot open nope: No such file or directory\nrc=1\n"
+  },
+  {
+   "cmd": "\"$BIN\" secret/f 2>&1; echo \"rc=$?\"; chmod 755 secret",
+   "setup": "mkdir secret; echo x > secret/f; chmod 000 secret",
+   "stdout": "cannot open secret/f: Permission denied\nrc=1\n"
+  }
+ ]
+}

@@ -1,0 +1,42 @@
+{
+ "cases": [
+  {
+   "args": [
+    "photos"
+   ],
+   "setup": "mkdir photos",
+   "stdout": "exists\n"
+  },
+  {
+   "args": [
+    "new"
+   ],
+   "stdout": "created\n"
+  },
+  {
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d",
+   "stdout": "exists\n"
+  },
+  {
+   "args": [
+    "a/b"
+   ],
+   "stdout": "no parent\n"
+  },
+  {
+   "cmd": "\"$BIN\" ro/sub; chmod 755 ro",
+   "setup": "mkdir ro; chmod 555 ro",
+   "stdout": "denied\n"
+  },
+  {
+   "args": [
+    "f/sub"
+   ],
+   "setup": "touch f",
+   "stdout": "error: Not a directory\n"
+  }
+ ]
+}

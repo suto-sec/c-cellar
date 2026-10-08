@@ -1,0 +1,14 @@
+{
+ "id": "t3-errors-report-open-failure",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "errors",
+ "title": "Report why it failed",
+ "stars": 2,
+ "order": 1,
+ "summary": "strerror(errno).",
+ "hints": [
+  "`fopen` returns `NULL` and sets `errno` when it fails.",
+  "`strerror(errno)` (from `<string.h>`) gives the text; include `<errno.h>`."
+ ]
+}

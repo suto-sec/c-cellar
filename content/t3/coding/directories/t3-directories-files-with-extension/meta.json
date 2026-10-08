@@ -1,0 +1,14 @@
+{
+ "id": "t3-directories-files-with-extension",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "directories",
+ "title": "Files with an extension",
+ "stars": 3,
+ "order": 8,
+ "summary": "String suffixes in a directory listing.",
+ "hints": [
+  "Compare the END of the name with the extension: `strcmp(name + strlen(name) - strlen(ext), ext) == 0` (only when the name is longer than the extension).",
+  "Collect the matching names and sort them with `qsort` before printing."
+ ]
+}

@@ -1,4 +1,4 @@
-# lsdir
+# lsdir: sorted directory listing
 
 Write `lsdir DIR` that prints the names of the entries of directory `DIR`, one per line, **sorted** with `strcmp` order.
 
@@ -7,9 +7,9 @@ Write `lsdir DIR` that prints the names of the entries of directory `DIR`, one p
 - An empty directory prints nothing and exits 0.
 - If `DIR` cannot be opened (missing, or not a directory), print a message with `strerror(errno)` to stderr and exit with status 1.
 
+**Example**
+
 ```
-$ ls -a d
-.  ..  .hidden  apple  banana  cherry
 $ ./prog d
 .hidden
 apple

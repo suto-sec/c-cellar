@@ -1,0 +1,14 @@
+{
+ "id": "t3-errors-first-readable",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "errors",
+ "title": "The first readable file",
+ "stars": 3,
+ "order": 6,
+ "summary": "Trying several files.",
+ "hints": [
+  "Loop over the arguments; as soon as `fopen` succeeds, print the name, close the file and stop.",
+  "If the loop ends without success, print `none readable` and return 1."
+ ]
+}

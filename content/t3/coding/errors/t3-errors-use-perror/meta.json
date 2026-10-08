@@ -1,0 +1,14 @@
+{
+ "id": "t3-errors-use-perror",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "errors",
+ "title": "Use perror",
+ "stars": 2,
+ "order": 2,
+ "summary": "The standard shortcut.",
+ "hints": [
+  "`perror(\"text\")` prints `text: <message>` to standard error using the current `errno`.",
+  "Call it right after the failing call, before any other function."
+ ]
+}

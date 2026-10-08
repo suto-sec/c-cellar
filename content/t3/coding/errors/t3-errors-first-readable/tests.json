@@ -1,0 +1,43 @@
+{
+ "cases": [
+  {
+   "args": [
+    "a.txt",
+    "notes.txt",
+    "z.txt"
+   ],
+   "setup": "echo hi > notes.txt",
+   "stdout": "notes.txt\n"
+  },
+  {
+   "args": [
+    "a",
+    "b",
+    "c"
+   ],
+   "setup": "echo x > b",
+   "stdout": "b\n"
+  },
+  {
+   "args": [
+    "a",
+    "b"
+   ],
+   "setup": "echo x > a",
+   "stdout": "a\n"
+  },
+  {
+   "args": [
+    "x",
+    "y"
+   ],
+   "stdout": "none readable\n",
+   "exit": 1
+  },
+  {
+   "args": [],
+   "stdout": "none readable\n",
+   "exit": 1
+  }
+ ]
+}

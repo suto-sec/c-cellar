@@ -1,0 +1,14 @@
+{
+ "id": "t3-directories-count-entries",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "directories",
+ "title": "Count the entries",
+ "stars": 2,
+ "order": 4,
+ "summary": "opendir and readdir.",
+ "hints": [
+  "`opendir` returns a `DIR *` (or NULL); `readdir` returns a `struct dirent *` for each entry and NULL at the end; the name is `e->d_name`.",
+  "Skip the names `.` and `..` with `strcmp`."
+ ]
+}

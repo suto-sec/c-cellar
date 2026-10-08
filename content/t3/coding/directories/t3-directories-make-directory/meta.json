@@ -1,0 +1,14 @@
+{
+ "id": "t3-directories-make-directory",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "directories",
+ "title": "Create a directory",
+ "stars": 2,
+ "order": 3,
+ "summary": "mkdir and its errors.",
+ "hints": [
+  "`mkdir(path, mode)` is declared in `<sys/stat.h>`; it returns -1 on failure.",
+  "The error text for an existing directory is `File exists` (`EEXIST`)."
+ ]
+}

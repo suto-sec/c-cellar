@@ -1,0 +1,70 @@
+{
+ "cases": [
+  {
+   "args": [
+    "123"
+   ],
+   "stdout": "123\n"
+  },
+  {
+   "args": [
+    "12abc"
+   ],
+   "stdout": "error: not a number\n",
+   "exit": 1
+  },
+  {
+   "args": [
+    "42"
+   ],
+   "stdout": "42\n"
+  },
+  {
+   "args": [
+    "-17"
+   ],
+   "stdout": "-17\n"
+  },
+  {
+   "args": [
+    "abc"
+   ],
+   "stdout": "error: not a number\n",
+   "exit": 1
+  },
+  {
+   "args": [
+    "12x"
+   ],
+   "stdout": "error: not a number\n",
+   "exit": 1
+  },
+  {
+   "args": [
+    ""
+   ],
+   "stdout": "error: not a number\n",
+   "exit": 1
+  },
+  {
+   "args": [
+    "99999999999999999999"
+   ],
+   "stdout": "error: out of range\n",
+   "exit": 1
+  },
+  {
+   "args": [
+    "9223372036854775807"
+   ],
+   "stdout": "9223372036854775807\n"
+  },
+  {
+   "args": [
+    "9223372036854775808"
+   ],
+   "stdout": "error: out of range\n",
+   "exit": 1
+  }
+ ]
+}

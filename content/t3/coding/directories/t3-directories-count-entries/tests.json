@@ -1,0 +1,41 @@
+{
+ "cases": [
+  {
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d; touch d/x d/y",
+   "stdout": "2\n"
+  },
+  {
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d; touch d/a d/b d/.c",
+   "stdout": "3\n"
+  },
+  {
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d",
+   "stdout": "0\n"
+  },
+  {
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d; cd d; for i in $(seq 1 100); do : > f$i; done",
+   "stdout": "100\n"
+  },
+  {
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "nope: No such file or directory\nrc=1\n"
+  },
+  {
+   "cmd": "\"$BIN\" f 2>&1; echo \"rc=$?\"",
+   "setup": "touch f",
+   "stdout": "f: Not a directory\nrc=1\n"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-directories-cd-and-print",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "directories",
+ "title": "Change directory and print",
+ "stars": 2,
+ "order": 2,
+ "summary": "chdir then getcwd.",
+ "hints": [
+  "`chdir(path)` returns 0 on success and -1 on error (then `errno` says why).",
+  "After a successful `chdir`, `getcwd` returns the NEW directory; `..` and `.` are resolved for you."
+ ]
+}

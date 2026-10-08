@@ -1,0 +1,14 @@
+{
+ "id": "t3-directories-print-cwd",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "directories",
+ "title": "Where am I?",
+ "stars": 1,
+ "order": 1,
+ "summary": "getcwd.",
+ "hints": [
+  "`getcwd(buffer, size)` fills the buffer with the path and returns it (or `NULL` on error).",
+  "A buffer of 4096 characters is enough for any path here."
+ ]
+}

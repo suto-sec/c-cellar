@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" 7; echo $?",
+   "stdout": "7\n"
+  },
+  {
+   "cmd": "\"$BIN\" 3; echo $?",
+   "stdout": "3\n"
+  },
+  {
+   "cmd": "\"$BIN\"; echo $?",
+   "stdout": "0\n"
+  },
+  {
+   "cmd": "\"$BIN\" 0; echo $?",
+   "stdout": "0\n"
+  },
+  {
+   "cmd": "\"$BIN\" 255; echo $?",
+   "stdout": "255\n"
+  },
+  {
+   "cmd": "\"$BIN\" 42 && echo ok || echo failed",
+   "stdout": "failed\n"
+  }
+ ]
+}
