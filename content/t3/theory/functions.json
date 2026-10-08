@@ -46,6 +46,232 @@
    "ref": [
     "functions"
    ]
+  },
+  {
+   "id": "t3-q-functions-01",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "What does the prototype `int media(int a, int b);` tell the compiler?",
+   "explain": "A prototype declares the function's interface so that calls before the definition can be checked. The body comes in the definition.",
+   "ref": [
+    "functions"
+   ],
+   "options": [
+    "The name, the parameter types and the return type of a function defined elsewhere",
+    "That the function returns the average",
+    "That `media` is a variable",
+    "The body of the function"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "The name says nothing to the compiler about what it does.",
+    "It declares a function, not a variable.",
+    "A prototype ends with `;` and has no body."
+   ]
+  },
+  {
+   "id": "t3-q-functions-02",
+   "type": "predict",
+   "difficulty": 1,
+   "prompt": "What does this program print? (Arguments are copies.)",
+   "explain": "C passes arguments BY VALUE: `bump` changes its own copy `v`; the caller's `x` stays 3. To change it, pass `&x` and use a pointer.",
+   "ref": [
+    "functions"
+   ],
+   "code": "#include <stdio.h>\n\nvoid bump(int v)\n{\n    v = v + 1;\n}\n\nint main(void)\n{\n    int x = 3;\n\n    bump(x);\n    printf(\"%d\\n\", x);\n    return 0;\n}\n",
+   "answer": "3"
+  },
+  {
+   "id": "t3-q-functions-03",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "Passing the ADDRESS lets the function modify the caller's variable through the pointer.",
+   "ref": [
+    "functions",
+    "pointers"
+   ],
+   "code": "#include <stdio.h>\n\nvoid bump(int *p)\n{\n    *p = *p + 1;\n}\n\nint main(void)\n{\n    int x = 3;\n\n    bump(&x);\n    printf(\"%d\\n\", x);\n    return 0;\n}\n",
+   "answer": "4"
+  },
+  {
+   "id": "t3-q-functions-04",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print? (A recursive function.)",
+   "explain": "`f(4) = 4 * f(3) = 4 * 3 * f(2) = 4 * 3 * 2 * f(1) = 24`. The base case `n <= 1` stops the recursion.",
+   "ref": [
+    "functions"
+   ],
+   "code": "#include <stdio.h>\n\nint f(int n)\n{\n    if (n <= 1)\n        return 1;\n    return n * f(n - 1);\n}\n\nint main(void)\n{\n    printf(\"%d\\n\", f(4));\n    return 0;\n}\n",
+   "answer": "24"
+  },
+  {
+   "id": "t3-q-functions-05",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "explain": "An array argument is passed as a POINTER to its first element, so the function works on the caller's array, not a copy.",
+   "ref": [
+    "functions",
+    "arrays"
+   ],
+   "code": "#include <stdio.h>\n\nvoid twice(int *v, int n)\n{\n    for (int i = 0; i < n; i++)\n        v[i] *= 2;\n}\n\nint main(void)\n{\n    int a[3] = {1, 2, 3};\n\n    twice(a, 3);\n    printf(\"%d %d %d\\n\", a[0], a[1], a[2]);\n    return 0;\n}\n",
+   "answer": "2 4 6"
+  },
+  {
+   "id": "t3-q-functions-06",
+   "type": "predict",
+   "difficulty": 4,
+   "prompt": "What does this program print? (The parameter is just a pointer.)",
+   "explain": "Inside the function `v` is a pointer (8 bytes on 64-bit Linux), not the array: `sizeof(v)` says 8. In the caller `sizeof(a)` is 10 * 4 = 40. Always pass the length separately.",
+   "ref": [
+    "sizeof",
+    "arrays"
+   ],
+   "code": "#include <stdio.h>\n\n#include <stddef.h>\n\nsize_t size_in(int v[10])\n{\n    return sizeof(v);\n}\n\nint main(void)\n{\n    int a[10];\n\n    printf(\"%zu %zu\\n\", size_in(a), sizeof(a));\n    return 0;\n}\n",
+   "answer": "8 40"
+  },
+  {
+   "id": "t3-q-functions-07",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What is wrong with returning the address of a local variable from a function?",
+   "explain": "Local variables live on the stack frame of the call. After `return` that memory is reused: the returned pointer points to garbage. Return a value, or a pointer to heap or static memory.",
+   "ref": [
+    "functions",
+    "pointers",
+    "malloc"
+   ],
+   "options": [
+    "The variable no longer exists after the function returns, so the pointer dangles",
+    "Nothing: it is a common technique",
+    "The compiler always refuses it",
+    "It makes the function recursive"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "It is a classic bug.",
+    "Compilers usually only warn.",
+    "Recursion is unrelated."
+   ]
+  },
+  {
+   "id": "t3-q-functions-08",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does `void` mean in `void hello(void)`?",
+   "explain": "The return type `void` means no value; a parameter list `(void)` means no parameters. (An empty `()` in old C meant 'unspecified'.)",
+   "ref": [
+    "functions",
+    "types"
+   ],
+   "options": [
+    "The function returns nothing and takes no parameters",
+    "The function can take any arguments",
+    "The function returns an unknown type",
+    "The function is private to the file"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "That was the meaning of `()` in old C.",
+    "No: it returns nothing.",
+    "That is `static`."
+   ]
+  },
+  {
+   "id": "t3-q-functions-09",
+   "type": "order",
+   "difficulty": 1,
+   "prompt": "Put these in the order the compiler needs to see them for a function defined after `main`.",
+   "explain": "A call must be preceded by at least a declaration (prototype) so the compiler knows the argument and return types. The definition can come later in the file or in another file.",
+   "ref": [
+    "functions"
+   ],
+   "items": [
+    "Prototype: int media(int a, int b);",
+    "Code that calls media(3, 5)",
+    "Definition: int media(int a, int b) { ... }"
+   ]
+  },
+  {
+   "id": "t3-q-functions-10",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "In C, function arguments are passed by {{0}}: the function receives a copy.",
+   "explain": "To let a function modify the caller's variable, pass its address (`&x`) and write through the pointer.",
+   "ref": [
+    "functions"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "value"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "t3-q-functions-11",
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "Complete the function so that it swaps the two integers the caller passes.",
+   "explain": "The function receives ADDRESSES, so it must read and write through them with `*a` and `*b`.",
+   "ref": [
+    "functions",
+    "pointers"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "*a"
+     ],
+     "ignore_space": true
+    },
+    {
+     "accept": [
+      "*b"
+     ],
+     "ignore_space": true
+    },
+    {
+     "accept": [
+      "tmp"
+     ],
+     "ignore_space": true
+    }
+   ],
+   "code": "void swap(int *a, int *b)\n{\n    int tmp = {{0}};\n    *a = {{1}};\n    *b = {{2}};\n}"
+  },
+  {
+   "id": "t3-q-functions-12",
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "Which statements about recursion are true?",
+   "explain": "Recursion needs a stopping condition; every call gets a fresh stack frame (which is why very deep recursion can overflow the stack). Parameters are how the problem gets smaller.",
+   "ref": [
+    "functions"
+   ],
+   "options": [
+    "A recursive function needs a base case that stops it",
+    "Each call has its own copy of the local variables",
+    "Recursion can use a lot of stack space for deep calls",
+    "A recursive function must not have parameters"
+   ],
+   "answer": [
+    0,
+    1,
+    2
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "True.",
+    "False: parameters are normally what changes between calls."
+   ]
   }
  ]
 }

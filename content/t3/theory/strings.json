@@ -1,0 +1,324 @@
+{
+ "id": "t3-th-strings",
+ "tag": "t3",
+ "title": "Strings",
+ "chapter": "strings",
+ "questions": [
+  {
+   "id": "t3-q-strings-01",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "How many bytes does the string `\"Hola\"` occupy in memory?",
+   "explain": "A C string ends with the null character `'\\0'`: a string of length n needs n + 1 bytes.",
+   "ref": [
+    "strings"
+   ],
+   "options": [
+    "5 (four letters and the terminating '\\0')",
+    "4",
+    "6",
+    "It depends on the length of the program"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "That forgets the terminator.",
+    "Only 5 are used.",
+    "A literal has a fixed size."
+   ]
+  },
+  {
+   "id": "t3-q-strings-02",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "`strlen` counts the characters before the `'\\0'` (4) while `sizeof` of the array includes the terminator (5).",
+   "ref": [
+    "strlen",
+    "sizeof",
+    "strings"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    char s[] = \"Hola\";\n\n    printf(\"%zu %zu\\n\", strlen(s), sizeof(s));\n    return 0;\n}\n",
+   "answer": "4 5"
+  },
+  {
+   "id": "t3-q-strings-03",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (The terminator ends the string.)",
+   "explain": "Writing a `'\\0'` into the middle shortens the string: functions stop at the first one.",
+   "ref": [
+    "strings",
+    "strlen"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    char s[] = \"abc\";\n\n    s[1] = '\\0';\n    printf(\"%s|%zu\\n\", s, strlen(s));\n    return 0;\n}\n",
+   "answer": "a|1"
+  },
+  {
+   "id": "t3-q-strings-04",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "explain": "`a == b` compares the ADDRESSES of the two arrays (different, so 0). `strcmp` compares the contents and returns 0 when they are equal.",
+   "ref": [
+    "strcmp",
+    "strings"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    char a[] = \"abc\", b[] = \"abc\";\n\n    printf(\"%d %d\\n\", a == b, strcmp(a, b) == 0);\n    return 0;\n}\n",
+   "answer": "0 1"
+  },
+  {
+   "id": "t3-q-strings-05",
+   "type": "predict",
+   "difficulty": 4,
+   "prompt": "What does this program print?",
+   "explain": "`strcat` makes it `abcd`. Then `strcpy(buf + 1, \"XY\")` overwrites from index 1 and writes its own terminator, so the string becomes `aXY`.",
+   "ref": [
+    "strcat",
+    "strcpy"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    char buf[16] = \"ab\";\n\n    strcat(buf, \"cd\");\n    strcpy(buf + 1, \"XY\");\n    printf(\"%s\\n\", buf);\n    return 0;\n}\n",
+   "answer": "aXY"
+  },
+  {
+   "id": "t3-q-strings-06",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "explain": "`strchr` finds the FIRST `o` (index 4) and `strrchr` the LAST one (index 7). Subtracting the start gives the position.",
+   "ref": [
+    "strchr",
+    "strrchr"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    const char *s = \"hello world\";\n    const char *first = strchr(s, 'o');\n    const char *last = strrchr(s, 'o');\n\n    printf(\"%ld %ld\\n\", (long) (first - s), (long) (last - s));\n    return 0;\n}\n",
+   "answer": "4 7"
+  },
+  {
+   "id": "t3-q-strings-07",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "explain": "`strtok` returns the pieces between the delimiters, one per call; later calls pass `NULL` to continue with the same string.",
+   "ref": [
+    "strtok"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    char line[] = \"a:b:c\";\n    char *t = strtok(line, \":\");\n\n    while (t != NULL) {\n        printf(\"[%s]\", t);\n        t = strtok(NULL, \":\");\n    }\n    printf(\"\\n\");\n    return 0;\n}\n",
+   "answer": "[a][b][c]"
+  },
+  {
+   "id": "t3-q-strings-08",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What is the difference between `char s[] = \"hi\";` and `char *p = \"hi\";`?",
+   "explain": "The array holds its own copy that you may change. A pointer to a literal points to read-only memory: writing through it is undefined behaviour (usually a crash).",
+   "ref": [
+    "strings"
+   ],
+   "options": [
+    "`s` is a modifiable copy of the text; `p` points to a string literal that must not be modified",
+    "They are identical",
+    "`p` is modifiable and `s` is read-only",
+    "`s` is on the heap and `p` on the stack"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "They differ in whether you can modify the text.",
+    "It is the other way round.",
+    "The array is on the stack; the literal is in static read-only data."
+   ]
+  },
+  {
+   "id": "t3-q-strings-09",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "How do you correctly test whether two strings `a` and `b` have the same text?",
+   "explain": "`strcmp` returns 0 for equal strings (negative or positive otherwise). `==` compares addresses and `=` copies nothing.",
+   "ref": [
+    "strcmp"
+   ],
+   "options": [
+    "strcmp(a, b) == 0",
+    "a == b",
+    "strcmp(a, b)",
+    "a = b"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Compares pointers, not text.",
+    "That is TRUE when the strings DIFFER.",
+    "That assigns a pointer (and does not compile for arrays)."
+   ]
+  },
+  {
+   "id": "t3-q-strings-10",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "To store a copy of the string `s` on the heap, how many bytes must you allocate?",
+   "explain": "The copy needs room for every character plus the terminating `'\\0'`. (`sizeof(s)` would be the size of the pointer if `s` is a `char *`.)",
+   "ref": [
+    "malloc",
+    "strlen",
+    "strdup"
+   ],
+   "options": [
+    "strlen(s) + 1",
+    "strlen(s)",
+    "sizeof(s)",
+    "strlen(s) * 2"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "One byte short: the terminator would overflow.",
+    "For a pointer that is 8, not the text length.",
+    "Wasteful and unrelated to the terminator."
+   ]
+  },
+  {
+   "id": "t3-q-strings-11",
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "Which of these calls can write beyond the end of a destination buffer that is too small?",
+   "explain": "`strcpy` and `strcat` do not know the size of `dst`. `strlen` only reads. `strncpy` is bounded (but does not add a terminator if the source is long).",
+   "ref": [
+    "strcpy",
+    "strcat",
+    "strncpy"
+   ],
+   "options": [
+    "strcpy(dst, src)",
+    "strcat(dst, src)",
+    "strlen(src)",
+    "strncpy(dst, src, sizeof(dst))"
+   ],
+   "answer": [
+    0,
+    1
+   ],
+   "option_notes": [
+    "Unbounded copy.",
+    "Unbounded append.",
+    "Reads only.",
+    "Bounded by the count (check the terminator)."
+   ]
+  },
+  {
+   "id": "t3-q-strings-12",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "`strcmp(a, b)` returns {{0}} when the two strings are equal.",
+   "explain": "A negative number means `a` comes before `b`, a positive number after; zero means equal.",
+   "ref": [
+    "strcmp"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "0",
+      "zero"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "t3-q-strings-13",
+   "type": "fill",
+   "difficulty": 3,
+   "prompt": "Complete the idiom that removes the trailing newline that `fgets` leaves in `line`.",
+   "explain": "`strcspn(line, \"\\n\")` is the index of the first newline (or the length if there is none): writing `'\\0'` there cuts the line.",
+   "ref": [
+    "strcspn",
+    "fgets"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "strcspn(line, \"\\n\")"
+     ],
+     "ignore_space": true
+    }
+   ],
+   "code": "line[{{0}}] = '\\0';"
+  },
+  {
+   "id": "t3-q-strings-14",
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each string function with what it does.",
+   "explain": "These live in `<string.h>`. Remember that `strdup` allocates memory you must `free`.",
+   "ref": [
+    "strlen",
+    "strcpy",
+    "strcat",
+    "strchr",
+    "strdup"
+   ],
+   "pairs": [
+    [
+     "strlen",
+     "counts the characters before the terminator"
+    ],
+    [
+     "strcpy",
+     "copies a string, terminator included"
+    ],
+    [
+     "strcat",
+     "appends one string after another"
+    ],
+    [
+     "strchr",
+     "finds the first occurrence of a character"
+    ],
+    [
+     "strdup",
+     "returns a malloc'ed copy of a string"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-strings-15",
+   "type": "sort",
+   "difficulty": 3,
+   "prompt": "Sort these string functions by how they behave with respect to the destination size.",
+   "explain": "The unbounded functions are a source of buffer overflows; prefer the versions that take a size (`snprintf`, `strncat`, and `strncpy` with care).",
+   "ref": [
+    "strcpy",
+    "snprintf",
+    "sprintf"
+   ],
+   "categories": [
+    "Never checks the destination size",
+    "Takes a maximum size"
+   ],
+   "items": [
+    [
+     "strcpy",
+     "Never checks the destination size"
+    ],
+    [
+     "strcat",
+     "Never checks the destination size"
+    ],
+    [
+     "strncpy",
+     "Takes a maximum size"
+    ],
+    [
+     "strncat",
+     "Takes a maximum size"
+    ],
+    [
+     "snprintf",
+     "Takes a maximum size"
+    ],
+    [
+     "sprintf",
+     "Never checks the destination size"
+    ]
+   ]
+  }
+ ]
+}

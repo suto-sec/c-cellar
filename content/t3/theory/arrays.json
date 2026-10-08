@@ -32,6 +32,206 @@
     "sizeof",
     "pointers"
    ]
+  },
+  {
+   "id": "t3-q-arrays-01",
+   "type": "predict",
+   "difficulty": 1,
+   "prompt": "What does this program print?",
+   "explain": "Indices start at 0: an array of 5 elements has the indices 0 to 4.",
+   "ref": [
+    "arrays"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int v[5] = {10, 20, 30, 40, 50};\n\n    printf(\"%d %d\\n\", v[0], v[4]);\n    return 0;\n}\n",
+   "answer": "10 50"
+  },
+  {
+   "id": "t3-q-arrays-02",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print? (Partial initialisation.)",
+   "explain": "When an initialiser has fewer values than the array, the remaining elements are set to zero.",
+   "ref": [
+    "arrays"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int v[5] = {1, 2};\n\n    printf(\"%d %d %d %d %d\\n\", v[0], v[1], v[2], v[3], v[4]);\n    return 0;\n}\n",
+   "answer": "1 2 0 0 0"
+  },
+  {
+   "id": "t3-q-arrays-03",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "explain": "With 6 ints of 4 bytes `sizeof(v)` is 24, and dividing by the size of one element gives the number of elements, 6. (It only works on a real array, not on a pointer parameter.)",
+   "ref": [
+    "sizeof",
+    "arrays"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int v[] = {4, 8, 15, 16, 23, 42};\n\n    printf(\"%zu %zu\\n\", sizeof(v), sizeof(v) / sizeof(v[0]));\n    return 0;\n}\n",
+   "answer": "24 6"
+  },
+  {
+   "id": "t3-q-arrays-04",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "`m[row][column]`: row 1, column 0 holds 4 and row 0, column 2 holds 3.",
+   "ref": [
+    "arrays"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int m[2][3] = {{1, 2, 3}, {4, 5, 6}};\n\n    printf(\"%d %d\\n\", m[1][0], m[0][2]);\n    return 0;\n}\n",
+   "answer": "4 3"
+  },
+  {
+   "id": "t3-q-arrays-05",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "explain": "The array name converts to a pointer to its first element: `*p` is v[0], `*(p + 2)` is v[2] and `p[3]` is v[3].",
+   "ref": [
+    "pointers",
+    "arrays"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int v[4] = {1, 2, 3, 4};\n    int *p = v;\n\n    printf(\"%d %d %d\\n\", *p, *(p + 2), p[3]);\n    return 0;\n}\n",
+   "answer": "1 3 4"
+  },
+  {
+   "id": "t3-q-arrays-06",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What happens when you read `v[5]` in `int v[5]`?",
+   "explain": "C never checks array bounds. Reading or writing outside the array is undefined behaviour: garbage, a crash, or silent corruption.",
+   "ref": [
+    "arrays"
+   ],
+   "options": [
+    "Undefined behaviour: the index is out of range and C does not check it",
+    "It returns 0",
+    "The program always stops with an error",
+    "It wraps around to v[0]"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "There is no default value.",
+    "No automatic check exists in C.",
+    "No wrapping happens."
+   ]
+  },
+  {
+   "id": "t3-q-arrays-07",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "What is `sizeof(a)` for `int a[10]` on a system where an int has 4 bytes?",
+   "explain": "`sizeof` of an array is the size of the whole array: 10 elements * 4 bytes.",
+   "ref": [
+    "sizeof",
+    "arrays"
+   ],
+   "options": [
+    "40",
+    "10",
+    "4",
+    "8"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "That is the number of elements.",
+    "That is the size of one element.",
+    "That would be the size of a pointer."
+   ]
+  },
+  {
+   "id": "t3-q-arrays-08",
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "Which statements about arrays and pointers are true?",
+   "explain": "Indexing is defined through pointer arithmetic, and `sizeof` knows the full size of a real array. The array name is not an assignable variable, and a pointer carries no length.",
+   "ref": [
+    "arrays",
+    "pointers",
+    "sizeof"
+   ],
+   "options": [
+    "`v[i]` is the same as `*(v + i)`",
+    "An array name can be assigned a new address like a pointer",
+    "`sizeof(v)` of a real array gives its total size in bytes",
+    "A pointer parameter `int *v` knows how many elements the caller's array has"
+   ],
+   "answer": [
+    0,
+    2
+   ],
+   "option_notes": [
+    "True.",
+    "False.",
+    "True.",
+    "False: pass the length as another parameter."
+   ]
+  },
+  {
+   "id": "t3-q-arrays-09",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "In `int v[8];` the valid indices go from 0 to {{0}}.",
+   "explain": "An array of N elements has the indices 0 to N - 1.",
+   "ref": [
+    "arrays"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "7"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "t3-q-arrays-10",
+   "type": "order",
+   "difficulty": 2,
+   "prompt": "Put the steps of a linear search in the array `v` for the value `x` in order.",
+   "explain": "A linear search looks at the elements one by one until it finds the value or runs out of elements.",
+   "ref": [
+    "arrays"
+   ],
+   "items": [
+    "Start at index 0",
+    "Compare v[i] with x",
+    "If they are equal, stop: found at i",
+    "Otherwise move to the next index",
+    "If the end is reached, x is not present"
+   ]
+  },
+  {
+   "id": "t3-q-arrays-11",
+   "type": "match",
+   "difficulty": 3,
+   "prompt": "Match each array expression with its meaning for `int m[3][4]`.",
+   "explain": "A two-dimensional array is an array of rows, stored row after row in memory.",
+   "ref": [
+    "arrays",
+    "sizeof"
+   ],
+   "pairs": [
+    [
+     "m[2][1]",
+     "the element in row 2, column 1"
+    ],
+    [
+     "sizeof(m)",
+     "the total size: 3 * 4 * sizeof(int) bytes"
+    ],
+    [
+     "sizeof(m[0])",
+     "the size of one row: 4 * sizeof(int) bytes"
+    ],
+    [
+     "m[0]",
+     "the first row (an array of 4 ints)"
+    ]
+   ]
   }
  ]
 }
