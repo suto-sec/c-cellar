@@ -1,0 +1,36 @@
+{
+ "cases": [
+  {
+   "stdin": "3 -2\n",
+   "stdout": "Q4\n"
+  },
+  {
+   "stdin": "1 1\n",
+   "stdout": "Q1\n"
+  },
+  {
+   "stdin": "-1 1\n",
+   "stdout": "Q2\n"
+  },
+  {
+   "stdin": "-1 -1\n",
+   "stdout": "Q3\n"
+  },
+  {
+   "stdin": "1 -1\n",
+   "stdout": "Q4\n"
+  },
+  {
+   "stdin": "0 0\n",
+   "stdout": "origin\n"
+  },
+  {
+   "stdin": "0 5\n",
+   "stdout": "axis\n"
+  },
+  {
+   "stdin": "-3 0\n",
+   "stdout": "axis\n"
+  }
+ ]
+}

@@ -1,0 +1,24 @@
+{
+ "cases": [
+  {
+   "stdin": "02:30\n",
+   "stdout": "150\n"
+  },
+  {
+   "stdin": "00:00\n",
+   "stdout": "0\n"
+  },
+  {
+   "stdin": "23:59\n",
+   "stdout": "1439\n"
+  },
+  {
+   "stdin": "07:05\n",
+   "stdout": "425\n"
+  },
+  {
+   "stdin": "12:30\n",
+   "stdout": "750\n"
+  }
+ ]
+}

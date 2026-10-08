@@ -1,0 +1,40 @@
+{
+ "cases": [
+  {
+   "stdin": "6\n",
+   "stdout": "8\n"
+  },
+  {
+   "stdin": "1\n",
+   "stdout": "0\n"
+  },
+  {
+   "stdin": "2\n",
+   "stdout": "1\n"
+  },
+  {
+   "stdin": "3\n",
+   "stdout": "7\n"
+  },
+  {
+   "stdin": "6\n",
+   "stdout": "8\n"
+  },
+  {
+   "stdin": "7\n",
+   "stdout": "16\n"
+  },
+  {
+   "stdin": "27\n",
+   "stdout": "111\n"
+  },
+  {
+   "stdin": "97\n",
+   "stdout": "118\n"
+  },
+  {
+   "stdin": "871\n",
+   "stdout": "178\n"
+  }
+ ]
+}

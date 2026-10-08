@@ -4,12 +4,12 @@
  "track": "derusting",
  "topic": "loops",
  "title": "Factorial",
+ "stars": 2,
  "order": 4,
  "summary": "Read a number with scanf, loop, print the result.",
  "hints": [
-  "scanf needs the ADDRESS of the variable: scanf(\"%d\", &n).",
-  "0! is 1. Use a `long` so 12! fits."
+  "`0! = 1`, so start the product at 1 and multiply it by 2, 3, ..., n.",
+  "Use a `long` so that 12! fits."
  ],
- "info": "scanf(\"%d\", &n) reads an int from stdin and returns how many values it read. printf(\"%ld\", x) prints a long.",
- "stars": 2
+ "info": "scanf(\"%d\", &n) reads an int from stdin and returns how many values it read. printf(\"%ld\", x) prints a long."
 }

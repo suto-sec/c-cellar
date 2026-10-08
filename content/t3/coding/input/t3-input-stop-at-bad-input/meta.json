@@ -1,0 +1,14 @@
+{
+ "id": "t3-input-stop-at-bad-input",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "input",
+ "title": "Stop at the first bad token",
+ "stars": 3,
+ "order": 9,
+ "summary": "Telling a bad token from the end of input.",
+ "hints": [
+  "`scanf` returns the number of values read, or `EOF` when the input ended before reading anything.",
+  "Keep the return value in a variable: after the loop, `EOF` means a normal end and `0` means a token that is not a number."
+ ]
+}

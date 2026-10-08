@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "5 5 oops 5\n",
+   "stdout": "sum=10 (stopped at bad input)\n"
+  },
+  {
+   "stdin": "1 2 3\n",
+   "stdout": "sum=6\n"
+  },
+  {
+   "stdin": "1 2 x 4\n",
+   "stdout": "sum=3 (stopped at bad input)\n"
+  },
+  {
+   "stdin": "",
+   "stdout": "sum=0\n"
+  },
+  {
+   "stdin": "abc",
+   "stdout": "sum=0 (stopped at bad input)\n"
+  },
+  {
+   "stdin": "10 20 30 40",
+   "stdout": "sum=100\n"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-functions-max-of-three",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "functions",
+ "title": "Maximum of three",
+ "stars": 1,
+ "order": 2,
+ "summary": "A function with three parameters.",
+ "hints": [
+  "Keep the largest so far in a local variable and compare it with the other two.",
+  "A function can have several parameters: `int max3(int a, int b, int c)`."
+ ]
+}

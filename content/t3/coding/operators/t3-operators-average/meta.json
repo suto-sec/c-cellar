@@ -1,0 +1,14 @@
+{
+ "id": "t3-operators-average",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "operators",
+ "title": "Average of three",
+ "stars": 2,
+ "order": 2,
+ "summary": "Floating-point division.",
+ "hints": [
+  "Dividing an `int` sum by the int `3` truncates; divide by `3.0` (a double) instead.",
+  "Print with `%.2f`."
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-conditions-day-name",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "conditions",
+ "title": "Name of the day",
+ "stars": 2,
+ "order": 7,
+ "summary": "switch with default.",
+ "hints": [
+  "Use `switch (d)` with one `case` per number.",
+  "End every case with `break`, otherwise execution continues into the next one."
+ ]
+}

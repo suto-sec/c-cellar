@@ -1,0 +1,14 @@
+{
+ "id": "t3-variables-swap-two",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "variables",
+ "title": "Swap two variables",
+ "stars": 2,
+ "order": 2,
+ "summary": "Use a temporary variable.",
+ "hints": [
+  "If you write `a = b; b = a;` both end up equal: you need to save one value first.",
+  "Save `a` in `tmp`, copy `b` into `a`, then copy `tmp` into `b`."
+ ]
+}

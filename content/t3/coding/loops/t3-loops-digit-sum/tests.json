@@ -1,0 +1,32 @@
+{
+ "cases": [
+  {
+   "stdin": "1234\n",
+   "stdout": "10\n"
+  },
+  {
+   "stdin": "0\n",
+   "stdout": "0\n"
+  },
+  {
+   "stdin": "7\n",
+   "stdout": "7\n"
+  },
+  {
+   "stdin": "1234\n",
+   "stdout": "10\n"
+  },
+  {
+   "stdin": "99999\n",
+   "stdout": "45\n"
+  },
+  {
+   "stdin": "1000000\n",
+   "stdout": "1\n"
+  },
+  {
+   "stdin": "2147483647\n",
+   "stdout": "46\n"
+  }
+ ]
+}

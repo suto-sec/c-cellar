@@ -1,0 +1,14 @@
+{
+ "id": "t3-input-clock-to-minutes",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "input",
+ "title": "Minutes since midnight",
+ "stars": 3,
+ "order": 8,
+ "summary": "fgets + sscanf.",
+ "hints": [
+  "`sscanf` works like `scanf` but reads from a string: `sscanf(line, \"%d:%d\", &h, &m)`.",
+  "A `:` in the format must match a `:` in the input; the function returns 2 if both numbers were read."
+ ]
+}

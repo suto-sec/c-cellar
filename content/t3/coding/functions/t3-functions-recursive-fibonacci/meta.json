@@ -1,0 +1,14 @@
+{
+ "id": "t3-functions-recursive-fibonacci",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "functions",
+ "title": "Recursive Fibonacci",
+ "stars": 3,
+ "order": 8,
+ "summary": "Two recursive calls.",
+ "hints": [
+  "The base cases are `n == 0` and `n == 1`: return `n`.",
+  "Otherwise `fib(n) = fib(n - 1) + fib(n - 2)`."
+ ]
+}

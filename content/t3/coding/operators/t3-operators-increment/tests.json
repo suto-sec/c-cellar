@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "i++ gives 5\ni is now 6\n++i gives 7\ni is now 7\n"
+  }
+ ]
+}

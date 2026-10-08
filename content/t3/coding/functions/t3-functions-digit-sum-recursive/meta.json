@@ -1,0 +1,14 @@
+{
+ "id": "t3-functions-digit-sum-recursive",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "functions",
+ "title": "Sum of digits, recursively",
+ "stars": 4,
+ "order": 11,
+ "summary": "Recursion on a number.",
+ "hints": [
+  "The base case is `n == 0`.",
+  "The last digit is `n % 10`; the digits of the rest are the digits of `n / 10`."
+ ]
+}

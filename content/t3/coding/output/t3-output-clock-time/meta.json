@@ -1,0 +1,14 @@
+{
+ "id": "t3-output-clock-time",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "output",
+ "title": "Zero-padded time",
+ "stars": 2,
+ "order": 7,
+ "summary": "Zero padding with %02d.",
+ "hints": [
+  "The `0` flag pads with zeros instead of spaces.",
+  "`%02d` means: an int, at least 2 characters wide, padded with zeros."
+ ]
+}

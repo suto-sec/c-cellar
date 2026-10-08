@@ -1,0 +1,14 @@
+{
+ "id": "t3-variables-division-and-casts",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "variables",
+ "title": "Integer division and casts",
+ "stars": 3,
+ "order": 8,
+ "summary": "7/2, 7/2.0 and (double).",
+ "hints": [
+  "Integer division discards the fraction and truncates toward zero.",
+  "As soon as one operand is a `double`, the division is done in floating point; a cast `(double)` converts one operand."
+ ]
+}

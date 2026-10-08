@@ -1,0 +1,20 @@
+{
+ "cases": [
+  {
+   "stdin": "5\n",
+   "stdout": "*****\n"
+  },
+  {
+   "stdin": "3 0 1\n",
+   "stdout": "***\n\n*\n"
+  },
+  {
+   "stdin": "10\n",
+   "stdout": "**********\n"
+  },
+  {
+   "stdin": "-2\n",
+   "stdout": "\n"
+  }
+ ]
+}

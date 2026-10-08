@@ -1,0 +1,36 @@
+{
+ "cases": [
+  {
+   "stdin": "3\n",
+   "stdout": "hanoi(3) = 7\n"
+  },
+  {
+   "stdin": "0\n",
+   "stdout": "hanoi(0) = 0\n"
+  },
+  {
+   "stdin": "1\n",
+   "stdout": "hanoi(1) = 1\n"
+  },
+  {
+   "stdin": "2\n",
+   "stdout": "hanoi(2) = 3\n"
+  },
+  {
+   "stdin": "3\n",
+   "stdout": "hanoi(3) = 7\n"
+  },
+  {
+   "stdin": "10\n",
+   "stdout": "hanoi(10) = 1023\n"
+  },
+  {
+   "stdin": "20\n",
+   "stdout": "hanoi(20) = 1048575\n"
+  },
+  {
+   "stdin": "40\n",
+   "stdout": "hanoi(40) = 1099511627775\n"
+  }
+ ]
+}

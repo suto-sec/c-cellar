@@ -1,0 +1,14 @@
+{
+ "id": "t3-operators-even-odd",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "operators",
+ "title": "Even or odd",
+ "stars": 1,
+ "order": 3,
+ "summary": "The remainder operator.",
+ "hints": [
+  "`n % 2` is 0 for even numbers; for negative odd numbers it is -1, not 1, so compare with 0.",
+  "`n % 2 == 0` is true when `n` is even."
+ ]
+}

@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "255 = 0xff = 0XFF = 0377\nProgress: 45%\n"
+  }
+ ]
+}

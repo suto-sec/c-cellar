@@ -1,0 +1,14 @@
+{
+ "id": "t3-functions-print-binary",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "functions",
+ "title": "Print in binary",
+ "stars": 4,
+ "order": 13,
+ "summary": "Recursion that prints on the way back.",
+ "hints": [
+  "The last binary digit is `n % 2`; the digits before it are the binary digits of `n / 2`.",
+  "Print the earlier digits FIRST (recursive call), then this one. Stop the recursion when `n` is 0 or 1."
+ ]
+}

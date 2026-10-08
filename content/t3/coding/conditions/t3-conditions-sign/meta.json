@@ -1,0 +1,14 @@
+{
+ "id": "t3-conditions-sign",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "conditions",
+ "title": "Positive, negative or zero",
+ "stars": 1,
+ "order": 1,
+ "summary": "if / else if / else.",
+ "hints": [
+  "Chain the conditions: `if (...) ... else if (...) ... else ...`.",
+  "Test `n > 0` first, then `n < 0`; the last `else` is zero."
+ ]
+}

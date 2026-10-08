@@ -1,0 +1,20 @@
+{
+ "cases": [
+  {
+   "stdin": "42\n",
+   "stdout": "You typed: 42\n"
+  },
+  {
+   "stdin": "0\n",
+   "stdout": "You typed: 0\n"
+  },
+  {
+   "stdin": "-5\n",
+   "stdout": "You typed: -5\n"
+  },
+  {
+   "stdin": "123456\n",
+   "stdout": "You typed: 123456\n"
+  }
+ ]
+}

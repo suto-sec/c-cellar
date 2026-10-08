@@ -1,0 +1,14 @@
+{
+ "id": "t3-output-aligned-columns",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "output",
+ "title": "Aligned columns",
+ "stars": 2,
+ "order": 6,
+ "summary": "Field widths with printf.",
+ "hints": [
+  "A width goes between `%` and the letter: `%5d` pads an int with spaces on the left to 5 characters; `%5s` does the same for a string.",
+  "You can use a loop, or five separate printf calls."
+ ]
+}

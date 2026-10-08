@@ -1,0 +1,14 @@
+{
+ "id": "t3-input-name-and-age",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "input",
+ "title": "Name and age",
+ "stars": 1,
+ "order": 2,
+ "summary": "Reading a word and a number.",
+ "hints": [
+  "`%s` reads one word into a char array; for an array you do NOT use `&`.",
+  "`char name[32];` leaves room for 31 letters and the terminator."
+ ]
+}

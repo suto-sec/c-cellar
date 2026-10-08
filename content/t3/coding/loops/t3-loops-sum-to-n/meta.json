@@ -1,0 +1,14 @@
+{
+ "id": "t3-loops-sum-to-n",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "loops",
+ "title": "Sum from 1 to n",
+ "stars": 1,
+ "order": 2,
+ "summary": "Accumulating in a loop.",
+ "hints": [
+  "Declare a variable `sum` before the loop, initialise it to 0 and add `i` to it on every pass.",
+  "For large `n` use a `long`."
+ ]
+}

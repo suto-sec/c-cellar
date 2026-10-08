@@ -1,0 +1,44 @@
+{
+ "cases": [
+  {
+   "stdin": "3 4 5\n",
+   "stdout": "scalene\n"
+  },
+  {
+   "stdin": "3 3 3\n",
+   "stdout": "equilateral\n"
+  },
+  {
+   "stdin": "3 4 5\n",
+   "stdout": "scalene\n"
+  },
+  {
+   "stdin": "5 5 8\n",
+   "stdout": "isosceles\n"
+  },
+  {
+   "stdin": "1 2 3\n",
+   "stdout": "not a triangle\n"
+  },
+  {
+   "stdin": "0 4 4\n",
+   "stdout": "not a triangle\n"
+  },
+  {
+   "stdin": "4 4 1\n",
+   "stdout": "isosceles\n"
+  },
+  {
+   "stdin": "7 10 5\n",
+   "stdout": "scalene\n"
+  },
+  {
+   "stdin": "2 2 4\n",
+   "stdout": "not a triangle\n"
+  },
+  {
+   "stdin": "-1 2 2\n",
+   "stdout": "not a triangle\n"
+  }
+ ]
+}

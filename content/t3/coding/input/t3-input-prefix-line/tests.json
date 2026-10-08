@@ -1,0 +1,24 @@
+{
+ "cases": [
+  {
+   "stdin": "hello world\n",
+   "stdout": ">> hello world\n"
+  },
+  {
+   "stdin": "hello world\n",
+   "stdout": ">> hello world\n"
+  },
+  {
+   "stdin": "  spaces  kept \n",
+   "stdout": ">>   spaces  kept \n"
+  },
+  {
+   "stdin": "\n",
+   "stdout": ">> \n"
+  },
+  {
+   "stdin": "a\n",
+   "stdout": ">> a\n"
+  }
+ ]
+}

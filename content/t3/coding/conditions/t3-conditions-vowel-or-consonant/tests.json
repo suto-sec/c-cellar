@@ -1,0 +1,36 @@
+{
+ "cases": [
+  {
+   "stdin": "e\n",
+   "stdout": "vowel\n"
+  },
+  {
+   "stdin": "a\n",
+   "stdout": "vowel\n"
+  },
+  {
+   "stdin": "E\n",
+   "stdout": "vowel\n"
+  },
+  {
+   "stdin": "z\n",
+   "stdout": "consonant\n"
+  },
+  {
+   "stdin": "Q\n",
+   "stdout": "consonant\n"
+  },
+  {
+   "stdin": "7\n",
+   "stdout": "not a letter\n"
+  },
+  {
+   "stdin": "!\n",
+   "stdout": "not a letter\n"
+  },
+  {
+   "stdin": "u\n",
+   "stdout": "vowel\n"
+  }
+ ]
+}

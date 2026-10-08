@@ -1,0 +1,14 @@
+{
+ "id": "t3-loops-fibonacci",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "loops",
+ "title": "Fibonacci numbers",
+ "stars": 2,
+ "order": 6,
+ "summary": "Two variables updated in a loop.",
+ "hints": [
+  "Keep two variables with the last two numbers; each step the next is their sum.",
+  "Print a space before every number except the first one."
+ ]
+}

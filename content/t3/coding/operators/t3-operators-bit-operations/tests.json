@@ -1,0 +1,32 @@
+{
+ "cases": [
+  {
+   "stdin": "170\n",
+   "stdout": "and=10\nor=170\nxor=85\nshl=680\nshr=21\n"
+  },
+  {
+   "stdin": "0\n",
+   "stdout": "and=0\nor=128\nxor=255\nshl=0\nshr=0\n"
+  },
+  {
+   "stdin": "1\n",
+   "stdout": "and=1\nor=129\nxor=254\nshl=4\nshr=0\n"
+  },
+  {
+   "stdin": "255\n",
+   "stdout": "and=15\nor=255\nxor=0\nshl=1020\nshr=31\n"
+  },
+  {
+   "stdin": "100\n",
+   "stdout": "and=4\nor=228\nxor=155\nshl=400\nshr=12\n"
+  },
+  {
+   "stdin": "77\n",
+   "stdout": "and=13\nor=205\nxor=178\nshl=308\nshr=9\n"
+  },
+  {
+   "stdin": "128\n",
+   "stdout": "and=0\nor=128\nxor=127\nshl=512\nshr=16\n"
+  }
+ ]
+}

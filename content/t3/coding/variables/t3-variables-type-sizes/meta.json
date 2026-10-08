@@ -1,0 +1,14 @@
+{
+ "id": "t3-variables-type-sizes",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "variables",
+ "title": "Sizes of types",
+ "stars": 2,
+ "order": 3,
+ "summary": "sizeof and %zu.",
+ "hints": [
+  "`sizeof(type)` gives the size in bytes, as a `size_t`.",
+  "A `size_t` is printed with `%zu`."
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-operators-swap-xor",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "operators",
+ "title": "Swap without a temporary",
+ "stars": 4,
+ "order": 7,
+ "summary": "The XOR trick.",
+ "hints": [
+  "`x ^ x` is 0 and `x ^ 0` is x; XOR is its own inverse.",
+  "Three statements: `a = a ^ b; b = a ^ b; a = a ^ b;`. Check each step by hand with small numbers."
+ ]
+}

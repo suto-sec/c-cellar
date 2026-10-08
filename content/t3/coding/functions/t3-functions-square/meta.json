@@ -1,0 +1,14 @@
+{
+ "id": "t3-functions-square",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "functions",
+ "title": "Your first function",
+ "stars": 1,
+ "order": 1,
+ "summary": "Define and call a function.",
+ "hints": [
+  "A function definition: `int square(int x) { return x * x; }`.",
+  "`return` sends the result back to the caller."
+ ]
+}

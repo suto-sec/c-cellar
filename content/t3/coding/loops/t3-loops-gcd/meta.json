@@ -1,0 +1,14 @@
+{
+ "id": "t3-loops-gcd",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "loops",
+ "title": "Greatest common divisor",
+ "stars": 3,
+ "order": 10,
+ "summary": "Euclid's algorithm with while.",
+ "hints": [
+  "Euclid: while `b` is not 0, replace `(a, b)` by `(b, a % b)`.",
+  "When `b` is 0 the answer is `a`."
+ ]
+}

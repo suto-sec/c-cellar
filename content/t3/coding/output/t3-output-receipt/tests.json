@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "Item        Qty   Price\nCoffee        2    3.50\nBread         1    2.25\nTotal              9.25\n"
+  }
+ ]
+}

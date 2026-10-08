@@ -1,0 +1,14 @@
+{
+ "id": "t3-output-three-lines",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "output",
+ "title": "Three lines",
+ "stars": 1,
+ "order": 2,
+ "summary": "Several printf calls and newlines.",
+ "hints": [
+  "Use one `printf` per line, or one `printf` with `\\n` between the lines.",
+  "Do not forget the last `\\n`."
+ ]
+}

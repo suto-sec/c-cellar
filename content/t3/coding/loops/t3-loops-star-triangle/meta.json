@@ -1,0 +1,14 @@
+{
+ "id": "t3-loops-star-triangle",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "loops",
+ "title": "A triangle of stars",
+ "stars": 2,
+ "order": 9,
+ "summary": "Nested loops.",
+ "hints": [
+  "An outer loop for the rows and an inner loop that prints the stars of that row.",
+  "Print a newline after each row."
+ ]
+}

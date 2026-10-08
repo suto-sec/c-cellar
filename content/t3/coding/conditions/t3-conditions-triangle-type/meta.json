@@ -1,0 +1,14 @@
+{
+ "id": "t3-conditions-triangle-type",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "conditions",
+ "title": "Triangle type",
+ "stars": 3,
+ "order": 5,
+ "summary": "Combining conditions.",
+ "hints": [
+  "Decide first whether it is a triangle: the sum of the two shorter sides must be greater than the longest.",
+  "If you sort the three sides (a <= b <= c) the tests become simple."
+ ]
+}

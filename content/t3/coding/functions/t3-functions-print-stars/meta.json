@@ -1,0 +1,14 @@
+{
+ "id": "t3-functions-print-stars",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "functions",
+ "title": "A void function",
+ "stars": 2,
+ "order": 4,
+ "summary": "A function that prints instead of returning.",
+ "hints": [
+  "A function that returns nothing has the return type `void`.",
+  "Your file needs `#include <stdio.h>` to use `putchar` or `printf`."
+ ]
+}

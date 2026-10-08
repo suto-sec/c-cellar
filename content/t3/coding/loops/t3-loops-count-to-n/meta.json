@@ -1,0 +1,14 @@
+{
+ "id": "t3-loops-count-to-n",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "loops",
+ "title": "Count to n",
+ "stars": 1,
+ "order": 1,
+ "summary": "A for loop.",
+ "hints": [
+  "`for (int i = 1; i <= n; i++) { ... }` runs the body for i = 1, 2, ..., n.",
+  "Print inside the loop with `printf(\"%d\\n\", i);`."
+ ]
+}

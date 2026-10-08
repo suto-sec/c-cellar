@@ -1,0 +1,14 @@
+{
+ "id": "t3-variables-circle",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "variables",
+ "title": "Constants: a circle",
+ "stars": 2,
+ "order": 4,
+ "summary": "#define and const.",
+ "hints": [
+  "Put `#define PI 3.14159` before `main`: no `=` and no `;`.",
+  "area = PI * r * r, circumference = 2 * PI * r."
+ ]
+}

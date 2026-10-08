@@ -1,0 +1,14 @@
+{
+ "id": "t3-conditions-vowel-or-consonant",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "conditions",
+ "title": "Vowel or consonant",
+ "stars": 2,
+ "order": 4,
+ "summary": "switch and fall-through.",
+ "hints": [
+  "With `scanf(\" %c\", &c)` (note the space before `%c`) leading whitespace is skipped.",
+  "Several `case` labels in a row share the same code: `case 'a': case 'e': ... break;`."
+ ]
+}

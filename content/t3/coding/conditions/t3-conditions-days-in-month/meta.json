@@ -1,0 +1,14 @@
+{
+ "id": "t3-conditions-days-in-month",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "conditions",
+ "title": "Days in a month",
+ "stars": 3,
+ "order": 9,
+ "summary": "switch plus the leap-year rule.",
+ "hints": [
+  "Group the months with 30 days in one `case` list; February depends on the year.",
+  "A year is leap if it is divisible by 4 and not by 100, or divisible by 400."
+ ]
+}

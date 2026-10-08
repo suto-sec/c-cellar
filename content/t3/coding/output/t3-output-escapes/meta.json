@@ -1,0 +1,14 @@
+{
+ "id": "t3-output-escapes",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "output",
+ "title": "Special characters",
+ "stars": 1,
+ "order": 3,
+ "summary": "Tab, quotes and backslash in strings.",
+ "hints": [
+  "`\\t` is a tab, `\\\\` prints one backslash and `\\\"` prints a double quote inside a string.",
+  "Inside a C string, a backslash always starts an escape sequence."
+ ]
+}

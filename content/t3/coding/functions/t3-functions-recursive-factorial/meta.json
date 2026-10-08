@@ -1,0 +1,14 @@
+{
+ "id": "t3-functions-recursive-factorial",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "functions",
+ "title": "Recursive factorial",
+ "stars": 3,
+ "order": 7,
+ "summary": "A function that calls itself.",
+ "hints": [
+  "Every recursive function needs a base case that stops it: here `fact(0)` and `fact(1)` are 1.",
+  "For the rest, `n! = n * (n-1)!`."
+ ]
+}

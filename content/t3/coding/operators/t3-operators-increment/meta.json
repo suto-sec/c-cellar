@@ -1,0 +1,14 @@
+{
+ "id": "t3-operators-increment",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "operators",
+ "title": "Pre and post increment",
+ "stars": 2,
+ "order": 5,
+ "summary": "i++ versus ++i.",
+ "hints": [
+  "`i++` yields the OLD value and then increments; `++i` increments and then yields the NEW value.",
+  "Use four separate `printf` calls: do not put two increments of the same variable in one call."
+ ]
+}

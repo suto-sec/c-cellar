@@ -1,0 +1,14 @@
+{
+ "id": "t3-functions-prototype-order",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "functions",
+ "title": "Prototype before main",
+ "stars": 2,
+ "order": 10,
+ "summary": "Declare first, define later.",
+ "hints": [
+  "A prototype is the function header followed by `;`, placed before it is used.",
+  "`(a + b) / 2` with ints truncates: divide by `2.0`."
+ ]
+}

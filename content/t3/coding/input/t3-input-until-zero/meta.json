@@ -1,0 +1,14 @@
+{
+ "id": "t3-input-until-zero",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "input",
+ "title": "Read until zero",
+ "stars": 3,
+ "order": 7,
+ "summary": "A sentinel value.",
+ "hints": [
+  "The loop condition can check two things: that `scanf` read a number AND that it is not 0.",
+  "`&&` stops evaluating at the first false part, so `x` is only tested when `scanf` succeeded."
+ ]
+}

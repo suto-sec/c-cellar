@@ -1,0 +1,32 @@
+{
+ "cases": [
+  {
+   "stdin": "hi\nthere\n",
+   "stdout": "chars=9 lines=2\n"
+  },
+  {
+   "stdin": "",
+   "stdout": "chars=0 lines=0\n"
+  },
+  {
+   "stdin": "a",
+   "stdout": "chars=1 lines=0\n"
+  },
+  {
+   "stdin": "a\n",
+   "stdout": "chars=2 lines=1\n"
+  },
+  {
+   "stdin": "one\ntwo\nthree\n",
+   "stdout": "chars=14 lines=3\n"
+  },
+  {
+   "stdin": "\n\n\n",
+   "stdout": "chars=3 lines=3\n"
+  },
+  {
+   "stdin": "no newline at end",
+   "stdout": "chars=17 lines=0\n"
+  }
+ ]
+}

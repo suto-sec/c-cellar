@@ -1,0 +1,14 @@
+{
+ "id": "t3-input-echo-number",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "input",
+ "title": "Echo a number",
+ "stars": 1,
+ "order": 1,
+ "summary": "scanf with %d.",
+ "hints": [
+  "`scanf(\"%d\", &n)` reads an int into `n`; do not forget the `&`.",
+  "`scanf` returns how many values it read: it should be 1."
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-output-receipt",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "output",
+ "title": "A receipt",
+ "stars": 3,
+ "order": 8,
+ "summary": "Left and right alignment, decimals, a computed total.",
+ "hints": [
+  "`%-10s` left-aligns a string in 10 characters (the `-` flag); `%5d` right-aligns an int; `%8.2f` is a double in 8 characters with 2 decimals.",
+  "For the Total line print an empty string `\"\"` with `%5s` in the quantity column."
+ ]
+}

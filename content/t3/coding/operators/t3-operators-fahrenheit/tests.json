@@ -1,0 +1,32 @@
+{
+ "cases": [
+  {
+   "stdin": "212\n",
+   "stdout": "100.0\n"
+  },
+  {
+   "stdin": "212\n",
+   "stdout": "100.0\n"
+  },
+  {
+   "stdin": "32\n",
+   "stdout": "0.0\n"
+  },
+  {
+   "stdin": "0\n",
+   "stdout": "-17.8\n"
+  },
+  {
+   "stdin": "-40\n",
+   "stdout": "-40.0\n"
+  },
+  {
+   "stdin": "98\n",
+   "stdout": "36.7\n"
+  },
+  {
+   "stdin": "100\n",
+   "stdout": "37.8\n"
+  }
+ ]
+}

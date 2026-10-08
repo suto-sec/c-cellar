@@ -1,0 +1,48 @@
+{
+ "cases": [
+  {
+   "stdin": "85\n",
+   "stdout": "B\n"
+  },
+  {
+   "stdin": "100\n",
+   "stdout": "A\n"
+  },
+  {
+   "stdin": "90\n",
+   "stdout": "A\n"
+  },
+  {
+   "stdin": "89\n",
+   "stdout": "B\n"
+  },
+  {
+   "stdin": "80\n",
+   "stdout": "B\n"
+  },
+  {
+   "stdin": "79\n",
+   "stdout": "C\n"
+  },
+  {
+   "stdin": "70\n",
+   "stdout": "C\n"
+  },
+  {
+   "stdin": "69\n",
+   "stdout": "D\n"
+  },
+  {
+   "stdin": "60\n",
+   "stdout": "D\n"
+  },
+  {
+   "stdin": "59\n",
+   "stdout": "F\n"
+  },
+  {
+   "stdin": "0\n",
+   "stdout": "F\n"
+  }
+ ]
+}

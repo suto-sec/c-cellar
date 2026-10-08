@@ -1,0 +1,14 @@
+{
+ "id": "t3-output-percent-and-hex",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "output",
+ "title": "Bases and percent",
+ "stars": 2,
+ "order": 5,
+ "summary": "%x, %o and a literal %.",
+ "hints": [
+  "`%x` prints lower-case hexadecimal, `%X` upper-case, `%o` octal; the `#` flag adds the `0x` / `0` prefix.",
+  "To print a percent sign, write `%%` in the format string."
+ ]
+}

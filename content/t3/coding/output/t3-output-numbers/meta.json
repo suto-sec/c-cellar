@@ -1,0 +1,15 @@
+{
+ "id": "t3-output-numbers",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "output",
+ "title": "Numbers in text",
+ "stars": 1,
+ "order": 4,
+ "summary": "%d, %.2f and %c.",
+ "hints": [
+  "`%d` prints an int, `%f` a floating-point number and `%c` one character; the values follow the format string, in order.",
+  "`%.2f` prints exactly two decimals."
+ ],
+ "info": "`%d` int · `%f` double (`%.2f` = 2 decimals) · `%c` char · `%s` string"
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-variables-char-codes",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "variables",
+ "title": "Characters are numbers",
+ "stars": 2,
+ "order": 6,
+ "summary": "A char is a small integer.",
+ "hints": [
+  "The same value can be printed as a number with `%d` or as a character with `%c`.",
+  "You can pass a `char` to `%d` and an `int` to `%c`."
+ ]
+}

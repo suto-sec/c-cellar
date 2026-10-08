@@ -1,0 +1,14 @@
+{
+ "id": "t3-input-read-double",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "input",
+ "title": "Area of a rectangle",
+ "stars": 1,
+ "order": 3,
+ "summary": "scanf with %lf.",
+ "hints": [
+  "For a `double`, `scanf` needs `%lf` (with an `l`); `printf` uses `%f`.",
+  "area = width * height."
+ ]
+}

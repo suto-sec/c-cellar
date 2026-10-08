@@ -1,0 +1,36 @@
+{
+ "cases": [
+  {
+   "stdin": "12 * 3\n",
+   "stdout": "36\n"
+  },
+  {
+   "stdin": "7 + 3\n",
+   "stdout": "10\n"
+  },
+  {
+   "stdin": "7 - 10\n",
+   "stdout": "-3\n"
+  },
+  {
+   "stdin": "6 * 7\n",
+   "stdout": "42\n"
+  },
+  {
+   "stdin": "7 / 2\n",
+   "stdout": "3\n"
+  },
+  {
+   "stdin": "-7 / 2\n",
+   "stdout": "-3\n"
+  },
+  {
+   "stdin": "5 / 0\n",
+   "stdout": "error\n"
+  },
+  {
+   "stdin": "2 ^ 3\n",
+   "stdout": "unknown operator\n"
+  }
+ ]
+}

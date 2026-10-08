@@ -1,0 +1,14 @@
+{
+ "id": "t3-loops-reverse-number",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "loops",
+ "title": "Reverse a number",
+ "stars": 3,
+ "order": 8,
+ "summary": "Building a number digit by digit.",
+ "hints": [
+  "Take the last digit with `% 10`; append it to the result with `rev = rev * 10 + digit`.",
+  "Then drop the digit from the input with `/ 10` and repeat."
+ ]
+}

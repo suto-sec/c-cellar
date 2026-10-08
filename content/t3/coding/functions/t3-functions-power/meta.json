@@ -1,0 +1,14 @@
+{
+ "id": "t3-functions-power",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "functions",
+ "title": "Power",
+ "stars": 2,
+ "order": 5,
+ "summary": "A function with a loop.",
+ "hints": [
+  "Multiply a result (starting at 1) by `base`, `exp` times.",
+  "`x^0` is 1 for every x."
+ ]
+}

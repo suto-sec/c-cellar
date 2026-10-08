@@ -1,0 +1,32 @@
+{
+ "cases": [
+  {
+   "stdin": "10\n",
+   "stdout": "fib(10) = 55\n"
+  },
+  {
+   "stdin": "0\n",
+   "stdout": "fib(0) = 0\n"
+  },
+  {
+   "stdin": "1\n",
+   "stdout": "fib(1) = 1\n"
+  },
+  {
+   "stdin": "2\n",
+   "stdout": "fib(2) = 1\n"
+  },
+  {
+   "stdin": "10\n",
+   "stdout": "fib(10) = 55\n"
+  },
+  {
+   "stdin": "20\n",
+   "stdout": "fib(20) = 6765\n"
+  },
+  {
+   "stdin": "25\n",
+   "stdout": "fib(25) = 75025\n"
+  }
+ ]
+}

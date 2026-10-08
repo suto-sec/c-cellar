@@ -1,0 +1,14 @@
+{
+ "id": "t3-conditions-quadrant",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "conditions",
+ "title": "Quadrant of a point",
+ "stars": 2,
+ "order": 8,
+ "summary": "Compound conditions.",
+ "hints": [
+  "Handle the special cases first (origin, then axes); the rest are the four quadrants.",
+  "`&&` means both conditions must hold, `||` means at least one."
+ ]
+}

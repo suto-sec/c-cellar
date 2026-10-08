@@ -1,0 +1,48 @@
+{
+ "cases": [
+  {
+   "stdin": "3\n",
+   "stdout": "Wednesday\n"
+  },
+  {
+   "stdin": "1\n",
+   "stdout": "Monday\n"
+  },
+  {
+   "stdin": "2\n",
+   "stdout": "Tuesday\n"
+  },
+  {
+   "stdin": "3\n",
+   "stdout": "Wednesday\n"
+  },
+  {
+   "stdin": "4\n",
+   "stdout": "Thursday\n"
+  },
+  {
+   "stdin": "5\n",
+   "stdout": "Friday\n"
+  },
+  {
+   "stdin": "6\n",
+   "stdout": "Saturday\n"
+  },
+  {
+   "stdin": "7\n",
+   "stdout": "Sunday\n"
+  },
+  {
+   "stdin": "0\n",
+   "stdout": "invalid\n"
+  },
+  {
+   "stdin": "8\n",
+   "stdout": "invalid\n"
+  },
+  {
+   "stdin": "-1\n",
+   "stdout": "invalid\n"
+  }
+ ]
+}

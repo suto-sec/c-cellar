@@ -1,0 +1,32 @@
+{
+ "cases": [
+  {
+   "stdin": "-8\n",
+   "stdout": "negative\n"
+  },
+  {
+   "stdin": "5\n",
+   "stdout": "positive\n"
+  },
+  {
+   "stdin": "-5\n",
+   "stdout": "negative\n"
+  },
+  {
+   "stdin": "0\n",
+   "stdout": "zero\n"
+  },
+  {
+   "stdin": "1\n",
+   "stdout": "positive\n"
+  },
+  {
+   "stdin": "-1\n",
+   "stdout": "negative\n"
+  },
+  {
+   "stdin": "1000000\n",
+   "stdout": "positive\n"
+  }
+ ]
+}

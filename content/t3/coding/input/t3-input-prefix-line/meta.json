@@ -1,0 +1,14 @@
+{
+ "id": "t3-input-prefix-line",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "input",
+ "title": "Read a whole line",
+ "stars": 2,
+ "order": 4,
+ "summary": "fgets keeps the newline.",
+ "hints": [
+  "`fgets(line, sizeof(line), stdin)` reads a line, including the spaces, and keeps the final `\\n` in the buffer.",
+  "Because the newline is already in `line`, print it with `printf(\">> %s\", line)` and no extra `\\n`."
+ ]
+}

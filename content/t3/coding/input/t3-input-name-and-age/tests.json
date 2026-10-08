@@ -1,0 +1,20 @@
+{
+ "cases": [
+  {
+   "stdin": "Ada 36\n",
+   "stdout": "Ada is 36 years old.\n"
+  },
+  {
+   "stdin": "Linus 54\n",
+   "stdout": "Linus is 54 years old.\n"
+  },
+  {
+   "stdin": "Grace 85\n",
+   "stdout": "Grace is 85 years old.\n"
+  },
+  {
+   "stdin": "X 1\n",
+   "stdout": "X is 1 years old.\n"
+  }
+ ]
+}

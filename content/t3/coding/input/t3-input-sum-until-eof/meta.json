@@ -1,0 +1,14 @@
+{
+ "id": "t3-input-sum-until-eof",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "input",
+ "title": "Sum until the end",
+ "stars": 2,
+ "order": 5,
+ "summary": "Reading until scanf fails.",
+ "hints": [
+  "`scanf` returns the number of values read; at the end of the input it does not return 1.",
+  "`while (scanf(\"%d\", &x) == 1) { ... }`"
+ ]
+}

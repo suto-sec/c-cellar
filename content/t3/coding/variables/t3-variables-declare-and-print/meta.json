@@ -1,0 +1,14 @@
+{
+ "id": "t3-variables-declare-and-print",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "variables",
+ "title": "Declare and print",
+ "stars": 1,
+ "order": 1,
+ "summary": "Variables of different types.",
+ "hints": [
+  "A declaration is `type name = value;`: `int age = 30;`.",
+  "Use `%d` for the int, `%f` for the double and `%c` for the char."
+ ]
+}

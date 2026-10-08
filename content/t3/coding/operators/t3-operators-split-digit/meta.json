@@ -1,0 +1,14 @@
+{
+ "id": "t3-operators-split-digit",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "operators",
+ "title": "Last digit and the rest",
+ "stars": 3,
+ "order": 10,
+ "summary": "Using / and % on integers.",
+ "hints": [
+  "`n % 10` is the last digit.",
+  "`n / 10` (integer division) removes the last digit."
+ ]
+}

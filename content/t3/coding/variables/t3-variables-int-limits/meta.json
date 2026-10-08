@@ -1,0 +1,14 @@
+{
+ "id": "t3-variables-int-limits",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "variables",
+ "title": "Limits of int",
+ "stars": 2,
+ "order": 5,
+ "summary": "limits.h.",
+ "hints": [
+  "Include `<limits.h>`: it defines `INT_MAX` and `UINT_MAX`.",
+  "`%d` prints a signed int, `%u` an unsigned int."
+ ]
+}

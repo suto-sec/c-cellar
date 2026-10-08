@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "123\n",
+   "stdout": "last=3 rest=12\n"
+  },
+  {
+   "stdin": "7\n",
+   "stdout": "last=7 rest=0\n"
+  },
+  {
+   "stdin": "10\n",
+   "stdout": "last=0 rest=1\n"
+  },
+  {
+   "stdin": "99\n",
+   "stdout": "last=9 rest=9\n"
+  },
+  {
+   "stdin": "1000\n",
+   "stdout": "last=0 rest=100\n"
+  },
+  {
+   "stdin": "2147483647\n",
+   "stdout": "last=7 rest=214748364\n"
+  }
+ ]
+}

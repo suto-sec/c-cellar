@@ -1,0 +1,14 @@
+{
+ "id": "t3-operators-bit-operations",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "operators",
+ "title": "Bit operations",
+ "stars": 3,
+ "order": 6,
+ "summary": "& | ^ << >>.",
+ "hints": [
+  "`&` keeps only the bits that are 1 in both operands, `|` sets bits, `^` flips bits.",
+  "`n << 2` multiplies by 4 and `n >> 3` divides by 8 (dropping the remainder)."
+ ]
+}

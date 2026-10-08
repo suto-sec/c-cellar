@@ -1,0 +1,44 @@
+{
+ "cases": [
+  {
+   "stdin": "2 2024\n",
+   "stdout": "29\n"
+  },
+  {
+   "stdin": "1 2023\n",
+   "stdout": "31\n"
+  },
+  {
+   "stdin": "2 2023\n",
+   "stdout": "28\n"
+  },
+  {
+   "stdin": "2 2024\n",
+   "stdout": "29\n"
+  },
+  {
+   "stdin": "2 1900\n",
+   "stdout": "28\n"
+  },
+  {
+   "stdin": "2 2000\n",
+   "stdout": "29\n"
+  },
+  {
+   "stdin": "4 2023\n",
+   "stdout": "30\n"
+  },
+  {
+   "stdin": "9 2023\n",
+   "stdout": "30\n"
+  },
+  {
+   "stdin": "12 2023\n",
+   "stdout": "31\n"
+  },
+  {
+   "stdin": "11 2024\n",
+   "stdout": "30\n"
+  }
+ ]
+}

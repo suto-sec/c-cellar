@@ -1,0 +1,14 @@
+{
+ "id": "t3-loops-digit-sum",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "loops",
+ "title": "Sum of the digits",
+ "stars": 2,
+ "order": 5,
+ "summary": "while with / and %.",
+ "hints": [
+  "`n % 10` is the last digit and `n / 10` removes it.",
+  "Repeat while `n > 0`."
+ ]
+}

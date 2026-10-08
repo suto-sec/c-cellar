@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "char: 1\nint: 4\nlong: 8\ndouble: 8\n"
+  }
+ ]
+}

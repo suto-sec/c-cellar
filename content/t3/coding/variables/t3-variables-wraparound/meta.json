@@ -1,0 +1,14 @@
+{
+ "id": "t3-variables-wraparound",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "variables",
+ "title": "Unsigned wrap-around",
+ "stars": 3,
+ "order": 7,
+ "summary": "Overflow of an unsigned char.",
+ "hints": [
+  "An `unsigned char` holds 0 to 255; larger values wrap around modulo 256.",
+  "250 + 10 = 260, and 260 - 256 = 4."
+ ]
+}

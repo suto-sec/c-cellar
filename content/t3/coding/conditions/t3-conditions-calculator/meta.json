@@ -1,0 +1,14 @@
+{
+ "id": "t3-conditions-calculator",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "conditions",
+ "title": "A small calculator",
+ "stars": 3,
+ "order": 6,
+ "summary": "switch on an operator.",
+ "hints": [
+  "`scanf(\"%d %c %d\", &a, &op, &b)` reads the number, the operator and the second number.",
+  "A `switch (op)` with one `case` per operator; do not forget `break` and the `default`."
+ ]
+}

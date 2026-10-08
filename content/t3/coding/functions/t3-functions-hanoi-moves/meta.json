@@ -1,0 +1,14 @@
+{
+ "id": "t3-functions-hanoi-moves",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "functions",
+ "title": "Towers of Hanoi: count the moves",
+ "stars": 4,
+ "order": 12,
+ "summary": "A recursion on a problem size.",
+ "hints": [
+  "`hanoi(0)` is 0.",
+  "`hanoi(n) = hanoi(n - 1) + 1 + hanoi(n - 1)`."
+ ]
+}

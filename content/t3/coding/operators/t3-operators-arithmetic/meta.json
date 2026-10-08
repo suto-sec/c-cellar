@@ -1,0 +1,14 @@
+{
+ "id": "t3-operators-arithmetic",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "operators",
+ "title": "Five operations",
+ "stars": 1,
+ "order": 1,
+ "summary": "+ - * / %.",
+ "hints": [
+  "Read with `scanf(\"%d %d\", &a, &b)`: the `&` is required.",
+  "A literal percent sign in a format is written `%%`."
+ ]
+}

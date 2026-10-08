@@ -1,0 +1,14 @@
+{
+ "id": "t3-conditions-max-of-three",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "conditions",
+ "title": "Largest of three",
+ "stars": 2,
+ "order": 2,
+ "summary": "Nested conditions.",
+ "hints": [
+  "Keep a variable `max`, start it with `a`, and compare it with `b` and then with `c`.",
+  "You never need to compare more than two numbers at a time."
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-operators-leap-year",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "operators",
+ "title": "Leap year",
+ "stars": 3,
+ "order": 8,
+ "summary": "Combining && and ||.",
+ "hints": [
+  "Three conditions: divisible by 4, not divisible by 100, divisible by 400. Combine them with `&&` and `||` (use parentheses).",
+  "`(y % 4 == 0 && y % 100 != 0) || y % 400 == 0`."
+ ]
+}

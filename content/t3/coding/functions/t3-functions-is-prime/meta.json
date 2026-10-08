@@ -1,0 +1,14 @@
+{
+ "id": "t3-functions-is-prime",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "functions",
+ "title": "A prime test function",
+ "stars": 3,
+ "order": 6,
+ "summary": "Reusing a function.",
+ "hints": [
+  "Return 0 as soon as you find a divisor; return 1 if the loop finds none.",
+  "Only test divisors `d` with `d * d <= n` (use a `long` for `d` to avoid overflow near INT_MAX)."
+ ]
+}

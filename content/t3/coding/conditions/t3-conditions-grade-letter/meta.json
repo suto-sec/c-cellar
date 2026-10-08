@@ -1,0 +1,14 @@
+{
+ "id": "t3-conditions-grade-letter",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "conditions",
+ "title": "Grade letter",
+ "stars": 2,
+ "order": 3,
+ "summary": "A ladder of conditions.",
+ "hints": [
+  "An `else if` ladder tests from the highest threshold downward: once a test succeeds the rest are skipped.",
+  "Be careful with the borders: 90 is an `A`, 89 is a `B`."
+ ]
+}

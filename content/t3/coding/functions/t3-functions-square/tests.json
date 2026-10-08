@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "7\n",
+   "stdout": "square(7) = 49\n"
+  },
+  {
+   "stdin": "0\n",
+   "stdout": "square(0) = 0\n"
+  },
+  {
+   "stdin": "5\n",
+   "stdout": "square(5) = 25\n"
+  },
+  {
+   "stdin": "-4\n",
+   "stdout": "square(-4) = 16\n"
+  },
+  {
+   "stdin": "1000\n",
+   "stdout": "square(1000) = 1000000\n"
+  },
+  {
+   "stdin": "1 2 3\n",
+   "stdout": "square(1) = 1\nsquare(2) = 4\nsquare(3) = 9\n"
+  }
+ ]
+}

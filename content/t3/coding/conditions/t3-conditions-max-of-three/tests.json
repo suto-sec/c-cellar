@@ -1,0 +1,32 @@
+{
+ "cases": [
+  {
+   "stdin": "4 9 2\n",
+   "stdout": "9\n"
+  },
+  {
+   "stdin": "1 2 3\n",
+   "stdout": "3\n"
+  },
+  {
+   "stdin": "3 2 1\n",
+   "stdout": "3\n"
+  },
+  {
+   "stdin": "2 3 1\n",
+   "stdout": "3\n"
+  },
+  {
+   "stdin": "5 5 5\n",
+   "stdout": "5\n"
+  },
+  {
+   "stdin": "-1 -2 -3\n",
+   "stdout": "-1\n"
+  },
+  {
+   "stdin": "0 9 9\n",
+   "stdout": "9\n"
+  }
+ ]
+}

@@ -1,0 +1,40 @@
+{
+ "cases": [
+  {
+   "stdin": "2024\n",
+   "stdout": "leap\n"
+  },
+  {
+   "stdin": "2024\n",
+   "stdout": "leap\n"
+  },
+  {
+   "stdin": "2023\n",
+   "stdout": "common\n"
+  },
+  {
+   "stdin": "1900\n",
+   "stdout": "common\n"
+  },
+  {
+   "stdin": "2000\n",
+   "stdout": "leap\n"
+  },
+  {
+   "stdin": "2100\n",
+   "stdout": "common\n"
+  },
+  {
+   "stdin": "1996\n",
+   "stdout": "leap\n"
+  },
+  {
+   "stdin": "1\n",
+   "stdout": "common\n"
+  },
+  {
+   "stdin": "400\n",
+   "stdout": "leap\n"
+  }
+ ]
+}

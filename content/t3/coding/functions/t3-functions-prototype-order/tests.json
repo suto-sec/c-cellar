@@ -1,0 +1,24 @@
+{
+ "cases": [
+  {
+   "stdin": "3 4\n",
+   "stdout": "3.5\n"
+  },
+  {
+   "stdin": "3 4\n",
+   "stdout": "3.5\n"
+  },
+  {
+   "stdin": "10 10\n",
+   "stdout": "10.0\n"
+  },
+  {
+   "stdin": "-5 4\n",
+   "stdout": "-0.5\n"
+  },
+  {
+   "stdin": "0 1\n",
+   "stdout": "0.5\n"
+  }
+ ]
+}

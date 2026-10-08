@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "10\n",
+   "stdout": "55\n"
+  },
+  {
+   "stdin": "1\n",
+   "stdout": "1\n"
+  },
+  {
+   "stdin": "2\n",
+   "stdout": "3\n"
+  },
+  {
+   "stdin": "10\n",
+   "stdout": "55\n"
+  },
+  {
+   "stdin": "100\n",
+   "stdout": "5050\n"
+  },
+  {
+   "stdin": "100000\n",
+   "stdout": "5000050000\n"
+  }
+ ]
+}

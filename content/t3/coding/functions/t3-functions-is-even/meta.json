@@ -1,0 +1,14 @@
+{
+ "id": "t3-functions-is-even",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "functions",
+ "title": "Is it even?",
+ "stars": 1,
+ "order": 3,
+ "summary": "A function that returns a truth value.",
+ "hints": [
+  "In C a comparison like `n % 2 == 0` is itself 1 (true) or 0 (false): you can return it directly.",
+  "For negative odd numbers `n % 2` is -1, so test for `== 0`."
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-loops-collatz-steps",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "loops",
+ "title": "Collatz steps",
+ "stars": 3,
+ "order": 11,
+ "summary": "A loop with a data-dependent end.",
+ "hints": [
+  "Use a `while (n != 1)` loop and a counter.",
+  "Use a `long`: the intermediate values grow beyond what you expect."
+ ]
+}

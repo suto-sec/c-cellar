@@ -1,0 +1,36 @@
+{
+ "cases": [
+  {
+   "stdin": "8\n",
+   "stdout": "yes\n"
+  },
+  {
+   "stdin": "0\n",
+   "stdout": "yes\n"
+  },
+  {
+   "stdin": "1\n",
+   "stdout": "no\n"
+  },
+  {
+   "stdin": "2\n",
+   "stdout": "yes\n"
+  },
+  {
+   "stdin": "-1\n",
+   "stdout": "no\n"
+  },
+  {
+   "stdin": "-2\n",
+   "stdout": "yes\n"
+  },
+  {
+   "stdin": "1001\n",
+   "stdout": "no\n"
+  },
+  {
+   "stdin": "1000\n",
+   "stdout": "yes\n"
+  }
+ ]
+}
