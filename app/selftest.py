@@ -217,9 +217,14 @@ def main():
         for a in [e["title"].split()[0]] + e.get("aliases", []):
             if owner.setdefault(a.lower(), e["id"]) != e["id"]:
                 err(f"reference name/alias '{a}' belongs to both {owner[a.lower()]} and {e['id']}")
+        for c in e.get("practice_chapters", []):
+            if (e["tag"], c) not in chapter_ids:
+                err(f"reference {e['id']}: practice chapter '{c}' is not a chapter of {e['tag']}")
         for s in e.get("see", []):
             if s not in {x["id"] for x in ref}:
                 err(f"reference {e['id']}: see-also {s} does not exist")
+    bare = [e["title"] for e in S.reference_with_links() if not e["practice"]["count"]]
+    print(f"  note: {len(bare)} of {len(ref)} reference entries are used by no exercise yet")
     if errors:
         print(f"\n{len(errors)} problem(s)")
         return 1

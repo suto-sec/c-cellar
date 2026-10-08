@@ -6,6 +6,9 @@
    "title": "fd",
    "category": "System calls (files)",
    "summary": "File descriptors: the integers that identify open files.",
+   "practice_chapters": [
+    "syscalls"
+   ],
    "aliases": [
     "descriptor",
     "file descriptor"

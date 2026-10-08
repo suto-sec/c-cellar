@@ -6,6 +6,9 @@
    "title": "types",
    "category": "Language",
    "summary": "Integer and floating-point types, sizes, and how values are converted.",
+   "practice_chapters": [
+    "variables"
+   ],
    "aliases": [
     "int",
     "char",
@@ -127,6 +130,9 @@
    "title": "operators",
    "category": "Language",
    "summary": "Arithmetic, relational, logical, bitwise and assignment operators, with precedence.",
+   "practice_chapters": [
+    "operators"
+   ],
    "aliases": [
     "&&",
     "||",
@@ -318,6 +324,9 @@
    "title": "return",
    "category": "Language",
    "summary": "Leave the current function, optionally giving back a value.",
+   "practice_chapters": [
+    "functions"
+   ],
    "syntax": "return expr;   return;",
    "description": "In `main`, the value is the exit status of the program (0 = success). A function must not return the address of one of its local variables.",
    "example": "int max(int a, int b)\n{\n    return a > b ? a : b;\n}",
@@ -334,6 +343,9 @@
    "title": "functions",
    "category": "Language",
    "summary": "Declaring (prototype) and defining functions; arguments are passed by value.",
+   "practice_chapters": [
+    "functions"
+   ],
    "aliases": [
     "prototype",
     "recursion"
@@ -356,6 +368,10 @@
    "title": "main",
    "category": "Language",
    "summary": "The entry point; command-line arguments and environment.",
+   "practice_chapters": [
+    "functions",
+    "args"
+   ],
    "aliases": [
     "argc",
     "argv",
@@ -474,6 +490,9 @@
    "title": "pointers",
    "category": "Language",
    "summary": "Addresses: &, *, pointer arithmetic, NULL and void *.",
+   "practice_chapters": [
+    "pointers"
+   ],
    "aliases": [
     "NULL",
     "address-of",
@@ -508,6 +527,9 @@
    "title": "arrays",
    "category": "Language",
    "summary": "Fixed-size sequences of elements of one type.",
+   "practice_chapters": [
+    "arrays"
+   ],
    "aliases": [
     "[]",
     "array"
@@ -530,6 +552,9 @@
    "title": "strings",
    "category": "Language",
    "summary": "A string is a char array ended by '\\0'.",
+   "practice_chapters": [
+    "strings"
+   ],
    "aliases": [
     "'\\0'",
     "string"
@@ -552,6 +577,9 @@
    "title": "escapes",
    "category": "Language",
    "summary": "Escape sequences inside character and string literals.",
+   "practice_chapters": [
+    "output"
+   ],
    "syntax": "'\\n'  '\\t'  '\\\\'  '\\''  '\\\"'  '\\0'  '\\xhh'  '\\ooo'",
    "description": "A backslash starts a special character. A string literal ends with an implicit `'\\0'`. `'a'` is a char (an int in C) and `\"a\"` is a string of two bytes.",
    "details": [
@@ -606,6 +634,9 @@
    "title": "#include",
    "category": "Language",
    "summary": "Insert another file's text before compiling.",
+   "practice_chapters": [
+    "build"
+   ],
    "syntax": "#include <file.h>\n#include \"file.h\"",
    "description": "`<…>` searches the system directories, `\"…\"` searches the current directory first (use it for your own headers). Headers contain declarations (prototypes, types, constants); the code of the library comes in at link time.",
    "example": "#include <stdio.h>    /* printf, fopen … */\n#include \"util.h\"     /* your own header */",

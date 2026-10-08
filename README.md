@@ -8,9 +8,9 @@ A self-hosted lab to practise C. It runs in a container and you use it in your b
   - *C derusting* are the 18 topic chapters; *C exercises* are the exam-style programs.
 - **Theory**: 340+ questions in 20 sets that mirror the coding chapters (plus an introduction to the toolchain), easiest first. Seven formats: single choice, multiple choice, fill in the blank (also inside a code listing), drag to reorder, predict the output of a program, match pairs and sort into categories. Every answer comes with an explanation; where the C standard and what a course quiz usually expects differ, the explanation says so.
 - **Cross links**: a reference entry lists the theory questions about it and the exercises that use it; a question links to its reference entries and to the exercises of its chapter; an exercise links to the theory set of its chapter, and its answer to the reference entries of the functions it uses.
-- **Reference**: one entry per function, command and keyword, grouped by category, with a search that puts the entry called exactly what you typed first.
+- **Reference**: one entry per function, command and keyword, grouped by category (each category folds with its ▾ button; clicking its name lists only that category), with a search that puts the entry called exactly what you typed first. Press ☆ on an entry to make it a favorite: favorites are listed on the Reference page when nothing is selected. Every entry lists the theory questions and the exercises that use it (five at first, "and N more" opens the rest).
 
-Everything you do is stored in the `.progress/` folder (delete it to start over). Nothing leaves your computer.
+Everything you do (progress, favorites, your answers) is stored in the `.progress/` folder (delete it to start over). Nothing leaves your computer.
 
 All content is tagged by course topic. Today there is only **`T3`** (tema 3); more topics will be added as new tags. Every exercise, theory set and reference entry shows its topic tag, and the coding, theory and reference pages each have a **Topic** filter (the coding and theory pages also a **Difficulty** filter; several chips can be on at once, none means all). Each page remembers its own filters.
 
@@ -76,7 +76,7 @@ A test case: `name`, then either `args` (+ optional `stdin`) or a shell `cmd` (`
 
 ### Reference entries (`content/t3/reference/*.json`)
 
-`{"order": n, "entries": [...]}`; an entry has `id` (`t3-ref-<name>`), `title` (the name you would type), `category`, `summary`, and optionally `syntax`, `header`, `description`, `details[]` (`name`/`text`: options, flags, formats), `example`, `mistakes[]`, `see[]` and `aliases[]` (other names that lead here: `%zu`, `O_CREAT`, `else`). A name or alias belongs to one entry only. `selftest` fails if a library function used by a reference solution has no entry.
+`{"order": n, "entries": [...]}`; an entry has `id` (`t3-ref-<name>`), `title` (the name you would type), `category`, `summary`, and optionally `syntax`, `header`, `description`, `details[]` (`name`/`text`: options, flags, formats), `example`, `mistakes[]`, `see[]` and `aliases[]` (other names that lead here: `%zu`, `O_CREAT`, `else`). Exercises that use an entry are found by name in the reference solutions (the title, plus aliases that look like code: constants, conversions, headers, types, keywords) and, for the tools of *Building programs*, in the build and test commands; a concept entry such as `pointers` or `operators` instead names the coding chapters that teach it in `practice_chapters[]`. A name or alias belongs to one entry only. `selftest` fails if a library function used by a reference solution has no entry.
 
 ### Theory questions (`content/t3/theory/*.json`)
 

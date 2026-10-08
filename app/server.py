@@ -19,7 +19,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
-from cparse import called_library_functions
+from cparse import called_library_functions, used_symbols
 
 ROOT = Path(os.environ.get("LAB_ROOT", Path(__file__).resolve().parent.parent))
 CONTENT = ROOT / "content"
@@ -523,25 +523,58 @@ def exercise_refs(ex):
     return resolve_refs(sorted(called_library_functions([f.read_text(encoding="utf-8") for f in files if f.exists()])))
 
 
+# Words an alias must look like to be matched in source code: library constants (O_CREAT), conversions (%zu), directives and
+# options (#ifndef, -shared, .PHONY), headers (limits.h), types (size_t) and keywords. Other aliases (status, format...) are prose.
+KEYWORD_ALIASES = {"int", "char", "short", "long", "unsigned", "signed", "float", "double", "void", "bool", "else", "case", "default", "union"}
+
+
+def match_names(e):
+    names = {e["title"].split()[0]}
+    for a in e.get("aliases", []):
+        if a in KEYWORD_ALIASES or re.fullmatch(r"[A-Z][A-Z0-9_]+|\w+_t|\w+\.h|[%#.$-]\S*|->", a):
+            names.add(a)
+    return names
+
+
+def exercise_texts(ex):
+    """Shell-level text of an exercise (build command, test commands, Makefile): where tools such as make and ar show up."""
+    d = Path(ex["dir"])
+    parts = [ex.get("build", "")]
+    for c in json.loads((d / "tests.json").read_text(encoding="utf-8")).get("cases", []):
+        parts += [c.get("cmd", ""), c.get("setup", "")]
+    for f in list((d / "solution").glob("[Mm]akefile")) + list((d / "hidden").glob("[Mm]akefile")):
+        parts.append(f.read_text(encoding="utf-8"))
+    return "\n".join(str(x) for x in parts)
+
+
 def practice_for_entries():
-    """{reference id: [exercise ids that call it]}, in suggested-path order."""
-    look = reference_lookup()
+    """{reference id: [exercise ids that use it]}, in suggested-path order. An entry names the coding chapters that teach it in
+    `practice_chapters`; otherwise it is found by name in the reference solutions (and in the shell text, for tools)."""
+    entries = load_reference()
     coding = load_coding()
     pos = {}
     for ids in load_paths().values():
         for i, eid in enumerate(ids):
             pos.setdefault(eid, i)
-    out = {}
-    for eid, ex in sorted(coding.items(), key=lambda kv: (pos.get(kv[0], 10**6), kv[0])):
+    order = sorted(coding.values(), key=lambda ex: (pos.get(ex["id"], 10**6), ex["id"]))
+    uses, texts = {}, {}
+    for ex in order:
         d = Path(ex["dir"])
         files = [d / "solution" / n for n in ex["files"] if n.endswith((".c", ".h"))] if ex.get("files") else [d / "solution.c"]
-        srcs = [f.read_text(encoding="utf-8") for f in files if f.exists()]
-        for fn in called_library_functions(srcs):
-            e = look.get(fn.lower())
-            if e:
-                out.setdefault(e["id"], [])
-                if eid not in out[e["id"]]:
-                    out[e["id"]].append(eid)
+        uses[ex["id"]] = used_symbols([f.read_text(encoding="utf-8") for f in files if f.exists()])
+        texts[ex["id"]] = exercise_texts(ex)
+    out = {}
+    for e in entries:
+        names = match_names(e)
+        for ex in order:
+            if e.get("practice_chapters"):
+                hit = ex["tag"] == e["tag"] and ex["topic"] in e["practice_chapters"]
+            elif e["category"] == "Building programs":
+                hit = any(re.search(r"(?<![\w.-])" + re.escape(n) + r"(?![\w])", texts[ex["id"]]) for n in names)
+            else:
+                hit = bool(names & uses[ex["id"]])
+            if hit:
+                out.setdefault(e["id"], []).append(ex["id"])
     return out
 
 
@@ -558,9 +591,9 @@ def reference_with_links():
     for e in entries:
         e = dict(e)
         ids = practice.get(e["id"], [])
-        e["practice"] = {"count": len(ids), "exercises": [{"id": i, "title": coding[i]["title"], "stars": coding[i]["stars"]} for i in ids[:6]]}
+        e["practice"] = {"count": len(ids), "exercises": [{"id": i, "title": coding[i]["title"], "stars": coding[i]["stars"]} for i in ids]}
         qs = qmap.get(e["id"], [])
-        e["questions"] = {"count": len(qs), "items": qs[:5]}
+        e["questions"] = {"count": len(qs), "items": qs}
         out.append(e)
     return out
 
@@ -707,7 +740,7 @@ class Handler(BaseHTTPRequestHandler):
                                     "practice": chapter_practice(s["tag"], s["chapter"]),
                                     "questions": [dict(public_question(q), progress=prog.get(q["id"])) for q in s["questions"]]})
         if route == "reference":
-            return self._send(200, {"entries": reference_with_links()})
+            return self._send(200, {"entries": reference_with_links(), "favorites": load_progress().get("favorites", [])})
         if route == "readiness":
             tag = dict(p.split("=", 1) for p in query.split("&") if "=" in p).get("tag", "t3")
             return self._send(200, readiness(tag))
@@ -768,9 +801,21 @@ class Handler(BaseHTTPRequestHandler):
             elif q["type"] == "predict" and not correct:
                 reply["hints"] = predict_hints(q, body.get("response"))
             return self._send(200, reply)
+        if route == "reference/favorite":
+            known = {e["id"] for e in load_reference()}
+            if body.get("id") not in known:
+                return self._send(404, {"error": "unknown reference entry"})
+            with LOCK:
+                p = load_progress()
+                fav = [i for i in p.get("favorites", []) if i != body["id"]]
+                if body.get("on"):
+                    fav.append(body["id"])
+                p["favorites"] = fav
+                save_progress(p)
+            return self._send(200, {"favorites": fav})
         if route == "progress/reset":
             with LOCK:
-                save_progress({"coding": {}, "theory": {}})
+                save_progress({"coding": {}, "theory": {}, "favorites": load_progress().get("favorites", [])})
             return self._send(200, {"ok": True})
         return self._send(404, {"error": "not found"})
 

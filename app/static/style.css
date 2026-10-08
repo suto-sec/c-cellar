@@ -224,3 +224,19 @@ pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } p
 .assign-row .note { grid-column: 1 / -1; color: var(--muted); font-size: 13px; }
 .qlinks { margin-top: 10px; font-size: 14px; }
 @media (max-width: 700px) { .assign-row { grid-template-columns: 1fr; } }
+
+/* reference sidebar: collapsible categories, category pages and favorites */
+.cathead { display: flex; align-items: center; gap: 2px; margin: 10px 8px 2px 8px; }
+.cattoggle { background: none; border: 0; color: var(--muted); cursor: pointer; width: 22px; height: 22px; border-radius: 6px; font-size: 12px; padding: 0; transition: transform .12s; }
+.cattoggle:hover { background: var(--panel2); color: var(--text); }
+.refcat.collapsed .cattoggle { transform: rotate(-90deg); }
+.refcat.collapsed .catlinks { display: none; }
+.catname { background: none; border: 0; cursor: pointer; text-align: left; flex: 1; padding: 3px 6px; border-radius: 6px; font: inherit; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.catname:hover { background: var(--panel2); color: var(--text); }
+.catname.on { color: var(--accent); font-weight: 700; }
+.linkbtn { background: none; border: 0; padding: 0; font: inherit; color: var(--accent); cursor: pointer; text-decoration: underline; }
+.linkbtn.back { display: block; margin: 8px 14px 0; font-size: 13px; }
+.favbtn { background: none; border: 0; cursor: pointer; font-size: 20px; line-height: 1; padding: 0 4px; color: var(--muted); vertical-align: middle; }
+.favbtn:hover, .favbtn.on { color: #d9a400; }
+.favmark { color: #d9a400; font-size: 12px; }
+.welcome h2 { font-size: 18px; margin: 22px 0 8px; }

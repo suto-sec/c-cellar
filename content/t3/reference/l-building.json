@@ -6,6 +6,9 @@
    "title": "modules",
    "category": "Building programs",
    "summary": "Splitting a program into .h and .c files.",
+   "practice_chapters": [
+    "build"
+   ],
    "aliases": [
     "header"
    ],

@@ -628,30 +628,59 @@ function refRank(entries, preps, query) {
 }
 
 
-/** "Title" heading plus a short list (at most the items the server sent) and "and N more". Nothing when there are none. */
-function moreList(title, data, row) {
+/** "Title" heading plus the first few rows; "and N more" opens the rest (and "show fewer" folds them again). Nothing when there are none. */
+function moreList(title, data, row, shown = 5) {
   if (!data || !data.count || !title) return null;
-  return [h("h5", {}, title), h("ul", {}, data.items.map(row), data.count > data.items.length ? h("li", { class: "muted" }, `and ${data.count - data.items.length} more`) : null)];
+  const rest = data.items.slice(shown);
+  const ul = h("ul", {}, data.items.slice(0, shown).map(row));
+  if (rest.length) {
+    const li = h("li", { class: "muted" });
+    const btn = h("button", { class: "linkbtn", "aria-expanded": "false" }, `and ${rest.length} more`);
+    const extra = rest.map(row);
+    let open = false;
+    btn.addEventListener("click", () => {
+      open = !open;
+      extra.forEach((x) => (open ? ul.insertBefore(x, li) : x.remove()));
+      btn.textContent = open ? "show fewer" : `and ${rest.length} more`;
+      btn.setAttribute("aria-expanded", String(open));
+    });
+    li.append(btn);
+    ul.append(li);
+  }
+  return [h("h5", {}, title), ul];
 }
 
-function entryCard(e, byId) {
+/** The star that marks a reference entry as a favorite. */
+function favButton(on, toggle) {
+  const b = h("button", { class: "favbtn" + (on ? " on" : ""), "aria-pressed": String(on), title: on ? "Remove from favorites" : "Add to favorites" }, on ? "★" : "☆");
+  b.addEventListener("click", toggle);
+  return b;
+}
+
+function entryCard(e, byId, fav) {
   return h("article", { class: "entry" },
     e.header ? h("span", { class: "hdr" }, e.header) : null,
-    h("h3", {}, h("code", {}, e.title), " ", h("span", { class: "tag", title: "Course topic " + T(e.tag) }, T(e.tag))), h("div", { class: "cat" }, e.category, e.aliases && e.aliases.length ? ` · also: ${e.aliases.join(", ")}` : ""),
+    h("h3", {}, h("code", {}, e.title), " ", h("span", { class: "tag", title: "Course topic " + T(e.tag) }, T(e.tag)), " ", fav ? favButton(fav.on, fav.toggle) : null), h("div", { class: "cat" }, e.category, e.aliases && e.aliases.length ? ` · also: ${e.aliases.join(", ")}` : ""),
     h("p", { class: "esum", html: rmd(e.summary) }),
     e.syntax ? h("pre", {}, h("code", {}, e.syntax)) : null,
     e.description ? h("div", { html: e.description.split("\n").map((p) => "<p>" + rmd(p) + "</p>").join("") }) : null,
     e.details ? h("dl", {}, e.details.flatMap((d) => [h("dt", {}, d.name), h("dd", { html: rmd(d.text) })])) : null,
     e.example ? [h("h5", {}, "Example"), h("pre", {}, h("code", {}, e.example))] : null,
     e.mistakes ? [h("h5", {}, "Common mistakes"), h("ul", {}, e.mistakes.map((m) => h("li", { html: rmd(m) })))] : null,
-    moreList("Theory questions", e.questions, (q) => h("li", {}, h("a", { href: "#/theory/" + q.set }, q.prompt.replace(/\{\{\d+\}\}/g, "____").replace(/`/g, "")))),
+    moreList(e.questions && e.questions.count ? `Theory questions (${e.questions.count})` : "", e.questions, (q) => h("li", {}, h("a", { href: "#/theory/" + q.set }, q.prompt.replace(/\{\{\d+\}\}/g, "____").replace(/`/g, "")))),
     moreList(e.practice && e.practice.count ? `Practice (${e.practice.count} exercise${e.practice.count === 1 ? "" : "s"} use it)` : "", e.practice && { count: e.practice.count, items: e.practice.exercises }, (x) => h("li", {}, h("a", { href: "#/coding/" + x.id }, x.title), " ", stars(x.stars))),
     e.see ? h("div", { class: "muted", style: "margin-top:10px" }, "See also: ", e.see.map((s) => { const t = byId.get(s); return t ? [h("a", { href: "#/reference/" + s }, h("code", {}, t.title)), " "] : null; })) : null);
 }
 
 async function viewReference(focusId) {
   setNav("reference");
-  const everything = (await api("reference")).entries;
+  const loaded = await api("reference");
+  const everything = loaded.entries;
+  const favs = new Set(loaded.favorites);
+  const readCollapsed = () => { try { return new Set(JSON.parse(localStorage.getItem(FILTER_KEYS.reference + ".collapsed") || "[]")); } catch (e) { return new Set(); } };
+  const collapsed = readCollapsed();
+  const saveCollapsed = () => { try { localStorage.setItem(FILTER_KEYS.reference + ".collapsed", JSON.stringify([...collapsed])); } catch (e) { /* private window: not remembered */ } };
+  let category = null;   // a category chosen in the sidebar: only its entries are listed
   const preps = new Map(everything.map((e) => [e.id, refPrep(e)]));
   const byId = new Map(everything.map((e) => [e.id, e]));
   let all = everything, cats = [];
@@ -667,21 +696,57 @@ async function viewReference(focusId) {
   const pane = h("div", { class: "refpane" });
   let current = null, results = [], query = "";
 
-  const link = (e, showCat) => h("a", { href: "#/reference/" + e.id, "data-id": e.id, class: "reflink" + (e.id === current ? " on" : "") }, h("code", {}, e.title), showCat ? h("span", { class: "muted rcat" }, e.category) : null);
+  const link = (e, showCat) => h("a", { href: "#/reference/" + e.id, "data-id": e.id, class: "reflink" + (e.id === current ? " on" : "") }, h("code", {}, e.title, favs.has(e.id) ? h("span", { class: "favmark", title: "Favorite" }, " ★") : null), showCat ? h("span", { class: "muted rcat" }, e.category) : null);
+  const byTitle = (x, y) => x.title.localeCompare(y.title);
+  const setCategory = (c) => { category = c; if (c) collapsed.delete(c); saveCollapsed(); if (current && c && byId.get(current).category !== c) current = null; drawNav(); show(); };
+  const toggleFav = async (e) => {
+    const on = !favs.has(e.id);
+    const r = await api("reference/favorite", { id: e.id, on });
+    favs.clear(); r.favorites.forEach((i) => favs.add(i));
+    drawNav(); show();
+  };
+  const catSection = (c, rows) => {
+    const sec = h("section", { class: "refcat" + (collapsed.has(c) && !category ? " collapsed" : "") });
+    const toggle = h("button", { class: "cattoggle", "aria-expanded": String(!sec.classList.contains("collapsed")), title: "Collapse or expand " + c, "aria-label": "Collapse or expand " + c }, "▾");
+    toggle.addEventListener("click", () => {
+      const now = sec.classList.toggle("collapsed");
+      toggle.setAttribute("aria-expanded", String(!now));
+      if (now) collapsed.add(c); else collapsed.delete(c);
+      saveCollapsed();
+    });
+    const name = h("button", { class: "catname" + (category === c ? " on" : ""), title: category === c ? "Show all categories" : "Show only " + c }, c, " ", h("span", { class: "muted" }, String(rows.length)));
+    name.addEventListener("click", () => setCategory(category === c ? null : c));
+    sec.append(h("div", { class: "cathead" }, category ? null : toggle, name), h("div", { class: "catlinks" }, rows.map((e) => link(e, false))));
+    return sec;
+  };
   const drawNav = () => {
     if (query) nav.replaceChildren(...(results.length ? results.map((e) => link(e, true)) : [h("p", { class: "muted", style: "padding:6px 10px" }, "No entry matches.")]));
-    else nav.replaceChildren(...cats.map((c) => h("section", {}, h("h4", {}, c), all.filter((e) => e.category === c).sort((x, y) => x.title.localeCompare(y.title)).map((e) => link(e, false)))));
+    else nav.replaceChildren(...(category ? [h("button", { class: "linkbtn back", onclick: () => setCategory(null) }, "← All categories")] : []), ...cats.filter((c) => !category || c === category).map((c) => catSection(c, all.filter((e) => e.category === c).sort(byTitle))));
   };
   const show = () => {
     nav.querySelectorAll(".reflink").forEach((a) => a.classList.toggle("on", a.dataset.id === current));
     const on = nav.querySelector(".reflink.on");
-    if (on) on.scrollIntoView({ block: "nearest" });
+    if (on) {
+      const sec = on.closest(".refcat.collapsed");
+      if (sec) { sec.classList.remove("collapsed"); collapsed.delete(byId.get(current).category); saveCollapsed(); sec.querySelector(".cattoggle").setAttribute("aria-expanded", "true"); }
+      on.scrollIntoView({ block: "nearest" });
+    }
     const e = byId.get(current);
-    if (e) { pane.replaceChildren(entryCard(e, byId)); app.scrollTop = 0; return; }
+    if (e) { pane.replaceChildren(entryCard(e, byId, { on: favs.has(e.id), toggle: () => toggleFav(e) })); app.scrollTop = 0; return; }
+    const entryRows = (list) => h("div", { class: "list" }, list.map((x) => h("a", { class: "row", href: "#/reference/" + x.id },
+      h("div", { class: "main" }, h("div", { class: "title" }, h("code", {}, x.title), favs.has(x.id) ? h("span", { class: "favmark", title: "Favorite" }, " ★") : null), h("div", { class: "sub", html: rmd(x.summary) })), h("span", { class: "tag", title: "Course topic " + T(x.tag) }, T(x.tag)))));
+    if (category) {
+      const inCat = all.filter((x) => x.category === category).sort(byTitle);
+      pane.replaceChildren(h("div", { class: "welcome" }, h("h1", {}, category), h("p", { class: "lead" }, `${inCat.length} entries.`), entryRows(inCat)));
+      return;
+    }
     const popular = ["printf", "scanf", "fgets", "malloc", "strcmp", "fopen", "open", "read"].map((n) => all.find((e) => rn(e.title) === n)).filter(Boolean);
+    const myFavs = all.filter((x) => favs.has(x.id)).sort(byTitle);
     pane.replaceChildren(h("div", { class: "welcome" }, h("h1", {}, "Reference"),
       h("p", { class: "lead" }, `${all.length} entries in ${cats.length} categories: one per function, command and keyword.`),
-      h("p", {}, "Type a name on the left, or pick one. Popular: ", popular.map((e) => [h("a", { href: "#/reference/" + e.id }, h("code", {}, e.title)), " "])),
+      h("p", {}, "Type a name on the left, pick one, or click a category to list only its entries. Popular: ", popular.map((e) => [h("a", { href: "#/reference/" + e.id }, h("code", {}, e.title)), " "])),
+      h("h2", {}, "Favorites"),
+      myFavs.length ? entryRows(myFavs) : h("p", { class: "muted" }, "Press ☆ on an entry to keep it here."),
       h("p", { class: "muted" }, "The search ranks the entry called exactly what you typed first, then names that start with it, then options and formats (try ", h("code", {}, "O_CREAT"), " or ", h("code", {}, "%zu"), "), and last text that merely mentions it.")));
   };
   const applyQuery = () => {
@@ -700,7 +765,7 @@ async function viewReference(focusId) {
     if (ev.key === "Enter") { location.hash = "#/reference/" + current; }
   });
   state.refSelect = (id) => {
-    if (id && byId.has(id)) { if (query && !results.some((e) => e.id === id)) { search.value = ""; query = ""; results = []; drawNav(); } current = id; } else if (!query) current = null;
+    if (id && byId.has(id)) { if (query && !results.some((e) => e.id === id)) { search.value = ""; query = ""; results = []; drawNav(); } current = id; if (category && byId.get(id).category !== category) { category = null; drawNav(); } } else if (!query) current = null;
     show();
   };
   current = focusId && byId.has(focusId) ? focusId : null;
