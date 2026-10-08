@@ -15,16 +15,19 @@ import sys
 import tempfile
 import threading
 import time
+from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
+import daily
 from cparse import called_library_functions, used_symbols
 
 ROOT = Path(os.environ.get("LAB_ROOT", Path(__file__).resolve().parent.parent))
 CONTENT = ROOT / "content"
 PROGRESS_DIR = Path(os.environ.get("LAB_PROGRESS", ROOT / ".progress"))
 WORKSPACE = PROGRESS_DIR / "workspace"
+DAILY_DIR = PROGRESS_DIR / "daily"   # the generated daily exercises, one folder per day
 STATIC = Path(__file__).resolve().parent / "static"
 VSCODE_PORT = int(os.environ.get("LAB_VSCODE_PORT", "8081"))
 TERM_PORT = int(os.environ.get("LAB_TERM_PORT", "8082"))
@@ -49,6 +52,11 @@ def load_coding():
         m.setdefault("stars", m.get("difficulty", 1))
         out[m["id"]] = m
     return out
+
+
+def get_exercise(ex_id):
+    """An exercise of the content, or a daily exercise that was already generated."""
+    return load_coding().get(ex_id) or daily.find(DAILY_DIR, ex_id)
 
 
 def load_chapters():
@@ -566,24 +574,34 @@ def practice_for_entries():
         texts[ex["id"]] = exercise_texts(ex)
     out = {}
     for e in entries:
-        names = match_names(e)
         for ex in order:
-            if e.get("practice_chapters"):
-                hit = ex["tag"] == e["tag"] and ex["topic"] in e["practice_chapters"]
-            elif e["category"] == "Building programs":
-                hit = any(re.search(r"(?<![\w.-])" + re.escape(n) + r"(?![\w])", texts[ex["id"]]) for n in names)
-            else:
-                hit = bool(names & uses[ex["id"]])
-            if hit:
+            if entry_hit(e, ex, uses[ex["id"]], texts[ex["id"]]):
                 out.setdefault(e["id"], []).append(ex["id"])
     return out
 
 
-def recommended_commands(ex_id):
+def entry_hit(e, ex, uses, text):
+    """Does the reference entry belong to the exercise? `uses`: the symbols of its solution; `text`: its build and test commands."""
+    names = match_names(e)
+    if e.get("practice_chapters"):
+        return ex["tag"] == e["tag"] and ex["topic"] in e["practice_chapters"]
+    if e["category"] == "Building programs":
+        return any(re.search(r"(?<![\w.-])" + re.escape(n) + r"(?![\w])", text) for n in names)
+    return bool(names & uses)
+
+
+def recommended_commands(ex):
     """Reference entries involved in an exercise (the inverse of an entry's practice list): they say what to look up, not how to use it."""
-    practice = practice_for_entries()
-    return [{"id": e["id"], "title": e["title"], "category": e["category"], "summary": e["summary"], "header": e.get("header", "")}
-            for e in load_reference() if ex_id in practice.get(e["id"], [])]
+    if ex["id"] in load_coding():
+        practice = practice_for_entries()
+        hits = [e for e in load_reference() if ex["id"] in practice.get(e["id"], [])]
+    else:   # a daily exercise: found the same way, from its own solution
+        d = Path(ex["dir"])
+        files = [d / "solution" / n for n in ex["files"] if n.endswith((".c", ".h"))] if ex.get("files") else [d / "solution.c"]
+        uses = used_symbols([f.read_text(encoding="utf-8") for f in files if f.exists()])
+        text = exercise_texts(ex)
+        hits = [e for e in load_reference() if entry_hit(e, ex, uses, text)]
+    return [{"id": e["id"], "title": e["title"], "category": e["category"], "summary": e["summary"], "header": e.get("header", "")} for e in hits]
 
 
 def reference_with_links():
@@ -727,7 +745,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, {"coding": coding, "theory": theory, "reference": len(ref),
                                     "chapters": load_chapters(), "paths": load_paths()})
         if parts[0] == "coding" and len(parts) == 2:
-            ex = load_coding().get(parts[1])
+            ex = get_exercise(parts[1])
             if not ex:
                 return self._send(404, {"error": "unknown exercise"})
             d = Path(ex["dir"])
@@ -736,7 +754,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, {
                 "id": ex["id"], "tag": ex["tag"], "title": ex["title"], "track": ex["track"], "topic": ex["topic"],
                 "stars": ex["stars"], "statement": (d / "statement.md").read_text(encoding="utf-8"),
-                "hints": ex.get("hints", []), "recommended": recommended_commands(ex["id"]), "files": workspace_files(ex),
+                "hints": ex.get("hints", []), "recommended": recommended_commands(ex), "date": ex.get("date"), "files": workspace_files(ex),
                 "workspace": str(ws), "file": str(ws / workspace_files(ex)[0]), "progress": prog, "status": coding_status(prog),
                 "theory": chapter_theory(ex["tag"], ex["topic"])})
         if parts[0] == "theory" and len(parts) == 2:
@@ -749,16 +767,36 @@ class Handler(BaseHTTPRequestHandler):
                                     "questions": [dict(public_question(q), progress=prog.get(q["id"])) for q in s["questions"]]})
         if route == "reference":
             return self._send(200, {"entries": reference_with_links(), "favorites": load_progress().get("favorites", [])})
+        if route == "daily":
+            return self._daily(dict(p.split("=", 1) for p in query.split("&") if "=" in p))
         if route == "readiness":
             tag = dict(p.split("=", 1) for p in query.split("&") if "=" in p).get("tag", "t3")
             return self._send(200, readiness(tag))
         return self._send(404, {"error": "not found"})
 
+    def _daily(self, q):
+        """Today's generated exercise (the day is the browser's local date) and the streak."""
+        day = daily.valid_date(q.get("date"))
+        if not day or abs((day - datetime.now(timezone.utc).date()).days) > 1:
+            return self._send(400, {"error": "date must be today's date as YYYY-MM-DD"})
+        templates = daily.load_templates(CONTENT)
+        tags = sorted({t["tag"] for t in templates})
+        if not tags:
+            return self._send(404, {"error": "no daily exercises"})
+        with LOCK:
+            ex = daily.for_date(DAILY_DIR, templates, tags[0], day)
+        coding = load_progress()["coding"]
+        chapter = next((c for c in load_chapters() if c["tag"] == ex["tag"] and c["id"] == ex["topic"]), None)
+        days = {v["streak_day"] for v in coding.values() if v.get("streak_day")}
+        return self._send(200, {"id": ex["id"], "date": day.isoformat(), "title": ex["title"], "stars": ex["stars"], "tag": ex["tag"],
+                                "chapter": chapter["title"] if chapter else ex["topic"], "status": coding_status(coding.get(ex["id"])),
+                                "streak": daily.streak(days, day.isoformat())})
+
     # -- POST
     def api_post(self, route, body):
         parts = route.split("/")
         if parts[0] == "coding" and len(parts) == 3:
-            ex = load_coding().get(parts[1])
+            ex = get_exercise(parts[1])
             if not ex:
                 return self._send(404, {"error": "unknown exercise"})
             action = parts[2]
@@ -773,8 +811,14 @@ class Handler(BaseHTTPRequestHandler):
                     e["last_total_cases"] = len(result["cases"])
                     if result["passed"]:
                         e["passed"] = True
+                        day = daily.valid_date(body.get("date"))
+                        if day and daily.id_date(ex["id"]) and daily.id_date(ex["id"])[1] == day and abs((day - datetime.now(timezone.utc).date()).days) <= 1:
+                            e["streak_day"] = day.isoformat()   # passed on the very day of the exercise (the browser's local date)
                     save_progress(prog)
                     result["status"] = coding_status(e)
+                    if daily.id_date(ex["id"]):
+                        days = {v["streak_day"] for v in prog["coding"].values() if v.get("streak_day")}
+                        result["streak"] = daily.streak(days, (daily.valid_date(body.get("date")) or datetime.now(timezone.utc).date()).isoformat())
                     return self._send(200, result)
                 if action == "solution":
                     e["solution_viewed"] = True

@@ -285,3 +285,18 @@ pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } p
 .accenttext { flex: 1; min-width: 0; padding: 6px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--text); font: inherit; font-size: 13px; }
 .accenttext:focus { outline: 2px solid var(--accent); border-color: transparent; }
 .accenttext.bad { border-color: var(--bad); background: var(--badbg); }
+.daily .dailytop { display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
+.daily .streak { font-weight: 700; }
+.daily .streak.on { color: var(--accent); }
+.dailymain { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.dailymain .main { flex: 1; min-width: 220px; }
+.dailymain .title { font-weight: 600; font-size: 16px; }
+.streakpill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--text); text-decoration: none; font-size: 14px; line-height: 1.2; }
+.streakpill[hidden] { display: none; }
+.streakpill:hover { background: var(--panel2); }
+.streakpill .flame { font-size: 16px; }
+.streakpill.on { border-color: var(--accent); color: var(--accent); }
+.streakpill.risk { border-style: dashed; border-color: var(--accent); }
+.streakpill.off .flame { filter: grayscale(1); opacity: .55; }
+.streakpill.off b { color: var(--muted); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

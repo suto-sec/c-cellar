@@ -11,6 +11,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import server as S  # noqa: E402
+import daily as D  # noqa: E402
 from cparse import called_library_functions  # noqa: E402
 
 errors = []
@@ -24,6 +25,85 @@ def solution_sources(ex):
     if ex.get("files"):
         return [(d / "solution" / n).read_text(encoding="utf-8") for n in ex["files"] if n.endswith((".c", ".h"))]
     return [(d / "solution.c").read_text(encoding="utf-8")]
+
+
+DAILY_SEEDS = ["a", "b", "c", "d", "e", "f"]
+
+
+def check_daily(ref_names):
+    """Every daily template, over fixed seeds: the spec is well-formed and repeatable, its own solution passes the real checker with no warnings,
+    an empty answer fails, and the solution only calls functions that have a reference entry."""
+    templates = D.load_templates(S.CONTENT)
+    print(f"daily templates: {len(templates)}")
+    chapter_ids = {(c["tag"], c["id"]) for c in S.load_chapters()}
+    ids = set()
+    for t in templates:
+        label = t["id"]
+        if t["id"] in ids:
+            err(f"{label}: duplicate template id")
+        ids.add(t["id"])
+        if (t["tag"], t["chapter"]) not in chapter_ids:
+            err(f"{label}: chapter '{t['chapter']}' is not a chapter of {t['tag']}")
+        titles = set()
+        for seed in DAILY_SEEDS:
+            spec = D.generate(t, seed)
+            where = f"{label} [seed {seed}]"
+            if spec != D.generate(t, seed):
+                err(f"{where}: the same seed gives a different exercise")
+            if not (isinstance(spec["stars"], int) and 1 <= spec["stars"] <= 5):
+                err(f"{where}: stars must be an integer 1-5")
+            if len(spec["hints"]) < 2:
+                err(f"{where}: needs at least 2 hints")
+            if not spec["tests"] or any("stdout" not in c for c in spec["tests"]):
+                err(f"{where}: every test needs an expected stdout")
+            text = spec["statement"] + spec["title"] + "".join(spec["hints"])
+            if re.search(r"\{[A-Za-z_][A-Za-z_0-9]*\}|\bNone\b|\$[a-z_]+", text):
+                err(f"{where}: the statement or hints contain an unfilled placeholder")
+            titles.add(spec["title"])
+            with tempfile.TemporaryDirectory() as w:
+                d = Path(w) / "x"
+                day = D.date(2020, 1, 1)
+                D.write_exercise(d, D.daily_id(t["tag"], day), t["tag"], t["chapter"], t["id"], day, spec)
+                ex = D.load(d)
+                r = S.check_solution(ex)
+                bad = [x["name"] for x in r["cases"] if not x["ok"]]
+                if not r["compiled"]:
+                    err(f"{where}: solution does not compile:\n{r['log']}")
+                elif bad:
+                    err(f"{where}: solution fails: {bad}")
+                elif r["log"].strip():
+                    err(f"{where}: solution compiles with warnings or the build prints something:\n{r['log']}")
+                saved = S.WORKSPACE
+                with tempfile.TemporaryDirectory() as w2:
+                    S.WORKSPACE = Path(w2)
+                    S.ensure_workspace(ex)
+                    blank = S.check_exercise(ex)
+                    S.WORKSPACE = saved
+                if blank["passed"]:
+                    err(f"{where}: an empty answer passes")
+                for fn in called_library_functions(solution_sources(ex)):
+                    if fn.lower() not in ref_names:
+                        err(f"{where}: library function '{fn}' has no reference entry")
+        print(f"  ok   {label}: {len(DAILY_SEEDS)} seeds, {len(titles)} different titles")
+    # the streak
+    day = D.date
+    ds = lambda *xs: {x for x in xs}  # noqa: E731
+    cases = [
+        (ds("2026-10-06", "2026-10-07", "2026-10-08"), "2026-10-08", (3, 3, True)),
+        (ds("2026-10-06", "2026-10-07"), "2026-10-08", (2, 2, False)),   # today still open: the streak is alive until midnight
+        (ds("2026-10-05", "2026-10-06"), "2026-10-08", (0, 2, False)),   # a missed day resets it
+        (ds("2026-10-01", "2026-10-02", "2026-10-03", "2026-10-07", "2026-10-08"), "2026-10-08", (2, 3, True)),
+        (set(), "2026-10-08", (0, 0, False)),
+        (ds("2026-12-31", "2027-01-01"), "2027-01-01", (2, 2, True)),     # across a year
+        (ds("2028-02-28", "2028-02-29", "2028-03-01"), "2028-03-01", (3, 3, True)),   # across a leap day
+    ]
+    for days, today, (cur, best, done) in cases:
+        got = D.streak(days, today)
+        if (got["current"], got["best"], got["today_done"]) != (cur, best, done):
+            err(f"streak {sorted(days)} on {today}: got {got}, expected {(cur, best, done)}")
+    if D.valid_date("2026-02-30") or D.valid_date("26-1-1") or D.id_date("t3-daily-20261301") or D.id_date("../t3-daily-20261008"):
+        err("daily: invalid dates or ids are accepted")
+    del day
 
 
 def main():
@@ -90,6 +170,8 @@ def main():
                 missing_ref.setdefault(fn, []).append(ex["id"])
     for fn, ids in sorted(missing_ref.items()):
         err(f"library function '{fn}' used by {ids[0]}{' (+%d more)' % (len(ids) - 1) if len(ids) > 1 else ''} has no reference entry")
+
+    check_daily(ref_names)
 
     # chapters and suggested path
     for tag, ids in S.load_paths().items():
