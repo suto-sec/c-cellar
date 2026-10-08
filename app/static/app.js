@@ -194,7 +194,215 @@ async function viewCodingList() {
   search.addEventListener("input", render);
   render();
   setTimeout(() => { const t = wanted && document.querySelector(`details.chapter[data-key="${wanted}"]`); if (t) t.scrollIntoView({ block: "start" }); }, 0);
-  mount(page(h("h1", {}, "Coding exercises"), h("p", { class: "lead" }, "Write your solution in VS Code next to the statement and press Check. Use Hint if you are stuck, and Answer as a last resort."), pathHolder, bar.el, h("div", { class: "tools" }, search), holder));
+  mount(page(h("h1", {}, "Coding exercises"), h("p", { class: "lead" }, "Write your solution in VS Code (the terminal is next to it) beside the statement and press Check. Use Hint if you are stuck, and Answer as a last resort."), pathHolder, bar.el, h("div", { class: "tools" }, search), holder));
+}
+
+// ------------------------------------------------------------------ dock: statement, terminal and VS Code on the exercise screen
+// The three panels are the leaves of a tree of splits ({dir: "row"|"col", ratio, a, b}). A prebuilt layout is a ready-made tree; dragging a
+// panel by its header or a splitter edits the tree, which becomes the "Custom" layout. Only the panels' left/top/width/height change, so the
+// iframes are never moved in the DOM (that would reload them: the editor and the shell would restart).
+const PANELS = { instr: "Statement", term: "Terminal", code: "VS Code" };
+const leaf = (panel) => ({ panel });
+const splitOf = (dir, ratio, a, b) => ({ dir, ratio, a, b });
+const LAYOUTS = [
+  { id: "default", title: "Default", hint: "Statement on the left; VS Code over the terminal", tree: () => splitOf("row", 42, leaf("instr"), splitOf("col", 62, leaf("code"), leaf("term"))) },
+  { id: "side", title: "Side by side", hint: "Statement · VS Code · Terminal", tree: () => splitOf("row", 34, leaf("instr"), splitOf("row", 55, leaf("code"), leaf("term"))) },
+  { id: "left", title: "Statement over terminal", hint: "Left: statement over the terminal; right: VS Code", tree: () => splitOf("row", 42, splitOf("col", 60, leaf("instr"), leaf("term")), leaf("code")) },
+  { id: "codeleft", title: "VS Code first", hint: "Left: VS Code; right: statement over the terminal", tree: () => splitOf("row", 55, leaf("code"), splitOf("col", 55, leaf("instr"), leaf("term"))) },
+  { id: "top", title: "Statement on top", hint: "Statement above; VS Code and the terminal below", tree: () => splitOf("col", 38, leaf("instr"), splitOf("row", 55, leaf("code"), leaf("term"))) },
+];
+const CUSTOM = { id: "custom", title: "Custom", hint: "Drag a panel by its header, or a splitter, to arrange them yourself" };
+const LAYOUT_KEY = "cellar.layout";
+
+function treePanels(t) { return t && t.panel ? [t.panel] : t && t.a && t.b ? [...treePanels(t.a), ...treePanels(t.b)] : []; }
+function treeValid(t) {
+  const p = treePanels(t).sort().join();
+  const ok = (n) => n.panel ? n.panel in PANELS : (n.dir === "row" || n.dir === "col") && typeof n.ratio === "number" && ok(n.a) && ok(n.b);
+  return p === "code,instr,term" && ok(t);
+}
+function treeFind(root, pred, parent = null, key = null) {
+  if (pred(root)) return { node: root, parent, key };
+  return root.panel ? null : treeFind(root.a, pred, root, "a") || treeFind(root.b, pred, root, "b");
+}
+function treeRemove(root, panel) {   // the panel's sibling takes the place of their parent
+  const loc = treeFind(root, (n) => n.panel === panel);
+  if (!loc || !loc.parent) return root;
+  const sibling = loc.parent[loc.key === "a" ? "b" : "a"];
+  const up = treeFind(root, (n) => n === loc.parent);
+  if (!up.parent) return sibling;
+  up.parent[up.key] = sibling;
+  return root;
+}
+function treeInsert(root, target, panel, edge) {   // dock `panel` against one edge of `target`
+  const loc = treeFind(root, (n) => n.panel === target);
+  const dir = edge === "left" || edge === "right" ? "row" : "col";
+  const moved = leaf(panel), there = { ...loc.node };
+  const node = edge === "left" || edge === "top" ? splitOf(dir, 50, moved, there) : splitOf(dir, 50, there, moved);
+  if (!loc.parent) return node;
+  loc.parent[loc.key] = node;
+  return root;
+}
+function treeSwap(root, a, b) {
+  const la = treeFind(root, (n) => n.panel === a), lb = treeFind(root, (n) => n.panel === b);
+  la.node.panel = b; lb.node.panel = a;
+  return root;
+}
+/** Percent rectangle of every panel, and the splitters (the line between the two halves of every split). */
+function treeRects(node, rect, rects, splits) {
+  if (node.panel) { rects[node.panel] = rect; return; }
+  const row = node.dir === "row";
+  const size = (row ? rect.w : rect.h) * node.ratio / 100;
+  treeRects(node.a, row ? { ...rect, w: size } : { ...rect, h: size }, rects, splits);
+  treeRects(node.b, row ? { ...rect, x: rect.x + size, w: rect.w - size } : { ...rect, y: rect.y + size, h: rect.h - size }, rects, splits);
+  splits.push({ node, axis: row ? "x" : "y", rect, at: row ? rect.x + size : rect.y + size });
+}
+function layoutIcon(tree) {
+  const rects = {};
+  treeRects(tree, { x: 0, y: 0, w: 34, h: 24 }, rects, []);
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 34 24"); svg.setAttribute("class", "lmicon");
+  for (const [k, r] of Object.entries(rects)) {
+    const el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    for (const [a, v] of Object.entries({ x: r.x + 0.5, y: r.y + 0.5, width: r.w - 1, height: r.h - 1, rx: 1, class: "lm-" + k })) el.setAttribute(a, v);
+    svg.append(el);
+  }
+  return svg;
+}
+
+function mountDock(bodies) {
+  const readJson = (key) => { try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; } };
+  const writeJson = (key, v) => { try { localStorage.setItem(key, JSON.stringify(v)); } catch (e) { /* private window: not remembered */ } };
+  const clone = (t) => JSON.parse(JSON.stringify(t));
+  const preset = (id) => LAYOUTS.find((l) => l.id === id);
+  const saved = readJson(LAYOUT_KEY);
+  let custom = readJson(LAYOUT_KEY + ".custom");
+  if (!treeValid(custom)) custom = null;
+  const keep = saved && (preset(saved.name) || saved.name === "custom") && treeValid(saved.tree);
+  let name = keep ? saved.name : "default";
+  let tree = keep ? saved.tree : preset("default").tree();
+  const frames = [bodies.term, bodies.code];
+  const guard = (on) => frames.forEach((f) => { f.style.pointerEvents = on ? "none" : ""; });
+
+  const panels = {}, heads = {};
+  for (const key of Object.keys(PANELS)) {
+    heads[key] = h("div", { class: "dhead", title: "Drag to move this panel" }, h("span", { class: "grip" }, "⠿"), PANELS[key]);
+    panels[key] = h("section", { class: "dpanel", "data-panel": key }, heads[key], h("div", { class: "dbody-wrap" }, bodies[key]));
+  }
+  const splitEls = [h("div", { class: "dsplit", title: "Drag to resize" }), h("div", { class: "dsplit", title: "Drag to resize" })];
+  const hint = h("div", { class: "drophint" });
+  const dock = h("div", { class: "dock" }, ...Object.values(panels), ...splitEls, hint);
+  let splits = [];
+
+  const persist = () => { writeJson(LAYOUT_KEY, { name, tree }); if (name === "custom") writeJson(LAYOUT_KEY + ".custom", tree); };
+  const render = () => {
+    const rects = {};
+    splits = [];
+    treeRects(tree, { x: 0, y: 0, w: 100, h: 100 }, rects, splits);
+    for (const [k, r] of Object.entries(rects)) Object.assign(panels[k].style, { left: r.x + "%", top: r.y + "%", width: r.w + "%", height: r.h + "%" });
+    splitEls.forEach((el, i) => {
+      const s = splits[i];
+      el.classList.toggle("h", s.axis === "y");
+      Object.assign(el.style, s.axis === "x" ? { left: s.at + "%", top: s.rect.y + "%", height: s.rect.h + "%", width: "" } : { top: s.at + "%", left: s.rect.x + "%", width: s.rect.w + "%", height: "" });
+    });
+    drawMenu();
+    persist();
+  };
+  const becomeCustom = () => { name = "custom"; custom = clone(tree); };
+
+  // splitters
+  splitEls.forEach((el, i) => {
+    let stopDrag = null;
+    el.addEventListener("pointerdown", (ev) => {
+      ev.preventDefault();
+      const s = splits[i];
+      const box = dock.getBoundingClientRect();
+      guard(true); el.classList.add("on"); document.body.style.cursor = s.axis === "x" ? "col-resize" : "row-resize";
+      const move = (e) => {
+        const p = s.axis === "x" ? 100 * (e.clientX - box.left) / box.width : 100 * (e.clientY - box.top) / box.height;
+        const from = s.axis === "x" ? s.rect.x : s.rect.y, span = s.axis === "x" ? s.rect.w : s.rect.h;
+        s.node.ratio = Math.min(85, Math.max(15, 100 * (p - from) / span));
+        becomeCustom(); render();
+      };
+      stopDrag = () => { document.removeEventListener("pointermove", move); document.removeEventListener("pointerup", stopDrag); guard(false); el.classList.remove("on"); document.body.style.cursor = ""; stopDrag = null; };
+      document.addEventListener("pointermove", move);
+      document.addEventListener("pointerup", stopDrag);
+    });
+    el.stopDrag = () => stopDrag && stopDrag();
+  });
+
+  // dragging a panel by its header: dropping on the middle of another panel swaps them, on an edge docks it there
+  const edgeOf = (r, x, y) => {
+    const rx = (x - r.left) / r.width, ry = (y - r.top) / r.height;
+    if (rx > 0.25 && rx < 0.75 && ry > 0.25 && ry < 0.75) return "center";
+    const dist = { left: rx, right: 1 - rx, top: ry, bottom: 1 - ry };
+    return Object.keys(dist).reduce((a, b) => (dist[a] < dist[b] ? a : b));
+  };
+  const showHint = (r, edge) => {
+    const box = dock.getBoundingClientRect();
+    let x = r.left - box.left, y = r.top - box.top, w = r.width, hh = r.height;
+    if (edge === "left") w /= 2; else if (edge === "right") { x += w / 2; w /= 2; } else if (edge === "top") hh /= 2; else if (edge === "bottom") { y += hh / 2; hh /= 2; }
+    Object.assign(hint.style, { left: x + "px", top: y + "px", width: w + "px", height: hh + "px", display: "block" });
+  };
+  let stopPanelDrag = null;
+  for (const key of Object.keys(PANELS)) {
+    heads[key].addEventListener("pointerdown", (ev) => {
+      if (ev.button !== 0) return;
+      ev.preventDefault();
+      let target = null, edge = null;
+      guard(true); document.body.style.cursor = "grabbing";
+      const move = (e) => {
+        target = null; hint.style.display = "none";
+        for (const k of Object.keys(PANELS)) {
+          if (k === key) continue;
+          const r = panels[k].getBoundingClientRect();
+          if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) { target = k; edge = edgeOf(r, e.clientX, e.clientY); showHint(r, edge); break; }
+        }
+      };
+      const up = () => {
+        const t = target, e = edge;
+        stopPanelDrag();
+        if (!t) return;
+        tree = clone(tree);
+        if (e === "center") tree = treeSwap(tree, key, t);
+        else tree = treeInsert(treeRemove(tree, key), t, key, e);
+        becomeCustom(); render();
+      };
+      stopPanelDrag = () => { document.removeEventListener("pointermove", move); document.removeEventListener("pointerup", up); guard(false); document.body.style.cursor = ""; hint.style.display = "none"; stopPanelDrag = null; };
+      document.addEventListener("pointermove", move);
+      document.addEventListener("pointerup", up);
+    });
+  }
+
+  // the Layout menu
+  const menu = h("div", { class: "layoutmenu", role: "menu", hidden: true });
+  const menuBtn = h("button", { class: "btn small", "aria-haspopup": "true", "aria-expanded": "false", title: "Choose how the statement, terminal and VS Code are arranged" }, "⬚ Layout");
+  const choose = (id) => {
+    if (id === "custom") { custom = custom || clone(tree); tree = clone(custom); name = "custom"; }
+    else { tree = preset(id).tree(); name = id; }
+    setMenu(false); render();
+  };
+  function drawMenu() {
+    const row = (l, t) => h("button", { class: "lmitem" + (name === l.id ? " on" : ""), role: "menuitem", onclick: () => choose(l.id) }, layoutIcon(t), h("span", { class: "lmtext" }, h("b", {}, l.title), h("span", { class: "muted" }, l.hint)), h("span", { class: "lmcheck" }, name === l.id ? "✓" : ""));
+    menu.replaceChildren(h("div", { class: "lmlabel muted" }, "Prebuilt"), ...LAYOUTS.map((l) => row(l, l.tree())), h("div", { class: "lmlabel muted" }, "Your own"), row(CUSTOM, custom || tree));
+  }
+  const setMenu = (open) => { menu.hidden = !open; menuBtn.setAttribute("aria-expanded", String(open)); };
+  menuBtn.addEventListener("click", (ev) => { ev.stopPropagation(); setMenu(menu.hidden); });
+  const outside = (ev) => { if (!menu.hidden && !menu.contains(ev.target)) setMenu(false); };
+  const onEsc = (ev) => { if (ev.key === "Escape") setMenu(false); };
+  document.addEventListener("click", outside);
+  document.addEventListener("keydown", onEsc);
+
+  const bar = h("div", { class: "dockbar" }, h("span", { class: "muted" }, "Drag a panel by its header to rearrange them"), h("span", { class: "spacer" }), h("div", { class: "layoutpick" }, menuBtn, menu));
+  const el = h("div", { class: "dockwrap" }, bar, dock);
+  render();
+  return {
+    el,
+    destroy() {
+      document.removeEventListener("click", outside); document.removeEventListener("keydown", onEsc);
+      if (stopPanelDrag) stopPanelDrag();
+      splitEls.forEach((s) => s.stopDrag());
+    },
+  };
 }
 
 // ------------------------------------------------------------------ exercise screen
@@ -311,40 +519,22 @@ async function viewExercise(id) {
   const onKey = (e) => { if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); check(); } };
   document.addEventListener("keydown", onKey);
 
+  const frameUrl = (port, query) => `${location.protocol}//${location.hostname}:${port}/?${query}`;
   const payload = encodeURIComponent(JSON.stringify([["openFile", "vscode-remote://" + d.file]]));
-  const url = `${location.protocol}//${location.hostname}:${state.cfg.vscode_port}/?folder=${encodeURIComponent(d.workspace)}&payload=${payload}`;
-  const frame = h("iframe", { src: url, title: "VS Code", allow: "clipboard-read; clipboard-write" });
-  const left = h("div", { class: "left statement" },
+  const codeFrame = h("iframe", { src: frameUrl(state.cfg.vscode_port, `folder=${encodeURIComponent(d.workspace)}&payload=${payload}`), title: "VS Code", allow: "clipboard-read; clipboard-write" });
+  const termFrame = h("iframe", { src: frameUrl(state.cfg.term_port, "arg=" + encodeURIComponent(d.file.replace(/\/[^/]*$/, ""))), title: "Terminal", allow: "clipboard-read; clipboard-write" });   // opens in the folder of answer.c
+  const left = h("div", { class: "dbody statement" },
     h("div", { class: "crumbs" }, h("a", { href: "#/coding" }, "Coding"), " › ", d.track === "derusting" ? "C derusting" : "C exercises", " › ", chapter ? chapter.title : d.topic, " · ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag)), " ", stars(d.stars)),
     h("div", { html: md(d.statement) }),
     d.theory ? h("div", { class: "qlinks" }, h("span", { class: "muted" }, "Theory: "), h("a", { href: "#/theory/" + d.theory.id, target: "_blank", rel: "noopener" }, `${d.theory.title} (${d.theory.count} questions)`)) : null,
-    h("div", { class: "muted", style: "font-size:13px" }, "Write it in ", d.files.map((f, i) => [i ? ", " : "", h("code", {}, f)]), " in the editor on the right. It saves by itself."),
+    h("div", { class: "muted", style: "font-size:13px" }, "Write it in ", d.files.map((f, i) => [i ? ", " : "", h("code", {}, f)]), " in VS Code. It saves by itself."),
     h("div", { class: "actions" }, checkBtn, hintBtn, infoBtn, solBtn, resetBtn, h("span", { class: "spacer" }), chip),
     hintBox, results, extras,
     h("div", { class: "qnav" }, prev ? h("a", { class: "btn small step prev", href: "#/coding/" + prev.id }, h("span", { class: "steplabel" }, "Previous"), "← " + prev.title) : null, h("span", { class: "spacer" }), next ? h("a", { class: "btn small step next", href: "#/coding/" + next.id }, h("span", { class: "steplabel" }, "Next"), next.title + " →") : null));
-  const divider = h("div", { class: "divider", title: "Drag to resize" });
-  const right = h("div", { class: "right" }, frame);
-  const w = parseFloat(localStorage.getItem("cellar.split")) || 46;
-  left.style.width = w + "%";
-  divider.addEventListener("pointerdown", (e) => {
-    divider.setPointerCapture(e.pointerId);
-    divider.classList.add("drag");
-    frame.style.pointerEvents = "none";
-    const move = (ev) => {
-      const box = split.getBoundingClientRect();
-      const p = Math.min(80, Math.max(20, ((ev.clientX - box.left) / box.width) * 100));
-      left.style.width = p + "%";
-      localStorage.setItem("cellar.split", String(p));
-    };
-    const up = () => { divider.classList.remove("drag"); frame.style.pointerEvents = ""; divider.removeEventListener("pointermove", move); divider.removeEventListener("pointerup", up); };
-    divider.addEventListener("pointermove", move);
-    divider.addEventListener("pointerup", up);
-  });
-  const split = h("div", { class: "split" }, left, divider, right);
-  mount(split);
-  state.cleanup = () => document.removeEventListener("keydown", onKey);
+  const dock = mountDock({ instr: left, term: termFrame, code: codeFrame });
+  mount(dock.el);
+  state.cleanup = () => { document.removeEventListener("keydown", onKey); dock.destroy(); };
 }
-
 // ------------------------------------------------------------------ theory
 async function viewTheoryList() {
   setNav("theory");

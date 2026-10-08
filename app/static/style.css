@@ -76,13 +76,6 @@ a.row:hover { background: var(--panel2); }
 .pct { font: 600 13px var(--mono); width: 44px; text-align: right; }
 
 /* exercise screen */
-.split { display: flex; height: 100%; min-height: 0; }
-.left { flex: none; width: 46%; min-width: 300px; overflow: auto; padding: 20px 22px 40px; }
-.divider { flex: none; width: 7px; cursor: col-resize; background: var(--line); }
-.divider:hover, .divider.drag { background: var(--accent); }
-.right { flex: 1; min-width: 300px; position: relative; background: var(--code); }
-.right iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-.right .nofs { padding: 30px; color: var(--muted); }
 .crumbs { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
 .statement h1 { font-size: 22px; margin: 4px 0 10px; }
 .statement p { margin: .5em 0; }
@@ -152,7 +145,7 @@ kbd { background: var(--panel2); border: 1px solid var(--line); border-bottom-wi
 .entry dd { margin: 0; }
 .entry h5 { margin: 12px 0 2px; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
 .entry ul { margin: 4px 0; padding-left: 1.2em; }
-@media (max-width: 800px) { .refgrid { grid-template-columns: 1fr; } .refcats { position: static; display: flex; flex-wrap: wrap; } .split { flex-direction: column; } .left { width: auto !important; max-height: 55%; } .divider { display: none; } }
+@media (max-width: 800px) { .refgrid { grid-template-columns: 1fr; } .refcats { position: static; display: flex; flex-wrap: wrap; } }
 
 .center { text-align: center; padding: 50px 20px; }
 .big { font-size: 40px; font-weight: 700; font-family: var(--mono); }
@@ -249,3 +242,41 @@ pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } p
 .reclist li { padding: 6px 0; border-top: 1px solid var(--line); }
 .reclist li:first-child { border-top: 0; }
 .reclist .sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+/* exercise screen: statement, terminal and VS Code docked in a tree of splits (see mountDock) */
+.dockwrap { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.dockbar { display: flex; align-items: center; gap: 10px; padding: 5px 12px; border-bottom: 1px solid var(--line); font-size: 13px; }
+.dock { position: relative; flex: 1; min-height: 0; background: var(--line); }
+.dpanel { position: absolute; display: flex; flex-direction: column; box-sizing: border-box; border: 1px solid var(--line); background: var(--bg); min-width: 0; min-height: 0; }
+.dhead { flex: none; padding: 3px 10px; font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); background: var(--panel2); border-bottom: 1px solid var(--line); cursor: grab; user-select: none; touch-action: none; }
+.dhead .grip { margin-right: 6px; opacity: .7; }
+.dbody-wrap { position: relative; flex: 1; min-height: 0; background: var(--code); }
+.dbody-wrap > iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.dbody-wrap > .dbody { position: absolute; inset: 0; overflow: auto; padding: 18px 22px 40px; background: var(--bg); }
+.dsplit { position: absolute; z-index: 5; touch-action: none; }
+.dsplit:not(.h) { width: 9px; margin-left: -4px; cursor: col-resize; }
+.dsplit.h { height: 9px; margin-top: -4px; cursor: row-resize; }
+.dsplit::after { content: ""; position: absolute; background: transparent; }
+.dsplit:not(.h)::after { left: 3px; right: 3px; top: 0; bottom: 0; }
+.dsplit.h::after { top: 3px; bottom: 3px; left: 0; right: 0; }
+.dsplit:hover::after, .dsplit.on::after { background: var(--accent); }
+.drophint { position: absolute; display: none; z-index: 6; pointer-events: none; background: color-mix(in srgb, var(--accent) 28%, transparent); border: 2px solid var(--accent); box-sizing: border-box; }
+.layoutpick { position: relative; }
+.layoutmenu { position: absolute; right: 0; top: calc(100% + 6px); z-index: 20; width: 360px; max-width: 90vw; padding: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 28px rgba(0,0,0,.25); }
+.layoutmenu[hidden] { display: none; }
+.lmlabel { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; padding: 6px 8px 2px; }
+.lmitem { display: flex; align-items: center; gap: 10px; width: 100%; padding: 6px 8px; border: 0; border-radius: 7px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.lmitem:hover { background: var(--panel2); }
+.lmitem.on { background: var(--panel2); }
+.lmtext { flex: 1; display: flex; flex-direction: column; line-height: 1.25; font-size: 13px; }
+.lmcheck { width: 16px; color: var(--accent); font-weight: 700; }
+.lmicon { flex: none; width: 51px; height: 36px; fill: none; }
+.lmicon rect { stroke: var(--muted); stroke-width: 1; }
+.lmicon .lm-instr { fill: color-mix(in srgb, var(--muted) 18%, transparent); }
+.lmicon .lm-code { fill: color-mix(in srgb, var(--accent) 45%, transparent); }
+.lmicon .lm-term { fill: color-mix(in srgb, var(--muted) 55%, transparent); }
+@media (max-width: 800px) {
+  .dock { overflow: auto; display: flex; flex-direction: column; background: var(--bg); }
+  .dpanel { position: relative !important; left: auto !important; top: auto !important; width: auto !important; height: 75vh !important; flex: none; }
+  .dsplit, .dockbar .muted { display: none; }
+}

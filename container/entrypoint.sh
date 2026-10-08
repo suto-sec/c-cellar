@@ -1,5 +1,5 @@
 #!/bin/bash
-# Starts VS Code (code-server, port 8081) and the c-cellar app (port 8080). The project is mounted at /lab.
+# Starts a terminal (ttyd, port 8082), VS Code (code-server, port 8081) and the c-cellar app (port 8080). The project is mounted at /lab.
 set -e
 export HOME="${HOME:-/lab/.progress/home}"
 [ -w "$HOME" ] 2>/dev/null || export HOME=/lab/.progress/home
@@ -42,5 +42,9 @@ fi
 code-server --bind-addr 0.0.0.0:8081 --auth none --disable-telemetry --disable-update-check \
   --user-data-dir "$HOME/.local/share/code-server" --extensions-dir "$HOME/.local/share/code-server/extensions" \
   /lab/.progress/workspace >/lab/.progress/code-server.log 2>&1 &
+
+# One bash per open terminal pane, started in the exercise folder it asks for (see term.sh). --check-origin keeps other websites out.
+ttyd --port 8082 --interface 0.0.0.0 --writable --url-arg --check-origin -t fontSize=15 -t cursorBlink=true \
+  /lab/container/term.sh >/lab/.progress/ttyd.log 2>&1 &
 
 exec python3 /lab/app/server.py

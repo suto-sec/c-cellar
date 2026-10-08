@@ -27,6 +27,7 @@ PROGRESS_DIR = Path(os.environ.get("LAB_PROGRESS", ROOT / ".progress"))
 WORKSPACE = PROGRESS_DIR / "workspace"
 STATIC = Path(__file__).resolve().parent / "static"
 VSCODE_PORT = int(os.environ.get("LAB_VSCODE_PORT", "8081"))
+TERM_PORT = int(os.environ.get("LAB_TERM_PORT", "8082"))
 CC = os.environ.get("LAB_CC", "gcc")
 LOCK = threading.Lock()
 
@@ -707,7 +708,7 @@ class Handler(BaseHTTPRequestHandler):
     def api_get(self, route, query):
         parts = route.split("/")
         if route == "config":
-            return self._send(200, {"vscode_port": VSCODE_PORT, "tags": sorted({p.name for p in CONTENT.iterdir() if p.is_dir()})})
+            return self._send(200, {"vscode_port": VSCODE_PORT, "term_port": TERM_PORT, "tags": sorted({p.name for p in CONTENT.iterdir() if p.is_dir()})})
         if route == "index":
             prog = load_progress()
             coding = [{"id": e["id"], "tag": e["tag"], "track": e["track"], "topic": e["topic"], "title": e["title"],

@@ -1,4 +1,4 @@
-# c-cellar lab image: gcc + debugging tools + man pages + VS Code in the browser (code-server) + the app (Python, stdlib only)
+# c-cellar lab image: gcc + debugging tools + man pages + a terminal in the browser (ttyd) + VS Code in the browser (code-server) + the app (Python, stdlib only)
 FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive LANG=C.UTF-8 LC_ALL=C.UTF-8
@@ -9,7 +9,7 @@ RUN rm -f /etc/dpkg/dpkg.cfg.d/excludes /etc/dpkg/dpkg.cfg.d/docker \
  && apt-get install -y --no-install-recommends \
       build-essential gdb valgrind make python3 curl ca-certificates \
       man-db manpages manpages-dev manpages-posix manpages-posix-dev \
-      less nano file procps \
+      less nano file procps ttyd \
  && (yes | unminimize >/dev/null 2>&1 || true) \
  && rm -rf /var/lib/apt/lists/*
 
@@ -21,5 +21,5 @@ RUN arch="$(dpkg --print-architecture)" \
 # The app, the content and the entrypoint live in the project folder, which `./lab` mounts at /lab:
 # editing them needs no image rebuild.
 WORKDIR /lab
-EXPOSE 8080 8081
+EXPOSE 8080 8081 8082
 ENTRYPOINT ["/bin/bash", "/lab/container/entrypoint.sh"]

@@ -13,6 +13,7 @@ IMAGE=c-cellar
 NAME=c-cellar
 PORT="${LAB_PORT:-8080}"
 VPORT="${LAB_VSCODE_PORT:-8081}"
+TPORT="${LAB_TERM_PORT:-8082}"
 
 if [ -n "${LAB_ENGINE:-}" ]; then ENGINE="$LAB_ENGINE"
 elif command -v podman >/dev/null 2>&1; then ENGINE=podman
@@ -34,8 +35,8 @@ case "${1:-help}" in
     have_image || build
     stop
     "$ENGINE" run -d --name "$NAME" "${USEROPT[@]}" \
-      -p "127.0.0.1:$PORT:8080" -p "127.0.0.1:$VPORT:8081" \
-      -v "$MOUNT" -e HOME=/lab/.progress/home -e LAB_VSCODE_PORT="$VPORT" "$IMAGE" >/dev/null
+      -p "127.0.0.1:$PORT:8080" -p "127.0.0.1:$VPORT:8081" -p "127.0.0.1:$TPORT:8082" \
+      -v "$MOUNT" -e HOME=/lab/.progress/home -e LAB_VSCODE_PORT="$VPORT" -e LAB_TERM_PORT="$TPORT" "$IMAGE" >/dev/null
     for _ in $(seq 1 60); do
       if curl -fs "http://localhost:$PORT/api/config" >/dev/null 2>&1; then
         echo "c-cellar is running at http://localhost:$PORT"
