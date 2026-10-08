@@ -207,3 +207,6 @@ kbd { background: var(--panel2); border: 1px solid var(--line); border-bottom-wi
 .chip:hover { background: var(--panel2); }
 .chip.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
 .row .tag { flex: none; }
+.refside .filters { margin: 0; gap: 6px 14px; }
+.refside .flabel { font-size: 12px; }
+.entry h3 .tag { font-size: 11px; vertical-align: middle; }

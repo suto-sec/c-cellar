@@ -11,7 +11,7 @@ A self-hosted lab to practise C. It runs in a container and you use it in your b
 
 Everything you do is stored in the `.progress/` folder (delete it to start over). Nothing leaves your computer.
 
-All content is tagged by course topic. Today there is only **`t3`**; more topics will be added as new tags.
+All content is tagged by course topic. Today there is only **`T3`** (tema 3); more topics will be added as new tags. Every exercise, theory set and reference entry shows its topic tag, and the coding, theory and reference pages each have a **Topic** filter (the coding and theory pages also a **Difficulty** filter; several chips can be on at once, none means all). Each page remembers its own filters.
 
 ## Run it
 

@@ -531,7 +531,8 @@ class Handler(BaseHTTPRequestHandler):
                 theory.append({"id": s["id"], "tag": s["tag"], "title": s["title"], "topic": s.get("topic", ""),
                                "count": len(qs), "answered": sum(1 for x in st if x),
                                "correct": sum(1 for x in st if x and x.get("last_correct")),
-                               "types": sorted({q["type"] for q in qs})})
+                               "types": sorted({q["type"] for q in qs}),
+                               "qs": [{"d": q.get("difficulty", 1), "a": bool(x), "c": bool(x and x.get("last_correct"))} for q, x in zip(qs, st)]})
             ref = load_reference()
             return self._send(200, {"coding": coding, "theory": theory, "reference": len(ref),
                                     "chapters": load_chapters(), "paths": load_paths()})

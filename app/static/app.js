@@ -11,9 +11,9 @@ Element.prototype.replaceChildren = function (...kids) {
 const app = $("#app");
 const state = { cfg: null, cleanup: null };
 const T = (tag) => String(tag).toUpperCase();   // "t3" is shown as "T3" (the course topic, "tema")
-const FILTER_KEY = "cellar.filters";
-function loadFilters() {
-  try { const f = JSON.parse(localStorage.getItem(FILTER_KEY)); return { tags: f.tags || [], stars: f.stars || [] }; } catch (e) { return { tags: [], stars: [] }; }
+const FILTER_KEYS = { coding: "cellar.filters.coding", theory: "cellar.filters.theory", reference: "cellar.filters.reference" };
+function readFilters(key) {
+  try { const f = JSON.parse(localStorage.getItem(key)); return { tags: f.tags || [], levels: f.levels || [] }; } catch (e) { return { tags: [], levels: [] }; }
 }
 
 // ------------------------------------------------------------------ helpers
@@ -88,6 +88,26 @@ function mount(...nodes) {
 }
 const page = (...kids) => h("div", { class: "page" }, ...kids);
 
+
+/** The filter bar every page uses: Topic chips (the course topic T3, T4...) and, when the page has difficulty levels, Difficulty chips.
+ *  Several chips of a group can be on at once; none on means "all". The choice is remembered per page. */
+function makeFilters(key, { levels = [], levelLabel = (n) => String(n), levelTitle = (n) => "Level " + n, onChange }) {
+  const f = readFilters(key);
+  const el = h("div", { class: "filters" });
+  const save = () => localStorage.setItem(key, JSON.stringify(f));
+  const toggle = (list, v) => { const i = list.indexOf(v); if (i >= 0) list.splice(i, 1); else list.push(v); save(); draw(); onChange(); };
+  const chip = (label, on, onclick, title) => h("button", { class: "chip" + (on ? " on" : ""), "aria-pressed": String(on), title, onclick }, label);
+  const draw = () => {
+    el.replaceChildren(
+      h("div", { class: "fgroup" }, h("span", { class: "flabel" }, "Topic"), state.cfg.tags.map((t) => chip(T(t), f.tags.includes(t), () => toggle(f.tags, t), "Show only topic " + T(t)))),
+      levels.length ? h("div", { class: "fgroup" }, h("span", { class: "flabel" }, "Difficulty"), levels.map((n) => chip(levelLabel(n), f.levels.includes(n), () => toggle(f.levels, n), levelTitle(n)))) : null,
+      f.tags.length || f.levels.length ? h("button", { class: "btn small", onclick: () => { f.tags = []; f.levels = []; save(); draw(); onChange(); } }, "Clear filters") : null);
+  };
+  draw();
+  return { f, el };
+}
+const uniqueSorted = (list) => [...new Set(list)].sort((a, b) => a - b);
+
 // ------------------------------------------------------------------ home
 const byOrder = (a, b) => (a.order - b.order) || a.id.localeCompare(b.id);
 /** Coding data for the given tags (none = all): chapters with their exercises, the suggested path and the next exercise to do. */
@@ -122,30 +142,18 @@ async function viewHome() {
 async function viewCodingList() {
   setNav("coding");
   const idx = await api("index");
-  const filters = loadFilters();
-  const save = () => localStorage.setItem(FILTER_KEY, JSON.stringify(filters));
   const search = h("input", { type: "search", placeholder: "Filter by title or chapter…" });
   const holder = h("div", {});
-  const filterBox = h("div", { class: "filters" });
   const pathHolder = h("div", {});
   const openState = new Map();
-  const toggle = (list, v) => { const i = list.indexOf(v); if (i >= 0) list.splice(i, 1); else list.push(v); save(); render(); };
-  const chip = (label, on, onclick, title) => h("button", { class: "chip" + (on ? " on" : ""), "aria-pressed": String(on), title, onclick }, label);
-
-  const drawFilters = () => {
-    const active = filters.tags.length || filters.stars.length;
-    filterBox.replaceChildren(
-      h("div", { class: "fgroup" }, h("span", { class: "flabel" }, "Topic"), state.cfg.tags.map((t) => chip(T(t), filters.tags.includes(t), () => toggle(filters.tags, t), "Show only exercises of topic " + T(t)))),
-      h("div", { class: "fgroup" }, h("span", { class: "flabel" }, "Difficulty"), [1, 2, 3, 4, 5].map((n) => chip("★".repeat(n), filters.stars.includes(n), () => toggle(filters.stars, n), n + (n === 1 ? " star" : " stars")))),
-      active ? h("button", { class: "btn small", onclick: () => { filters.tags = []; filters.stars = []; save(); render(); } }, "Clear filters") : null);
-  };
+  const bar = makeFilters(FILTER_KEYS.coding, { levels: uniqueSorted(idx.coding.map((c) => c.stars)), levelLabel: (n) => "★".repeat(n), levelTitle: (n) => n + (n === 1 ? " star" : " stars"), onChange: () => render() });
+  const filters = bar.f;
 
   const render = () => {
-    drawFilters();
     const m = codingModel(idx, filters.tags);
     const q = search.value.toLowerCase();
-    const narrowed = q || filters.stars.length;
-    const keep = (c, i) => (!filters.stars.length || filters.stars.includes(i.stars)) && (!q || (i.title + " " + c.title + " " + i.summary).toLowerCase().includes(q));
+    const narrowed = q || filters.levels.length;
+    const keep = (c, i) => (!filters.levels.length || filters.levels.includes(i.stars)) && (!q || (i.title + " " + c.title + " " + i.summary).toLowerCase().includes(q));
     let shown = 0;
     holder.replaceChildren(...TRACKS.map(([key, title, blurb]) => {
       const chs = m.chapters.filter((c) => c.track === key);
@@ -178,7 +186,7 @@ async function viewCodingList() {
   };
   search.addEventListener("input", render);
   render();
-  mount(page(h("h1", {}, "Coding exercises"), h("p", { class: "lead" }, "Write your solution in VS Code next to the statement and press Check. Use Hint if you are stuck, and Answer as a last resort."), pathHolder, filterBox, h("div", { class: "tools" }, search), holder));
+  mount(page(h("h1", {}, "Coding exercises"), h("p", { class: "lead" }, "Write your solution in VS Code next to the statement and press Check. Use Hint if you are stuck, and Answer as a last resort."), pathHolder, bar.el, h("div", { class: "tools" }, search), holder));
 }
 
 // ------------------------------------------------------------------ exercise screen
@@ -324,14 +332,28 @@ async function viewExercise(id) {
 async function viewTheoryList() {
   setNav("theory");
   const idx = await api("index");
-  const sets = idx.theory;
-  mount(page(h("h1", {}, "Theory"), h("p", { class: "lead" }, "Short questions with an explanation after every answer."),
-    h("div", { class: "list" }, sets.map((s) => {
-      const p = s.count ? s.correct / s.count : 0;
-      return h("a", { class: "row", href: "#/theory/" + s.id },
-        h("div", { class: "main" }, h("div", { class: "title" }, s.title, " ", h("span", { class: "tag" }, T(s.tag))), h("div", { class: "sub" }, `${s.count} questions · ${s.types.join(", ")} · ${s.answered} answered`)),
-        h("div", { class: "bar", style: "width:120px" }, h("span", { style: `width:${pct(p)}%` })), h("span", { class: "pct" }, pct(p) + "%"));
-    }))));
+  const holder = h("div", {});
+  const bar = makeFilters(FILTER_KEYS.theory, { levels: uniqueSorted(idx.theory.flatMap((t) => t.qs.map((q) => q.d))), levelLabel: (n) => "●".repeat(n), levelTitle: (n) => "Difficulty " + n + " of 3", onChange: () => render() });
+  const render = () => {
+    const f = bar.f;
+    // a set shows only the questions that match the difficulty filter, with progress counted on those
+    const sets = idx.theory.filter((t) => !f.tags.length || f.tags.includes(t.tag)).map((t) => {
+      const qs = t.qs.filter((q) => !f.levels.length || f.levels.includes(q.d));
+      return { ...t, count: qs.length, answered: qs.filter((q) => q.a).length, correct: qs.filter((q) => q.c).length };
+    }).filter((t) => t.count);
+    const total = idx.theory.filter((t) => !f.tags.length || f.tags.includes(t.tag)).reduce((a, t) => a + t.count, 0);
+    const shown = sets.reduce((a, t) => a + t.count, 0);
+    holder.replaceChildren(
+      f.levels.length ? h("p", { class: "muted", style: "margin:0 0 10px" }, `Showing ${shown} of ${total} questions.`) : null,
+      sets.length ? h("div", { class: "list" }, sets.map((s) => {
+        const p = s.count ? s.correct / s.count : 0;
+        return h("a", { class: "row", href: "#/theory/" + s.id },
+          h("div", { class: "main" }, h("div", { class: "title" }, s.title, " ", h("span", { class: "tag", title: "Course topic " + T(s.tag) }, T(s.tag))), h("div", { class: "sub" }, `${s.count} questions · ${s.types.join(", ")} · ${s.answered} answered`)),
+          h("div", { class: "bar", style: "width:120px" }, h("span", { style: `width:${pct(p)}%` })), h("span", { class: "pct" }, pct(p) + "%"));
+      })) : h("p", { class: "muted" }, "No question matches these filters."));
+  };
+  render();
+  mount(page(h("h1", {}, "Theory"), h("p", { class: "lead" }, "Short questions with an explanation after every answer."), bar.el, holder));
 }
 
 const TYPE_LABEL = { single: "Single choice", multiple: "Multiple choice (select all that apply)", fill: "Fill in the blank", order: "Put in order" };
@@ -421,6 +443,9 @@ function buildQuestion(q, onChange) {
 async function viewTheorySet(id) {
   setNav("theory");
   const set = await api("theory/" + id);
+  const levels = readFilters(FILTER_KEYS.theory).levels;   // the difficulty chips of the Theory page also choose the questions here
+  const all = set.questions;
+  set.questions = all.filter((q) => !levels.length || levels.includes(q.difficulty || 1));
   const answered = set.questions.filter((q) => q.progress).length;
   const notCorrect = set.questions.filter((q) => !q.progress || !q.progress.last_correct);
   const missed = set.questions.filter((q) => q.progress && !q.progress.last_correct);
@@ -432,7 +457,9 @@ async function viewTheorySet(id) {
     const shuffle = h("input", { type: "checkbox", checked: false });
     mount(page(
       h("div", { class: "crumbs" }, h("a", { href: "#/theory" }, "Theory"), " › ", set.title),
-      h("h1", {}, set.title), h("p", { class: "lead" }, `${set.questions.length} questions · ${answered} answered before`),
+      h("h1", {}, set.title, " ", h("span", { class: "tag", title: "Course topic " + T(set.tag) }, T(set.tag))),
+      h("p", { class: "lead" }, `${set.questions.length} questions · ${answered} answered before`, levels.length ? ` · difficulty ${levels.map((n) => "●".repeat(n)).join(" ")} only (${all.length} in the set; change it on the Theory page)` : ""),
+      set.questions.length ? null : h("div", { class: "panel" }, "No question of this set matches the difficulty filter."),
       h("div", { class: "panel" }, h("label", {}, shuffle, " Shuffle the order")),
       h("p", {},
         h("button", { class: "btn primary", onclick: () => start(set.questions, shuffle.checked) }, "Start all"), " ",
@@ -475,7 +502,7 @@ async function viewTheorySet(id) {
         h("div", { class: "crumbs" }, h("a", { href: "#/theory" }, "Theory"), " › ", h("a", { href: "#/theory/" + id }, set.title)),
         h("div", { class: "bar qprog" }, h("span", { style: `width:${(i / queue.length) * 100}%` })),
         h("div", { class: "qcard" },
-          h("div", { class: "qmeta" }, h("span", {}, `Question ${i + 1} of ${queue.length}`), h("span", { class: "tag" }, TYPE_LABEL[q.type]), h("span", { class: "tag" }, q.topic), dots(q.difficulty || 1)),
+          h("div", { class: "qmeta" }, h("span", {}, `Question ${i + 1} of ${queue.length}`), h("span", { class: "tag" }, TYPE_LABEL[q.type]), h("span", { class: "tag" }, q.topic), h("span", { class: "tag", title: "Course topic " + T(q.tag) }, T(q.tag)), dots(q.difficulty || 1)),
           prompt, q.code ? h("pre", {}, h("code", {}, q.code)) : null, widget.el, feedback,
           h("div", { class: "qnav" }, checkBtn, nextBtn))));
       state.cleanup = () => document.removeEventListener("keydown", onKey);
@@ -540,7 +567,7 @@ function refRank(entries, preps, query) {
 function entryCard(e, byId) {
   return h("article", { class: "entry" },
     e.header ? h("span", { class: "hdr" }, e.header) : null,
-    h("h3", {}, h("code", {}, e.title)), h("div", { class: "cat" }, e.category, e.aliases && e.aliases.length ? ` · also: ${e.aliases.join(", ")}` : ""),
+    h("h3", {}, h("code", {}, e.title), " ", h("span", { class: "tag", title: "Course topic " + T(e.tag) }, T(e.tag))), h("div", { class: "cat" }, e.category, e.aliases && e.aliases.length ? ` · also: ${e.aliases.join(", ")}` : ""),
     h("p", { class: "esum", html: rmd(e.summary) }),
     e.syntax ? h("pre", {}, h("code", {}, e.syntax)) : null,
     e.description ? h("div", { html: e.description.split("\n").map((p) => "<p>" + rmd(p) + "</p>").join("") }) : null,
@@ -552,11 +579,17 @@ function entryCard(e, byId) {
 
 async function viewReference(focusId) {
   setNav("reference");
-  const all = (await api("reference")).entries;
-  const preps = new Map(all.map((e) => [e.id, refPrep(e)]));
-  const byId = new Map(all.map((e) => [e.id, e]));
-  const cats = [];
-  for (const e of all) if (!cats.includes(e.category)) cats.push(e.category);
+  const everything = (await api("reference")).entries;
+  const preps = new Map(everything.map((e) => [e.id, refPrep(e)]));
+  const byId = new Map(everything.map((e) => [e.id, e]));
+  let all = everything, cats = [];
+  const bar = makeFilters(FILTER_KEYS.reference, { onChange: () => refilter() });
+  const recompute = () => {
+    all = everything.filter((e) => !bar.f.tags.length || bar.f.tags.includes(e.tag));
+    cats = [];
+    for (const e of all) if (!cats.includes(e.category)) cats.push(e.category);
+  };
+  recompute();
   const search = h("input", { type: "search", placeholder: "Search a function or command: printf, open, dup2…", autofocus: true, autocomplete: "off", spellcheck: false });
   const nav = h("nav", { class: "refnav" });
   const pane = h("div", { class: "refpane" });
@@ -586,6 +619,7 @@ async function viewReference(focusId) {
     drawNav();
     show();
   };
+  const refilter = () => { recompute(); if (current && !all.some((e) => e.id === current)) current = null; applyQuery(); };
   search.addEventListener("input", applyQuery);
   search.addEventListener("keydown", (ev) => {
     if (!query || !results.length) return;
@@ -599,7 +633,7 @@ async function viewReference(focusId) {
   };
   current = focusId && byId.has(focusId) ? focusId : null;
   drawNav();
-  mount(h("div", { class: "refwrap" }, h("aside", { class: "refside" }, search, nav), pane));
+  mount(h("div", { class: "refwrap" }, h("aside", { class: "refside" }, bar.el, search, nav), pane));
   state.cleanup = () => { state.refSelect = null; };
   show();
   search.focus();
