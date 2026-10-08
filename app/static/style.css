@@ -240,7 +240,7 @@ pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } p
 .favbtn:hover, .favbtn.on { color: #d9a400; }
 .favmark { color: #d9a400; font-size: 12px; }
 .welcome h2 { font-size: 18px; margin: 22px 0 8px; }
-.refpane .linkbtn.back { margin: 0 0 12px; }
+.refpane .backref { margin: 0 0 12px; }
 .btn.step { flex-direction: column; align-items: flex-start; gap: 0; }
 .btn.step.next { align-items: flex-end; }
 .steplabel { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }

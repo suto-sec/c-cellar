@@ -744,7 +744,7 @@ async function viewReference(focusId) {
       on.scrollIntoView({ block: "nearest" });
     }
     const e = byId.get(current);
-    if (e) { pane.replaceChildren(h("button", { class: "linkbtn back", onclick: deselect }, "← Reference"), entryCard(e, byId, { on: favs.has(e.id), toggle: () => toggleFav(e) })); app.scrollTop = 0; return; }
+    if (e) { pane.replaceChildren(h("button", { class: "btn small backref", onclick: deselect }, "← Back to Reference"), entryCard(e, byId, { on: favs.has(e.id), toggle: () => toggleFav(e) })); app.scrollTop = 0; return; }
     const entryRows = (list) => h("div", { class: "list" }, list.map((x) => h("a", { class: "row", href: "#/reference/" + x.id },
       h("div", { class: "main" }, h("div", { class: "title" }, h("code", {}, x.title), favs.has(x.id) ? h("span", { class: "favmark", title: "Favorite" }, " ★") : null), h("div", { class: "sub", html: rmd(x.summary) })), h("span", { class: "tag", title: "Course topic " + T(x.tag) }, T(x.tag)))));
     if (category) {
