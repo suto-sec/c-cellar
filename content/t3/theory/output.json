@@ -48,6 +48,337 @@
    "ref": [
     "printf"
    ]
+  },
+  {
+   "id": "t3-q-output-01",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "Which statement prints `Hello` and then moves to a new line?",
+   "explain": "A string literal uses double quotes and `\\n` is the newline character. Single quotes are for ONE character (`'H'`), and `print` is not a C function.",
+   "ref": [
+    "printf",
+    "escapes"
+   ],
+   "options": [
+    "printf(\"Hello\\n\");",
+    "printf(\"Hello\");",
+    "printf('Hello\\n');",
+    "print(\"Hello\\n\");"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Prints Hello but stays on the same line.",
+    "Single quotes make a character constant; a multi-character one is not a string.",
+    "There is no `print` in the C library: it is `printf`."
+   ]
+  },
+  {
+   "id": "t3-q-output-02",
+   "type": "predict",
+   "difficulty": 1,
+   "prompt": "What does this program print?",
+   "explain": "Each `%d` is replaced, in order, by the next argument: 2, 3 and then the value of the expression `2 + 3`.",
+   "ref": [
+    "printf"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    printf(\"%d + %d = %d\\n\", 2, 3, 2 + 3);\n    return 0;\n}\n",
+   "answer": "2 + 3 = 5"
+  },
+  {
+   "id": "t3-q-output-03",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print? Count the spaces.",
+   "explain": "`%5d` right-aligns in 5 characters, `%-5d` left-aligns (the `-` flag), `%05d` pads with zeros instead of spaces.",
+   "ref": [
+    "printf"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    printf(\"[%5d][%-5d][%05d]\\n\", 42, 42, 42);\n    return 0;\n}\n",
+   "answer": "[   42][42   ][00042]"
+  },
+  {
+   "id": "t3-q-output-04",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "The number after the dot is the number of decimals; with `.0` the value is rounded to an integer (3.7 becomes 4).",
+   "ref": [
+    "printf"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    printf(\"%.2f %.0f %.3f\\n\", 3.14159, 3.7, 2.0);\n    return 0;\n}\n",
+   "answer": "3.14 4 2.000"
+  },
+  {
+   "id": "t3-q-output-05",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "255 is `ff` in lower-case hexadecimal and `FF` in upper case, 8 is `10` in octal, and `%c` prints the character with code 65.",
+   "ref": [
+    "printf"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    printf(\"%x %X %o %c\\n\", 255, 255, 8, 65);\n    return 0;\n}\n",
+   "answer": "ff FF 10 A"
+  },
+  {
+   "id": "t3-q-output-06",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (`printf` returns a value too.)",
+   "explain": "`printf` returns the number of characters it wrote, including the newline: `abc` plus `\\n` is 4.",
+   "ref": [
+    "printf"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int n = printf(\"abc\\n\");\n    printf(\"%d\\n\", n);\n    return 0;\n}\n",
+   "answer": "abc\n4"
+  },
+  {
+   "id": "t3-q-output-07",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "A character is a small integer: `%d` prints its code (97 for `'a'`), and `'a' + 1` is the code 98, which `%c` prints as `b`.",
+   "ref": [
+    "printf",
+    "types"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    printf(\"%d %c\\n\", 'a', 'a' + 1);\n    return 0;\n}\n",
+   "answer": "97 b"
+  },
+  {
+   "id": "t3-q-output-08",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "explain": "Adjacent string literals are joined by the compiler into one: `\"ab\" \"cd\"` is `\"abcd\"`.",
+   "ref": [
+    "printf",
+    "strings"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    printf(\"%s\\n\", \"ab\" \"cd\");\n    return 0;\n}\n",
+   "answer": "abcd"
+  },
+  {
+   "id": "t3-q-output-09",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "To print a literal percent sign with printf you write {{0}} in the format string.",
+   "explain": "A single `%` starts a conversion, so a real percent sign is written `%%`.",
+   "ref": [
+    "printf"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "%%"
+     ],
+     "ignore_space": true
+    }
+   ]
+  },
+  {
+   "id": "t3-q-output-10",
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "Complete the call so that it prints `7 apples cost 3.50 euros`.",
+   "explain": "`%d` prints the int 7; `%.2f` prints the double 3.5 with two decimals.",
+   "ref": [
+    "printf"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "%d"
+     ],
+     "ignore_space": true
+    },
+    {
+     "accept": [
+      "%.2f",
+      "%0.2f"
+     ],
+     "ignore_space": true
+    }
+   ],
+   "code": "printf(\"{{0}} apples cost {{1}} euros\\n\", 7, 3.5);"
+  },
+  {
+   "id": "t3-q-output-11",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What is the effect of `printf(\"%d\\n\", 3.5);`?",
+   "explain": "The conversion and the argument type must match. With a mismatch the behaviour is undefined (it usually prints garbage). `gcc -Wall` warns about it.",
+   "ref": [
+    "printf",
+    "types"
+   ],
+   "options": [
+    "Undefined behaviour: `%d` expects an int but receives a double",
+    "It prints 3",
+    "It prints 4",
+    "It always fails to compile"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "The double is not converted: printf cannot know the type of its extra arguments.",
+    "No rounding happens either.",
+    "It compiles (with a warning); the problem appears at run time."
+   ]
+  },
+  {
+   "id": "t3-q-output-12",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What is the difference between `puts(\"hi\")` and `printf(\"hi\")`?",
+   "explain": "`puts(s)` writes the string and then a newline. `printf(\"hi\")` writes only `hi`. (Both write to standard output.)",
+   "ref": [
+    "puts",
+    "printf"
+   ],
+   "options": [
+    "`puts` adds a newline at the end; `printf` prints exactly the text it receives",
+    "`puts` prints on stderr",
+    "`printf` can only print numbers",
+    "There is no difference"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Both use standard output; `fprintf(stderr, ...)` is for errors.",
+    "printf prints text and numbers.",
+    "The newline is the difference."
+   ]
+  },
+  {
+   "id": "t3-q-output-13",
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "Which of these are valid escape sequences inside a C string?",
+   "explain": "`\\n` newline, `\\t` tab, `\\\"` a double quote and `\\0` the null character are valid. `\\q` is not an escape sequence (gcc warns about it).",
+   "ref": [
+    "escapes"
+   ],
+   "options": [
+    "\\n",
+    "\\t",
+    "\\q",
+    "\\\"",
+    "\\0"
+   ],
+   "answer": [
+    0,
+    1,
+    3,
+    4
+   ],
+   "option_notes": [
+    "Valid.",
+    "Valid.",
+    "Not defined by C.",
+    "Valid: it lets you put a quote inside a string.",
+    "Valid: the null character that ends strings."
+   ]
+  },
+  {
+   "id": "t3-q-output-14",
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each escape sequence with the character it produces.",
+   "explain": "A backslash starts an escape sequence. Note `\\b` is backspace (not a space), and `\\\\` is how you write one backslash.",
+   "ref": [
+    "escapes"
+   ],
+   "pairs": [
+    [
+     "\\n",
+     "a new line"
+    ],
+    [
+     "\\t",
+     "a horizontal tab"
+    ],
+    [
+     "\\\\",
+     "one backslash"
+    ],
+    [
+     "\\0",
+     "the null character that ends a string"
+    ],
+    [
+     "\\b",
+     "a backspace"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-output-15",
+   "type": "sort",
+   "difficulty": 2,
+   "prompt": "Sort each printf conversion by the type of argument it expects.",
+   "explain": "`%d %u %x` print integers (signed, unsigned, hexadecimal), `%f %e %g` print doubles, `%c` prints one character and `%s` a string.",
+   "ref": [
+    "printf"
+   ],
+   "categories": [
+    "Integer",
+    "Floating point",
+    "Text"
+   ],
+   "items": [
+    [
+     "%d",
+     "Integer"
+    ],
+    [
+     "%u",
+     "Integer"
+    ],
+    [
+     "%x",
+     "Integer"
+    ],
+    [
+     "%f",
+     "Floating point"
+    ],
+    [
+     "%e",
+     "Floating point"
+    ],
+    [
+     "%g",
+     "Floating point"
+    ],
+    [
+     "%c",
+     "Text"
+    ],
+    [
+     "%s",
+     "Text"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-output-16",
+   "type": "order",
+   "difficulty": 3,
+   "prompt": "Put the parts of a printf conversion in the order they are written.",
+   "explain": "The general form is `%[flags][width][.precision][length]conversion`, for example `%-8.3ld`.",
+   "ref": [
+    "printf"
+   ],
+   "items": [
+    "% (starts the conversion)",
+    "flags such as - 0 +",
+    "minimum width",
+    ".precision",
+    "length modifier such as l or z",
+    "conversion letter such as d or f"
+   ]
   }
  ]
 }

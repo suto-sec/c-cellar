@@ -68,6 +68,245 @@
     "fgets",
     "strcspn"
    ]
+  },
+  {
+   "id": "t3-q-input-01",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "Which call reads an integer from the keyboard into the variable `n`?",
+   "explain": "`scanf` needs the ADDRESS of the variable (`&n`) so that it can store the value there. Without the `&` it would write to a random address.",
+   "ref": [
+    "scanf"
+   ],
+   "options": [
+    "scanf(\"%d\", &n);",
+    "scanf(\"%d\", n);",
+    "scanf(n);",
+    "read(\"%d\", &n);"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Missing `&`: `scanf` would treat the value of `n` as an address.",
+    "The first argument of scanf is the format string.",
+    "`read` is a system call with other arguments."
+   ]
+  },
+  {
+   "id": "t3-q-input-02",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does `scanf` return?",
+   "explain": "Check the return value: `scanf(\"%d\", &n) == 1` means a number was read. A different value means the input was not a number (0) or ended (EOF).",
+   "ref": [
+    "scanf"
+   ],
+   "options": [
+    "The number of items it read and stored (or EOF if the input ended first)",
+    "The value that it read",
+    "Always 0",
+    "The length of the line"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "The value goes into the variable, not into the return value.",
+    "It returns a count, so you can test it.",
+    "It does not count characters."
+   ]
+  },
+  {
+   "id": "t3-q-input-03",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (`sscanf` reads from a string.)",
+   "explain": "The first conversion reads 12; the second finds `abc`, which is not a number, so reading stops. `sscanf` returns the number of items converted: 1.",
+   "ref": [
+    "sscanf"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int a = -1, b = -1;\n    int r = sscanf(\"12 abc\", \"%d %d\", &a, &b);\n\n    printf(\"%d %d\\n\", r, a);\n    return 0;\n}\n",
+   "answer": "1 12"
+  },
+  {
+   "id": "t3-q-input-04",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "`%s` reads one WORD: it stops at the first white space. To read a whole line use `fgets`.",
+   "ref": [
+    "scanf",
+    "sscanf"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    char s[16];\n\n    sscanf(\"hello world\", \"%15s\", s);\n    printf(\"[%s]\\n\", s);\n    return 0;\n}\n",
+   "answer": "[hello]"
+  },
+  {
+   "id": "t3-q-input-05",
+   "type": "predict",
+   "difficulty": 4,
+   "prompt": "What does this program print? (The space in the second format matters.)",
+   "explain": "`%c` reads the very next character, even a space. A space in the format (`\" %c\"`) first skips any white space, so the second call reads `x`.",
+   "ref": [
+    "scanf",
+    "sscanf"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    char a, b;\n\n    sscanf(\"  x\", \"%c\", &a);\n    sscanf(\"  x\", \" %c\", &b);\n    printf(\"[%c][%c]\\n\", a, b);\n    return 0;\n}\n",
+   "answer": "[ ][x]"
+  },
+  {
+   "id": "t3-q-input-06",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "explain": "`%d` reads an integer: it takes the `3` and stops at the dot. The `.9` is left unread.",
+   "ref": [
+    "sscanf"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int x = 0;\n\n    sscanf(\"3.9\", \"%d\", &x);\n    printf(\"%d\\n\", x);\n    return 0;\n}\n",
+   "answer": "3"
+  },
+  {
+   "id": "t3-q-input-07",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "To read a `double` with `scanf` you use...",
+   "explain": "`scanf` needs `%lf` for a double (and `%f` for a float). This differs from printf, where `%f` prints a double.",
+   "ref": [
+    "scanf",
+    "printf"
+   ],
+   "options": [
+    "%lf",
+    "%f",
+    "%d",
+    "%ld"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "`%f` would store a float in memory meant for a double: wrong values.",
+    "`%d` is for ints.",
+    "`%ld` is for longs."
+   ]
+  },
+  {
+   "id": "t3-q-input-08",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "Why was `gets` removed from the C standard?",
+   "explain": "`gets(buf)` has no size argument, so any input longer than the buffer overwrites memory (a classic security hole). Use `fgets(buf, size, stdin)`.",
+   "ref": [
+    "gets",
+    "fgets"
+   ],
+   "options": [
+    "It cannot limit the number of characters, so a long line overflows the buffer",
+    "It was too slow",
+    "It could not read spaces",
+    "It always returned NULL"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Speed was not the issue.",
+    "It did read spaces: it read a whole line.",
+    "It returned the buffer."
+   ]
+  },
+  {
+   "id": "t3-q-input-09",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "After `scanf(\"%d\", &n)` reads `42` the user pressed Enter. What does a following `fgets` return?",
+   "explain": "`scanf(\"%d\")` does not consume the newline after the number, so the next `fgets` finds it immediately and returns the one-character line `\\n`. Read one more character, or use `fgets` + `sscanf` for everything.",
+   "ref": [
+    "scanf",
+    "fgets"
+   ],
+   "options": [
+    "An empty line (just the leftover newline)",
+    "The next line the user types",
+    "NULL",
+    "The number 42 again"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "It first sees the newline left behind.",
+    "NULL only happens at the end of the input.",
+    "The number was already consumed."
+   ]
+  },
+  {
+   "id": "t3-q-input-10",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Why does `getchar()` return an `int` and not a `char`?",
+   "explain": "A `char` has only 256 values, all valid characters. `EOF` is a separate negative number, so the result must be wider. Store it in an `int` and compare with `EOF`.",
+   "ref": [
+    "getchar"
+   ],
+   "options": [
+    "So that it can return EOF (-1), which is different from every character",
+    "Because chars cannot be negative",
+    "To be faster",
+    "Because it reads two bytes"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "chars can be signed or unsigned; that is not the reason.",
+    "Speed is unrelated.",
+    "It reads one byte."
+   ]
+  },
+  {
+   "id": "t3-q-input-11",
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "Complete the call so that it never reads more than the size of the buffer.",
+   "explain": "Passing `sizeof(line)` keeps the size correct even if you change the array's length. `fgets` reads at most size - 1 characters and adds the terminator.",
+   "ref": [
+    "fgets",
+    "sizeof"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "sizeof(line)",
+      "sizeof line"
+     ],
+     "ignore_space": true
+    }
+   ],
+   "code": "char line[100];\nfgets(line, {{0}}, stdin);"
+  },
+  {
+   "id": "t3-q-input-12",
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "Which statements about `fgets(buf, size, f)` are true?",
+   "explain": "`fgets` is the safe line reader: bounded, always terminated, NULL at EOF. It KEEPS the newline in the buffer; remove it yourself if you need to.",
+   "ref": [
+    "fgets"
+   ],
+   "options": [
+    "It reads at most size - 1 characters",
+    "It always terminates the buffer with '\\0'",
+    "It removes the newline from the line",
+    "It returns NULL at the end of the input"
+   ],
+   "answer": [
+    0,
+    1,
+    3
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "False: the newline stays in the buffer.",
+    "True."
+   ]
   }
  ]
 }

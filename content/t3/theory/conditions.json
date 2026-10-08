@@ -51,6 +51,161 @@
    "ref": [
     "if"
    ]
+  },
+  {
+   "id": "t3-q-conditions-01",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (To which `if` does the `else` belong?)",
+   "explain": "An `else` belongs to the NEAREST `if`, whatever the indentation says. Here `a` is true, `b` is false, so the inner else runs. Use braces to make this explicit.",
+   "ref": [
+    "if"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int a = 1, b = 0;\n\n    if (a)\n        if (b)\n            printf(\"A\\n\");\n        else\n            printf(\"B\\n\");\n    return 0;\n}\n",
+   "answer": "B"
+  },
+  {
+   "id": "t3-q-conditions-02",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print? (There is no `break`.)",
+   "explain": "Execution enters at `case 2` and CONTINUES through `case 3` (fall-through) until the `break`.",
+   "ref": [
+    "switch",
+    "break"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int n = 2;\n\n    switch (n) {\n    case 1:\n        printf(\"one\\n\");\n    case 2:\n        printf(\"two\\n\");\n    case 3:\n        printf(\"three\\n\");\n        break;\n    default:\n        printf(\"other\\n\");\n    }\n    return 0;\n}\n",
+   "answer": "two\nthree"
+  },
+  {
+   "id": "t3-q-conditions-03",
+   "type": "predict",
+   "difficulty": 4,
+   "prompt": "What does this program print? (A `default` can be in the middle.)",
+   "explain": "7 matches no case, so execution jumps to `default`, and with no `break` it falls through into `case 1`.",
+   "ref": [
+    "switch"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    switch (7) {\n    default:\n        printf(\"d\\n\");\n    case 1:\n        printf(\"1\\n\");\n    }\n    return 0;\n}\n",
+   "answer": "d\n1"
+  },
+  {
+   "id": "t3-q-conditions-04",
+   "type": "predict",
+   "difficulty": 1,
+   "prompt": "What does this program print?",
+   "explain": "The conditions are tested in order; the first true one runs and the rest are skipped.",
+   "ref": [
+    "if"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int x = 5;\n\n    if (x > 7)\n        printf(\"a\\n\");\n    else if (x > 3)\n        printf(\"b\\n\");\n    else\n        printf(\"c\\n\");\n    return 0;\n}\n",
+   "answer": "b"
+  },
+  {
+   "id": "t3-q-conditions-05",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (`=` or `==`?)",
+   "explain": "`a = 0` is an ASSIGNMENT whose value is 0 (false), so the else branch runs (and `a` is now 0). `gcc -Wall` warns about assignments in conditions.",
+   "ref": [
+    "if",
+    "operators"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int a = 3, b = 3;\n\n    if (a == b)\n        printf(\"eq\\n\");\n    if (a = 0)\n        printf(\"zero\\n\");\n    else\n        printf(\"else\\n\");\n    return 0;\n}\n",
+   "answer": "eq\nelse"
+  },
+  {
+   "id": "t3-q-conditions-06",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Which type cannot be used as the controlling expression of a `switch`?",
+   "explain": "A `switch` selects among integer constants: `int`, `char`, enums. Floating-point values and strings are not allowed.",
+   "ref": [
+    "switch"
+   ],
+   "options": [
+    "double",
+    "int",
+    "char",
+    "an enum"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Allowed.",
+    "Allowed: a char is an integer.",
+    "Allowed: an enum value is an integer."
+   ]
+  },
+  {
+   "id": "t3-q-conditions-07",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Is `if (x == 1 || 2)` a correct way to test whether `x` is 1 or 2?",
+   "explain": "It means `(x == 1) || (2)`, and the non-zero `2` is true. Write `x == 1 || x == 2`.",
+   "ref": [
+    "if",
+    "operators"
+   ],
+   "options": [
+    "No: it is always true because `2` alone is true",
+    "Yes",
+    "Only if x is positive",
+    "No: it is a syntax error"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "It compiles, but it does not do what it seems.",
+    "The sign is irrelevant.",
+    "It is valid C."
+   ]
+  },
+  {
+   "id": "t3-q-conditions-08",
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "For `x = 5`, which conditions are true?",
+   "explain": "`x > 3 && x < 10` and `x == 5 || x == 6` are true; `!(x == 5)` is false; 5 is odd so `x % 2 == 1` is true.",
+   "ref": [
+    "if",
+    "operators"
+   ],
+   "options": [
+    "x > 3 && x < 10",
+    "x == 5 || x == 6",
+    "!(x == 5)",
+    "x % 2 == 1"
+   ],
+   "answer": [
+    0,
+    1,
+    3
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "False.",
+    "True."
+   ]
+  },
+  {
+   "id": "t3-q-conditions-09",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "In a `switch`, the keyword that stops execution from continuing into the next `case` is {{0}}.",
+   "explain": "Without `break` the code falls through into the following cases.",
+   "ref": [
+    "break",
+    "switch"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "break"
+     ]
+    }
+   ]
   }
  ]
 }

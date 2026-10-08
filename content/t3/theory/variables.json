@@ -59,6 +59,395 @@
     "types",
     "sizeof"
    ]
+  },
+  {
+   "id": "t3-q-variables-01",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "Which declaration creates an `int` variable called `count` with the initial value 10?",
+   "explain": "A declaration is `type name = value;`. `==` is the comparison operator, and C has no `integer` type.",
+   "ref": [
+    "types"
+   ],
+   "options": [
+    "int count = 10;",
+    "count int = 10;",
+    "integer count = 10;",
+    "int count == 10;"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "The type comes first.",
+    "The C type is `int`.",
+    "`==` compares; `=` initialises."
+   ]
+  },
+  {
+   "id": "t3-q-variables-02",
+   "type": "predict",
+   "difficulty": 1,
+   "prompt": "What does this program print?",
+   "explain": "`int b = a;` copies the VALUE of `a` at that moment. Changing `a` afterwards does not affect `b`.",
+   "ref": [
+    "types"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int a = 7;\n    int b = a;\n\n    a = 9;\n    printf(\"%d %d\\n\", a, b);\n    return 0;\n}\n",
+   "answer": "9 7"
+  },
+  {
+   "id": "t3-q-variables-03",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "An `unsigned char` holds 0 to 255. Unsigned arithmetic wraps around (it is well defined): 255 + 1 becomes 0.",
+   "ref": [
+    "types",
+    "limits.h"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    unsigned char x = 255;\n\n    x++;\n    printf(\"%d\\n\", x);\n    return 0;\n}\n",
+   "answer": "0"
+  },
+  {
+   "id": "t3-q-variables-04",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "A `char` is a small integer: 'A' is 65, so `c + 2` is 67, which `%c` prints as `C`.",
+   "ref": [
+    "types",
+    "printf"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    char c = 'A';\n\n    c = c + 2;\n    printf(\"%c %d\\n\", c, c);\n    return 0;\n}\n",
+   "answer": "C 67"
+  },
+  {
+   "id": "t3-q-variables-05",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (Careful with the division.)",
+   "explain": "`7 / 2` is an INTEGER division (3): the fraction is lost before the result is stored in the double. Write `7 / 2.0` to get 3.5.",
+   "ref": [
+    "types",
+    "operators"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    double d = 7 / 2;\n\n    printf(\"%.1f\\n\", d);\n    return 0;\n}\n",
+   "answer": "3.0"
+  },
+  {
+   "id": "t3-q-variables-06",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "A `static` local variable is created once and keeps its value between calls: after three calls it is 3. (It is initialised to 0 only the first time.)",
+   "ref": [
+    "static"
+   ],
+   "code": "#include <stdio.h>\n\nstatic int next(void)\n{\n    static int n = 0;\n\n    n++;\n    return n;\n}\n\nint main(void)\n{\n    next();\n    next();\n    printf(\"%d\\n\", next());\n    return 0;\n}\n",
+   "answer": "3"
+  },
+  {
+   "id": "t3-q-variables-07",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What happens with this code?",
+   "explain": "A variable declared inside `{ }` exists only in that block (its scope). Using it afterwards is a compile error: the name is unknown there.",
+   "ref": [
+    "types"
+   ],
+   "options": [
+    "It does not compile: `x` does not exist outside its block",
+    "It prints 1",
+    "It prints 0",
+    "It prints a random number"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "The variable is gone after the closing brace.",
+    "No default value is involved: the name is not visible at all.",
+    "Not even that: the program does not compile."
+   ],
+   "code": "{\n    int x = 1;\n}\nprintf(\"%d\\n\", x);"
+  },
+  {
+   "id": "t3-q-variables-08",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "What is `sizeof(char)`?",
+   "explain": "By definition `sizeof(char)` is 1: sizes in C are measured in chars. (A char has `CHAR_BIT` bits, usually 8.) A course quiz may suggest it 'depends on the architecture'; in standard C it never does.",
+   "ref": [
+    "sizeof",
+    "types"
+   ],
+   "options": [
+    "Always 1",
+    "It depends on the architecture",
+    "2 on most systems",
+    "8, because a char is 8 bits"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Other types vary, but char is the unit of measurement.",
+    "No: that would be `short`.",
+    "`sizeof` counts in chars, not in bits."
+   ]
+  },
+  {
+   "id": "t3-q-variables-09",
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "Which statements about the `<stdint.h>` types are true?",
+   "explain": "The fixed-width types say exactly how many bits they have. The plain `int` only has a minimum size (at least 16 bits); on current Linux systems it happens to be 32.",
+   "ref": [
+    "types"
+   ],
+   "options": [
+    "`int32_t` is a signed integer of exactly 32 bits",
+    "`uint8_t` is an unsigned integer of 8 bits",
+    "`int` is always exactly 32 bits",
+    "`uint64_t` can hold values up to 2^64 - 1"
+   ],
+   "answer": [
+    0,
+    1,
+    3
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "False: only `int32_t` guarantees 32 bits.",
+    "True."
+   ]
+  },
+  {
+   "id": "t3-q-variables-10",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "The header that defines `int8_t`, `uint32_t` and the other fixed-width types is `<{{0}}>`.",
+   "explain": "Include `<stdint.h>` to use `int8_t`, `uint16_t`, `int64_t`, and so on.",
+   "ref": [
+    "types"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "stdint.h"
+     ],
+     "ignore_space": true
+    }
+   ]
+  },
+  {
+   "id": "t3-q-variables-11",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What happens when you assign to a variable declared `const int MAX = 10;` with `MAX = 20;`?",
+   "explain": "The compiler rejects assignments to `const` objects: that is the whole point of `const`.",
+   "ref": [
+    "const"
+   ],
+   "options": [
+    "The program does not compile (assignment of a read-only variable)",
+    "MAX becomes 20",
+    "MAX stays 10 but there is no error",
+    "It compiles and crashes when it runs"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "It is read-only.",
+    "The compiler reports an error: it does not stay silent.",
+    "It is caught at compile time, not at run time."
+   ]
+  },
+  {
+   "id": "t3-q-variables-12",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (Think about how the macro is expanded.)",
+   "explain": "A macro is TEXT substitution: `SQUARE(2 + 1)` becomes `2 + 1 * 2 + 1`, which is 5 (not 9). Always parenthesise macro parameters: `((x) * (x))`.",
+   "ref": [
+    "#define"
+   ],
+   "code": "#include <stdio.h>\n\n#define SQUARE(x) x * x\n\nint main(void)\n{\n    printf(\"%d\\n\", SQUARE(2 + 1));\n    return 0;\n}\n",
+   "answer": "5"
+  },
+  {
+   "id": "t3-q-variables-13",
+   "type": "sort",
+   "difficulty": 1,
+   "prompt": "Sort these types into integer types and floating-point types.",
+   "explain": "`char`, `short`, `long` and `size_t` hold integers; `float` and `double` hold real numbers with a fractional part.",
+   "ref": [
+    "types"
+   ],
+   "categories": [
+    "Integer",
+    "Floating point"
+   ],
+   "items": [
+    [
+     "char",
+     "Integer"
+    ],
+    [
+     "short",
+     "Integer"
+    ],
+    [
+     "long",
+     "Integer"
+    ],
+    [
+     "size_t",
+     "Integer"
+    ],
+    [
+     "float",
+     "Floating point"
+    ],
+    [
+     "double",
+     "Floating point"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-variables-14",
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each type with what it is used for.",
+   "explain": "Each type has a purpose. `size_t` is what `sizeof` returns and is printed with `%zu`; `void` means 'nothing'.",
+   "ref": [
+    "types",
+    "sizeof"
+   ],
+   "pairs": [
+    [
+     "char",
+     "one character, or a small integer"
+    ],
+    [
+     "double",
+     "a floating-point number with about 15 digits"
+    ],
+    [
+     "size_t",
+     "the size of an object, an unsigned integer"
+    ],
+    [
+     "void",
+     "no value at all (a function that returns nothing)"
+    ],
+    [
+     "float",
+     "a floating-point number with about 6 digits"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-variables-15",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (An enum constant without a value continues counting.)",
+   "explain": "Enum constants count up from the previous one: `B` is `A + 1` = 6, then `C` is set to 1 and `D` follows with 2.",
+   "ref": [
+    "enum"
+   ],
+   "code": "#include <stdio.h>\n\nenum e { A = 5, B, C = 1, D };\n\nint main(void)\n{\n    printf(\"%d %d %d\\n\", B, C, D);\n    return 0;\n}\n",
+   "answer": "6 1 2"
+  },
+  {
+   "id": "t3-q-variables-16",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What can you rely on when a signed `int` goes beyond `INT_MAX` (for example `INT_MAX + 1`)?",
+   "explain": "Only UNSIGNED arithmetic is defined to wrap around. Signed overflow is undefined behaviour: the compiler may assume it never happens, so do not depend on a result.",
+   "ref": [
+    "limits.h",
+    "types"
+   ],
+   "options": [
+    "Nothing: signed overflow is undefined behaviour",
+    "It wraps around to INT_MIN",
+    "It stays at INT_MAX",
+    "The program always stops with an error"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "It often does on real hardware, but the language does not promise it.",
+    "No saturation in C.",
+    "No automatic check exists."
+   ]
+  },
+  {
+   "id": "t3-q-variables-17",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What value does a local variable `int x;` have if you do not initialise it?",
+   "explain": "A local (automatic) variable has no defined initial value; reading it is undefined behaviour. Only static and global variables start as 0.",
+   "ref": [
+    "types",
+    "static"
+   ],
+   "options": [
+    "Indeterminate: using it before assigning is a bug",
+    "0",
+    "-1",
+    "The value of the last variable that used that memory, guaranteed"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Only for static or global variables.",
+    "No such rule.",
+    "It is garbage, but nothing is guaranteed about it."
+   ]
+  },
+  {
+   "id": "t3-q-variables-18",
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "A variable declared `static` or at file level and not initialised starts as {{0}}.",
+   "explain": "Static storage is zero-initialised: numbers are 0 and pointers are NULL.",
+   "ref": [
+    "static"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "0",
+      "zero"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "t3-q-variables-19",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What does `static int counter;` mean when it is written at file level (outside any function)?",
+   "explain": "At file level `static` means internal linkage: other files cannot see the name. Inside a function it means the variable survives between calls.",
+   "ref": [
+    "static",
+    "modules"
+   ],
+   "options": [
+    "`counter` can only be used in that source file",
+    "`counter` keeps its value between function calls (it is a local static)",
+    "`counter` is constant",
+    "`counter` can be used from every file of the program"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "That is the meaning inside a function, not at file level.",
+    "That would be `const`.",
+    "That is the default WITHOUT static (`extern` linkage)."
+   ]
   }
  ]
 }

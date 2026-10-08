@@ -1,0 +1,193 @@
+{
+ "id": "t3-th-loops",
+ "tag": "t3",
+ "title": "Loops",
+ "chapter": "loops",
+ "questions": [
+  {
+   "id": "t3-q-loops-01",
+   "type": "predict",
+   "difficulty": 1,
+   "prompt": "What does this program print?",
+   "explain": "`i` takes the values 0, 1, 2; the loop stops when `i < 3` becomes false.",
+   "ref": [
+    "for"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    for (int i = 0; i < 3; i++)\n        printf(\"%d \", i);\n    printf(\"\\n\");\n    return 0;\n}\n",
+   "answer": "0 1 2"
+  },
+  {
+   "id": "t3-q-loops-02",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "i goes 0, 2, 4, 6. The condition `i < 5` is checked before each pass, and 6 is the first value that fails it.",
+   "ref": [
+    "while"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int i = 0;\n\n    while (i < 5)\n        i += 2;\n    printf(\"%d\\n\", i);\n    return 0;\n}\n",
+   "answer": "6"
+  },
+  {
+   "id": "t3-q-loops-03",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print? (The condition is false from the start.)",
+   "explain": "A `do ... while` tests AFTER the body, so the body runs at least once.",
+   "ref": [
+    "do"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    do {\n        printf(\"x\");\n    } while (0);\n    printf(\"\\n\");\n    return 0;\n}\n",
+   "answer": "x"
+  },
+  {
+   "id": "t3-q-loops-04",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "explain": "Odd numbers are skipped with `continue`. When `i` reaches 4, `break` leaves the loop before printing it.",
+   "ref": [
+    "for",
+    "break",
+    "continue"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    for (int i = 0; i < 6; i++) {\n        if (i % 2)\n            continue;\n        if (i == 4)\n            break;\n        printf(\"%d \", i);\n    }\n    printf(\"\\n\");\n    return 0;\n}\n",
+   "answer": "0 2"
+  },
+  {
+   "id": "t3-q-loops-05",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (Look at the semicolon.)",
+   "explain": "The `;` right after the `for (...)` is an EMPTY body: the loop just counts. When it ends `i` is 3.",
+   "ref": [
+    "for"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int i;\n\n    for (i = 0; i < 3; i++)\n        ;\n    printf(\"%d\\n\", i);\n    return 0;\n}\n",
+   "answer": "3"
+  },
+  {
+   "id": "t3-q-loops-06",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "The inner loop prints 1..i on every pass of the outer loop, followed by a bar.",
+   "ref": [
+    "for"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    for (int i = 1; i <= 3; i++) {\n        for (int j = 1; j <= i; j++)\n            printf(\"%d\", j);\n        printf(\"|\");\n    }\n    printf(\"\\n\");\n    return 0;\n}\n",
+   "answer": "1|12|123|"
+  },
+  {
+   "id": "t3-q-loops-07",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "How many times does the body of `for (int i = 10; i > 0; i -= 3)` run?",
+   "explain": "i takes the values 10, 7, 4 and 1; the next value, -2, fails the test `i > 0`.",
+   "ref": [
+    "for"
+   ],
+   "options": [
+    "4",
+    "3",
+    "10",
+    "Forever"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "It also runs for i = 1.",
+    "The step is 3, not 1.",
+    "i decreases every pass, so it ends."
+   ]
+  },
+  {
+   "id": "t3-q-loops-08",
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "Which loops never end by themselves (without a `break`)?",
+   "explain": "`for (;;)` and `while (1)` have no false condition; the third loop never changes `i`. `while (0)` never runs at all.",
+   "ref": [
+    "for",
+    "while"
+   ],
+   "options": [
+    "for (;;) { }",
+    "while (1) { }",
+    "for (int i = 0; i < 10; ) { }",
+    "while (0) { }"
+   ],
+   "answer": [
+    0,
+    1,
+    2
+   ],
+   "option_notes": [
+    "Infinite.",
+    "Infinite.",
+    "`i` is never incremented: infinite.",
+    "The condition is false at once: zero passes."
+   ]
+  },
+  {
+   "id": "t3-q-loops-09",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "A {{0}} loop tests its condition after the body, so the body always runs at least once.",
+   "explain": "`do { ... } while (cond);` (do-while) is the loop that checks last.",
+   "ref": [
+    "do"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "do-while",
+      "do while",
+      "do"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "t3-q-loops-10",
+   "type": "order",
+   "difficulty": 3,
+   "prompt": "Put the steps of a `for (init; cond; update) body` loop in the order they happen.",
+   "explain": "`init` runs once; then the cycle is: test the condition, run the body, run the update, test again... until the condition is false.",
+   "ref": [
+    "for"
+   ],
+   "items": [
+    "init runs once",
+    "cond is tested",
+    "the body runs (if cond was true)",
+    "update runs",
+    "cond is tested again"
+   ]
+  },
+  {
+   "id": "t3-q-loops-11",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What is wrong with `int a[5]; for (int i = 0; i <= 5; i++) a[i] = 0;`?",
+   "explain": "An array of 5 elements has the indices 0 to 4. `i <= 5` visits index 5: an off-by-one error that corrupts memory.",
+   "ref": [
+    "arrays",
+    "for"
+   ],
+   "options": [
+    "It writes a[5], one element past the end of the array (undefined behaviour)",
+    "Nothing: it initialises the array",
+    "`i` must be declared before the loop",
+    "The array has 6 elements"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "It also writes outside the array.",
+    "Declaring `i` in the `for` is allowed in C99.",
+    "int a[5] has exactly 5 elements."
+   ]
+  }
+ ]
+}
