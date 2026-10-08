@@ -375,7 +375,7 @@ function mountDock(bodies) {
 
   // the Layout menu
   const menu = h("div", { class: "layoutmenu", role: "menu", hidden: true });
-  const menuBtn = h("button", { class: "btn small", "aria-haspopup": "true", "aria-expanded": "false", title: "Choose how the statement, terminal and VS Code are arranged" }, "⬚ Layout");
+  const menuBtn = h("button", { class: "btn small", "aria-haspopup": "true", "aria-expanded": "false", title: "Choose how the statement, terminal and VS Code are arranged (or drag a panel by its header)" }, "⬚ Layout");
   const choose = (id) => {
     if (id === "custom") { custom = custom || clone(tree); tree = clone(custom); name = "custom"; }
     else { tree = preset(id).tree(); name = id; }
@@ -392,12 +392,13 @@ function mountDock(bodies) {
   document.addEventListener("click", outside);
   document.addEventListener("keydown", onEsc);
 
-  const bar = h("div", { class: "dockbar" }, h("span", { class: "muted" }, "Drag a panel by its header to rearrange them"), h("span", { class: "spacer" }), h("div", { class: "layoutpick" }, menuBtn, menu));
-  const el = h("div", { class: "dockwrap" }, bar, dock);
+  const slot = $("#layoutpick");   // in the top bar, to the right of Settings; only the exercise screen fills it
+  slot.replaceChildren(menuBtn, menu); slot.hidden = false;
   render();
   return {
-    el,
+    el: dock,
     destroy() {
+      slot.replaceChildren(); slot.hidden = true;
       document.removeEventListener("click", outside); document.removeEventListener("keydown", onEsc);
       if (stopPanelDrag) stopPanelDrag();
       splitEls.forEach((s) => s.stopDrag());
