@@ -1,0 +1,39 @@
+{
+ "cases": [
+  {
+   "args": [
+    "es",
+    "cara",
+    "la",
+    "cacatua"
+   ],
+   "stdout": "autacac al arac se\n"
+  },
+  {
+   "args": [
+    "abc"
+   ],
+   "stdout": "cba\n"
+  },
+  {
+   "args": [
+    "two words",
+    "x"
+   ],
+   "stdout": "x sdrow owt\n"
+  },
+  {
+   "args": [
+    "hello",
+    "world",
+    "of",
+    "C"
+   ],
+   "stdout": "C fo dlrow olleh\n"
+  },
+  {
+   "args": [],
+   "stdout": ""
+  }
+ ]
+}

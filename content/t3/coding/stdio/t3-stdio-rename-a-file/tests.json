@@ -1,0 +1,22 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" a.txt b.txt && ls && cat b.txt",
+   "setup": "echo hi > a.txt",
+   "stdout": "b.txt\nhi\n"
+  },
+  {
+   "cmd": "\"$BIN\" nofile.txt new.txt 2>&1; echo \"rc=$?\"",
+   "stdout": "rename: No such file or directory\nrc=1\n"
+  },
+  {
+   "cmd": "\"$BIN\" a.txt b.txt && cat b.txt",
+   "setup": "echo one > a.txt; echo two > b.txt",
+   "stdout": "one\n"
+  },
+  {
+   "cmd": "\"$BIN\" only-one; echo \"rc=$?\"",
+   "stdout": "rc=1\n"
+  }
+ ]
+}

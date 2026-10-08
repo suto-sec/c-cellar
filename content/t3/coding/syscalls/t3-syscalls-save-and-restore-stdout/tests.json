@@ -1,0 +1,17 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" out.txt; echo ---; cat out.txt",
+   "stdout": "back on screen\n---\nredirected\n"
+  },
+  {
+   "cmd": "\"$BIN\" out.txt > screen.txt; cat screen.txt; echo ---; cat out.txt",
+   "setup": "echo old > out.txt",
+   "stdout": "back on screen\n---\nredirected\n"
+  },
+  {
+   "cmd": "\"$BIN\"; echo \"rc=$?\"",
+   "stdout": "rc=1\n"
+  }
+ ]
+}

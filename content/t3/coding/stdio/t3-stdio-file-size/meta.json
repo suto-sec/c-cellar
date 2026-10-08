@@ -5,7 +5,7 @@
  "topic": "stdio",
  "title": "Size of a file",
  "stars": 3,
- "order": 6,
+ "order": 8,
  "summary": "fseek and ftell.",
  "hints": [
   "`fseek(f, 0, SEEK_END)` moves to the end of the file; `ftell(f)` then returns the position, i.e. the size.",

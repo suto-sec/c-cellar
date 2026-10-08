@@ -1,0 +1,33 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" data.txt",
+   "setup": "printf '%s\\n' short 'the longest one here' 'mid size' > data.txt",
+   "stdout": "the longest one here\n"
+  },
+  {
+   "cmd": "\"$BIN\" data.txt",
+   "setup": "printf '%s\\n' aaa bbb ccc > data.txt",
+   "stdout": "aaa\n"
+  },
+  {
+   "cmd": "\"$BIN\" data.txt",
+   "setup": "printf '%s\\n' 'only line' > data.txt",
+   "stdout": "only line\n"
+  },
+  {
+   "cmd": "\"$BIN\" data.txt",
+   "setup": "printf '%s\\n' a bb ccc dd e fff > data.txt",
+   "stdout": "ccc\n"
+  },
+  {
+   "cmd": "\"$BIN\" data.txt",
+   "setup": "printf '%s\\n' 'x y' '' 'a longer line' 'a longer lime' > data.txt",
+   "stdout": "a longer line\n"
+  },
+  {
+   "cmd": "\"$BIN\" nofile.txt; echo \"rc=$?\"",
+   "stdout": "rc=1\n"
+  }
+ ]
+}

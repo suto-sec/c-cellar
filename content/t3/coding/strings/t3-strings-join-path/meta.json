@@ -1,0 +1,14 @@
+{
+ "id": "t3-strings-join-path",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "strings",
+ "title": "Join a path",
+ "stars": 2,
+ "order": 5,
+ "summary": "Build a string with strcpy and strcat.",
+ "hints": [
+  "Copy the first part into a `char path[256]` with `strcpy`, then add `\"/\"` and the second part with `strcat`.",
+  "`strcat(dest, src)` appends `src` after the `'\\0'` that ends `dest`: `dest` must be big enough for both."
+ ]
+}

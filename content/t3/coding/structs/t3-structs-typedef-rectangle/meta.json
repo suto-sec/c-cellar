@@ -1,0 +1,14 @@
+{
+ "id": "t3-structs-typedef-rectangle",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "structs",
+ "title": "A typedef'd rectangle",
+ "stars": 3,
+ "order": 9,
+ "summary": "Name a struct type with typedef.",
+ "hints": [
+  "`typedef struct { int width; int height; } Trect;` makes `Trect` a type name: no need to write `struct` every time.",
+  "A function can take and return a `Trect` by value: `Trect scale(Trect r, int k)`."
+ ]
+}

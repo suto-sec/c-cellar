@@ -5,7 +5,7 @@
  "topic": "functions",
  "title": "Towers of Hanoi: count the moves",
  "stars": 4,
- "order": 12,
+ "order": 13,
  "summary": "A recursion on a problem size.",
  "hints": [
   "`hanoi(0)` is 0.",

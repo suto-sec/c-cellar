@@ -5,7 +5,7 @@
  "topic": "stdio",
  "title": "Lines, words and bytes",
  "stars": 3,
- "order": 7,
+ "order": 9,
  "summary": "A tiny wc.",
  "hints": [
   "Read the file character by character, counting every byte, every `'\\n'`, and every time a non-space follows a space.",

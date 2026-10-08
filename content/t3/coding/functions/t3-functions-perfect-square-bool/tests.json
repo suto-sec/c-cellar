@@ -1,0 +1,24 @@
+{
+ "cases": [
+  {
+   "stdin": "0\n",
+   "stdout": "0 yes\n"
+  },
+  {
+   "stdin": "1\n",
+   "stdout": "1 yes\n"
+  },
+  {
+   "stdin": "2\n",
+   "stdout": "2 no\n"
+  },
+  {
+   "stdin": "4\n",
+   "stdout": "4 yes\n"
+  },
+  {
+   "stdin": "0\n1\n2\n4\n15\n16\n17\n144\n1000000\n99999\n2147395600\n",
+   "stdout": "0 yes\n1 yes\n2 no\n4 yes\n15 no\n16 yes\n17 no\n144 yes\n1000000 yes\n99999 no\n2147395600 yes\n"
+  }
+ ]
+}

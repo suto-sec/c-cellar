@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-remove-files",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "A tiny rm",
+ "stars": 2,
+ "order": 6,
+ "summary": "remove().",
+ "hints": [
+  "`remove(path)` deletes a file (and also an empty folder); it returns 0 on success.",
+  "Go on with the remaining arguments after a failure, and remember the failure for the exit status."
+ ]
+}

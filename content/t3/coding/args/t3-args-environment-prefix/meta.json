@@ -1,0 +1,14 @@
+{
+ "id": "t3-args-environment-prefix",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "args",
+ "title": "Variables with a prefix",
+ "stars": 3,
+ "order": 11,
+ "summary": "The third parameter of main: the environment.",
+ "hints": [
+  "`int main(int argc, char *argv[], char *envp[])`: `envp` is an array of strings `NAME=value` that ends with a `NULL` pointer.",
+  "`strncmp(entry, prefix, strlen(prefix)) == 0` tells whether an entry starts with the prefix."
+ ]
+}

@@ -4,7 +4,7 @@
  "track": "derusting",
  "topic": "stdio",
  "title": "firstlines (a small head)",
- "order": 10,
+ "order": 16,
  "summary": "Copy the first N lines of stdin; handle -N and very long lines.",
  "hints": [
   "fgets returns a piece of a line when the line is longer than the buffer: only count a line when the piece ends with '\\n'.",

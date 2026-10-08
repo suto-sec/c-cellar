@@ -5,7 +5,7 @@
  "topic": "strings",
  "title": "Sort three words",
  "stars": 3,
- "order": 9,
+ "order": 10,
  "summary": "strcmp for ordering.",
  "hints": [
   "`strcmp(a, b)` is negative if `a` comes before `b`, 0 if equal, positive otherwise: never compare strings with `==`.",

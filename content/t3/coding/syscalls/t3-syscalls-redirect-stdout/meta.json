@@ -5,7 +5,7 @@
  "topic": "syscalls",
  "title": "Redirect standard output",
  "stars": 4,
- "order": 7,
+ "order": 9,
  "summary": "open and dup2.",
  "hints": [
   "`dup2(fd, STDOUT_FILENO)` makes descriptor 1 refer to the file; afterwards `printf` writes there. Close the extra descriptor `fd` with `close(fd)`.",

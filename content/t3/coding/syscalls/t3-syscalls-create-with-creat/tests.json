@@ -1,0 +1,21 @@
+{
+ "cases": [
+  {
+   "cmd": "umask 022; \"$BIN\" f.txt hello; cat f.txt; stat -c %a f.txt",
+   "stdout": "hello\n644\n"
+  },
+  {
+   "cmd": "umask 022; \"$BIN\" f.txt hi; cat f.txt",
+   "setup": "echo a very long old line > f.txt",
+   "stdout": "hi\n"
+  },
+  {
+   "cmd": "\"$BIN\" f.txt \"two words\"; cat f.txt",
+   "stdout": "two words\n"
+  },
+  {
+   "cmd": "\"$BIN\" onlyone; echo \"rc=$?\"",
+   "stdout": "rc=1\n"
+  }
+ ]
+}

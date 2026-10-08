@@ -5,7 +5,7 @@
  "topic": "functions",
  "title": "Recursive Fibonacci",
  "stars": 3,
- "order": 9,
+ "order": 10,
  "summary": "Two recursive calls.",
  "hints": [
   "The base cases are `n == 0` and `n == 1`: return `n`.",

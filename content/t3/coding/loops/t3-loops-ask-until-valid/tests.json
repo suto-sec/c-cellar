@@ -1,0 +1,24 @@
+{
+ "cases": [
+  {
+   "stdin": "15\n0\n7\n",
+   "stdout": "try again\ntry again\naccepted 7\n"
+  },
+  {
+   "stdin": "5\n",
+   "stdout": "accepted 5\n"
+  },
+  {
+   "stdin": "11\n-3\n1\n9\n",
+   "stdout": "try again\ntry again\naccepted 1\n"
+  },
+  {
+   "cmd": "printf \"20 30\\n\" | \"$BIN\"; echo \"rc=$?\"",
+   "stdout": "try again\ntry again\nrc=1\n"
+  },
+  {
+   "stdin": "10\n",
+   "stdout": "accepted 10\n"
+  }
+ ]
+}

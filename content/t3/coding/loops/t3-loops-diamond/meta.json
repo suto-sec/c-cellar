@@ -5,7 +5,7 @@
  "topic": "loops",
  "title": "A diamond",
  "stars": 4,
- "order": 12,
+ "order": 14,
  "summary": "Nested loops with a computed number of spaces.",
  "hints": [
   "The top half has rows with 1, 3, 5, ..., n stars; the bottom half repeats them backwards without the widest row.",

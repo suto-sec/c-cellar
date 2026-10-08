@@ -1,0 +1,18 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" n.txt ann; \"$BIN\" n.txt bob; \"$BIN\" n.txt ann; \"$BIN\" n.txt cy; \"$BIN\" n.txt bob; cat n.txt",
+   "stdout": "added\nadded\nalready there\nadded\nalready there\nann\nbob\ncy\n"
+  },
+  {
+   "cmd": "\"$BIN\" n.txt eve; \"$BIN\" n.txt dan; cat n.txt",
+   "setup": "printf '%s\\n' dan carl > n.txt",
+   "stdout": "added\nalready there\ndan\ncarl\neve\n"
+  },
+  {
+   "cmd": "\"$BIN\" n.txt an; cat n.txt",
+   "setup": "printf '%s\\n' ann anna > n.txt",
+   "stdout": "added\nann\nanna\nan\n"
+  }
+ ]
+}

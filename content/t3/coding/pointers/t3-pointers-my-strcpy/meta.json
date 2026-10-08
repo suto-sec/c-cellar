@@ -5,7 +5,7 @@
  "topic": "pointers",
  "title": "Your own strcpy",
  "stars": 3,
- "order": 5,
+ "order": 6,
  "summary": "Copying with two pointers.",
  "hints": [
   "Copy one character at a time until you have copied the terminator.",

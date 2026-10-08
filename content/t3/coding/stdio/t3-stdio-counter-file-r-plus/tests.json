@@ -1,0 +1,23 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" c.txt; cat c.txt",
+   "setup": "echo 41 > c.txt",
+   "stdout": "42\n42\n"
+  },
+  {
+   "cmd": "\"$BIN\" c.txt; \"$BIN\" c.txt; \"$BIN\" c.txt; cat c.txt",
+   "setup": "echo 7 > c.txt",
+   "stdout": "8\n9\n10\n10\n"
+  },
+  {
+   "cmd": "\"$BIN\" c.txt; cat c.txt",
+   "setup": "echo 99 > c.txt",
+   "stdout": "100\n100\n"
+  },
+  {
+   "cmd": "\"$BIN\" nofile.txt; echo \"rc=$?\"",
+   "stdout": "rc=1\n"
+  }
+ ]
+}

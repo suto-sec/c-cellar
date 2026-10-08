@@ -1,0 +1,12 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\"; cat out.txt",
+   "stdout": "stdout = 1\nfile = 3\nhello\n"
+  },
+  {
+   "cmd": "\"$BIN\" > res.txt; cat res.txt out.txt",
+   "stdout": "stdout = 1\nfile = 3\nhello\n"
+  }
+ ]
+}

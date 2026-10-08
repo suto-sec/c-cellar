@@ -1,0 +1,14 @@
+{
+ "id": "t3-directories-remove-empty-directories",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "directories",
+ "title": "A tiny rmdir",
+ "stars": 2,
+ "order": 6,
+ "summary": "rmdir().",
+ "hints": [
+  "`rmdir(path)` removes a directory only if it is empty; it returns 0 on success and -1 on error.",
+  "Print `rmdir <path>: <strerror(errno)>` for each failure and go on with the other arguments."
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-syscalls-counter-with-o-rdwr",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "syscalls",
+ "title": "A counter with O_RDWR",
+ "stars": 3,
+ "order": 8,
+ "summary": "One descriptor for reading and writing.",
+ "hints": [
+  "`open(name, O_RDWR)` gives a descriptor you can both `read` and `write`; both move the same file position.",
+  "After reading, go back to the start with `lseek(fd, 0, SEEK_SET)` before writing the new number."
+ ]
+}

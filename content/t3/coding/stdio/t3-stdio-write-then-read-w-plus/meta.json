@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-write-then-read-w-plus",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Write, then read back",
+ "stars": 3,
+ "order": 13,
+ "summary": "fopen mode \"w+\".",
+ "hints": [
+  "`\"w+\"` creates (or empties) the file and lets you read and write it.",
+  "After writing, `rewind(f)` before reading what you wrote."
+ ]
+}

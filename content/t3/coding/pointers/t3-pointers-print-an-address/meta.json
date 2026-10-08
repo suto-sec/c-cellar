@@ -1,0 +1,14 @@
+{
+ "id": "t3-pointers-print-an-address",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "pointers",
+ "title": "Print an address",
+ "stars": 2,
+ "order": 5,
+ "summary": "Pointers are addresses: print one with %p.",
+ "hints": [
+  "`%p` prints a pointer in hexadecimal; the C standard asks for a `void *`, so cast: `(void *)p`.",
+  "Print the address with `%p`, and the value with `*p` and `%d`."
+ ]
+}

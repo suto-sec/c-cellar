@@ -1,0 +1,14 @@
+{
+ "id": "t3-directories-two-passes-with-rewinddir",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "directories",
+ "title": "Two passes over a directory",
+ "stars": 3,
+ "order": 9,
+ "summary": "rewinddir().",
+ "hints": [
+  "Count the entries in a first loop of `readdir`, then call `rewinddir(d)` to read the directory again from its first entry.",
+  "Skip `.` and `..` in both loops."
+ ]
+}

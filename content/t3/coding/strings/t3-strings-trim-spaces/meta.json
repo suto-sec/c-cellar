@@ -5,7 +5,7 @@
  "topic": "strings",
  "title": "Trim a string in place",
  "stars": 4,
- "order": 11,
+ "order": 12,
  "summary": "Pointer-free string surgery.",
  "hints": [
   "First remove the trailing spaces: put a `'\\0'` after the last non-space character.",

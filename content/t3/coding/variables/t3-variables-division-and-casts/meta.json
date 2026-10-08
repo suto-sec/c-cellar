@@ -5,7 +5,7 @@
  "topic": "variables",
  "title": "Integer division and casts",
  "stars": 3,
- "order": 8,
+ "order": 9,
  "summary": "7/2, 7/2.0 and (double).",
  "hints": [
   "Integer division discards the fraction and truncates toward zero.",

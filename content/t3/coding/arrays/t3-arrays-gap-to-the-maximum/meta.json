@@ -1,0 +1,14 @@
+{
+ "id": "t3-arrays-gap-to-the-maximum",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "arrays",
+ "title": "Gap to the maximum",
+ "stars": 3,
+ "order": 11,
+ "summary": "A variable-length array sized by the input.",
+ "hints": [
+  "C99 lets you size an array with a variable: read `n` first, then declare `int a[n];`.",
+  "Find the maximum in a first loop, then print `max - a[i]` for each element in a second loop."
+ ]
+}

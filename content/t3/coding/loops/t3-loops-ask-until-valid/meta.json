@@ -1,0 +1,14 @@
+{
+ "id": "t3-loops-ask-until-valid",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "loops",
+ "title": "Ask until it is valid",
+ "stars": 2,
+ "order": 9,
+ "summary": "do-while: ask first, check afterwards.",
+ "hints": [
+  "The first number must be read before it can be checked: that is what `do { ... } while (...)` is for.",
+  "Repeat while the number is outside 1..10; print `try again` for each rejected number."
+ ]
+}

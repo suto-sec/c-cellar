@@ -5,7 +5,7 @@
  "topic": "stdio",
  "title": "Copy with fread and fwrite",
  "stars": 3,
- "order": 5,
+ "order": 7,
  "summary": "Binary block copy.",
  "hints": [
   "`fread(buf, 1, sizeof buf, in)` returns how many bytes it read; 0 at the end of the file.",

@@ -5,7 +5,7 @@
  "topic": "structs",
  "title": "Complex numbers",
  "stars": 4,
- "order": 10,
+ "order": 11,
  "summary": "Returning structs from functions.",
  "hints": [
   "A function can return a struct by value: build a local struct and `return` it.",

@@ -1,0 +1,14 @@
+{
+ "id": "t3-args-invert",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "args",
+ "title": "invert",
+ "stars": 3,
+ "order": 10,
+ "summary": "Reverse the words and the letters of each word.",
+ "hints": [
+  "Walk the arguments from the last to the first, and each argument from its last character to its first.",
+  "`strlen` gives the length; print the space between words, not after the last one, and finish with a newline."
+ ]
+}

@@ -5,7 +5,7 @@
  "topic": "strings",
  "title": "Count the words",
  "stars": 3,
- "order": 6,
+ "order": 7,
  "summary": "Spaces separate words.",
  "hints": [
   "A word starts where a non-space character follows a space (or the start of the line).",

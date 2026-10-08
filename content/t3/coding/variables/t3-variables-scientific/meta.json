@@ -5,7 +5,7 @@
  "topic": "variables",
  "title": "Scientific notation",
  "stars": 3,
- "order": 9,
+ "order": 10,
  "summary": "%e and %g.",
  "hints": [
   "A double literal can be written `6.02e23`.",

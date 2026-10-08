@@ -5,7 +5,7 @@
  "topic": "directories",
  "title": "Only the hidden files",
  "stars": 3,
- "order": 6,
+ "order": 7,
  "summary": "Filtering and sorting names.",
  "hints": [
   "A hidden name starts with `'.'`: test `e->d_name[0] == '.'`.",

@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-counter-file-r-plus",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "A counter in a text file",
+ "stars": 3,
+ "order": 12,
+ "summary": "fopen mode \"r+\": read and write the same file.",
+ "hints": [
+  "`fopen(name, \"r+\")` opens an existing file for reading and writing; it fails if the file does not exist.",
+  "Between a read and a write on the same stream you must reposition it: `rewind(f)` before writing the new number."
+ ]
+}

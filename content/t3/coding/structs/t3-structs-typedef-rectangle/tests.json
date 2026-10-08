@@ -1,0 +1,20 @@
+{
+ "cases": [
+  {
+   "stdin": "3 4 2\n",
+   "stdout": "6 x 8, area 48\n"
+  },
+  {
+   "stdin": "3 4 2\n1 1 5\n10 2 3\n7 7 1\n0 5 4\n",
+   "stdout": "6 x 8, area 48\n5 x 5, area 25\n30 x 6, area 180\n7 x 7, area 49\n0 x 20, area 0\n"
+  },
+  {
+   "stdin": "",
+   "stdout": ""
+  },
+  {
+   "stdin": "2 3 1\n",
+   "stdout": "2 x 3, area 6\n"
+  }
+ ]
+}

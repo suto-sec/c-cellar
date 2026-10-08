@@ -5,7 +5,7 @@
  "topic": "loops",
  "title": "Collatz steps",
  "stars": 3,
- "order": 11,
+ "order": 13,
  "summary": "A loop with a data-dependent end.",
  "hints": [
   "Use a `while (n != 1)` loop and a counter.",

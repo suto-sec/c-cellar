@@ -1,0 +1,21 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" sq.txt 4; cat sq.txt",
+   "stdout": "sum = 30\n1\n4\n9\n16\n"
+  },
+  {
+   "cmd": "\"$BIN\" sq.txt 1; cat sq.txt",
+   "stdout": "sum = 1\n1\n"
+  },
+  {
+   "cmd": "\"$BIN\" sq.txt 10; cat sq.txt",
+   "stdout": "sum = 385\n1\n4\n9\n16\n25\n36\n49\n64\n81\n100\n"
+  },
+  {
+   "cmd": "\"$BIN\" sq.txt 3; cat sq.txt",
+   "setup": "echo old old old old old old > sq.txt",
+   "stdout": "sum = 14\n1\n4\n9\n"
+  }
+ ]
+}

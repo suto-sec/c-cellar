@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-two-passes-with-rewind",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Two passes over a file",
+ "stars": 3,
+ "order": 11,
+ "summary": "rewind() goes back to the start of a stream.",
+ "hints": [
+  "Read the numbers once to get the sum and the count, call `rewind(f)`, and read them again.",
+  "`rewind(f)` puts the position of the stream back at its beginning (and clears the end-of-file state)."
+ ]
+}

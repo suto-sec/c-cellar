@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" data.txt",
+   "setup": "printf '%s\\n' 4 8 15 16 23 42 > data.txt",
+   "stdout": "average = 18.00\n23\n42\n"
+  },
+  {
+   "cmd": "\"$BIN\" data.txt",
+   "setup": "printf '%s\\n' 10 10 10 11 > data.txt",
+   "stdout": "average = 10.25\n11\n"
+  },
+  {
+   "cmd": "\"$BIN\" data.txt",
+   "setup": "printf '%s\\n' 5 > data.txt",
+   "stdout": "average = 5.00\n"
+  },
+  {
+   "cmd": "\"$BIN\" data.txt",
+   "setup": "printf '%s\\n' -3 7 0 12 -8 9 > data.txt",
+   "stdout": "average = 2.83\n7\n12\n9\n"
+  },
+  {
+   "cmd": "\"$BIN\" nofile.txt; echo \"rc=$?\"",
+   "stdout": "rc=1\n"
+  }
+ ]
+}

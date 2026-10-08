@@ -1,0 +1,9 @@
+{
+ "cases": [
+  {
+   "args": [],
+   "stdout": "p=0x[0-9a-f]+\\n\\*p=42\\n",
+   "match": "regex"
+  }
+ ]
+}

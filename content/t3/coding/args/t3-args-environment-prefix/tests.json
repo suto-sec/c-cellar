@@ -1,0 +1,43 @@
+{
+ "cases": [
+  {
+   "args": [
+    "APP_"
+   ],
+   "env": {
+    "APP_MODE": "debug",
+    "APP_LEVEL": "3",
+    "OTHER": "x"
+   },
+   "stdout": "APP_LEVEL=3\nAPP_MODE=debug\n",
+   "match": "sorted"
+  },
+  {
+   "args": [
+    "TOOL_"
+   ],
+   "env": {
+    "TOOL_A": "1",
+    "TOOLBOX": "2",
+    "XTOOL_B": "3"
+   },
+   "stdout": "TOOL_A=1\n",
+   "match": "sorted"
+  },
+  {
+   "args": [
+    "NOPE_"
+   ],
+   "env": {
+    "APP_MODE": "debug"
+   },
+   "stdout": "",
+   "match": "sorted"
+  },
+  {
+   "args": [],
+   "stdout": "",
+   "exit": 1
+  }
+ ]
+}

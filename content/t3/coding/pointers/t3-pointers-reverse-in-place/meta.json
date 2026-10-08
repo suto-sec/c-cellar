@@ -5,7 +5,7 @@
  "topic": "pointers",
  "title": "Reverse in place with two pointers",
  "stars": 3,
- "order": 6,
+ "order": 7,
  "summary": "One pointer from each end.",
  "hints": [
   "Keep a pointer to the first element and another to the last; swap what they point to and move them inward.",

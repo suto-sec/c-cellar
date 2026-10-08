@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-rename-a-file",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "A tiny mv",
+ "stars": 2,
+ "order": 5,
+ "summary": "rename().",
+ "hints": [
+  "`rename(old, new)` returns 0 on success and -1 on error (and sets `errno`).",
+  "`perror(\"rename\")` prints `rename: ` followed by the system's message to the error output."
+ ]
+}

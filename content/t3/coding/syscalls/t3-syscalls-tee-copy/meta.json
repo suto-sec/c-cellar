@@ -5,7 +5,7 @@
  "topic": "syscalls",
  "title": "A small tee",
  "stars": 4,
- "order": 8,
+ "order": 10,
  "summary": "Copy stdin to stdout and to a file.",
  "hints": [
   "Descriptor 0 is standard input and 1 standard output: you can `read(0, ...)` and `write(1, ...)` directly.",

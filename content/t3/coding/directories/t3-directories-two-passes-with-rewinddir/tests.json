@@ -1,0 +1,32 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" d",
+   "setup": "mkdir d && cd d && touch alpha beta.txt gamma",
+   "stdout": "3 entries\nalpha\nbeta.txt\ngamma\n",
+   "match": "sorted"
+  },
+  {
+   "cmd": "\"$BIN\" d",
+   "setup": "mkdir d && cd d && touch x",
+   "stdout": "1 entries\nx\n",
+   "match": "sorted"
+  },
+  {
+   "cmd": "\"$BIN\" d",
+   "setup": "mkdir d",
+   "stdout": "0 entries\n",
+   "match": "sorted"
+  },
+  {
+   "cmd": "\"$BIN\" d",
+   "setup": "mkdir d && cd d && touch one.c two.c three.h four five",
+   "stdout": "5 entries\none.c\ntwo.c\nthree.h\nfour\nfive\n",
+   "match": "sorted"
+  },
+  {
+   "cmd": "\"$BIN\" nodir; echo \"rc=$?\"",
+   "stdout": "rc=1\n"
+  }
+ ]
+}

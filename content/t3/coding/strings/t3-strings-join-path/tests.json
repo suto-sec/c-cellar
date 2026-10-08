@@ -1,0 +1,37 @@
+{
+ "cases": [
+  {
+   "args": [
+    "/usr",
+    "bin"
+   ],
+   "stdout": "/usr/bin\n"
+  },
+  {
+   "args": [
+    "notes",
+    "todo.txt"
+   ],
+   "stdout": "notes/todo.txt\n"
+  },
+  {
+   "args": [
+    ".",
+    "a"
+   ],
+   "stdout": "./a\n"
+  },
+  {
+   "args": [
+    "only"
+   ],
+   "stdout": "",
+   "exit": 1
+  },
+  {
+   "args": [],
+   "stdout": "",
+   "exit": 1
+  }
+ ]
+}

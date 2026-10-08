@@ -5,7 +5,7 @@
  "topic": "functions",
  "title": "Sum of digits, recursively",
  "stars": 4,
- "order": 11,
+ "order": 12,
  "summary": "Recursion on a number.",
  "hints": [
   "The base case is `n == 0`.",

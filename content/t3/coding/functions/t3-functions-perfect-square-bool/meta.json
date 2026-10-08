@@ -1,0 +1,14 @@
+{
+ "id": "t3-functions-perfect-square-bool",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "functions",
+ "title": "Perfect square?",
+ "stars": 2,
+ "order": 7,
+ "summary": "A function that returns bool (<stdbool.h>).",
+ "hints": [
+  "`#include <stdbool.h>` gives you `bool`, `true` and `false` (since C99).",
+  "Compute `r = (int)sqrt(n)` (or find it with a loop) and compare `r * r` with `n`; beware of rounding by checking the neighbours or by using a loop."
+ ]
+}

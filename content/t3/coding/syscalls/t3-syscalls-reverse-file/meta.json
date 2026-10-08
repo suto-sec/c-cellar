@@ -5,7 +5,7 @@
  "topic": "syscalls",
  "title": "Print a file backwards",
  "stars": 4,
- "order": 9,
+ "order": 11,
  "summary": "lseek to the end and walk back.",
  "hints": [
   "`lseek(fd, 0, SEEK_END)` gives the size; the last byte is at position size - 1.",

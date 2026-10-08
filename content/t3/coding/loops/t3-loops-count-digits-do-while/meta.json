@@ -1,0 +1,14 @@
+{
+ "id": "t3-loops-count-digits-do-while",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "loops",
+ "title": "How many digits?",
+ "stars": 2,
+ "order": 8,
+ "summary": "A do-while loop runs at least once.",
+ "hints": [
+  "`do { ... } while (condition);` runs the body first and tests afterwards: it always runs at least once.",
+  "Divide by 10 in each turn until nothing is left; with a `while` loop the number 0 would give 0 digits."
+ ]
+}

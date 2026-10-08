@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "300\n",
+   "stdout": "square = 90000\nlow byte = 44\n"
+  },
+  {
+   "stdin": "0\n",
+   "stdout": "square = 0\nlow byte = 0\n"
+  },
+  {
+   "stdin": "255\n",
+   "stdout": "square = 65025\nlow byte = 255\n"
+  },
+  {
+   "stdin": "256\n",
+   "stdout": "square = 65536\nlow byte = 0\n"
+  },
+  {
+   "stdin": "100000\n",
+   "stdout": "square = 10000000000\nlow byte = 160\n"
+  },
+  {
+   "stdin": "2999999999\n",
+   "stdout": "square = 8999999994000000001\nlow byte = 255\n"
+  }
+ ]
+}

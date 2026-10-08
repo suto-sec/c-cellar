@@ -1,0 +1,24 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" a b; ls",
+   "setup": "mkdir a b c",
+   "stdout": "c\n"
+  },
+  {
+   "cmd": "\"$BIN\" full 2>&1; echo \"rc=$?\"",
+   "setup": "mkdir full; touch full/x",
+   "stdout": "rmdir full: Directory not empty\nrc=1\n"
+  },
+  {
+   "cmd": "\"$BIN\" nodir a 2>&1; echo \"rc=$?\"; ls",
+   "setup": "mkdir a b",
+   "stdout": "rmdir nodir: No such file or directory\nrc=1\nb\n"
+  },
+  {
+   "cmd": "\"$BIN\" file.txt 2>&1; echo \"rc=$?\"",
+   "setup": "touch file.txt",
+   "stdout": "rmdir file.txt: Not a directory\nrc=1\n"
+  }
+ ]
+}

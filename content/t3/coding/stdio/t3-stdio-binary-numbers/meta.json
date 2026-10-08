@@ -5,7 +5,7 @@
  "topic": "stdio",
  "title": "Binary file of integers",
  "stars": 4,
- "order": 9,
+ "order": 15,
  "summary": "fwrite and fread with ints.",
  "hints": [
   "`fwrite(v, sizeof(int), n, f)` writes `n` ints exactly as they are in memory (4 bytes each); open the file with \"wb\" (\"rb\" to read).",

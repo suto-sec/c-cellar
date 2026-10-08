@@ -5,7 +5,7 @@
  "topic": "loops",
  "title": "Greatest common divisor",
  "stars": 3,
- "order": 10,
+ "order": 12,
  "summary": "Euclid's algorithm with while.",
  "hints": [
   "Euclid: while `b` is not 0, replace `(a, b)` by `(b, a % b)`.",

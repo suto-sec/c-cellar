@@ -5,7 +5,7 @@
  "topic": "structs",
  "title": "Sort records",
  "stars": 4,
- "order": 9,
+ "order": 10,
  "summary": "qsort on an array of structs.",
  "hints": [
   "`qsort(array, count, sizeof(element), compare)`: your `compare` receives two `const void *` pointing at elements; cast them to `const struct student *`.",

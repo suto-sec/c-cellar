@@ -1,0 +1,14 @@
+{
+ "id": "t3-syscalls-create-with-creat",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "syscalls",
+ "title": "Create with creat",
+ "stars": 3,
+ "order": 7,
+ "summary": "creat() and the permission bits.",
+ "hints": [
+  "`creat(name, mode)` creates the file or empties it if it exists; it returns a descriptor opened for writing.",
+  "The mode `S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH` is `0644`: read and write for the owner, read for the rest."
+ ]
+}

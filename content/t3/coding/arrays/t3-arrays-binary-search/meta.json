@@ -5,7 +5,7 @@
  "topic": "arrays",
  "title": "Binary search",
  "stars": 4,
- "order": 11,
+ "order": 12,
  "summary": "Halving the search range.",
  "hints": [
   "Keep a range `lo..hi`. Look at the middle element: if it is smaller than `x` the answer is to its right, if larger to its left.",

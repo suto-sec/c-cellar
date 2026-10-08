@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-longest-line-with-fgetpos",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Remember a position",
+ "stars": 4,
+ "order": 18,
+ "summary": "fgetpos() and fsetpos().",
+ "hints": [
+  "Before every `fgets`, save the position with `fgetpos(f, &pos)`; keep the saved position of the longest line so far in another `fpos_t`.",
+  "At the end, `fsetpos(f, &best)` and read that line again with `fgets`: you never stored the lines themselves."
+ ]
+}

@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" data.txt",
+   "setup": "printf '%s\\n' 'one two' three '' > data.txt",
+   "stdout": "lines = 3\n"
+  },
+  {
+   "cmd": "\"$BIN\" data.txt",
+   "setup": "printf '%s\\n' only > data.txt",
+   "stdout": "lines = 1\n"
+  },
+  {
+   "cmd": "\"$BIN\" data.txt",
+   "setup": ": > data.txt",
+   "stdout": "lines = 0\n"
+  },
+  {
+   "cmd": "\"$BIN\" data.txt",
+   "setup": "printf '%s\\n' a b c d e f g > data.txt",
+   "stdout": "lines = 7\n"
+  },
+  {
+   "cmd": "\"$BIN\" nofile.txt; echo \"rc=$?\"",
+   "stdout": "rc=1\n"
+  }
+ ]
+}

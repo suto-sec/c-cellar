@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-add-a-name-once",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Add a name once",
+ "stars": 4,
+ "order": 19,
+ "summary": "fopen mode \"a+\": read everything, append at the end.",
+ "hints": [
+  "`\"a+\"` creates the file if needed, lets you read it, and every write goes to the end.",
+  "Read all the lines from the beginning (`rewind(f)` first), compare each one with the name (without its line break), and append only if it is not there."
+ ]
+}

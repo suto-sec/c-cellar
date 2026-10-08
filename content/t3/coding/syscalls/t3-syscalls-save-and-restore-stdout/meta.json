@@ -1,0 +1,14 @@
+{
+ "id": "t3-syscalls-save-and-restore-stdout",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "syscalls",
+ "title": "Save and restore stdout",
+ "stars": 4,
+ "order": 12,
+ "summary": "dup() and dup2() together.",
+ "hints": [
+  "`int saved = dup(1);` keeps a copy of the real standard output before you replace it.",
+  "`dup2(fd, 1)` makes descriptor 1 point to the file; later `dup2(saved, 1)` puts the original back."
+ ]
+}

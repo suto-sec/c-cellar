@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-which-descriptor",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Which descriptor?",
+ "stars": 3,
+ "order": 14,
+ "summary": "fileno(): the descriptor behind a FILE *.",
+ "hints": [
+  "The first free descriptor is 3 (0, 1 and 2 are standard input, output and error): `fileno(f)` tells you which one `fopen` got.",
+  "`write(fileno(f), text, strlen(text))` writes through the descriptor; do it before writing anything else to the stream."
+ ]
+}

@@ -5,7 +5,7 @@
  "topic": "strings",
  "title": "Letter frequency",
  "stars": 3,
- "order": 7,
+ "order": 8,
  "summary": "An array of counters.",
  "hints": [
   "Use an `int count[26]` initialised to zero; the letter `c` goes to the index `c - 'a'`.",

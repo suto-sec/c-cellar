@@ -1,0 +1,22 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" a d; ls",
+   "setup": "touch a b; mkdir d",
+   "stdout": "b\n"
+  },
+  {
+   "cmd": "\"$BIN\" nofile 2>&1; echo \"rc=$?\"",
+   "stdout": "remove nofile: No such file or directory\nrc=1\n"
+  },
+  {
+   "cmd": "\"$BIN\" nofile a 2>&1; echo \"rc=$?\"; ls",
+   "setup": "touch a b",
+   "stdout": "remove nofile: No such file or directory\nrc=1\nb\n"
+  },
+  {
+   "cmd": "\"$BIN\"; echo \"rc=$?\"",
+   "stdout": "rc=0\n"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-variables-fixed-width-types",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "variables",
+ "title": "Fixed-width integers",
+ "stars": 2,
+ "order": 7,
+ "summary": "int64_t and uint8_t from <stdint.h>.",
+ "hints": [
+  "`<stdint.h>` defines `int64_t` (64 bits, signed) and `uint8_t` (8 bits, unsigned: it wraps around at 256).",
+  "To print an `int64_t` portably, convert it: `printf(\"%lld\", (long long)x);`. A `uint8_t` is promoted to `int`, so `%d` prints it."
+ ]
+}

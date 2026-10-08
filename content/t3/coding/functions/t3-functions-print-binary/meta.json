@@ -5,7 +5,7 @@
  "topic": "functions",
  "title": "Print in binary",
  "stars": 4,
- "order": 13,
+ "order": 14,
  "summary": "Recursion that prints on the way back.",
  "hints": [
   "The last binary digit is `n % 2`; the digits before it are the binary digits of `n / 2`.",
