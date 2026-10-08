@@ -81,6 +81,272 @@
    "ref": [
     "realloc"
    ]
+  },
+  {
+   "id": "t3-q-memory-01",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "What does `malloc` return when there is not enough memory?",
+   "explain": "`malloc` returns NULL on failure. Always check it before using the memory.",
+   "ref": [
+    "malloc"
+   ],
+   "options": [
+    "NULL",
+    "0 bytes",
+    "A pointer to a smaller block",
+    "It stops the program"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Nothing is allocated.",
+    "It never returns a smaller block.",
+    "The program continues unless you check."
+   ]
+  },
+  {
+   "id": "t3-q-memory-02",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What is wrong with `int *p = malloc(10); p[2] = 5;` on a system with 4-byte ints?",
+   "explain": "`malloc` counts BYTES. For 10 ints write `malloc(10 * sizeof(int))` (or `10 * sizeof *p`).",
+   "ref": [
+    "malloc",
+    "sizeof"
+   ],
+   "options": [
+    "10 bytes hold only 2 ints, so p[2] writes past the block",
+    "Nothing",
+    "malloc cannot allocate 10 bytes",
+    "p[2] is read-only"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "p[2] needs bytes 8 to 11 of a 10-byte block.",
+    "It can.",
+    "Heap memory is writable."
+   ]
+  },
+  {
+   "id": "t3-q-memory-03",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "`calloc` returns zero-filled memory (`malloc` would return unspecified garbage).",
+   "ref": [
+    "calloc",
+    "malloc",
+    "free"
+   ],
+   "code": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void)\n{\n    int *p = calloc(4, sizeof(int));\n\n    printf(\"%d%d%d%d\\n\", p[0], p[1], p[2], p[3]);\n    free(p);\n    return 0;\n}\n",
+   "answer": "0000"
+  },
+  {
+   "id": "t3-q-memory-04",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (realloc keeps the old content.)",
+   "explain": "`realloc` keeps the existing elements (even if it has to move the block). (In real code store the result in a temporary pointer to survive a failure.)",
+   "ref": [
+    "realloc"
+   ],
+   "code": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void)\n{\n    int *p = malloc(2 * sizeof(int));\n\n    p[0] = 1;\n    p[1] = 2;\n    p = realloc(p, 4 * sizeof(int));\n    p[2] = 3;\n    p[3] = 4;\n    printf(\"%d%d%d%d\\n\", p[0], p[1], p[2], p[3]);\n    free(p);\n    return 0;\n}\n",
+   "answer": "1234"
+  },
+  {
+   "id": "t3-q-memory-05",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What happens if you use `p[0] = 1;` after `free(p);`?",
+   "explain": "The block belongs to the allocator again. `free` does NOT change the pointer: setting `p = NULL` afterwards makes a stray use fail loudly.",
+   "ref": [
+    "free"
+   ],
+   "options": [
+    "Undefined behaviour (use after free)",
+    "It works normally",
+    "It allocates the block again",
+    "free sets p to NULL, so it crashes safely"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Sometimes it appears to work: that is the danger.",
+    "No: that would be realloc.",
+    "free receives a copy of p and cannot change it."
+   ]
+  },
+  {
+   "id": "t3-q-memory-06",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What happens when you call `free` twice on the same block?",
+   "explain": "Freeing a pointer that was already freed corrupts the allocator's data. `free(NULL)` is harmless, which is another reason to set freed pointers to NULL.",
+   "ref": [
+    "free"
+   ],
+   "options": [
+    "Undefined behaviour (usually a crash)",
+    "Nothing",
+    "The second call frees another block",
+    "The block is zeroed"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "It is a bug even if it seems to work.",
+    "It never picks a different block.",
+    "free does not clear memory."
+   ]
+  },
+  {
+   "id": "t3-q-memory-07",
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "Which of these are bugs in a C program that uses `malloc`?",
+   "explain": "`free(NULL)` is defined to do nothing. Freeing something that malloc did not return (like a local variable) is undefined, and forgetting `free` is a leak.",
+   "ref": [
+    "free",
+    "malloc"
+   ],
+   "options": [
+    "Reading a block after it was freed",
+    "Never freeing a block you allocated",
+    "Calling `free(NULL)`",
+    "Calling `free` on the address of a local variable"
+   ],
+   "answer": [
+    0,
+    1,
+    3
+   ],
+   "option_notes": [
+    "Bug.",
+    "A memory leak.",
+    "Allowed.",
+    "Bug."
+   ]
+  },
+  {
+   "id": "t3-q-memory-08",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "Where do local variables and where do `malloc`ed blocks live?",
+   "explain": "Local variables are created and destroyed automatically with each function call (stack). The heap is memory you ask for explicitly and must release.",
+   "ref": [
+    "malloc"
+   ],
+   "options": [
+    "Locals on the stack, malloc blocks on the heap",
+    "Both on the stack",
+    "Locals on the heap, malloc blocks on the stack",
+    "Both in the program's code"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "The stack is automatic only.",
+    "Reversed.",
+    "Code is a different region."
+   ]
+  },
+  {
+   "id": "t3-q-memory-09",
+   "type": "order",
+   "difficulty": 1,
+   "prompt": "Put the lifecycle of a dynamic array in order.",
+   "explain": "Allocate, check, use, resize when necessary, and release at the end.",
+   "ref": [
+    "malloc",
+    "realloc",
+    "free"
+   ],
+   "items": [
+    "Allocate with malloc",
+    "Check for NULL",
+    "Use the array",
+    "Grow it with realloc if needed",
+    "free it"
+   ]
+  },
+  {
+   "id": "t3-q-memory-10",
+   "type": "sort",
+   "difficulty": 2,
+   "prompt": "Sort these into the region of memory they live in.",
+   "explain": "Automatic variables live on the stack, allocator blocks on the heap, and globals, statics and literals in static storage that lasts for the whole run.",
+   "ref": [
+    "malloc",
+    "static"
+   ],
+   "categories": [
+    "Stack",
+    "Heap",
+    "Static data"
+   ],
+   "items": [
+    [
+     "a local int variable",
+     "Stack"
+    ],
+    [
+     "a function parameter",
+     "Stack"
+    ],
+    [
+     "a block from malloc",
+     "Heap"
+    ],
+    [
+     "a block grown with realloc",
+     "Heap"
+    ],
+    [
+     "a global variable",
+     "Static data"
+    ],
+    [
+     "a static local variable",
+     "Static data"
+    ],
+    [
+     "a string literal",
+     "Static data"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-memory-11",
+   "type": "match",
+   "difficulty": 1,
+   "prompt": "Match each allocation function with what it does.",
+   "explain": "These four functions of `<stdlib.h>` manage the heap.",
+   "ref": [
+    "malloc",
+    "calloc",
+    "realloc",
+    "free"
+   ],
+   "pairs": [
+    [
+     "malloc",
+     "reserves bytes whose content is undefined"
+    ],
+    [
+     "calloc",
+     "reserves memory filled with zeros"
+    ],
+    [
+     "realloc",
+     "changes the size of a block, possibly moving it"
+    ],
+    [
+     "free",
+     "gives a block back"
+    ]
+   ]
   }
  ]
 }

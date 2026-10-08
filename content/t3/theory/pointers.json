@@ -99,6 +99,337 @@
    "ref": [
     "pointers"
    ]
+  },
+  {
+   "id": "t3-q-pointers-01",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "`p = &b` makes `p` point to `b`; `*p = 9` then writes into `b`. `a` is never touched.",
+   "ref": [
+    "pointers"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int a = 1, b = 2;\n    int *p = &a;\n\n    p = &b;\n    *p = 9;\n    printf(\"%d %d\\n\", a, b);\n    return 0;\n}\n",
+   "answer": "1 9"
+  },
+  {
+   "id": "t3-q-pointers-02",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (A pointer to a pointer.)",
+   "explain": "`*pp` is `p` and `**pp` is the int `p` points to, which is `x`.",
+   "ref": [
+    "pointers"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int x = 5;\n    int *p = &x;\n    int **pp = &p;\n\n    **pp = 7;\n    printf(\"%d\\n\", x);\n    return 0;\n}\n",
+   "answer": "7"
+  },
+  {
+   "id": "t3-q-pointers-03",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "explain": "`p` points to v[1]. Pointer arithmetic moves by whole elements, and negative indices are legal while they stay inside the array.",
+   "ref": [
+    "pointers",
+    "arrays"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int v[] = {10, 20, 30};\n    int *p = v + 1;\n\n    printf(\"%d %d %d\\n\", *p, p[-1], *(p + 1));\n    return 0;\n}\n",
+   "answer": "20 10 30"
+  },
+  {
+   "id": "t3-q-pointers-04",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (The difference of two pointers.)",
+   "explain": "Subtracting two pointers into the same array gives the number of ELEMENTS between them (not bytes): 5 - 1 = 4.",
+   "ref": [
+    "pointers"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int v[6];\n    int *a = &v[1], *b = &v[5];\n\n    printf(\"%ld\\n\", (long) (b - a));\n    return 0;\n}\n",
+   "answer": "4"
+  },
+  {
+   "id": "t3-q-pointers-05",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (On a 64-bit system.)",
+   "explain": "`sizeof(s)` is the size of the POINTER (8 bytes on 64-bit systems), while `strlen(s)` counts the 5 characters of the text.",
+   "ref": [
+    "sizeof",
+    "strlen",
+    "pointers"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    const char *s = \"hello\";\n\n    printf(\"%zu %zu\\n\", sizeof(s), strlen(s));\n    return 0;\n}\n",
+   "answer": "8 5"
+  },
+  {
+   "id": "t3-q-pointers-06",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (A pointer to a function.)",
+   "explain": "`int (*f)(int, int)` declares `f` as a pointer to a function taking two ints and returning an int. Calling `f(2, 3)` calls `add`.",
+   "ref": [
+    "pointers",
+    "functions"
+   ],
+   "code": "#include <stdio.h>\n\nint add(int a, int b)\n{\n    return a + b;\n}\n\nint main(void)\n{\n    int (*f)(int, int) = add;\n\n    printf(\"%d\\n\", f(2, 3));\n    return 0;\n}\n",
+   "answer": "5"
+  },
+  {
+   "id": "t3-q-pointers-07",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What happens when a program reads or writes through a `NULL` pointer?",
+   "explain": "`NULL` points to no object. Dereferencing it is undefined behaviour; on Linux it normally stops the program with a segmentation fault.",
+   "ref": [
+    "pointers"
+   ],
+   "options": [
+    "Undefined behaviour, in practice usually a crash (segmentation fault)",
+    "It reads 0",
+    "Nothing, the access is ignored",
+    "It reads the first byte of the program"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "There is nothing to read.",
+    "The access is not ignored.",
+    "Nothing is guaranteed to be there."
+   ]
+  },
+  {
+   "id": "t3-q-pointers-08",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Why can you not dereference a `void *` directly (`*p` where `p` is a `void *`)?",
+   "explain": "`void *` is a generic address without a type. Convert it to a typed pointer first (`*(int *) p`). (A course slide shows `void *a` dereferenced in a swap function: that code does not compile.)",
+   "ref": [
+    "pointers"
+   ],
+   "options": [
+    "The compiler does not know the size or type of what it points to",
+    "void pointers are always NULL",
+    "void pointers are read-only",
+    "You can: it gives an int"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "They can hold any address.",
+    "No such restriction.",
+    "A void pointer has no type to give."
+   ]
+  },
+  {
+   "id": "t3-q-pointers-09",
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "Which statements make `p` point to the first element of `int v[4]`?",
+   "explain": "The array name converts to a pointer to its first element, and `&v[0]` is that address. `*v` and `v[0]` are the first element's VALUE, an int, not an address.",
+   "ref": [
+    "pointers",
+    "arrays"
+   ],
+   "options": [
+    "p = v;",
+    "p = &v[0];",
+    "p = *v;",
+    "p = v[0];"
+   ],
+   "answer": [
+    0,
+    1
+   ],
+   "option_notes": [
+    "Correct.",
+    "Correct.",
+    "That is an int, not a pointer.",
+    "That is an int, not a pointer."
+   ]
+  },
+  {
+   "id": "t3-q-pointers-10",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "The operator `*` applied to a pointer (`*p`) is called the {{0}} operator.",
+   "explain": "`*p` follows the pointer to the object it points to; `&x` does the opposite (the address of x).",
+   "ref": [
+    "pointers"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "dereference",
+      "indirection",
+      "dereferencing"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "t3-q-pointers-11",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What is wrong with `char *s = \"abc\"; s[0] = 'x';`?",
+   "explain": "A string literal lives in read-only memory. Use an array (`char s[] = \"abc\";`) when you need to change the text.",
+   "ref": [
+    "strings",
+    "pointers"
+   ],
+   "options": [
+    "It modifies a string literal, which is undefined behaviour (usually a crash)",
+    "Nothing",
+    "`s` should be an int",
+    "Characters cannot be assigned"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "It compiles, but it is wrong.",
+    "It is a char pointer.",
+    "Chars can be assigned."
+   ]
+  },
+  {
+   "id": "t3-q-pointers-12",
+   "type": "single",
+   "difficulty": 4,
+   "prompt": "Which declaration makes `f` a pointer to a function that takes an `int` and returns an `int`?",
+   "explain": "The parentheses around `*f` matter: `int *f(int)` declares a FUNCTION returning a pointer to int.",
+   "ref": [
+    "pointers"
+   ],
+   "options": [
+    "int (*f)(int);",
+    "int *f(int);",
+    "int f(*int);",
+    "int (*f)[int];"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "That is a function returning `int *`.",
+    "Not valid C.",
+    "Not valid C."
+   ]
+  },
+  {
+   "id": "t3-q-pointers-13",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "After this code runs, what is `p`?",
+   "explain": "`x` lives only inside the braces. After them its memory can be reused, but `p` still holds the old address: using it is undefined behaviour.",
+   "ref": [
+    "pointers"
+   ],
+   "options": [
+    "A dangling pointer: it points to a variable that no longer exists",
+    "NULL",
+    "A pointer to 1",
+    "A valid pointer to x"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Nothing sets it to NULL.",
+    "It stores an address, not the value.",
+    "The object is gone."
+   ],
+   "code": "int *p;\n{\n    int x = 1;\n    p = &x;\n}"
+  },
+  {
+   "id": "t3-q-pointers-14",
+   "type": "sort",
+   "difficulty": 2,
+   "prompt": "Sort each expression by what it produces, for `int a[3]; int *p = a;`.",
+   "explain": "`*` and `[]` follow a pointer and give the element; `&` and pointer arithmetic produce addresses; the array name converts to the address of its first element.",
+   "ref": [
+    "pointers",
+    "arrays"
+   ],
+   "categories": [
+    "A value (an int)",
+    "An address (a pointer)"
+   ],
+   "items": [
+    [
+     "*p",
+     "A value (an int)"
+    ],
+    [
+     "p[1]",
+     "A value (an int)"
+    ],
+    [
+     "*(p + 2)",
+     "A value (an int)"
+    ],
+    [
+     "&a[2]",
+     "An address (a pointer)"
+    ],
+    [
+     "p + 1",
+     "An address (a pointer)"
+    ],
+    [
+     "a",
+     "An address (a pointer)"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-pointers-15",
+   "type": "match",
+   "difficulty": 4,
+   "prompt": "Match each declaration with its meaning.",
+   "explain": "Read declarations from the name outwards. `const` before the `*` protects the pointed-to value; after the `*` it protects the pointer.",
+   "ref": [
+    "pointers",
+    "const"
+   ],
+   "pairs": [
+    [
+     "int *p",
+     "p points to an int"
+    ],
+    [
+     "int **pp",
+     "pp points to a pointer to an int"
+    ],
+    [
+     "const int *p",
+     "p points to an int that cannot be modified through p"
+    ],
+    [
+     "int *const p",
+     "p itself cannot be changed to point elsewhere"
+    ],
+    [
+     "int (*f)(int)",
+     "f points to a function"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-pointers-16",
+   "type": "order",
+   "difficulty": 2,
+   "prompt": "Put the steps of using a pointer to a heap block safely in order.",
+   "explain": "Always check the result of `malloc` before using it, and release the block exactly once.",
+   "ref": [
+    "malloc",
+    "free"
+   ],
+   "items": [
+    "Declare the pointer and set it to NULL",
+    "Allocate with malloc",
+    "Check that malloc did not return NULL",
+    "Use the memory through the pointer",
+    "free the block and set the pointer to NULL"
+   ]
   }
  ]
 }

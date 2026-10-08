@@ -184,7 +184,7 @@ def main():
                     if not ok:
                         err(f"{qid}: predict program does not compile:\n{log}")
                     else:
-                        out = subprocess.run([str(Path(w) / "v")], capture_output=True, text=True, timeout=5, stdin=subprocess.DEVNULL).stdout
+                        out = subprocess.run([str(Path(w) / "v")], capture_output=True, text=True, timeout=5, stdin=subprocess.DEVNULL, cwd=w).stdout   # in a scratch folder: snippets may create files
                         if S._output_lines(out) not in [S._output_lines(a) for a in S._answers(q)]:
                             err(f"{qid}: the program prints {out!r} but the answer says {q['answer']!r}")
             if "verify" in q:  # {"source": "...C program...", "stdout": "..."} proves a code-output claim

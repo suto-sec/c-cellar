@@ -44,6 +44,189 @@
    "ref": [
     "struct"
    ]
+  },
+  {
+   "id": "t3-q-structs-01",
+   "type": "predict",
+   "difficulty": 1,
+   "prompt": "What does this program print?",
+   "explain": "A struct groups members; they are initialised in order and accessed with a dot.",
+   "ref": [
+    "struct"
+   ],
+   "code": "#include <stdio.h>\n\nstruct p {\n    int x, y;\n};\n\nint main(void)\n{\n    struct p a = {1, 2};\n\n    printf(\"%d %d\\n\", a.x, a.y);\n    return 0;\n}\n",
+   "answer": "1 2"
+  },
+  {
+   "id": "t3-q-structs-02",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print? (Assignment copies.)",
+   "explain": "`b = a` copies all the members: `b` is an independent copy, so changing `b.x` does not touch `a`.",
+   "ref": [
+    "struct"
+   ],
+   "code": "#include <stdio.h>\n\nstruct p {\n    int x, y;\n};\n\nint main(void)\n{\n    struct p a = {1, 2};\n    struct p b = a;\n\n    b.x = 9;\n    printf(\"%d %d\\n\", a.x, b.x);\n    return 0;\n}\n",
+   "answer": "1 9"
+  },
+  {
+   "id": "t3-q-structs-03",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print? (. and ->.)",
+   "explain": "With a pointer to a struct `q->x` is the same as `(*q).x`.",
+   "ref": [
+    "struct"
+   ],
+   "code": "#include <stdio.h>\n\nstruct p {\n    int x, y;\n};\n\nint main(void)\n{\n    struct p a = {1, 2};\n    struct p *q = &a;\n\n    q->x = 5;\n    (*q).y = 6;\n    printf(\"%d %d\\n\", a.x, a.y);\n    return 0;\n}\n",
+   "answer": "5 6"
+  },
+  {
+   "id": "t3-q-structs-04",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (The function gets a copy.)",
+   "explain": "A struct passed by value is copied: `reset` clears its own copy. Pass a pointer (`struct p *`) to modify the caller's struct.",
+   "ref": [
+    "struct",
+    "functions"
+   ],
+   "code": "#include <stdio.h>\n\nstruct p {\n    int x, y;\n};\n\nvoid reset(struct p v)\n{\n    v.x = 0;\n    v.y = 0;\n}\n\nint main(void)\n{\n    struct p a = {1, 2};\n\n    reset(a);\n    printf(\"%d %d\\n\", a.x, a.y);\n    return 0;\n}\n",
+   "answer": "1 2"
+  },
+  {
+   "id": "t3-q-structs-05",
+   "type": "predict",
+   "difficulty": 4,
+   "prompt": "What does this program print? (On x86-64 Linux; padding.)",
+   "explain": "The int must be aligned to 4 bytes, so the compiler inserts 3 padding bytes after the char: 1 + 3 + 4 = 8. `sizeof` of a struct can be larger than the sum of its members.",
+   "ref": [
+    "struct",
+    "sizeof"
+   ],
+   "code": "#include <stdio.h>\n\nstruct s {\n    char c;\n    int i;\n};\n\nint main(void)\n{\n    printf(\"%zu\\n\", sizeof(struct s));\n    return 0;\n}\n",
+   "answer": "8"
+  },
+  {
+   "id": "t3-q-structs-06",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print? (typedef and an array of structs.)",
+   "explain": "`typedef` gives the struct a short name. `a[1].id` is 2 and 1.5 + 2.5 is 4.0.",
+   "ref": [
+    "typedef",
+    "struct"
+   ],
+   "code": "#include <stdio.h>\n\ntypedef struct {\n    int id;\n    double v;\n} Item;\n\nint main(void)\n{\n    Item a[2] = {{1, 1.5}, {2, 2.5}};\n\n    printf(\"%d %.1f\\n\", a[1].id, a[0].v + a[1].v);\n    return 0;\n}\n",
+   "answer": "2 4.0"
+  },
+  {
+   "id": "t3-q-structs-07",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Can you compare two structs with `a == b`?",
+   "explain": "The `==` operator does not work on structs. Compare each member (and strings with `strcmp`). A byte-wise `memcmp` can be wrong because of padding.",
+   "ref": [
+    "struct",
+    "strcmp"
+   ],
+   "options": [
+    "No: compare them member by member",
+    "Yes, it compares all the members",
+    "Yes, but only if they have no pointers",
+    "Only with `strcmp`"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "It does not compile.",
+    "It does not compile at all.",
+    "strcmp is for strings."
+   ]
+  },
+  {
+   "id": "t3-q-structs-08",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does `typedef struct node { int v; struct node *next; } Node;` define?",
+   "explain": "`typedef` creates an alias for a type: after it you can write `Node n;` instead of `struct node n;`. (Inside the struct you still need `struct node *` for `next`.)",
+   "ref": [
+    "typedef",
+    "struct"
+   ],
+   "options": [
+    "`Node` as another name for `struct node`",
+    "A variable called Node",
+    "A function called Node",
+    "A pointer to a node"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "typedef declares a type name, not a variable.",
+    "It is a type.",
+    "Node is the struct itself, not a pointer."
+   ]
+  },
+  {
+   "id": "t3-q-structs-09",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Why is the member `next` in `struct node { int v; struct node *next; };` a POINTER and not a `struct node`?",
+   "explain": "Every node would have to contain another whole node, forever. A pointer has a fixed size, so lists and trees are built with pointers.",
+   "ref": [
+    "struct",
+    "pointers"
+   ],
+   "options": [
+    "A struct cannot contain itself: it would have infinite size",
+    "Pointers are faster",
+    "The compiler requires the name next",
+    "Structs may not have more than one member"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Size, not speed, is the reason.",
+    "Any name is fine.",
+    "Structs can have many members."
+   ]
+  },
+  {
+   "id": "t3-q-structs-10",
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "`(*p).x` can be written more simply as {{0}}.",
+   "explain": "The arrow `->` combines the dereference and the member access.",
+   "ref": [
+    "struct",
+    "pointers"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "p->x"
+     ],
+     "ignore_space": true
+    }
+   ]
+  },
+  {
+   "id": "t3-q-structs-11",
+   "type": "order",
+   "difficulty": 3,
+   "prompt": "Put the steps of inserting a new node at the front of a linked list in order.",
+   "explain": "Link the new node to the old list BEFORE changing the head, otherwise the old list would be lost.",
+   "ref": [
+    "struct",
+    "malloc"
+   ],
+   "items": [
+    "Allocate the new node with malloc",
+    "Store the value in the new node",
+    "Make the new node's next point to the current head",
+    "Make the head point to the new node"
+   ]
   }
  ]
 }

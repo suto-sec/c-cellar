@@ -44,6 +44,204 @@
     "main",
     "getenv"
    ]
+  },
+  {
+   "id": "t3-q-args-01",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "The program is started as `./prog -v file.txt`. What are `argc` and `argv[1]`?",
+   "explain": "`argv[0]` is the program name, so there are 3 entries: `./prog`, `-v`, `file.txt`.",
+   "ref": [
+    "main"
+   ],
+   "options": [
+    "argc is 3 and argv[1] is \"-v\"",
+    "argc is 2 and argv[1] is \"-v\"",
+    "argc is 3 and argv[1] is \"file.txt\"",
+    "argc is 2 and argv[1] is \"file.txt\""
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "argc counts the program name.",
+    "file.txt is argv[2].",
+    "Both are off by one."
+   ]
+  },
+  {
+   "id": "t3-q-args-02",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What is stored in `argv[argc]`?",
+   "explain": "The standard guarantees that `argv[argc]` is a null pointer, so you can also walk the array until you hit NULL.",
+   "ref": [
+    "main"
+   ],
+   "options": [
+    "NULL (the array is terminated by a null pointer)",
+    "The program name",
+    "An empty string",
+    "The last argument"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "That is argv[0].",
+    "It is a null pointer, not a string.",
+    "The last argument is argv[argc - 1]."
+   ]
+  },
+  {
+   "id": "t3-q-args-03",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "The user types `./prog \"a b\" c`. How many arguments does the program receive?",
+   "explain": "The shell removes the quotes and passes `a b` as a single argument. So argv has `./prog`, `a b` and `c`: argc is 3, i.e. 2 real arguments.",
+   "ref": [
+    "main"
+   ],
+   "options": [
+    "2 (the string \"a b\" is one argument)",
+    "3",
+    "1",
+    "0"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Quoted text is not split at the space.",
+    "There are two arguments after the program name.",
+    "There are arguments."
+   ]
+  },
+  {
+   "id": "t3-q-args-04",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "The user types `./prog *.c` in a directory with `a.c` and `b.c`. What does the program receive?",
+   "explain": "The SHELL expands wildcards before starting the program. Quote the pattern (`'*.c'`) to receive it unexpanded.",
+   "ref": [
+    "main"
+   ],
+   "options": [
+    "Two arguments: a.c and b.c (the shell expands the pattern)",
+    "One argument: *.c",
+    "No arguments",
+    "The contents of the files"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Only if the pattern is quoted or nothing matches.",
+    "There are arguments.",
+    "Only the names are passed."
+   ]
+  },
+  {
+   "id": "t3-q-args-05",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Why is `strtol` better than `atoi` for converting an argument to a number?",
+   "explain": "`atoi(\"abc\")` returns 0, the same as `atoi(\"0\")`, with no way to tell. `strtol` sets an end pointer (and `errno` on overflow).",
+   "ref": [
+    "strtol",
+    "atoi"
+   ],
+   "options": [
+    "It tells you where the conversion stopped, so you can detect invalid text",
+    "It is faster",
+    "It returns a double",
+    "It never fails"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Speed is not the point.",
+    "It returns a long.",
+    "It can fail; you check the end pointer."
+   ]
+  },
+  {
+   "id": "t3-q-args-06",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (`strtol` and its end pointer.)",
+   "explain": "`strtol` converts the leading `42` and leaves `end` pointing at the first character it could not use, `abc`.",
+   "ref": [
+    "strtol"
+   ],
+   "code": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void)\n{\n    char *end;\n    long v = strtol(\"42abc\", &end, 10);\n\n    printf(\"%ld [%s]\\n\", v, end);\n    return 0;\n}\n",
+   "answer": "42 [abc]"
+  },
+  {
+   "id": "t3-q-args-07",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (Nothing to convert.)",
+   "explain": "With no digits `strtol` returns 0 and sets `end` to the start of the string: `end == s` is how you detect that nothing was converted.",
+   "ref": [
+    "strtol"
+   ],
+   "code": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void)\n{\n    char *end;\n    const char *s = \"abc\";\n    long v = strtol(s, &end, 10);\n\n    printf(\"%ld %d\\n\", v, end == s);\n    return 0;\n}\n",
+   "answer": "0 1"
+  },
+  {
+   "id": "t3-q-args-08",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "`getenv` returns NULL for a variable that does not exist, so always test the result before using it.",
+   "ref": [
+    "getenv"
+   ],
+   "code": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void)\n{\n    printf(\"%s\\n\", getenv(\"NO_SUCH_VARIABLE_XYZ\") ? \"set\" : \"unset\");\n    return 0;\n}\n",
+   "answer": "unset"
+  },
+  {
+   "id": "t3-q-args-09",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "The number the program returns from `main` is its {{0}} status; 0 means success.",
+   "explain": "The shell shows it in `$?`; a non-zero value signals failure.",
+   "ref": [
+    "main",
+    "exit"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "exit"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "t3-q-args-10",
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "Which statements about `main(int argc, char *argv[], char *envp[])` are true?",
+   "explain": "`argv[0]` is the program name; the user's first argument is `argv[1]`. All arguments are strings: convert numbers with `strtol`.",
+   "ref": [
+    "main",
+    "getenv"
+   ],
+   "options": [
+    "`envp` is an array of `NAME=value` strings ended by NULL",
+    "`getenv` is the portable way to read one variable",
+    "`argv[0]` is the first argument the user typed after the program name",
+    "Every argument is passed as a string"
+   ],
+   "answer": [
+    0,
+    1,
+    3
+   ],
+   "option_notes": [
+    "True (a common Unix extension).",
+    "True.",
+    "False.",
+    "True."
+   ]
   }
  ]
 }
