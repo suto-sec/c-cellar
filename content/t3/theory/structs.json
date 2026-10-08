@@ -1,0 +1,49 @@
+{
+ "id": "t3-th-structs",
+ "tag": "t3",
+ "title": "Structs & enums",
+ "chapter": "structs",
+ "questions": [
+  {
+   "id": "t3-ptr-04",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Given `struct point { int x, y; } a = {1, 2}, b;` what does `b = a;` do?",
+   "options": [
+    "Makes b an alias of a",
+    "Copies every member of a into b",
+    "Does not compile: structs cannot be assigned",
+    "Copies only the first member"
+   ],
+   "answer": 1,
+   "explain": "Structs are values in C: assignment copies all members. `b` is an independent copy; changing `b.x` afterwards does not affect `a`.",
+   "option_notes": [
+    "C has no aliases; that would need a pointer.",
+    "Correct.",
+    "Struct assignment is allowed.",
+    "All members are copied."
+   ],
+   "ref": [
+    "struct"
+   ]
+  },
+  {
+   "id": "t3-ptr-07",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "To access member `x` through a pointer `p` to a struct, write `p{{0}}x`.",
+   "blanks": [
+    {
+     "accept": [
+      "->"
+     ],
+     "ignore_space": true
+    }
+   ],
+   "explain": "`p->x` is shorthand for `(*p).x`.",
+   "ref": [
+    "struct"
+   ]
+  }
+ ]
+}

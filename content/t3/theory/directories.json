@@ -1,0 +1,25 @@
+{
+ "id": "t3-th-directories",
+ "tag": "t3",
+ "title": "Directories",
+ "chapter": "directories",
+ "questions": [
+  {
+   "id": "t3-fil-05",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "`readdir` returns the names `.` and `..` among the entries. To skip them you compare `d_name` with...",
+   "options": [
+    "\".\" and \"..\" using strcmp",
+    "'.' and '..' using ==",
+    "NULL",
+    "the value of getcwd()"
+   ],
+   "answer": 0,
+   "explain": "`d_name` is a string, so compare it with `strcmp(name, \".\") == 0`. `.` is the directory itself and `..` its parent; hidden files such as `.profile` are real entries and must not be skipped by mistake.",
+   "ref": [
+    "readdir"
+   ]
+  }
+ ]
+}

@@ -1,46 +1,13 @@
 {
- "order": 5,
  "id": "t3-th-build",
  "tag": "t3",
- "title": "Compiling, libraries and make",
- "topic": "modular",
+ "title": "Modules, libraries & make",
+ "chapter": "build",
  "questions": [
-  {
-   "id": "t3-bld-01",
-   "type": "order",
-   "difficulty": 1,
-   "prompt": "Put the stages that turn `prog.c` into an executable in order.",
-   "items": [
-    "Preprocessing (#include, #define expanded)",
-    "Compilation to an object file (.o)",
-    "Linking the object files and libraries into the executable"
-   ],
-   "explain": "`gcc prog.c -o prog` runs all three. `gcc -c prog.c` stops after compilation, producing `prog.o`."
-  },
-  {
-   "id": "t3-bld-02",
-   "type": "single",
-   "difficulty": 1,
-   "prompt": "Which command compiles `a.c` to an object file without linking?",
-   "options": [
-    "gcc a.c -o a",
-    "gcc -c a.c -o a.o",
-    "gcc -o a.o a.c -l",
-    "gcc -E a.c"
-   ],
-   "answer": 1,
-   "explain": "`-c` means compile only. `-E` stops after the preprocessor; the first command also links.",
-   "option_notes": [
-    "Compiles AND links into an executable.",
-    "Correct.",
-    "Malformed (`-l` needs a library name).",
-    "That only runs the preprocessor and prints the result."
-   ]
-  },
   {
    "id": "t3-bld-03",
    "type": "single",
-   "difficulty": 1,
+   "difficulty": 2,
    "prompt": "What is the difference between static (`libx.a`) and dynamic (`libx.so`) libraries?",
    "options": [
     "Static code is copied into the executable at link time; dynamic code is loaded when the program runs",
@@ -49,7 +16,11 @@
     "There is no difference, only the file name"
    ],
    "answer": 0,
-   "explain": "A statically linked executable carries its own copy of the code it needs. A dynamically linked one needs the `.so` at run time (found via the loader's search path, e.g. `LD_LIBRARY_PATH`), but several programs can share one copy."
+   "explain": "A statically linked executable carries its own copy of the code it needs. A dynamically linked one needs the `.so` at run time (found via the loader's search path, e.g. `LD_LIBRARY_PATH`), but several programs can share one copy.",
+   "ref": [
+    "ar",
+    "ld"
+   ]
   },
   {
    "id": "t3-bld-04",
@@ -64,7 +35,10 @@
      "ignore_space": true
     }
    ],
-   "explain": "Created with `ar rcs libutil.a a.o b.o` and used with `gcc main.c -L. -lutil`."
+   "explain": "Created with `ar rcs libutil.a a.o b.o` and used with `gcc main.c -L. -lutil`.",
+   "ref": [
+    "ar"
+   ]
   },
   {
    "id": "t3-bld-05",
@@ -81,12 +55,16 @@
      ]
     }
    ],
-   "explain": "Static libraries are only needed at link time, so the loader never looks for them."
+   "explain": "Static libraries are only needed at link time, so the loader never looks for them.",
+   "ref": [
+    "ld",
+    "ldd"
+   ]
   },
   {
    "id": "t3-bld-06",
    "type": "multiple",
-   "difficulty": 2,
+   "difficulty": 3,
    "prompt": "Which statements about a Makefile are true?",
    "options": [
     "A recipe line must start with a TAB character",
@@ -105,6 +83,9 @@
     "True: that is what makes incremental builds fast.",
     "False.",
     "True."
+   ],
+   "ref": [
+    "make"
    ]
   }
  ]

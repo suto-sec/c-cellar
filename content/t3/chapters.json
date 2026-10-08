@@ -1,6 +1,12 @@
 {
  "chapters": [
   {
+   "id": "intro",
+   "title": "Introduction & the toolchain",
+   "track": "derusting",
+   "blurb": "What C is, how a program is built, and the gcc options you will use."
+  },
+  {
    "id": "output",
    "title": "Hello & output",
    "track": "derusting",

@@ -1,0 +1,51 @@
+{
+ "id": "t3-th-functions",
+ "tag": "t3",
+ "title": "Functions",
+ "chapter": "functions",
+ "questions": [
+  {
+   "id": "t3-fun-03",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "options": [
+    "10 20",
+    "20 10",
+    "10 10",
+    "It does not compile"
+   ],
+   "answer": 0,
+   "explain": "C passes arguments by value: `swap` receives copies of `x` and `y`, swaps the copies and the caller's variables are unchanged. To change them you must pass their addresses.",
+   "code": "void swap(int a, int b)\n{\n    int t = a; a = b; b = t;\n}\n/* main: */\nint x = 10, y = 20;\nswap(x, y);\nprintf(\"%d %d\\n\", x, y);",
+   "option_notes": [
+    "Correct: the swap only happens inside the function.",
+    "That would need `swap(&x, &y)` and pointer parameters.",
+    "Nothing assigns the same value to both.",
+    "It is valid C."
+   ],
+   "verify": {
+    "source": "#include <stdio.h>\nvoid swap(int a, int b)\n{\n    int t = a;\n    a = b;\n    b = t;\n}\nint main(void)\n{\n    int x = 10, y = 20;\n    swap(x, y);\n    printf(\"%d %d\\n\", x, y);\n    return 0;\n}\n",
+    "stdout": "10 20\n"
+   },
+   "ref": [
+    "functions"
+   ]
+  },
+  {
+   "id": "t3-fun-08",
+   "type": "order",
+   "difficulty": 2,
+   "prompt": "Put these in the order the compiler needs to see them for a function defined after `main`.",
+   "items": [
+    "Prototype: int media(int a, int b);",
+    "Code that calls media(3, 5)",
+    "Definition: int media(int a, int b) { ... }"
+   ],
+   "explain": "A call must be preceded by at least a declaration (prototype) so the compiler knows the argument and return types. The definition can come later in the file or in another file.",
+   "ref": [
+    "functions"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,73 @@
+{
+ "id": "t3-th-input",
+ "tag": "t3",
+ "title": "Input",
+ "chapter": "input",
+ "questions": [
+  {
+   "id": "t3-fun-04",
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "`char buf[10];` Which calls can NEVER write past the end of `buf`?",
+   "options": [
+    "fgets(buf, 10, stdin)",
+    "gets(buf)",
+    "scanf(\"%s\", buf)",
+    "scanf(\"%9s\", buf)"
+   ],
+   "answer": [
+    0,
+    3
+   ],
+   "explain": "`fgets` takes the buffer size; `%9s` limits scanf to 9 characters plus the terminator. `gets` and an unbounded `%s` read as much as the user types (this is why `gets` was removed from C11).",
+   "option_notes": [
+    "Bounded by the size you pass.",
+    "No size argument: dangerous.",
+    "No width limit: dangerous.",
+    "Width 9 + terminator fits in 10."
+   ],
+   "ref": [
+    "fgets",
+    "scanf",
+    "gets"
+   ]
+  },
+  {
+   "id": "t3-fun-05",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "`scanf` needs the {{0}} of the variable to store the value in, which is why you write `scanf(\"%d\", &n)`.",
+   "blanks": [
+    {
+     "accept": [
+      "address",
+      "memory address",
+      "pointer"
+     ]
+    }
+   ],
+   "explain": "`&n` is a pointer to `n`; scanf writes the converted value through it.",
+   "ref": [
+    "scanf"
+   ]
+  },
+  {
+   "id": "t3-fun-07",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "`fgets(line, 1024, stdin)` reads \"hi\\n\". What does `line` contain?",
+   "options": [
+    "'h' 'i' '\\0'",
+    "'h' 'i' '\\n' '\\0'",
+    "'h' 'i' '\\n'",
+    "'h' 'i' ' ' '\\0'"
+   ],
+   "answer": 1,
+   "explain": "`fgets` keeps the newline in the buffer and always adds the terminating `'\\0'`. That is why programs often strip it with `line[strcspn(line, \"\\n\")] = '\\0'`.",
+   "ref": [
+    "fgets",
+    "strcspn"
+   ]
+  }
+ ]
+}

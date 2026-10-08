@@ -1,0 +1,86 @@
+{
+ "id": "t3-th-memory",
+ "tag": "t3",
+ "title": "Dynamic memory",
+ "chapter": "memory",
+ "questions": [
+  {
+   "id": "t3-ptr-03",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Which statement allocates room on the heap for a copy of the string \"Hello\"?",
+   "options": [
+    "char *s = malloc(5);",
+    "char *s = malloc(6);",
+    "char s[6];",
+    "char *s = \"Hello\";"
+   ],
+   "answer": 1,
+   "explain": "A string needs one extra byte for the terminating `'\\0'`: 5 letters + 1 = 6 bytes. `char s[6]` is stack (not heap) memory and the literal is read-only static data.",
+   "option_notes": [
+    "One byte short: the terminator would overflow the block.",
+    "Correct: strlen + 1.",
+    "That is an array on the stack, not heap memory.",
+    "That only points to a string literal; nothing is allocated."
+   ],
+   "ref": [
+    "malloc",
+    "strlen"
+   ]
+  },
+  {
+   "id": "t3-ptr-08",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "`free` must receive a pointer that was returned by `malloc`, `calloc` or {{0}}.",
+   "blanks": [
+    {
+     "accept": [
+      "realloc"
+     ]
+    }
+   ],
+   "explain": "Freeing anything else (a stack address, a pointer into the middle of a block, a pointer already freed) is undefined behaviour.",
+   "ref": [
+    "free",
+    "malloc"
+   ]
+  },
+  {
+   "id": "t3-ptr-09",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "`calloc(n, size)` differs from `malloc` because it sets all the bytes it returns to {{0}}.",
+   "blanks": [
+    {
+     "accept": [
+      "0",
+      "zero",
+      "zeros"
+     ]
+    }
+   ],
+   "explain": "`malloc` leaves the memory uninitialised (garbage); `calloc` zero-fills it.",
+   "ref": [
+    "calloc",
+    "malloc"
+   ]
+  },
+  {
+   "id": "t3-ptr-10",
+   "type": "order",
+   "difficulty": 3,
+   "prompt": "Put these steps in order to grow a heap array safely.",
+   "items": [
+    "Call realloc and keep the result in a temporary pointer",
+    "Check that the temporary pointer is not NULL",
+    "Assign the temporary pointer to the array pointer",
+    "Store the new capacity"
+   ],
+   "explain": "If you wrote `v = realloc(v, n)` directly and it failed, `v` would become NULL and the old block would leak. Using a temporary keeps the original pointer valid on failure.",
+   "ref": [
+    "realloc"
+   ]
+  }
+ ]
+}

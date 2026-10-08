@@ -11,31 +11,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import server as S  # noqa: E402
+from cparse import called_library_functions  # noqa: E402
 
 errors = []
-KEYWORDS = {"if", "while", "for", "switch", "return", "sizeof", "else", "do", "case", "defined", "typeof", "main"}
-
-
 def err(msg):
     errors.append(msg)
     print("  FAIL", msg)
-
-
-def strip_comments(src):
-    src = re.sub(r"/\*.*?\*/", " ", src, flags=re.S)
-    src = re.sub(r"//[^\n]*", " ", src)
-    return re.sub(r'"(\\.|[^"\\])*"', '""', src)
-
-
-def called_library_functions(sources):
-    """Identifiers used as `name(` that the exercise does not define itself (so: library calls)."""
-    text = "\n".join(strip_comments(s) for s in sources)
-    defined = set(re.findall(r"^[A-Za-z_][\w\s\*]*?\b([A-Za-z_]\w*)\s*\([^;{}]*\)\s*\{", text, flags=re.M))
-    defined |= set(re.findall(r"^[A-Za-z_][\w\s\*]*?\b([A-Za-z_]\w*)\s*\([^;{}]*\)\s*;", text, flags=re.M))  # prototypes
-    called = set(re.findall(r"\b([A-Za-z_]\w*)\s*\(", text))
-    # function-pointer parameters / local callbacks: `int (*cmp)(...)`, `cmp(`
-    callbacks = set(re.findall(r"\(\s*\*\s*(\w+)\s*\)\s*\(", text))
-    return called - KEYWORDS - defined - callbacks
 
 
 def solution_sources(ex):
@@ -130,9 +111,17 @@ def main():
             print(f"  note: chapter {tag}/{cid} has no exercises yet")
 
     theory = S.load_theory()
+    chapter_ids = {(c["tag"], c["id"]) for c in chapters}
+    look = S.reference_lookup()
     ids = set()
     n = 0
+    types = {}
+    referenced = set()
     for s in theory.values():
+        if (s["tag"], s["chapter"]) not in chapter_ids:
+            err(f"theory set {s['id']}: chapter '{s['chapter']}' is not a chapter of {s['tag']}")
+        if not s["id"].startswith(f"{s['tag']}-th-"):
+            err(f"theory set {s['id']}: id must start with '{s['tag']}-th-'")
         for q in s["questions"]:
             n += 1
             qid = q["id"]
@@ -141,12 +130,20 @@ def main():
             ids.add(qid)
             if not qid.startswith(q["tag"] + "-"):
                 err(f"{qid}: id must start with '{q['tag']}-'")
+            if not (isinstance(q["difficulty"], int) and 1 <= q["difficulty"] <= 5):
+                err(f"{qid}: difficulty must be an integer 1-5 (stars)")
             t = q["type"]
-            if t not in ("single", "multiple", "fill", "order"):
+            types[t] = types.get(t, 0) + 1
+            if t not in ("single", "multiple", "fill", "order", "predict", "match", "sort"):
                 err(f"{qid}: unknown type {t}")
                 continue
             if not q.get("explain"):
                 err(f"{qid}: no explanation")
+            for r in q.get("ref", []):
+                if str(r).lower() not in look:
+                    err(f"{qid}: ref '{r}' is not a reference entry")
+                else:
+                    referenced.add(look[str(r).lower()]["id"])
             if t == "single":
                 if not (isinstance(q["answer"], int) and 0 <= q["answer"] < len(q["options"])):
                     err(f"{qid}: bad answer index")
@@ -159,11 +156,37 @@ def main():
                     err(f"{qid}: a 'multiple' question needs 2+ correct options")
             if t in ("single", "multiple") and q.get("option_notes") and len(q["option_notes"]) != len(q["options"]):
                 err(f"{qid}: option_notes length differs from options")
+            if t in ("single", "multiple") and len(set(q["options"])) != len(q["options"]):
+                err(f"{qid}: two options are identical")
             if t == "fill":
-                if len(re.findall(r"\{\{\d+\}\}", q["prompt"])) != len(q["blanks"]):
-                    err(f"{qid}: blanks do not match the {{{{n}}}} markers in the prompt")
+                markers = len(re.findall(r"\{\{\d+\}\}", q["prompt"] + "\n" + q.get("code", "")))
+                if markers != len(q["blanks"]):
+                    err(f"{qid}: blanks do not match the {{{{n}}}} markers in the prompt/code")
             if t == "order" and len(q["items"]) < 3:
                 err(f"{qid}: order needs 3+ items")
+            if t == "match":
+                rights = [p[1] for p in q["pairs"]]
+                if len(q["pairs"]) < 3 or len(set(rights)) != len(rights) or len({p[0] for p in q["pairs"]}) != len(q["pairs"]):
+                    err(f"{qid}: match needs 3+ pairs with distinct left and right sides")
+            if t == "sort":
+                if len(q["categories"]) < 2 or len(q["items"]) < 4 or any(it[1] not in q["categories"] for it in q["items"]):
+                    err(f"{qid}: sort needs 2+ categories, 4+ items, and every item in a listed category")
+                if len({it[1] for it in q["items"]}) < 2:
+                    err(f"{qid}: sort items all fall in one category")
+            if t == "predict":
+                if "code" not in q:
+                    err(f"{qid}: predict needs a code snippet")
+                src = q.get("verify_source", q.get("code", ""))
+                with tempfile.TemporaryDirectory() as w:
+                    f = Path(w) / "v.c"
+                    f.write_text(src)
+                    ok, log = S.compile_c([f], Path(w) / "v", w)
+                    if not ok:
+                        err(f"{qid}: predict program does not compile:\n{log}")
+                    else:
+                        out = subprocess.run([str(Path(w) / "v")], capture_output=True, text=True, timeout=5, stdin=subprocess.DEVNULL).stdout
+                        if S._output_lines(out) not in [S._output_lines(a) for a in S._answers(q)]:
+                            err(f"{qid}: the program prints {out!r} but the answer says {q['answer']!r}")
             if "verify" in q:  # {"source": "...C program...", "stdout": "..."} proves a code-output claim
                 with tempfile.TemporaryDirectory() as w:
                     src = Path(w) / "v.c"
@@ -175,7 +198,9 @@ def main():
                         out = subprocess.run([str(Path(w) / "v")], capture_output=True, text=True, timeout=5).stdout
                         if out != q["verify"]["stdout"]:
                             err(f"{qid}: verify output {out!r} != {q['verify']['stdout']!r}")
-    print(f"theory: {len(theory)} sets, {n} questions")
+    print(f"theory: {len(theory)} sets, {n} questions {dict(sorted(types.items()))}")
+    unref = [e["id"] for e in S.load_reference() if e["id"] not in referenced]
+    print(f"  note: {len(unref)} of {len(S.load_reference())} reference entries have no question yet")
 
     print(f"reference entries: {len(ref)}")
     rid = set()

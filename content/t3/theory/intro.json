@@ -1,0 +1,356 @@
+{
+ "id": "t3-th-intro",
+ "tag": "t3",
+ "title": "Introduction & the toolchain",
+ "chapter": "intro",
+ "questions": [
+  {
+   "id": "t3-bld-01",
+   "type": "order",
+   "difficulty": 2,
+   "prompt": "Put the stages that turn `prog.c` into an executable in order.",
+   "items": [
+    "Preprocessing (#include, #define expanded)",
+    "Compilation to an object file (.o)",
+    "Linking the object files and libraries into the executable"
+   ],
+   "explain": "`gcc prog.c -o prog` runs all three. `gcc -c prog.c` stops after compilation, producing `prog.o`.",
+   "ref": [
+    "gcc"
+   ]
+  },
+  {
+   "id": "t3-bld-02",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Which command compiles `a.c` to an object file without linking?",
+   "options": [
+    "gcc a.c -o a",
+    "gcc -c a.c -o a.o",
+    "gcc -o a.o a.c -l",
+    "gcc -E a.c"
+   ],
+   "answer": 1,
+   "explain": "`-c` means compile only. `-E` stops after the preprocessor; the first command also links.",
+   "option_notes": [
+    "Compiles AND links into an executable.",
+    "Correct.",
+    "Malformed (`-l` needs a library name).",
+    "That only runs the preprocessor and prints the result."
+   ],
+   "ref": [
+    "gcc"
+   ]
+  },
+  {
+   "id": "t3-q-intro-01",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "Who designed the C language, and while working on what?",
+   "explain": "C was designed by Dennis Ritchie at Bell Labs in the early 1970s, closely tied to the development of Unix (first on the PDP-11). C++ came later (Bjarne Stroustrup, 1980s) as an object-oriented extension of C.",
+   "options": [
+    "Dennis Ritchie, at Bell Labs, while Unix was being developed",
+    "Bjarne Stroustrup, to add classes to Simula",
+    "Linus Torvalds, to write the Linux kernel",
+    "James Gosling, for set-top boxes at Sun"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Stroustrup created C++, which builds on C.",
+    "Linux (1991) was written in C but C is much older.",
+    "Gosling designed Java."
+   ]
+  },
+  {
+   "id": "t3-q-intro-02",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "Which description fits C best?",
+   "explain": "C programs are compiled to machine code and stored in an executable. The language is imperative/structured (sequences of statements, functions) and, although high level, lets you work with addresses and bytes directly.",
+   "options": [
+    "A compiled, imperative language that is high level but has low-level capabilities",
+    "An interpreted, object-oriented language that runs on a virtual machine",
+    "A purely functional language with garbage collection",
+    "A markup language that the operating system interprets"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "That describes Java-like languages: C has no virtual machine and no built-in objects.",
+    "C has no garbage collector: you free memory yourself.",
+    "C is a programming language, not a markup language."
+   ]
+  },
+  {
+   "id": "t3-q-intro-03",
+   "type": "match",
+   "difficulty": 1,
+   "prompt": "Match each build stage with what it does.",
+   "explain": "The preprocessor works on text (lines starting with `#`), the compiler turns each `.c` file into an object file, and the linker resolves the references between object files and libraries.",
+   "ref": [
+    "gcc",
+    "#include",
+    "#define"
+   ],
+   "pairs": [
+    [
+     "preprocessor",
+     "expands `#include` and `#define` before compiling"
+    ],
+    [
+     "compiler",
+     "translates C source into machine code in an object file"
+    ],
+    [
+     "linker",
+     "joins object files and libraries into one executable"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-intro-04",
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each gcc command with the result it produces.",
+   "explain": "`-E` stops after the preprocessor, `-S` after compilation to assembly, `-c` after assembling to an object file; with none of them gcc also links.",
+   "ref": [
+    "gcc"
+   ],
+   "pairs": [
+    [
+     "gcc -E a.c",
+     "the source after preprocessing, printed on the screen"
+    ],
+    [
+     "gcc -S a.c",
+     "assembly code in a.s"
+    ],
+    [
+     "gcc -c a.c",
+     "an object file a.o, not linked"
+    ],
+    [
+     "gcc a.c -o a",
+     "a finished executable"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-intro-05",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "To turn on the useful compiler warnings, add `{{0}}` and `-Wextra` to the gcc command.",
+   "explain": "`-Wall -Wextra` enable most warnings; most of them point at real bugs. `-Werror` makes warnings errors.",
+   "ref": [
+    "gcc"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "-Wall"
+     ],
+     "ignore_space": true
+    }
+   ]
+  },
+  {
+   "id": "t3-q-intro-06",
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "Complete the command that compiles `main.c` with the C11 standard, debugging information and the output file `prog`.",
+   "explain": "`-std=c11` selects the language standard, `-g` adds debugging information (gdb, valgrind) and `-o prog` names the output file.",
+   "ref": [
+    "gcc"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "c11"
+     ],
+     "ignore_space": true
+    },
+    {
+     "accept": [
+      "-g"
+     ],
+     "ignore_space": true
+    },
+    {
+     "accept": [
+      "prog"
+     ],
+     "ignore_space": true
+    }
+   ],
+   "code": "gcc -std={{0}} {{1}} main.c -o {{2}}"
+  },
+  {
+   "id": "t3-q-intro-07",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does `#include <stdio.h>` do?",
+   "explain": "`#include` is a preprocessor directive: it pastes the header's text (declarations such as the prototype of `printf`). The code of `printf` itself is joined later by the linker.",
+   "ref": [
+    "#include"
+   ],
+   "options": [
+    "The preprocessor copies the text of stdio.h into the program at that line",
+    "It links the whole C library into the executable",
+    "It runs stdio.h as a program before main",
+    "It imports a module, like `import` in other languages"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Linking is a separate stage; the standard library is linked automatically.",
+    "A header contains declarations, not a program.",
+    "C has no module system: `#include` is textual copying."
+   ]
+  },
+  {
+   "id": "t3-q-intro-08",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Which option selects the C11 language standard in gcc?",
+   "explain": "`-std=c11` (also `-std=c99`, `-std=c17`...). `-O` options are about optimisation and `-c` means compile only.",
+   "ref": [
+    "gcc"
+   ],
+   "options": [
+    "-std=c11",
+    "-c11",
+    "-C11",
+    "-O11"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "`-c` means compile without linking, and there is no `-c11`.",
+    "Options are case sensitive: this is not a gcc option.",
+    "`-O` is followed by an optimisation level such as `-O2`."
+   ]
+  },
+  {
+   "id": "t3-q-intro-09",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What does the gcc option `-Os` do?",
+   "explain": "`-Os` is like `-O2` but avoids optimisations that grow the code, so it optimises for size (smaller code can also be friendlier to the cache). Note: a course slide describes it as 'cache efficiency'; the gcc manual says 'size'.",
+   "ref": [
+    "gcc"
+   ],
+   "options": [
+    "Optimises the generated code for size",
+    "Prints the operating system name",
+    "Adds debugging information",
+    "Optimises for speed at all costs"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "There is no such option.",
+    "Debugging information is `-g`.",
+    "That would be `-O3`/`-Ofast`."
+   ]
+  },
+  {
+   "id": "t3-q-intro-10",
+   "type": "sort",
+   "difficulty": 2,
+   "prompt": "Sort these gcc options by what they control.",
+   "explain": "`-W…` options control warnings, `-O…` optimisation levels, `-std=` the language standard and `-g` the debugging information.",
+   "ref": [
+    "gcc"
+   ],
+   "categories": [
+    "Warnings",
+    "Optimisation",
+    "Language standard",
+    "Debugging"
+   ],
+   "items": [
+    [
+     "-Wall",
+     "Warnings"
+    ],
+    [
+     "-Werror",
+     "Warnings"
+    ],
+    [
+     "-O2",
+     "Optimisation"
+    ],
+    [
+     "-Os",
+     "Optimisation"
+    ],
+    [
+     "-std=c99",
+     "Language standard"
+    ],
+    [
+     "-std=c11",
+     "Language standard"
+    ],
+    [
+     "-g",
+     "Debugging"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-intro-11",
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "Which statements about `main` are true?",
+   "explain": "Execution starts at `main`, and there must be exactly one in the whole program (all files together). It can be anywhere in a file: only the declaration-before-use rule matters.",
+   "ref": [
+    "main"
+   ],
+   "options": [
+    "Every executable program has exactly one `main` function",
+    "`main` is where the program starts running",
+    "`main` must be the first function written in the file",
+    "Several `.c` files of one program can each define their own `main`"
+   ],
+   "answer": [
+    0,
+    1
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "False: functions may appear in any order as long as they are declared before use.",
+    "False: the linker would report a duplicate definition."
+   ]
+  },
+  {
+   "id": "t3-q-intro-12",
+   "type": "predict",
+   "difficulty": 1,
+   "prompt": "What does this program print? (Comments are not code.)",
+   "explain": "`//` comments out the rest of the line and `/* ... */` comments out everything up to `*/`, including line breaks. Only the first and last `printf` run.",
+   "ref": [
+    "#include",
+    "printf"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    printf(\"A\\n\");\n    // printf(\"B\\n\");\n    /* printf(\"C\\n\");\n       printf(\"D\\n\"); */\n    printf(\"E\\n\");\n    return 0;\n}\n",
+   "answer": "A\nE"
+  },
+  {
+   "id": "t3-q-intro-13",
+   "type": "predict",
+   "difficulty": 1,
+   "prompt": "What does this program print? Mind the new lines.",
+   "explain": "The first `printf` ends with `\\n`, so `mundo` starts on a new line; the second has no `\\n`, so the output ends without a newline.",
+   "ref": [
+    "printf",
+    "escapes"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    printf(\"Hola\\n\");\n    printf(\"mundo\");\n    return 0;\n}\n",
+   "answer": "Hola\nmundo"
+  }
+ ]
+}

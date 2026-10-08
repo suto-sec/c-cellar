@@ -19,6 +19,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
+from cparse import called_library_functions
+
 ROOT = Path(os.environ.get("LAB_ROOT", Path(__file__).resolve().parent.parent))
 CONTENT = ROOT / "content"
 PROGRESS_DIR = Path(os.environ.get("LAB_PROGRESS", ROOT / ".progress"))
@@ -68,14 +70,19 @@ def load_paths():
 
 
 def load_theory():
+    """{id: set}. A set mirrors one chapter (`chapter`); questions inside a set are ordered by difficulty."""
+    order = {(c["tag"], c["id"]): c["order"] for c in load_chapters()}
     sets = []
     for f in sorted(CONTENT.glob("*/theory/*.json")):
         s = _read_json(f)
+        s.setdefault("chapter", s.get("topic", ""))
         for q in s["questions"]:
-            q.setdefault("topic", s.get("topic", "general"))
+            q.setdefault("topic", s["chapter"])
             q.setdefault("tag", s["tag"])
+            q.setdefault("difficulty", 1)
+        s["questions"].sort(key=lambda q: q["difficulty"])  # stable: keeps the written order inside a level
         sets.append(s)
-    sets.sort(key=lambda s: (s.get("order", 99), s["id"]))
+    sets.sort(key=lambda s: (order.get((s["tag"], s["chapter"]), 99), s["id"]))
     return {s["id"]: s for s in sets}
 
 
@@ -373,6 +380,27 @@ def blanks_ok(q, response):
     return out
 
 
+def _output_lines(text):
+    """What counts as 'the same output': trailing spaces and trailing blank lines do not matter."""
+    lines = [l.rstrip() for l in str(text).replace("\r", "").split("\n")]
+    while lines and not lines[-1]:
+        lines.pop()
+    return lines
+
+
+def _answers(q):
+    a = q["answer"]
+    return a if isinstance(a, list) else [a]
+
+
+def pairs_ok(q, response):
+    """One boolean per item of a match / sort question."""
+    right = [p[1] for p in (q["pairs"] if q["type"] == "match" else q["items"])]
+    if not isinstance(response, list) or len(response) != len(right):
+        return [False] * len(right)
+    return [given == want for given, want in zip(response, right)]
+
+
 def grade(q, response):
     t = q["type"]
     if t == "single":
@@ -383,7 +411,25 @@ def grade(q, response):
         return response == list(range(len(q["items"])))
     if t == "fill":
         return all(blanks_ok(q, response))
+    if t == "predict":
+        return _output_lines(response) in [_output_lines(a) for a in _answers(q)]
+    if t in ("match", "sort"):
+        return all(pairs_ok(q, response))
     return False
+
+
+def predict_hints(q, response):
+    got, want = str(response), _answers(q)[0]
+    if not got.strip():
+        return ["type what the program prints, exactly (several lines are allowed)"]
+    hints = []
+    if got.lower().split() == want.lower().split() and got.split() != want.split():
+        hints.append("right text, but upper/lower case differs")
+    elif got.split() == want.split():
+        hints.append("same words, but the spacing or the line breaks differ")
+    elif len(_output_lines(got)) != len(_output_lines(want)):
+        hints.append(f"the program prints {len(_output_lines(want))} line(s); you typed {len(_output_lines(got))}")
+    return hints
 
 
 def public_question(q):
@@ -400,6 +446,14 @@ def public_question(q):
         out["items"] = [{"id": i, "text": q["items"][i]} for i in idx]
     elif q["type"] == "fill":
         out["blanks"] = len(q["blanks"])
+    elif q["type"] == "match":
+        out["items"] = [p[0] for p in q["pairs"]]
+        opts = [p[1] for p in q["pairs"]]
+        random.shuffle(opts)
+        out["options"] = opts
+    elif q["type"] == "sort":
+        out["items"] = [it[0] for it in q["items"]]
+        out["categories"] = q["categories"]
     return out
 
 
@@ -413,6 +467,88 @@ def answer_reveal(q):
         out["answer"] = q["items"]
     elif t == "fill":
         out["answer"] = [(b["accept"] if isinstance(b, dict) else b)[0].removeprefix("re:") for b in q["blanks"]]
+    elif t == "predict":
+        out["answer"] = _answers(q)[0]
+    elif t == "match":
+        out["answer"] = [p[1] for p in q["pairs"]]
+    elif t == "sort":
+        out["answer"] = [it[1] for it in q["items"]]
+    return out
+
+
+# ------------------------------------------------------------------ links between theory, reference and exercises
+
+
+def reference_lookup():
+    """Lower-case id, name or alias -> reference entry."""
+    out = {}
+    for e in load_reference():
+        out[e["id"].lower()] = e
+        out[e["title"].split()[0].lower()] = e
+        for a in e.get("aliases", []):
+            out.setdefault(a.lower(), e)
+    return out
+
+
+def resolve_refs(names):
+    look = reference_lookup()
+    seen, out = set(), []
+    for n in names or []:
+        e = look.get(str(n).lower())
+        if e and e["id"] not in seen:
+            seen.add(e["id"])
+            out.append({"id": e["id"], "title": e["title"]})
+    return out
+
+
+def chapter_practice(tag, chapter):
+    """The coding chapter that a theory set mirrors: where to practise it (None if it has no exercises)."""
+    coding = [e for e in load_coding().values() if e["tag"] == tag and e["topic"] == chapter]
+    ch = next((c for c in load_chapters() if c["tag"] == tag and c["id"] == chapter), None)
+    if not coding or not ch:
+        return None
+    return {"chapter": chapter, "tag": tag, "title": ch["title"], "count": len(coding)}
+
+
+def practice_for_entries():
+    """{reference id: [exercise ids that call it]}, in suggested-path order."""
+    look = reference_lookup()
+    coding = load_coding()
+    pos = {}
+    for ids in load_paths().values():
+        for i, eid in enumerate(ids):
+            pos.setdefault(eid, i)
+    out = {}
+    for eid, ex in sorted(coding.items(), key=lambda kv: (pos.get(kv[0], 10**6), kv[0])):
+        d = Path(ex["dir"])
+        files = [d / "solution" / n for n in ex["files"] if n.endswith((".c", ".h"))] if ex.get("files") else [d / "solution.c"]
+        srcs = [f.read_text(encoding="utf-8") for f in files if f.exists()]
+        for fn in called_library_functions(srcs):
+            e = look.get(fn.lower())
+            if e:
+                out.setdefault(e["id"], [])
+                if eid not in out[e["id"]]:
+                    out[e["id"]].append(eid)
+    return out
+
+
+def reference_with_links():
+    entries = load_reference()
+    practice = practice_for_entries()
+    coding = load_coding()
+    qmap = {}
+    for s in load_theory().values():
+        for q in s["questions"]:
+            for r in resolve_refs(q.get("ref")):
+                qmap.setdefault(r["id"], []).append({"id": q["id"], "set": s["id"], "prompt": q["prompt"][:110], "type": q["type"]})
+    out = []
+    for e in entries:
+        e = dict(e)
+        ids = practice.get(e["id"], [])
+        e["practice"] = {"count": len(ids), "exercises": [{"id": i, "title": coding[i]["title"], "stars": coding[i]["stars"]} for i in ids[:6]]}
+        qs = qmap.get(e["id"], [])
+        e["questions"] = {"count": len(qs), "items": qs[:5]}
+        out.append(e)
     return out
 
 
@@ -528,7 +664,7 @@ class Handler(BaseHTTPRequestHandler):
             for s in load_theory().values():
                 qs = s["questions"]
                 st = [prog["theory"].get(q["id"]) for q in qs]
-                theory.append({"id": s["id"], "tag": s["tag"], "title": s["title"], "topic": s.get("topic", ""),
+                theory.append({"id": s["id"], "tag": s["tag"], "title": s["title"], "topic": s.get("topic", ""), "chapter": s["chapter"],
                                "count": len(qs), "answered": sum(1 for x in st if x),
                                "correct": sum(1 for x in st if x and x.get("last_correct")),
                                "types": sorted({q["type"] for q in qs}),
@@ -553,10 +689,11 @@ class Handler(BaseHTTPRequestHandler):
             if not s:
                 return self._send(404, {"error": "unknown set"})
             prog = load_progress()["theory"]
-            return self._send(200, {"id": s["id"], "title": s["title"], "tag": s["tag"],
+            return self._send(200, {"id": s["id"], "title": s["title"], "tag": s["tag"], "chapter": s["chapter"],
+                                    "practice": chapter_practice(s["tag"], s["chapter"]),
                                     "questions": [dict(public_question(q), progress=prog.get(q["id"])) for q in s["questions"]]})
         if route == "reference":
-            return self._send(200, {"entries": load_reference()})
+            return self._send(200, {"entries": reference_with_links()})
         if route == "readiness":
             tag = dict(p.split("=", 1) for p in query.split("&") if "=" in p).get("tag", "t3")
             return self._send(200, readiness(tag))
@@ -609,9 +746,13 @@ class Handler(BaseHTTPRequestHandler):
                 e["last_correct"] = correct
                 e["last_at"] = int(time.time())
                 save_progress(prog)
-            reply = dict(answer_reveal(q), correct=correct)
+            reply = dict(answer_reveal(q), correct=correct, refs=resolve_refs(q.get("ref")), practice=chapter_practice(s["tag"], s["chapter"]))
             if q["type"] == "fill":
                 reply["blanks_ok"] = blanks_ok(q, body.get("response"))
+            elif q["type"] in ("match", "sort"):
+                reply["items_ok"] = pairs_ok(q, body.get("response"))
+            elif q["type"] == "predict" and not correct:
+                reply["hints"] = predict_hints(q, body.get("response"))
             return self._send(200, reply)
         if route == "progress/reset":
             with LOCK:

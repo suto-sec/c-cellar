@@ -1,14 +1,13 @@
 {
- "order": 2,
  "id": "t3-th-pointers",
  "tag": "t3",
- "title": "Pointers, arrays, memory and structs",
- "topic": "pointers",
+ "title": "Pointers",
+ "chapter": "pointers",
  "questions": [
   {
    "id": "t3-ptr-01",
    "type": "single",
-   "difficulty": 1,
+   "difficulty": 2,
    "prompt": "What does this program print?",
    "options": [
     "3",
@@ -28,12 +27,15 @@
    "verify": {
     "source": "#include <stdio.h>\nint main(void)\n{\n    int a = 3;\n    int *p = &a;\n    *p = 7;\n    printf(\"%d\\n\", a);\n    return 0;\n}\n",
     "stdout": "7\n"
-   }
+   },
+   "ref": [
+    "pointers"
+   ]
   },
   {
    "id": "t3-ptr-02",
    "type": "single",
-   "difficulty": 1,
+   "difficulty": 2,
    "prompt": "An `int *p` holds the address 0x2000 and `sizeof(int)` is 4. What address does `p + 3` hold?",
    "options": [
     "0x2003",
@@ -48,52 +50,15 @@
     "Correct: 12 bytes = 0xC.",
     "Adding 18 is neither 3 nor 12; hex 12 is 0x0C.",
     "Scaling is by 4, not 2."
-   ]
-  },
-  {
-   "id": "t3-ptr-03",
-   "type": "single",
-   "difficulty": 1,
-   "prompt": "Which statement allocates room on the heap for a copy of the string \"Hello\"?",
-   "options": [
-    "char *s = malloc(5);",
-    "char *s = malloc(6);",
-    "char s[6];",
-    "char *s = \"Hello\";"
    ],
-   "answer": 1,
-   "explain": "A string needs one extra byte for the terminating `'\\0'`: 5 letters + 1 = 6 bytes. `char s[6]` is stack (not heap) memory and the literal is read-only static data.",
-   "option_notes": [
-    "One byte short: the terminator would overflow the block.",
-    "Correct: strlen + 1.",
-    "That is an array on the stack, not heap memory.",
-    "That only points to a string literal; nothing is allocated."
-   ]
-  },
-  {
-   "id": "t3-ptr-04",
-   "type": "single",
-   "difficulty": 1,
-   "prompt": "Given `struct point { int x, y; } a = {1, 2}, b;` what does `b = a;` do?",
-   "options": [
-    "Makes b an alias of a",
-    "Copies every member of a into b",
-    "Does not compile: structs cannot be assigned",
-    "Copies only the first member"
-   ],
-   "answer": 1,
-   "explain": "Structs are values in C: assignment copies all members. `b` is an independent copy; changing `b.x` afterwards does not affect `a`.",
-   "option_notes": [
-    "C has no aliases; that would need a pointer.",
-    "Correct.",
-    "Struct assignment is allowed.",
-    "All members are copied."
+   "ref": [
+    "pointers"
    ]
   },
   {
    "id": "t3-ptr-05",
    "type": "multiple",
-   "difficulty": 2,
+   "difficulty": 3,
    "prompt": "Which expressions are equivalent to `v[2]` for an array `v`?",
    "options": [
     "*(v + 2)",
@@ -114,101 +79,26 @@
     "Legal (if odd): it means `*(2 + v)`.",
     "This is a pointer to v[2], not its value.",
     "Also a pointer, not the value."
+   ],
+   "ref": [
+    "pointers",
+    "arrays"
    ]
-  },
-  {
-   "id": "t3-ptr-06",
-   "type": "multiple",
-   "difficulty": 2,
-   "prompt": "Which statements about arrays and pointers are true?",
-   "options": [
-    "`sizeof(arr)` for an array is the size of the whole array in bytes",
-    "`sizeof(ptr)` for a pointer is the size of an address",
-    "An array name can be re-assigned to point elsewhere",
-    "A pointer variable can be re-assigned to point elsewhere"
-   ],
-   "answer": [
-    0,
-    1,
-    3
-   ],
-   "explain": "The array name is not a modifiable variable: it always denotes the same block. A pointer is a variable and can point anywhere. `sizeof` on a pointer does not know how many elements it points to.",
-   "option_notes": [
-    "True (when `arr` is the actual array, not a parameter).",
-    "True: 4 or 8 bytes typically.",
-    "False: you cannot assign to an array name.",
-    "True."
-   ]
-  },
-  {
-   "id": "t3-ptr-07",
-   "type": "fill",
-   "difficulty": 1,
-   "prompt": "To access member `x` through a pointer `p` to a struct, write `p{{0}}x`.",
-   "blanks": [
-    {
-     "accept": [
-      "->"
-     ],
-     "ignore_space": true
-    }
-   ],
-   "explain": "`p->x` is shorthand for `(*p).x`."
-  },
-  {
-   "id": "t3-ptr-08",
-   "type": "fill",
-   "difficulty": 1,
-   "prompt": "`free` must receive a pointer that was returned by `malloc`, `calloc` or {{0}}.",
-   "blanks": [
-    {
-     "accept": [
-      "realloc"
-     ]
-    }
-   ],
-   "explain": "Freeing anything else (a stack address, a pointer into the middle of a block, a pointer already freed) is undefined behaviour."
-  },
-  {
-   "id": "t3-ptr-09",
-   "type": "fill",
-   "difficulty": 1,
-   "prompt": "`calloc(n, size)` differs from `malloc` because it sets all the bytes it returns to {{0}}.",
-   "blanks": [
-    {
-     "accept": [
-      "0",
-      "zero",
-      "zeros"
-     ]
-    }
-   ],
-   "explain": "`malloc` leaves the memory uninitialised (garbage); `calloc` zero-fills it."
-  },
-  {
-   "id": "t3-ptr-10",
-   "type": "order",
-   "difficulty": 2,
-   "prompt": "Put these steps in order to grow a heap array safely.",
-   "items": [
-    "Call realloc and keep the result in a temporary pointer",
-    "Check that the temporary pointer is not NULL",
-    "Assign the temporary pointer to the array pointer",
-    "Store the new capacity"
-   ],
-   "explain": "If you wrote `v = realloc(v, n)` directly and it failed, `v` would become NULL and the old block would leak. Using a temporary keeps the original pointer valid on failure."
   },
   {
    "id": "t3-ptr-11",
    "type": "order",
-   "difficulty": 1,
+   "difficulty": 2,
    "prompt": "Put these three lines in the right order to swap `*a` and `*b`.",
    "items": [
     "int tmp = *a;",
     "*a = *b;",
     "*b = tmp;"
    ],
-   "explain": "Save one value first, overwrite it, then store the saved value in the other place. Any other order loses a value."
+   "explain": "Save one value first, overwrite it, then store the saved value in the other place. Any other order loses a value.",
+   "ref": [
+    "pointers"
+   ]
   }
  ]
 }

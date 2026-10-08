@@ -1,0 +1,56 @@
+{
+ "id": "t3-th-conditions",
+ "tag": "t3",
+ "title": "Conditions",
+ "chapter": "conditions",
+ "questions": [
+  {
+   "id": "t3-bas-04",
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "Which of these expressions are TRUE (non-zero) in C?",
+   "options": [
+    "0",
+    "-1",
+    "'0'",
+    "!0",
+    "NULL"
+   ],
+   "answer": [
+    1,
+    2,
+    3
+   ],
+   "explain": "In C, 0 is false and every other value is true. `-1` and `!0` (which is 1) are non-zero. The character constant `'0'` is the ASCII code 48, also non-zero. `NULL` is a null pointer, i.e. zero.",
+   "option_notes": [
+    "Zero is the only false integer value.",
+    "Any non-zero value is true, negatives included.",
+    "`'0'` is the character whose code is 48, not the number 0.",
+    "`!0` evaluates to 1.",
+    "A null pointer compares equal to 0, so it is false."
+   ],
+   "ref": [
+    "if",
+    "operators"
+   ]
+  },
+  {
+   "id": "t3-bas-06",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "In C, a false value is {{0}}; any other value is true.",
+   "blanks": [
+    {
+     "accept": [
+      "0",
+      "zero"
+     ]
+    }
+   ],
+   "explain": "There is no mandatory boolean type before C99 (and even `<stdbool.h>` only provides `bool`, `true`=1 and `false`=0 on top of integers).",
+   "ref": [
+    "if"
+   ]
+  }
+ ]
+}

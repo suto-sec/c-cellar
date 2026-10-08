@@ -1,0 +1,49 @@
+{
+ "id": "t3-th-args",
+ "tag": "t3",
+ "title": "Arguments & environment",
+ "chapter": "args",
+ "questions": [
+  {
+   "id": "t3-fun-01",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "`./prog a b c` is run. What are `argc` and `argv[2]`?",
+   "options": [
+    "argc = 3, argv[2] = \"c\"",
+    "argc = 4, argv[2] = \"b\"",
+    "argc = 4, argv[2] = \"c\"",
+    "argc = 3, argv[2] = \"b\""
+   ],
+   "answer": 1,
+   "explain": "`argv[0]` is the program name, so there are 4 entries: `./prog`, `a`, `b`, `c`. `argv[2]` is `\"b\"`.",
+   "option_notes": [
+    "argc counts the program name too.",
+    "Correct.",
+    "Index 3 would be \"c\".",
+    "argc is 4, not 3."
+   ],
+   "ref": [
+    "main"
+   ]
+  },
+  {
+   "id": "t3-fun-02",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Which `main` signature also receives the environment variables?",
+   "options": [
+    "int main(int argc, char *argv[], char *envp[])",
+    "int main(char *envp[])",
+    "int main(int argc, char *argv[], int envc)",
+    "int main(void, char *envp[])"
+   ],
+   "answer": 0,
+   "explain": "Unix (as a common extension) passes a third parameter, a NULL-terminated array of `\"NAME=value\"` strings. `getenv(\"NAME\")` is the portable way to read one variable.",
+   "ref": [
+    "main",
+    "getenv"
+   ]
+  }
+ ]
+}

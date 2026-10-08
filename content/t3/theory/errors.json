@@ -1,0 +1,45 @@
+{
+ "id": "t3-th-errors",
+ "tag": "t3",
+ "title": "Errors & errno",
+ "chapter": "errors",
+ "questions": [
+  {
+   "id": "t3-fil-09",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "To turn the error code of the last failed call into text, use `strerror({{0}})`.",
+   "blanks": [
+    {
+     "accept": [
+      "errno"
+     ],
+     "ignore_space": true
+    }
+   ],
+   "explain": "`errno` (from `<errno.h>`) holds the code of the last failure; `strerror` (from `<string.h>`) returns a message such as \"No such file or directory\".",
+   "ref": [
+    "strerror",
+    "errno"
+   ]
+  },
+  {
+   "id": "t3-fil-10",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "`fprintf(stderr, ...)` writes to file descriptor number {{0}}.",
+   "blanks": [
+    {
+     "accept": [
+      "2"
+     ]
+    }
+   ],
+   "explain": "Errors go to stderr (descriptor 2) so they stay visible when stdout is redirected to a file or a pipe.",
+   "ref": [
+    "fprintf",
+    "stdin"
+   ]
+  }
+ ]
+}

@@ -210,3 +210,17 @@ kbd { background: var(--panel2); border: 1px solid var(--line); border-bottom-wi
 .refside .filters { margin: 0; gap: 6px 14px; }
 .refside .flabel { font-size: 12px; }
 .entry h3 .tag { font-size: 11px; vertical-align: middle; }
+
+/* new question styles */
+textarea.predict { width: 100%; font: 14px var(--mono); background: var(--code); border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; color: var(--text); resize: vertical; }
+textarea.predict:focus { outline: 2px solid var(--accent); border-color: transparent; }
+textarea.predict.right { border-color: var(--ok); background: var(--okbg); } textarea.predict.wrong { border-color: var(--bad); background: var(--badbg); }
+pre.fillcode input[type=text] { font: inherit; min-width: 90px; border: 0; border-bottom: 2px solid var(--accent); background: var(--panel2); color: var(--text); border-radius: 4px 4px 0 0; padding: 0 6px; outline: none; }
+pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } pre.fillcode input.wrong { border-color: var(--bad); background: var(--badbg); }
+.assign { display: grid; gap: 6px; margin: 10px 0; }
+.assign-row { display: grid; grid-template-columns: 1fr minmax(200px, 46%); gap: 6px 14px; align-items: center; padding: 8px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); }
+.assign-row select { background: var(--panel2); border: 1px solid var(--line); border-radius: 7px; padding: 5px 8px; color: var(--text); min-width: 0; }
+.assign-row.right { background: var(--okbg); border-color: var(--ok); } .assign-row.wrong { background: var(--badbg); border-color: var(--bad); }
+.assign-row .note { grid-column: 1 / -1; color: var(--muted); font-size: 13px; }
+.qlinks { margin-top: 10px; font-size: 14px; }
+@media (max-width: 700px) { .assign-row { grid-template-columns: 1fr; } }

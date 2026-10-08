@@ -9,7 +9,7 @@ Element.prototype.replaceChildren = function (...kids) {
   return nativeReplaceChildren.apply(this, kids.flat(Infinity).filter((k) => k != null && k !== false));
 };
 const app = $("#app");
-const state = { cfg: null, cleanup: null };
+const state = { cfg: null, cleanup: null, query: new URLSearchParams() };
 const T = (tag) => String(tag).toUpperCase();   // "t3" is shown as "T3" (the course topic, "tema")
 const FILTER_KEYS = { coding: "cellar.filters.coding", theory: "cellar.filters.theory", reference: "cellar.filters.reference" };
 function readFilters(key) {
@@ -52,7 +52,12 @@ function toast(msg) {
 
 /** Tiny markdown: headings, fenced code, lists, paragraphs, `code`, **bold**, *italic*. Input is repo content, escaped anyway. */
 function md(src) {
-  const inline = (t) => esc(t).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>").replace(/(^|[\s(])\*([^*\s][^*]*)\*/g, "$1<i>$2</i>");
+  const inline = (t) => {   // code spans are lifted out first, so `*/` or `**` inside code never turns into bold/italic
+    const codes = [];
+    const x = esc(t).replace(/`([^`]+)`/g, (m, c) => { codes.push(c); return `\u0002${codes.length - 1}\u0003`; })
+      .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>").replace(/(^|[\s(])\*([^*\s][^*]*)\*/g, "$1<i>$2</i>");
+    return x.replace(/\u0002(\d+)\u0003/g, (m, n) => `<code>${codes[n]}</code>`);
+  };
   const out = [];
   const parts = src.split(/^```.*\n([\s\S]*?)^```\s*$/m);
   parts.forEach((part, i) => {
@@ -72,9 +77,9 @@ function md(src) {
   return out.join("\n");
 }
 
+const ic = (t) => esc(t).replace(/`([^`]+)`/g, "<code>$1</code>");   // text with `code` spans
 const STATUS = { passed: ["✔", "Passed"], progress: ["●", "In progress"], solution: ["◉", "Solution viewed"], todo: ["○", "Not started"] };
 const TRACKS = [["derusting", "C derusting", "You know C but have not used it in a while: small drills, chapter by chapter, from 1 to 5 stars."], ["exercises", "C exercises", "Exam-style programs that combine several chapters."]];
-const dots = (n) => h("span", { class: "dots", title: "Difficulty " + n + "/3" }, "●".repeat(n), h("i", {}, "●".repeat(3 - n)));
 const stars = (n) => h("span", { class: "stars", title: "Difficulty " + n + "/5" }, "★".repeat(n), h("i", {}, "★".repeat(5 - n)));
 const pct = (x) => Math.round(x * 100);
 
@@ -131,7 +136,7 @@ async function viewHome() {
     h("p", { class: "lead" }, "Practice C by writing it, and review the theory. Everything is checked locally."),
     h("div", { class: "list" },
       h("a", { class: "row", href: "#/coding" }, h("div", { class: "main" }, h("div", { class: "title" }, "Coding exercises"), h("div", { class: "sub" }, `${m.chapters.length} chapters from 1 to 5 stars, with an automatic checker`)), h("span", { class: "pct" }, `${m.passed}/${m.items.length}`)),
-      h("a", { class: "row", href: "#/theory" }, h("div", { class: "main" }, h("div", { class: "title" }, "Theory questions"), h("div", { class: "sub" }, "Single choice, multiple choice, fill in the blank and drag to reorder")), h("span", { class: "pct" }, `${okq}/${nq}`)),
+      h("a", { class: "row", href: "#/theory" }, h("div", { class: "main" }, h("div", { class: "title" }, "Theory questions"), h("div", { class: "sub" }, "Choose, type, predict the output, match, sort or put in order: with an explanation after every answer")), h("span", { class: "pct" }, `${okq}/${nq}`)),
       h("a", { class: "row", href: "#/reference" }, h("div", { class: "main" }, h("div", { class: "title" }, "Reference"), h("div", { class: "sub" }, "One entry per function, command and keyword: syntax, options, examples, common mistakes")), h("span", { class: "pct" }, String(idx.reference))),
     ),
     m.next ? h("p", {}, h("a", { class: "btn primary", href: "#/coding/" + m.next.id }, (m.passed ? "Continue: " : "Start: ") + m.next.title)) : null,
@@ -146,6 +151,8 @@ async function viewCodingList() {
   const holder = h("div", {});
   const pathHolder = h("div", {});
   const openState = new Map();
+  const wanted = state.query.get("chapter");   // a link from a theory set or question: show that chapter, whatever the filters were
+  if (wanted) { localStorage.removeItem(FILTER_KEYS.coding); openState.set(wanted, true); }
   const bar = makeFilters(FILTER_KEYS.coding, { levels: uniqueSorted(idx.coding.map((c) => c.stars)), levelLabel: (n) => "★".repeat(n), levelTitle: (n) => n + (n === 1 ? " star" : " stars"), onChange: () => render() });
   const filters = bar.f;
 
@@ -164,7 +171,7 @@ async function viewCodingList() {
         shown += rows.length;
         const done = c.items.filter((i) => i.status === "passed").length;
         const isNext = m.next && c.items.includes(m.next);
-        const det = h("details", { class: "chapter", open: narrowed ? true : openState.has(c.key) ? openState.get(c.key) : isNext || done === 0 && c === chs[0] },
+        const det = h("details", { class: "chapter", "data-key": c.key, open: narrowed ? true : openState.has(c.key) ? openState.get(c.key) : isNext || done === 0 && c === chs[0] },
           h("summary", {}, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted csub" }, c.blurb), narrowed ? h("span", { class: "muted", style: "font-size:13px" }, `${rows.length} shown`) : null, h("span", { class: "cprog" }, `${done}/${c.items.length}`),
             h("span", { class: "bar", style: "width:70px" }, h("span", { style: `width:${(done / c.items.length) * 100}%` }))),
           h("div", { class: "list" }, rows.map((i) => h("a", { class: "row", href: "#/coding/" + i.id },
@@ -186,6 +193,7 @@ async function viewCodingList() {
   };
   search.addEventListener("input", render);
   render();
+  setTimeout(() => { const t = wanted && document.querySelector(`details.chapter[data-key="${wanted}"]`); if (t) t.scrollIntoView({ block: "start" }); }, 0);
   mount(page(h("h1", {}, "Coding exercises"), h("p", { class: "lead" }, "Write your solution in VS Code next to the statement and press Check. Use Hint if you are stuck, and Answer as a last resort."), pathHolder, bar.el, h("div", { class: "tools" }, search), holder));
 }
 
@@ -333,8 +341,8 @@ async function viewTheoryList() {
   setNav("theory");
   const idx = await api("index");
   const holder = h("div", {});
-  const bar = makeFilters(FILTER_KEYS.theory, { levels: uniqueSorted(idx.theory.flatMap((t) => t.qs.map((q) => q.d))), levelLabel: (n) => "●".repeat(n), levelTitle: (n) => "Difficulty " + n + " of 3", onChange: () => render() });
-  const render = () => {
+  const bar = makeFilters(FILTER_KEYS.theory, { levels: uniqueSorted(idx.theory.flatMap((t) => t.qs.map((q) => q.d))), levelLabel: (n) => "★".repeat(n), levelTitle: (n) => n + (n === 1 ? " star" : " stars"), onChange: () => render() });
+  let render = () => {
     const f = bar.f;
     // a set shows only the questions that match the difficulty filter, with progress counted on those
     const sets = idx.theory.filter((t) => !f.tags.length || f.tags.includes(t.tag)).map((t) => {
@@ -352,11 +360,25 @@ async function viewTheoryList() {
           h("div", { class: "bar", style: "width:120px" }, h("span", { style: `width:${pct(p)}%` })), h("span", { class: "pct" }, pct(p) + "%"));
       })) : h("p", { class: "muted" }, "No question matches these filters."));
   };
+  const pathBox = h("div", {});
+  const drawPath = () => {
+    const f = bar.f;
+    const visible = idx.theory.filter((t) => !f.tags.length || f.tags.includes(t.tag));
+    const qs = visible.flatMap((t) => t.qs.filter((q) => !f.levels.length || f.levels.includes(q.d)).map((q) => ({ ...q, set: t })));
+    const done = qs.filter((q) => q.c).length;
+    const next = qs.find((q) => !q.c);
+    pathBox.replaceChildren(qs.length ? h("div", { class: "panel", style: "display:flex;gap:14px;align-items:center;flex-wrap:wrap" },
+      h("div", { style: "flex:1;min-width:220px" }, h("b", {}, "Suggested path"), h("div", { class: "muted", style: "font-size:13px" }, `${done} of ${qs.length} questions answered correctly. The sets follow the coding chapters, easiest questions first.`),
+        h("div", { class: "bar", style: "margin-top:6px" }, h("span", { style: `width:${(done / qs.length) * 100}%` }))),
+      next ? h("a", { class: "btn primary", href: "#/theory/" + next.set.id }, (done ? "Continue: " : "Start: ") + next.set.title) : h("b", {}, "Everything correct ✔")) : null);
+  };
+  const baseRender = render;
+  render = () => { baseRender(); drawPath(); };
   render();
-  mount(page(h("h1", {}, "Theory"), h("p", { class: "lead" }, "Short questions with an explanation after every answer."), bar.el, holder));
+  mount(page(h("h1", {}, "Theory"), h("p", { class: "lead" }, "Short questions with an explanation after every answer: choose, type, predict the output, match, sort or put in order."), pathBox, bar.el, holder));
 }
 
-const TYPE_LABEL = { single: "Single choice", multiple: "Multiple choice (select all that apply)", fill: "Fill in the blank", order: "Put in order" };
+const TYPE_LABEL = { single: "Single choice", multiple: "Multiple choice (select all that apply)", fill: "Fill in the blank", order: "Put in order", predict: "Predict the output", match: "Match the pairs", sort: "Sort into categories" };
 
 /** Builds the answer widget for a question. Returns { el, get(), lock(result) }. */
 function buildQuestion(q, onChange) {
@@ -386,20 +408,55 @@ function buildQuestion(q, onChange) {
   }
   if (q.type === "fill") {
     const inputs = [];
-    const frag = [];
-    q.__promptParts.forEach((part) => {
-      if (typeof part === "string") frag.push(h("span", { html: esc(part).replace(/`([^`]+)`/g, "<code>$1</code>") }));
-      else { const inp = h("input", { type: "text", autocomplete: "off", spellcheck: false, size: 12, oninput: onChange }); inputs[part] = inp; frag.push(inp); }
-    });
+    const blank = (n) => { const inp = h("input", { type: "text", autocomplete: "off", spellcheck: false, size: 12, oninput: onChange }); inputs[n] = inp; return inp; };
+    const parts = (text, mono) => text.split(/\{\{(\d+)\}\}/).map((p, k) => (k % 2 ? blank(Number(p)) : mono ? document.createTextNode(p) : h("span", { html: ic(p) })));
+    const codeHasBlanks = !!q.code && /\{\{\d+\}\}/.test(q.code);
+    const promptEl = h("div", { class: "fill" }, parts(q.prompt, false));
+    const codeEl = codeHasBlanks ? h("pre", { class: "fillcode" }, h("code", {}, parts(q.code, true))) : null;
     return {
-      el: h("div", { class: "fill" }, frag),
+      el: h("div", {}, promptEl, codeEl),
       get: () => inputs.map((i) => i.value),
       ready: () => inputs.every((i) => i.value.trim()),
       lock(r) {
         inputs.forEach((inp, i) => { inp.disabled = true; inp.classList.add(r.blanks_ok[i] ? "right" : "wrong"); });
+        if (!r.correct) (codeEl || promptEl).after(h("div", { class: "muted", style: "margin:6px 0" }, "Answer: ", r.answer.map((a, i) => [i ? ", " : "", h("code", {}, a)])));
       },
       focus: () => inputs[0].focus(),
       promptInline: true,
+      codeInline: codeHasBlanks,
+    };
+  }
+  if (q.type === "predict") {
+    const ta = h("textarea", { class: "predict", rows: 4, spellcheck: false, placeholder: "Type the output…", oninput: onChange });
+    const el = h("div", {}, h("div", { class: "muted", style: "font-size:13px;margin:6px 0" }, "Type exactly what the program prints. Several lines are fine (Ctrl+Enter to check). Spaces at the end of a line and blank lines at the end are ignored."), ta);
+    return {
+      el,
+      get: () => ta.value,
+      ready: () => ta.value.trim().length > 0,
+      lock(r) {
+        ta.disabled = true;
+        ta.classList.add(r.correct ? "right" : "wrong");
+        if (!r.correct) el.append(h("div", { class: "muted", style: "margin:8px 0 2px" }, "The program prints:"), h("pre", {}, r.answer));
+      },
+      focus: () => ta.focus(),
+    };
+  }
+  if (q.type === "match" || q.type === "sort") {
+    const options = q.type === "match" ? q.options : q.categories;
+    const selects = q.items.map(() => h("select", { onchange: onChange }, h("option", { value: "" }, q.type === "match" ? "— choose —" : "— category —"), options.map((o) => h("option", { value: o }, o))));
+    const rows = q.items.map((it, i) => h("div", { class: "assign-row" }, h("span", { class: "assign-item", html: ic(it) }), selects[i]));
+    return {
+      el: h("div", { class: "assign" }, rows),
+      get: () => selects.map((x) => x.value),
+      ready: () => selects.every((x) => x.value),
+      lock(r) {
+        selects.forEach((x, i) => {
+          x.disabled = true;
+          rows[i].classList.add(r.items_ok[i] ? "right" : "wrong");
+          if (!r.items_ok[i]) rows[i].append(h("span", { class: "note" }, "→ ", h("b", { html: ic(r.answer[i]) })));
+        });
+      },
+      focus: () => selects[0].focus(),
     };
   }
   // order
@@ -458,7 +515,8 @@ async function viewTheorySet(id) {
     mount(page(
       h("div", { class: "crumbs" }, h("a", { href: "#/theory" }, "Theory"), " › ", set.title),
       h("h1", {}, set.title, " ", h("span", { class: "tag", title: "Course topic " + T(set.tag) }, T(set.tag))),
-      h("p", { class: "lead" }, `${set.questions.length} questions · ${answered} answered before`, levels.length ? ` · difficulty ${levels.map((n) => "●".repeat(n)).join(" ")} only (${all.length} in the set; change it on the Theory page)` : ""),
+      h("p", { class: "lead" }, `${set.questions.length} questions · ${answered} answered before`, levels.length ? ` · difficulty ${levels.map((n) => "★".repeat(n)).join(" ")} only (${all.length} in the set; change it on the Theory page)` : ""),
+      set.practice ? h("p", {}, h("a", { href: `#/coding?chapter=${set.practice.tag}/${set.practice.chapter}` }, `Practise this chapter: ${set.practice.count} coding exercises →`)) : null,
       set.questions.length ? null : h("div", { class: "panel" }, "No question of this set matches the difficulty filter."),
       h("div", { class: "panel" }, h("label", {}, shuffle, " Shuffle the order")),
       h("p", {},
@@ -471,7 +529,6 @@ async function viewTheorySet(id) {
     const missedNow = [];
     const showQuestion = () => {
       const q = queue[i];
-      q.__promptParts = q.type === "fill" ? q.prompt.split(/\{\{(\d+)\}\}/).map((p, k) => (k % 2 ? Number(p) : p)) : null;
       const feedback = h("div", {});
       const checkBtn = h("button", { class: "btn primary" }, "Check");
       const nextBtn = h("button", { class: "btn primary", style: "display:none" }, i + 1 < queue.length ? "Next →" : "Finish");
@@ -486,24 +543,28 @@ async function viewTheorySet(id) {
         if (r.correct) right++; else missedNow.push(q);
         feedback.replaceChildren(h("div", { class: "explain " + (r.correct ? "ok" : "bad") },
           h("div", { class: "verdict " + (r.correct ? "ok" : "bad") }, r.correct ? "✔ Correct" : "✘ Not quite"),
-          h("div", { html: md(r.explain) })));
+          (r.hints || []).map((t) => h("div", { class: "hint" }, "💡 " + t)),
+          h("div", { html: md(r.explain) }),
+          r.refs && r.refs.length ? h("div", { class: "qlinks" }, h("span", { class: "muted" }, "Reference: "), r.refs.map((x) => [h("a", { href: "#/reference/" + x.id, target: "_blank", rel: "noopener" }, h("code", {}, x.title)), " "])) : null,
+          r.practice ? h("div", { class: "qlinks" }, h("span", { class: "muted" }, "Practice: "), h("a", { href: `#/coding?chapter=${r.practice.tag}/${r.practice.chapter}`, target: "_blank", rel: "noopener" }, `${r.practice.title} (${r.practice.count} exercises)`)) : null));
         checkBtn.style.display = "none"; nextBtn.style.display = ""; nextBtn.focus();
       };
       checkBtn.addEventListener("click", submit);
       nextBtn.addEventListener("click", () => { i++; i < queue.length ? showQuestion() : summary(); });
       const onKey = (e) => {
         if (e.key !== "Enter" || e.target.tagName === "BUTTON" || e.shiftKey) return;
+        if (e.target.tagName === "TEXTAREA" && !(e.ctrlKey || e.metaKey)) return;   // Enter is a new line in the output box
         e.preventDefault();
         done ? nextBtn.click() : submit();
       };
       document.addEventListener("keydown", onKey);
-      const prompt = widget.promptInline ? null : h("div", { class: "qprompt", html: esc(q.prompt).replace(/`([^`]+)`/g, "<code>$1</code>") });
+      const prompt = widget.promptInline ? null : h("div", { class: "qprompt", html: ic(q.prompt) });
       mount(page(
         h("div", { class: "crumbs" }, h("a", { href: "#/theory" }, "Theory"), " › ", h("a", { href: "#/theory/" + id }, set.title)),
         h("div", { class: "bar qprog" }, h("span", { style: `width:${(i / queue.length) * 100}%` })),
         h("div", { class: "qcard" },
-          h("div", { class: "qmeta" }, h("span", {}, `Question ${i + 1} of ${queue.length}`), h("span", { class: "tag" }, TYPE_LABEL[q.type]), h("span", { class: "tag" }, q.topic), h("span", { class: "tag", title: "Course topic " + T(q.tag) }, T(q.tag)), dots(q.difficulty || 1)),
-          prompt, q.code ? h("pre", {}, h("code", {}, q.code)) : null, widget.el, feedback,
+          h("div", { class: "qmeta" }, h("span", {}, `Question ${i + 1} of ${queue.length}`), h("span", { class: "tag" }, TYPE_LABEL[q.type]), h("span", { class: "tag" }, q.topic), h("span", { class: "tag", title: "Course topic " + T(q.tag) }, T(q.tag)), stars(q.difficulty || 1)),
+          prompt, q.code && !widget.codeInline ? h("pre", {}, h("code", {}, q.code)) : null, widget.el, feedback,
           h("div", { class: "qnav" }, checkBtn, nextBtn))));
       state.cleanup = () => document.removeEventListener("keydown", onKey);
       refresh();
@@ -564,6 +625,13 @@ function refRank(entries, preps, query) {
   return out.map(([e]) => e);
 }
 
+
+/** "Title" heading plus a short list (at most the items the server sent) and "and N more". Nothing when there are none. */
+function moreList(title, data, row) {
+  if (!data || !data.count || !title) return null;
+  return [h("h5", {}, title), h("ul", {}, data.items.map(row), data.count > data.items.length ? h("li", { class: "muted" }, `and ${data.count - data.items.length} more`) : null)];
+}
+
 function entryCard(e, byId) {
   return h("article", { class: "entry" },
     e.header ? h("span", { class: "hdr" }, e.header) : null,
@@ -574,6 +642,8 @@ function entryCard(e, byId) {
     e.details ? h("dl", {}, e.details.flatMap((d) => [h("dt", {}, d.name), h("dd", { html: rmd(d.text) })])) : null,
     e.example ? [h("h5", {}, "Example"), h("pre", {}, h("code", {}, e.example))] : null,
     e.mistakes ? [h("h5", {}, "Common mistakes"), h("ul", {}, e.mistakes.map((m) => h("li", { html: rmd(m) })))] : null,
+    moreList("Theory questions", e.questions, (q) => h("li", {}, h("a", { href: "#/theory/" + q.set }, q.prompt.replace(/\{\{\d+\}\}/g, "____")))),
+    moreList(e.practice && e.practice.count ? `Practice (${e.practice.count} exercise${e.practice.count === 1 ? "" : "s"} use it)` : "", e.practice && { count: e.practice.count, items: e.practice.exercises }, (x) => h("li", {}, h("a", { href: "#/coding/" + x.id }, x.title), " ", stars(x.stars))),
     e.see ? h("div", { class: "muted", style: "margin-top:10px" }, "See also: ", e.see.map((s) => { const t = byId.get(s); return t ? [h("a", { href: "#/reference/" + s }, h("code", {}, t.title)), " "] : null; })) : null);
 }
 
@@ -659,7 +729,9 @@ async function viewReadiness() {
 
 // ------------------------------------------------------------------ router
 async function route() {
-  const [, a, b] = location.hash.split("/");
+  const [path, query = ""] = location.hash.slice(1).split("?");
+  const [, a, b] = path.split("/");
+  state.query = new URLSearchParams(query);
   try {
     if (a === "reference" && state.refSelect) { state.refSelect(b); return; }
     if (!a) await viewHome();

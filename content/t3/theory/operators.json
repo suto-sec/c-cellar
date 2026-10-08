@@ -1,0 +1,75 @@
+{
+ "id": "t3-th-operators",
+ "tag": "t3",
+ "title": "Operators",
+ "chapter": "operators",
+ "questions": [
+  {
+   "id": "t3-bas-01",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "options": [
+    "12.3",
+    "12",
+    "13",
+    "It does not compile"
+   ],
+   "answer": 1,
+   "explain": "`a + 7.3` is computed as a double (12.3). Assigning it to an `int` converts it by truncating the fractional part, so `a` becomes 12.",
+   "code": "int a = 5;\na = a + 7.3;\nprintf(\"%d\\n\", a);",
+   "option_notes": [
+    "That is the value of the expression, but `a` is an int and cannot hold it.",
+    "Correct: the conversion to int truncates.",
+    "C truncates toward zero, it does not round.",
+    "Mixing int and double is legal; the assignment converts implicitly."
+   ],
+   "verify": {
+    "source": "#include <stdio.h>\nint main(void)\n{\n    int a = 5;\n    a = a + 7.3;\n    printf(\"%d\\n\", a);\n    return 0;\n}\n",
+    "stdout": "12\n"
+   },
+   "ref": [
+    "types"
+   ]
+  },
+  {
+   "id": "t3-bas-07",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "`x += 3;` is the same as: {{0}};",
+   "blanks": [
+    {
+     "accept": [
+      "x = x + 3",
+      "x=x+3"
+     ],
+     "ignore_space": true
+    }
+   ],
+   "explain": "Compound assignment applies the operator and stores the result back in the left operand.",
+   "ref": [
+    "operators"
+   ]
+  },
+  {
+   "id": "t3-bas-08",
+   "type": "order",
+   "difficulty": 3,
+   "prompt": "Order these operators from HIGHEST to LOWEST precedence.",
+   "items": [
+    "( )  (parentheses)",
+    "!  (logical not)",
+    "*  /  %",
+    "+  -  (binary)",
+    "<  <=  >  >=",
+    "==  !=",
+    "&&",
+    "||"
+   ],
+   "explain": "Grouping binds tightest, then unary operators, then multiplicative, additive, relational, equality, logical AND and finally logical OR. Use parentheses whenever you are unsure.",
+   "ref": [
+    "operators"
+   ]
+  }
+ ]
+}

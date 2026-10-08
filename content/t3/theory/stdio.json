@@ -1,0 +1,55 @@
+{
+ "id": "t3-th-stdio",
+ "tag": "t3",
+ "title": "Files with stdio",
+ "chapter": "stdio",
+ "questions": [
+  {
+   "id": "t3-fil-04",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "`fopen(path, \"w\")` on a file that already exists with content...",
+   "options": [
+    "opens it and appends",
+    "empties it and opens it for writing",
+    "fails and returns NULL",
+    "opens it read-only"
+   ],
+   "answer": 1,
+   "explain": "Mode `\"w\"` truncates the file to zero length (or creates it). Use `\"a\"` to append and `\"r+\"` to read and write without truncating.",
+   "ref": [
+    "fopen"
+   ]
+  },
+  {
+   "id": "t3-fil-07",
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "Which of these are C library (stdio) functions that work on a `FILE *`?",
+   "options": [
+    "fopen",
+    "open",
+    "fgets",
+    "read",
+    "fprintf"
+   ],
+   "answer": [
+    0,
+    2,
+    4
+   ],
+   "explain": "`open` and `read` are system calls that use integer descriptors. The stdio functions (`fopen`, `fgets`, `fprintf`, ...) use `FILE *` streams, which are buffered.",
+   "option_notes": [
+    "stdio.",
+    "System call (returns an int).",
+    "stdio.",
+    "System call.",
+    "stdio."
+   ],
+   "ref": [
+    "fopen",
+    "open"
+   ]
+  }
+ ]
+}

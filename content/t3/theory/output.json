@@ -1,0 +1,53 @@
+{
+ "id": "t3-th-output",
+ "tag": "t3",
+ "title": "Hello & output",
+ "chapter": "output",
+ "questions": [
+  {
+   "id": "t3-bas-03",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does `printf(\"%05d|%5.2f\\n\", 79, 3.14159);` print?",
+   "options": [
+    "00079| 3.14",
+    "   79|3.14",
+    "79000|3.1",
+    "00079|3.14159"
+   ],
+   "answer": 0,
+   "explain": "`%05d` pads with zeros to a width of 5 (`00079`). `%5.2f` uses a total width of 5 with 2 decimals: `3.14` is 4 characters, so one leading space is added.",
+   "option_notes": [
+    "Correct.",
+    "`%05d` pads with `0`, not spaces; and the width of `%5.2f` is 5.",
+    "Zero padding goes on the left, and `.2` means 2 decimals.",
+    "`.2` limits the decimals to two."
+   ],
+   "verify": {
+    "source": "#include <stdio.h>\nint main(void)\n{\n    printf(\"%05d|%5.2f\\n\", 79, 3.14159);\n    return 0;\n}\n",
+    "stdout": "00079| 3.14\n"
+   },
+   "ref": [
+    "printf"
+   ]
+  },
+  {
+   "id": "t3-fun-06",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "The `printf` conversion to print a `size_t` is `%{{0}}`.",
+   "blanks": [
+    {
+     "accept": [
+      "zu"
+     ],
+     "case": true
+    }
+   ],
+   "explain": "`%zu` is the length modifier `z` (size_t) with the conversion `u` (unsigned). Using `%d` for a `size_t` is a bug on 64-bit systems.",
+   "ref": [
+    "printf"
+   ]
+  }
+ ]
+}
