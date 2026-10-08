@@ -2,6 +2,12 @@
 "use strict";
 
 const $ = (sel, el = document) => el.querySelector(sel);
+
+// replaceChildren turns null/false into the text "null"/"false" and arrays into "[object ...]": skip empty values and flatten arrays
+const nativeReplaceChildren = Element.prototype.replaceChildren;
+Element.prototype.replaceChildren = function (...kids) {
+  return nativeReplaceChildren.apply(this, kids.flat(Infinity).filter((k) => k != null && k !== false));
+};
 const app = $("#app");
 const state = { cfg: null, cleanup: null };
 const T = (tag) => String(tag).toUpperCase();   // "t3" is shown as "T3" (the course topic, "tema")
