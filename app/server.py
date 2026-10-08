@@ -48,20 +48,22 @@ def load_coding():
 
 
 def load_theory():
-    out = {}
+    sets = []
     for f in sorted(CONTENT.glob("*/theory/*.json")):
         s = _read_json(f)
         for q in s["questions"]:
             q.setdefault("topic", s.get("topic", "general"))
             q.setdefault("tag", s["tag"])
-        out[s["id"]] = s
-    return out
+        sets.append(s)
+    sets.sort(key=lambda s: (s.get("order", 99), s["id"]))
+    return {s["id"]: s for s in sets}
 
 
 def load_reference():
+    files = sorted(((_read_json(f), f) for f in CONTENT.glob("*/reference/*.json")), key=lambda p: (p[0].get("order", 99), p[1].name))
     out = []
-    for f in sorted(CONTENT.glob("*/reference/*.json")):
-        for e in _read_json(f)["entries"]:
+    for data, f in files:
+        for e in data["entries"]:
             e.setdefault("tag", f.parent.parent.name)
             out.append(e)
     return out
@@ -283,6 +285,28 @@ def _norm(s, ignore_space=False, case=False):
     return s if case else s.lower()
 
 
+def blanks_ok(q, response):
+    """One boolean per blank of a fill-in question."""
+    if not isinstance(response, list) or len(response) != len(q["blanks"]):
+        return [False] * len(q["blanks"])
+    out = []
+    for given, blank in zip(response, q["blanks"]):
+        accepted = blank["accept"] if isinstance(blank, dict) else blank
+        ign = blank.get("ignore_space", False) if isinstance(blank, dict) else False
+        case = blank.get("case", False) if isinstance(blank, dict) else False
+        g = _norm(str(given), ign, case)
+        hit = False
+        for a in accepted:
+            if a.startswith("re:"):
+                hit = re.fullmatch(a[3:], str(given).strip(), 0 if case else re.I) is not None
+            else:
+                hit = g == _norm(a, ign, case)
+            if hit:
+                break
+        out.append(hit)
+    return out
+
+
 def grade(q, response):
     t = q["type"]
     if t == "single":
@@ -292,24 +316,7 @@ def grade(q, response):
     if t == "order":
         return response == list(range(len(q["items"])))
     if t == "fill":
-        if not isinstance(response, list) or len(response) != len(q["blanks"]):
-            return False
-        for given, blank in zip(response, q["blanks"]):
-            accepted = blank["accept"] if isinstance(blank, dict) else blank
-            ign = blank.get("ignore_space", False) if isinstance(blank, dict) else False
-            case = blank.get("case", False) if isinstance(blank, dict) else False
-            g = _norm(str(given), ign, case)
-            hit = False
-            for a in accepted:
-                if a.startswith("re:"):
-                    hit = re.fullmatch(a[3:], str(given).strip(), 0 if case else re.I) is not None
-                else:
-                    hit = g == _norm(a, ign, case)
-                if hit:
-                    break
-            if not hit:
-                return False
-        return True
+        return all(blanks_ok(q, response))
     return False
 
 
@@ -531,7 +538,10 @@ class Handler(BaseHTTPRequestHandler):
                 e["last_correct"] = correct
                 e["last_at"] = int(time.time())
                 save_progress(prog)
-            return self._send(200, dict(answer_reveal(q), correct=correct))
+            reply = dict(answer_reveal(q), correct=correct)
+            if q["type"] == "fill":
+                reply["blanks_ok"] = blanks_ok(q, body.get("response"))
+            return self._send(200, reply)
         if route == "progress/reset":
             with LOCK:
                 save_progress({"coding": {}, "theory": {}})
