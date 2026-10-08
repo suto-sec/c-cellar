@@ -1,0 +1,147 @@
+{
+ "id": "t3-th-functions-io",
+ "tag": "t3",
+ "title": "Functions, arguments and console I/O",
+ "topic": "args",
+ "questions": [
+  {
+   "id": "t3-fun-01",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "`./prog a b c` is run. What are `argc` and `argv[2]`?",
+   "options": [
+    "argc = 3, argv[2] = \"c\"",
+    "argc = 4, argv[2] = \"b\"",
+    "argc = 4, argv[2] = \"c\"",
+    "argc = 3, argv[2] = \"b\""
+   ],
+   "answer": 1,
+   "explain": "`argv[0]` is the program name, so there are 4 entries: `./prog`, `a`, `b`, `c`. `argv[2]` is `\"b\"`.",
+   "option_notes": [
+    "argc counts the program name too.",
+    "Correct.",
+    "Index 3 would be \"c\".",
+    "argc is 4, not 3."
+   ]
+  },
+  {
+   "id": "t3-fun-02",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "Which `main` signature also receives the environment variables?",
+   "options": [
+    "int main(int argc, char *argv[], char *envp[])",
+    "int main(char *envp[])",
+    "int main(int argc, char *argv[], int envc)",
+    "int main(void, char *envp[])"
+   ],
+   "answer": 0,
+   "explain": "Unix (as a common extension) passes a third parameter, a NULL-terminated array of `\"NAME=value\"` strings. `getenv(\"NAME\")` is the portable way to read one variable."
+  },
+  {
+   "id": "t3-fun-03",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "What does this program print?",
+   "options": [
+    "10 20",
+    "20 10",
+    "10 10",
+    "It does not compile"
+   ],
+   "answer": 0,
+   "explain": "C passes arguments by value: `swap` receives copies of `x` and `y`, swaps the copies and the caller's variables are unchanged. To change them you must pass their addresses.",
+   "code": "void swap(int a, int b)\n{\n    int t = a; a = b; b = t;\n}\n/* main: */\nint x = 10, y = 20;\nswap(x, y);\nprintf(\"%d %d\\n\", x, y);",
+   "option_notes": [
+    "Correct: the swap only happens inside the function.",
+    "That would need `swap(&x, &y)` and pointer parameters.",
+    "Nothing assigns the same value to both.",
+    "It is valid C."
+   ],
+   "verify": {
+    "source": "#include <stdio.h>\nvoid swap(int a, int b)\n{\n    int t = a;\n    a = b;\n    b = t;\n}\nint main(void)\n{\n    int x = 10, y = 20;\n    swap(x, y);\n    printf(\"%d %d\\n\", x, y);\n    return 0;\n}\n",
+    "stdout": "10 20\n"
+   }
+  },
+  {
+   "id": "t3-fun-04",
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "`char buf[10];` Which calls can NEVER write past the end of `buf`?",
+   "options": [
+    "fgets(buf, 10, stdin)",
+    "gets(buf)",
+    "scanf(\"%s\", buf)",
+    "scanf(\"%9s\", buf)"
+   ],
+   "answer": [
+    0,
+    3
+   ],
+   "explain": "`fgets` takes the buffer size; `%9s` limits scanf to 9 characters plus the terminator. `gets` and an unbounded `%s` read as much as the user types (this is why `gets` was removed from C11).",
+   "option_notes": [
+    "Bounded by the size you pass.",
+    "No size argument: dangerous.",
+    "No width limit: dangerous.",
+    "Width 9 + terminator fits in 10."
+   ]
+  },
+  {
+   "id": "t3-fun-05",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "`scanf` needs the {{0}} of the variable to store the value in, which is why you write `scanf(\"%d\", &n)`.",
+   "blanks": [
+    {
+     "accept": [
+      "address",
+      "memory address",
+      "pointer"
+     ]
+    }
+   ],
+   "explain": "`&n` is a pointer to `n`; scanf writes the converted value through it."
+  },
+  {
+   "id": "t3-fun-06",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "The `printf` conversion to print a `size_t` is `%{{0}}`.",
+   "blanks": [
+    {
+     "accept": [
+      "zu"
+     ],
+     "case": true
+    }
+   ],
+   "explain": "`%zu` is the length modifier `z` (size_t) with the conversion `u` (unsigned). Using `%d` for a `size_t` is a bug on 64-bit systems."
+  },
+  {
+   "id": "t3-fun-07",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "`fgets(line, 1024, stdin)` reads \"hi\\n\". What does `line` contain?",
+   "options": [
+    "'h' 'i' '\\0'",
+    "'h' 'i' '\\n' '\\0'",
+    "'h' 'i' '\\n'",
+    "'h' 'i' ' ' '\\0'"
+   ],
+   "answer": 1,
+   "explain": "`fgets` keeps the newline in the buffer and always adds the terminating `'\\0'`. That is why programs often strip it with `line[strcspn(line, \"\\n\")] = '\\0'`."
+  },
+  {
+   "id": "t3-fun-08",
+   "type": "order",
+   "difficulty": 1,
+   "prompt": "Put these in the order the compiler needs to see them for a function defined after `main`.",
+   "items": [
+    "Prototype: int media(int a, int b);",
+    "Code that calls media(3, 5)",
+    "Definition: int media(int a, int b) { ... }"
+   ],
+   "explain": "A call must be preceded by at least a declaration (prototype) so the compiler knows the argument and return types. The definition can come later in the file or in another file."
+  }
+ ]
+}

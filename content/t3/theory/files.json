@@ -1,0 +1,199 @@
+{
+ "id": "t3-th-files",
+ "tag": "t3",
+ "title": "Files, directories and errors",
+ "topic": "files",
+ "questions": [
+  {
+   "id": "t3-fil-01",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "Which file descriptors are open by default in every process?",
+   "options": [
+    "0 = stdin, 1 = stdout, 2 = stderr",
+    "1 = stdin, 2 = stdout, 3 = stderr",
+    "0 = stdout, 1 = stdin, 2 = stderr",
+    "None: the program must open them"
+   ],
+   "answer": 0,
+   "explain": "By convention 0, 1 and 2 are standard input, standard output and standard error. The shell sets them up before your program starts."
+  },
+  {
+   "id": "t3-fil-02",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "A process closes descriptor 0 and then successfully calls `open` on a file. What does `open` return?",
+   "options": [
+    "0",
+    "3",
+    "-1",
+    "A random free number"
+   ],
+   "answer": 0,
+   "explain": "`open` (and `dup`) return the LOWEST unused descriptor of the process. After `close(0)` that is 0, so the file silently becomes the program's standard input.",
+   "option_notes": [
+    "Correct.",
+    "3 is only the lowest free number if 0, 1 and 2 are open.",
+    "-1 means failure; nothing failed.",
+    "The choice is deterministic."
+   ]
+  },
+  {
+   "id": "t3-fil-03",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "`creat(\"log\", 0640)` is equivalent to which call?",
+   "options": [
+    "open(\"log\", O_RDONLY | O_CREAT, 0640)",
+    "open(\"log\", O_WRONLY | O_CREAT | O_TRUNC, 0640)",
+    "open(\"log\", O_RDWR | O_CREAT | O_APPEND, 0640)",
+    "open(\"log\", O_WRONLY, 0640)"
+   ],
+   "answer": 1,
+   "explain": "`creat` creates the file if needed, empties it if it exists, and opens it write-only.",
+   "option_notes": [
+    "Opens read-only and does not truncate.",
+    "Correct.",
+    "That opens read-write and appends instead of truncating.",
+    "Without O_CREAT the file is not created and the mode is ignored."
+   ]
+  },
+  {
+   "id": "t3-fil-04",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "`fopen(path, \"w\")` on a file that already exists with content...",
+   "options": [
+    "opens it and appends",
+    "empties it and opens it for writing",
+    "fails and returns NULL",
+    "opens it read-only"
+   ],
+   "answer": 1,
+   "explain": "Mode `\"w\"` truncates the file to zero length (or creates it). Use `\"a\"` to append and `\"r+\"` to read and write without truncating."
+  },
+  {
+   "id": "t3-fil-05",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "`readdir` returns the names `.` and `..` among the entries. To skip them you compare `d_name` with...",
+   "options": [
+    "\".\" and \"..\" using strcmp",
+    "'.' and '..' using ==",
+    "NULL",
+    "the value of getcwd()"
+   ],
+   "answer": 0,
+   "explain": "`d_name` is a string, so compare it with `strcmp(name, \".\") == 0`. `.` is the directory itself and `..` its parent; hidden files such as `.profile` are real entries and must not be skipped by mistake."
+  },
+  {
+   "id": "t3-fil-06",
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "What is true after `int fd2 = dup(fd1);`?",
+   "options": [
+    "fd1 and fd2 share the same file offset",
+    "Closing fd1 also closes fd2",
+    "fd2 is the lowest unused descriptor number",
+    "Writing through fd2 changes the offset seen through fd1"
+   ],
+   "answer": [
+    0,
+    2,
+    3
+   ],
+   "explain": "Both descriptors refer to the same open file, so they share the offset and flags. They are closed independently, and the file stays open until both are closed.",
+   "option_notes": [
+    "True.",
+    "False: each descriptor is closed on its own.",
+    "True: dup picks the lowest free number.",
+    "True: shared offset."
+   ]
+  },
+  {
+   "id": "t3-fil-07",
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "Which of these are C library (stdio) functions that work on a `FILE *`?",
+   "options": [
+    "fopen",
+    "open",
+    "fgets",
+    "read",
+    "fprintf"
+   ],
+   "answer": [
+    0,
+    2,
+    4
+   ],
+   "explain": "`open` and `read` are system calls that use integer descriptors. The stdio functions (`fopen`, `fgets`, `fprintf`, ...) use `FILE *` streams, which are buffered.",
+   "option_notes": [
+    "stdio.",
+    "System call (returns an int).",
+    "stdio.",
+    "System call.",
+    "stdio."
+   ]
+  },
+  {
+   "id": "t3-fil-08",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "Opening the same file twice with `open` gives two descriptors with {{0}} file offsets (shared or independent?).",
+   "blanks": [
+    {
+     "accept": [
+      "independent",
+      "separate",
+      "different",
+      "their own"
+     ]
+    }
+   ],
+   "explain": "Each `open` creates a new open file description with its own offset. Only `dup`/`dup2` (and `fork`) share one."
+  },
+  {
+   "id": "t3-fil-09",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "To turn the error code of the last failed call into text, use `strerror({{0}})`.",
+   "blanks": [
+    {
+     "accept": [
+      "errno"
+     ],
+     "ignore_space": true
+    }
+   ],
+   "explain": "`errno` (from `<errno.h>`) holds the code of the last failure; `strerror` (from `<string.h>`) returns a message such as \"No such file or directory\"."
+  },
+  {
+   "id": "t3-fil-10",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "`fprintf(stderr, ...)` writes to file descriptor number {{0}}.",
+   "blanks": [
+    {
+     "accept": [
+      "2"
+     ]
+    }
+   ],
+   "explain": "Errors go to stderr (descriptor 2) so they stay visible when stdout is redirected to a file or a pipe."
+  },
+  {
+   "id": "t3-fil-11",
+   "type": "order",
+   "difficulty": 2,
+   "prompt": "Put the steps of copying a file with system calls in order.",
+   "items": [
+    "Open the source file with open(O_RDONLY)",
+    "Open (create/truncate) the destination file",
+    "Loop: read a chunk and write the bytes you got, until read returns 0",
+    "Close both descriptors"
+   ],
+   "explain": "Always write exactly as many bytes as `read` returned (not the buffer size), stop when `read` returns 0 (end of file) and release both descriptors."
+  }
+ ]
+}

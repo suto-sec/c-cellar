@@ -1,0 +1,110 @@
+{
+ "id": "t3-th-build",
+ "tag": "t3",
+ "title": "Compiling, libraries and make",
+ "topic": "modular",
+ "questions": [
+  {
+   "id": "t3-bld-01",
+   "type": "order",
+   "difficulty": 1,
+   "prompt": "Put the stages that turn `prog.c` into an executable in order.",
+   "items": [
+    "Preprocessing (#include, #define expanded)",
+    "Compilation to an object file (.o)",
+    "Linking the object files and libraries into the executable"
+   ],
+   "explain": "`gcc prog.c -o prog` runs all three. `gcc -c prog.c` stops after compilation, producing `prog.o`."
+  },
+  {
+   "id": "t3-bld-02",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "Which command compiles `a.c` to an object file without linking?",
+   "options": [
+    "gcc a.c -o a",
+    "gcc -c a.c -o a.o",
+    "gcc -o a.o a.c -l",
+    "gcc -E a.c"
+   ],
+   "answer": 1,
+   "explain": "`-c` means compile only. `-E` stops after the preprocessor; the first command also links.",
+   "option_notes": [
+    "Compiles AND links into an executable.",
+    "Correct.",
+    "Malformed (`-l` needs a library name).",
+    "That only runs the preprocessor and prints the result."
+   ]
+  },
+  {
+   "id": "t3-bld-03",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "What is the difference between static (`libx.a`) and dynamic (`libx.so`) libraries?",
+   "options": [
+    "Static code is copied into the executable at link time; dynamic code is loaded when the program runs",
+    "Static libraries are slower because they use the network",
+    "Dynamic libraries are copied into the executable; static ones are not",
+    "There is no difference, only the file name"
+   ],
+   "answer": 0,
+   "explain": "A statically linked executable carries its own copy of the code it needs. A dynamically linked one needs the `.so` at run time (found via the loader's search path, e.g. `LD_LIBRARY_PATH`), but several programs can share one copy."
+  },
+  {
+   "id": "t3-bld-04",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "A static library for the name `util` is a file called `libutil{{0}}`.",
+   "blanks": [
+    {
+     "accept": [
+      ".a"
+     ],
+     "ignore_space": true
+    }
+   ],
+   "explain": "Created with `ar rcs libutil.a a.o b.o` and used with `gcc main.c -L. -lutil`."
+  },
+  {
+   "id": "t3-bld-05",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "The environment variable `LD_LIBRARY_PATH` lists extra directories where the loader searches for {{0}} libraries at run time.",
+   "blanks": [
+    {
+     "accept": [
+      "dynamic",
+      "shared",
+      ".so",
+      "shared object"
+     ]
+    }
+   ],
+   "explain": "Static libraries are only needed at link time, so the loader never looks for them."
+  },
+  {
+   "id": "t3-bld-06",
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "Which statements about a Makefile are true?",
+   "options": [
+    "A recipe line must start with a TAB character",
+    "make re-runs a recipe when one of its dependencies is newer than the target",
+    "The recipe runs once for every dependency listed",
+    "`%.o: %.c` is a pattern rule that tells make how to build any .o from the matching .c"
+   ],
+   "answer": [
+    0,
+    1,
+    3
+   ],
+   "explain": "A rule is `target: dependencies` followed by TAB-indented recipe lines. make compares timestamps to decide what is out of date. The recipe runs once per target, not once per dependency.",
+   "option_notes": [
+    "True (spaces will not work).",
+    "True: that is what makes incremental builds fast.",
+    "False.",
+    "True."
+   ]
+  }
+ ]
+}

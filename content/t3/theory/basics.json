@@ -1,0 +1,180 @@
+{
+ "id": "t3-th-basics",
+ "tag": "t3",
+ "title": "Types, operators and control flow",
+ "topic": "basics",
+ "questions": [
+  {
+   "id": "t3-bas-01",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "What does this program print?",
+   "options": [
+    "12.3",
+    "12",
+    "13",
+    "It does not compile"
+   ],
+   "answer": 1,
+   "explain": "`a + 7.3` is computed as a double (12.3). Assigning it to an `int` converts it by truncating the fractional part, so `a` becomes 12.",
+   "code": "int a = 5;\na = a + 7.3;\nprintf(\"%d\\n\", a);",
+   "option_notes": [
+    "That is the value of the expression, but `a` is an int and cannot hold it.",
+    "Correct: the conversion to int truncates.",
+    "C truncates toward zero, it does not round.",
+    "Mixing int and double is legal; the assignment converts implicitly."
+   ],
+   "verify": {
+    "source": "#include <stdio.h>\nint main(void)\n{\n    int a = 5;\n    a = a + 7.3;\n    printf(\"%d\\n\", a);\n    return 0;\n}\n",
+    "stdout": "12\n"
+   }
+  },
+  {
+   "id": "t3-bas-02",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "What does this program print?",
+   "options": [
+    "1 1 1",
+    "1 2 3",
+    "0 1 2",
+    "3 3 3"
+   ],
+   "answer": 1,
+   "explain": "A `static` local variable is initialised once and keeps its value between calls, so the counter goes 1, 2, 3.",
+   "code": "int next(void)\n{\n    static int n = 0;\n    return ++n;\n}\n/* main: */\nint a = next();\nint b = next();\nint c = next();\nprintf(\"%d %d %d\\n\", a, b, c);",
+   "option_notes": [
+    "That would be an ordinary local variable (re-initialised on every call), but here it is static.",
+    "Correct: the static variable survives between calls.",
+    "It starts at 0 but is incremented before it is returned (`++n`).",
+    "Nothing makes the three calls return the same value."
+   ],
+   "verify": {
+    "source": "#include <stdio.h>\nint next(void)\n{\n    static int n = 0;\n    return ++n;\n}\nint main(void)\n{\n    int a = next();\n    int b = next();\n    int c = next();\n    printf(\"%d %d %d\\n\", a, b, c);\n    return 0;\n}\n",
+    "stdout": "1 2 3\n"
+   }
+  },
+  {
+   "id": "t3-bas-03",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "What does `printf(\"%05d|%5.2f\\n\", 79, 3.14159);` print?",
+   "options": [
+    "00079| 3.14",
+    "   79|3.14",
+    "79000|3.1",
+    "00079|3.14159"
+   ],
+   "answer": 0,
+   "explain": "`%05d` pads with zeros to a width of 5 (`00079`). `%5.2f` uses a total width of 5 with 2 decimals: `3.14` is 4 characters, so one leading space is added.",
+   "option_notes": [
+    "Correct.",
+    "`%05d` pads with `0`, not spaces; and the width of `%5.2f` is 5.",
+    "Zero padding goes on the left, and `.2` means 2 decimals.",
+    "`.2` limits the decimals to two."
+   ],
+   "verify": {
+    "source": "#include <stdio.h>\nint main(void)\n{\n    printf(\"%05d|%5.2f\\n\", 79, 3.14159);\n    return 0;\n}\n",
+    "stdout": "00079| 3.14\n"
+   }
+  },
+  {
+   "id": "t3-bas-04",
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "Which of these expressions are TRUE (non-zero) in C?",
+   "options": [
+    "0",
+    "-1",
+    "'0'",
+    "!0",
+    "NULL"
+   ],
+   "answer": [
+    1,
+    2,
+    3
+   ],
+   "explain": "In C, 0 is false and every other value is true. `-1` and `!0` (which is 1) are non-zero. The character constant `'0'` is the ASCII code 48, also non-zero. `NULL` is a null pointer, i.e. zero.",
+   "option_notes": [
+    "Zero is the only false integer value.",
+    "Any non-zero value is true, negatives included.",
+    "`'0'` is the character whose code is 48, not the number 0.",
+    "`!0` evaluates to 1.",
+    "A null pointer compares equal to 0, so it is false."
+   ]
+  },
+  {
+   "id": "t3-bas-05",
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "Which statements about `size_t` are true?",
+   "options": [
+    "It is an unsigned integer type",
+    "It is the type of the result of `sizeof`",
+    "It is always exactly 4 bytes",
+    "It can hold the size of the largest object the system can address"
+   ],
+   "answer": [
+    0,
+    1,
+    3
+   ],
+   "explain": "`size_t` is an unsigned type chosen by the implementation to hold object sizes. On a 64-bit system it is typically 8 bytes, so it is not always 4. Print it with `%zu`.",
+   "option_notes": [
+    "True.",
+    "True: `sizeof` yields a `size_t`.",
+    "False: it is typically 8 bytes on 64-bit systems.",
+    "True: that is its purpose."
+   ]
+  },
+  {
+   "id": "t3-bas-06",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "In C, a false value is {{0}}; any other value is true.",
+   "blanks": [
+    {
+     "accept": [
+      "0",
+      "zero"
+     ]
+    }
+   ],
+   "explain": "There is no mandatory boolean type before C99 (and even `<stdbool.h>` only provides `bool`, `true`=1 and `false`=0 on top of integers)."
+  },
+  {
+   "id": "t3-bas-07",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "`x += 3;` is the same as: {{0}};",
+   "blanks": [
+    {
+     "accept": [
+      "x = x + 3",
+      "x=x+3"
+     ],
+     "ignore_space": true
+    }
+   ],
+   "explain": "Compound assignment applies the operator and stores the result back in the left operand."
+  },
+  {
+   "id": "t3-bas-08",
+   "type": "order",
+   "difficulty": 2,
+   "prompt": "Order these operators from HIGHEST to LOWEST precedence.",
+   "items": [
+    "( )  (parentheses)",
+    "!  (logical not)",
+    "*  /  %",
+    "+  -  (binary)",
+    "<  <=  >  >=",
+    "==  !=",
+    "&&",
+    "||"
+   ],
+   "explain": "Grouping binds tightest, then unary operators, then multiplicative, additive, relational, equality, logical AND and finally logical OR. Use parentheses whenever you are unsure."
+  }
+ ]
+}
