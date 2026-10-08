@@ -1,0 +1,14 @@
+{
+ "id": "t3-arrays-second-largest",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "arrays",
+ "title": "Second largest",
+ "stars": 3,
+ "order": 7,
+ "summary": "Tracking two values.",
+ "hints": [
+  "Keep the largest and the second largest seen so far; when you see a new largest, the old largest becomes the second.",
+  "Values equal to the largest must not become the second largest."
+ ]
+}

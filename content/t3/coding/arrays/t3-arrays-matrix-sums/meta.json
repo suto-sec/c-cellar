@@ -1,0 +1,14 @@
+{
+ "id": "t3-arrays-matrix-sums",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "arrays",
+ "title": "Row and column sums",
+ "stars": 3,
+ "order": 8,
+ "summary": "Two-dimensional arrays.",
+ "hints": [
+  "Declare `int m[10][10];` and read it with two nested loops.",
+  "For a row sum, add `m[i][0..c-1]`; for a column sum, add `m[0..r-1][j]`."
+ ]
+}

@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "4\n3 8 2 8\n",
+   "stdout": "max=8 at 1\n"
+  },
+  {
+   "stdin": "1\n5\n",
+   "stdout": "max=5 at 0\n"
+  },
+  {
+   "stdin": "3\n1 9 3\n",
+   "stdout": "max=9 at 1\n"
+  },
+  {
+   "stdin": "3\n9 1 9\n",
+   "stdout": "max=9 at 0\n"
+  },
+  {
+   "stdin": "3\n-5 -2 -9\n",
+   "stdout": "max=-2 at 1\n"
+  },
+  {
+   "stdin": "3\n3 3 3\n",
+   "stdout": "max=3 at 0\n"
+  }
+ ]
+}

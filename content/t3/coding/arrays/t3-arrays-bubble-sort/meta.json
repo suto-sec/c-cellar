@@ -1,0 +1,14 @@
+{
+ "id": "t3-arrays-bubble-sort",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "arrays",
+ "title": "Sort with bubble sort",
+ "stars": 3,
+ "order": 6,
+ "summary": "Nested loops over an array.",
+ "hints": [
+  "Bubble sort: compare neighbours `v[j]` and `v[j + 1]` and swap them if they are in the wrong order; repeat passes.",
+  "After each pass the largest remaining element is in its final place, so the inner loop can stop one element earlier each time."
+ ]
+}

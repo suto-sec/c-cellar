@@ -1,0 +1,14 @@
+{
+ "id": "t3-arrays-transpose",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "arrays",
+ "title": "Transpose a matrix",
+ "stars": 3,
+ "order": 9,
+ "summary": "Swapping the roles of rows and columns.",
+ "hints": [
+  "The element at row `i`, column `j` of the result is `m[j][i]` of the original.",
+  "Print by columns: the outer loop over `j`, the inner loop over `i`."
+ ]
+}

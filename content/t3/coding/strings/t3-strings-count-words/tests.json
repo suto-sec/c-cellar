@@ -1,0 +1,36 @@
+{
+ "cases": [
+  {
+   "stdin": "the quick brown fox\n",
+   "stdout": "4\n"
+  },
+  {
+   "stdin": "hello\n",
+   "stdout": "1\n"
+  },
+  {
+   "stdin": "hello world\n",
+   "stdout": "2\n"
+  },
+  {
+   "stdin": "   leading and trailing   \n",
+   "stdout": "3\n"
+  },
+  {
+   "stdin": "\n",
+   "stdout": "0\n"
+  },
+  {
+   "stdin": "   \n",
+   "stdout": "0\n"
+  },
+  {
+   "stdin": "a b  c   d\n",
+   "stdout": "4\n"
+  },
+  {
+   "stdin": "one\n",
+   "stdout": "1\n"
+  }
+ ]
+}

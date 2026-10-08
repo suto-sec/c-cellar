@@ -1,0 +1,14 @@
+{
+ "id": "t3-strings-caesar-cipher",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "strings",
+ "title": "Caesar cipher",
+ "stars": 3,
+ "order": 8,
+ "summary": "Arithmetic on characters.",
+ "hints": [
+  "For a lower-case letter, `(c - 'a' + k) % 26` is its new position in the alphabet; add `'a'` back.",
+  "Treat upper-case letters the same way with `'A'`."
+ ]
+}

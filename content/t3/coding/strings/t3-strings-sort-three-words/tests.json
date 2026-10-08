@@ -1,0 +1,32 @@
+{
+ "cases": [
+  {
+   "stdin": "pear apple fig\n",
+   "stdout": "apple\nfig\npear\n"
+  },
+  {
+   "stdin": "pear apple fig\n",
+   "stdout": "apple\nfig\npear\n"
+  },
+  {
+   "stdin": "a b c\n",
+   "stdout": "a\nb\nc\n"
+  },
+  {
+   "stdin": "c b a\n",
+   "stdout": "a\nb\nc\n"
+  },
+  {
+   "stdin": "same same same\n",
+   "stdout": "same\nsame\nsame\n"
+  },
+  {
+   "stdin": "Zebra apple Mango\n",
+   "stdout": "Mango\nZebra\napple\n"
+  },
+  {
+   "stdin": "ab a abc\n",
+   "stdout": "a\nab\nabc\n"
+  }
+ ]
+}

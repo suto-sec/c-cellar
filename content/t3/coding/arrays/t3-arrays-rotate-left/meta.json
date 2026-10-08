@@ -1,0 +1,14 @@
+{
+ "id": "t3-arrays-rotate-left",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "arrays",
+ "title": "Rotate left",
+ "stars": 3,
+ "order": 10,
+ "summary": "Moving elements around.",
+ "hints": [
+  "You do not have to move the elements: print element `(i + k) % n` for `i = 0 .. n-1`.",
+  "Reduce `k` first with `k % n`."
+ ]
+}

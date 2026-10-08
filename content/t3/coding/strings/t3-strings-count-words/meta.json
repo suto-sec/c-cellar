@@ -1,0 +1,14 @@
+{
+ "id": "t3-strings-count-words",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "strings",
+ "title": "Count the words",
+ "stars": 3,
+ "order": 5,
+ "summary": "Spaces separate words.",
+ "hints": [
+  "A word starts where a non-space character follows a space (or the start of the line).",
+  "Keep a flag that says whether you are inside a word."
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-strings-trim-spaces",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "strings",
+ "title": "Trim a string in place",
+ "stars": 4,
+ "order": 11,
+ "summary": "Pointer-free string surgery.",
+ "hints": [
+  "First remove the trailing spaces: put a `'\\0'` after the last non-space character.",
+  "Then move the rest of the string to the start: `memmove(s, s + start, strlen(s + start) + 1)`."
+ ]
+}

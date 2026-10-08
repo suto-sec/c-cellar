@@ -1,0 +1,14 @@
+{
+ "id": "t3-arrays-above-average",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "arrays",
+ "title": "Above the average",
+ "stars": 3,
+ "order": 5,
+ "summary": "Two passes over an array.",
+ "hints": [
+  "First pass: compute the sum. Second pass: compare each element with the average.",
+  "Do not truncate the average: use a `double`."
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-arrays-binary-search",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "arrays",
+ "title": "Binary search",
+ "stars": 4,
+ "order": 11,
+ "summary": "Halving the search range.",
+ "hints": [
+  "Keep a range `lo..hi`. Look at the middle element: if it is smaller than `x` the answer is to its right, if larger to its left.",
+  "Stop when `lo > hi`: the value is not in the array."
+ ]
+}

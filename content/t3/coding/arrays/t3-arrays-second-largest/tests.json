@@ -1,0 +1,40 @@
+{
+ "cases": [
+  {
+   "stdin": "4\n3 9 5 9\n",
+   "stdout": "5\n"
+  },
+  {
+   "stdin": "1\n5\n",
+   "stdout": "none\n"
+  },
+  {
+   "stdin": "2\n5 5\n",
+   "stdout": "none\n"
+  },
+  {
+   "stdin": "3\n5 5 3\n",
+   "stdout": "3\n"
+  },
+  {
+   "stdin": "2\n1 2\n",
+   "stdout": "1\n"
+  },
+  {
+   "stdin": "2\n2 1\n",
+   "stdout": "1\n"
+  },
+  {
+   "stdin": "4\n9 1 9 7\n",
+   "stdout": "7\n"
+  },
+  {
+   "stdin": "3\n-1 -2 -3\n",
+   "stdout": "-2\n"
+  },
+  {
+   "stdin": "4\n4 4 4 1\n",
+   "stdout": "1\n"
+  }
+ ]
+}

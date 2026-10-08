@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "3\nabc xyz\n",
+   "stdout": "def abc\n"
+  },
+  {
+   "stdin": "3\nHello, World!\n",
+   "stdout": "Khoor, Zruog!\n"
+  },
+  {
+   "stdin": "0\nunchanged\n",
+   "stdout": "unchanged\n"
+  },
+  {
+   "stdin": "13\nWhy did the chicken cross the road?\n",
+   "stdout": "Jul qvq gur puvpxra pebff gur ebnq?\n"
+  },
+  {
+   "stdin": "25\nabc XYZ\n",
+   "stdout": "zab WXY\n"
+  },
+  {
+   "stdin": "1\nzZ\n",
+   "stdout": "aA\n"
+  }
+ ]
+}

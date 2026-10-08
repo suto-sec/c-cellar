@@ -1,0 +1,14 @@
+{
+ "id": "t3-arrays-sum-array",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "arrays",
+ "title": "Sum of an array",
+ "stars": 1,
+ "order": 1,
+ "summary": "Read into an array and add.",
+ "hints": [
+  "Declare `int v[100];` and fill it in a loop with `scanf(\"%d\", &v[i])`.",
+  "Then loop again to add the elements."
+ ]
+}

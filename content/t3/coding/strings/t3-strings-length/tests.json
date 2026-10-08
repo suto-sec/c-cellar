@@ -1,0 +1,24 @@
+{
+ "cases": [
+  {
+   "stdin": "programming\n",
+   "stdout": "11\n"
+  },
+  {
+   "stdin": "a\n",
+   "stdout": "1\n"
+  },
+  {
+   "stdin": "hello\n",
+   "stdout": "5\n"
+  },
+  {
+   "stdin": "supercalifragilistic\n",
+   "stdout": "20\n"
+  },
+  {
+   "stdin": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n",
+   "stdout": "100\n"
+  }
+ ]
+}

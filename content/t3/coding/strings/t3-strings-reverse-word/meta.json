@@ -1,0 +1,14 @@
+{
+ "id": "t3-strings-reverse-word",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "strings",
+ "title": "Reverse a word",
+ "stars": 2,
+ "order": 2,
+ "summary": "Swapping characters inside a string.",
+ "hints": [
+  "Swap the first and the last character, then the second and the second to last, and so on.",
+  "You only need to go up to half of the length."
+ ]
+}

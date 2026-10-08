@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "c is fun\n",
+   "stdout": "C IS FUN\n"
+  },
+  {
+   "stdin": "hello\n",
+   "stdout": "HELLO\n"
+  },
+  {
+   "stdin": "Hello, World! 123\n",
+   "stdout": "HELLO, WORLD! 123\n"
+  },
+  {
+   "stdin": "ALREADY\n",
+   "stdout": "ALREADY\n"
+  },
+  {
+   "stdin": "\n",
+   "stdout": "\n"
+  },
+  {
+   "stdin": "mixed Case 9\n",
+   "stdout": "MIXED CASE 9\n"
+  }
+ ]
+}

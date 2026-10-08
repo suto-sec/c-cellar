@@ -1,0 +1,14 @@
+{
+ "id": "t3-arrays-reverse-array",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "arrays",
+ "title": "Reverse an array",
+ "stars": 2,
+ "order": 3,
+ "summary": "Walking an array backwards.",
+ "hints": [
+  "Start the loop at `n - 1` and count down to 0.",
+  "Print a space after every element except the last one printed."
+ ]
+}

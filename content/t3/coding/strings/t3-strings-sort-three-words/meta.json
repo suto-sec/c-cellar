@@ -1,0 +1,14 @@
+{
+ "id": "t3-strings-sort-three-words",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "strings",
+ "title": "Sort three words",
+ "stars": 3,
+ "order": 9,
+ "summary": "strcmp for ordering.",
+ "hints": [
+  "`strcmp(a, b)` is negative if `a` comes before `b`, 0 if equal, positive otherwise: never compare strings with `==`.",
+  "To swap two strings use a temporary array and `strcpy`. A char array `w[3][64]` holds three words."
+ ]
+}

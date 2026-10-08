@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "Hello World\n",
+   "stdout": "length: 11\nvowels: 3\n"
+  },
+  {
+   "stdin": "\n",
+   "stdout": "length: 0\nvowels: 0\n"
+  },
+  {
+   "stdin": "AEIOU xyz\n",
+   "stdout": "length: 9\nvowels: 5\n"
+  },
+  {
+   "stdin": "  a \n",
+   "stdout": "length: 4\nvowels: 1\n"
+  },
+  {
+   "stdin": "queue",
+   "stdout": "length: 5\nvowels: 4\n"
+  },
+  {
+   "stdin": "Hello World\n",
+   "stdout": "length: 11\nvowels: 3\n"
+  }
+ ]
+}

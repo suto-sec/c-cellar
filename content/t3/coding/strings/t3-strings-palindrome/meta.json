@@ -1,0 +1,14 @@
+{
+ "id": "t3-strings-palindrome",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "strings",
+ "title": "Palindrome",
+ "stars": 3,
+ "order": 4,
+ "summary": "Comparing a string with itself.",
+ "hints": [
+  "Compare the first character with the last, the second with the second to last, and so on.",
+  "Stop as soon as a pair differs."
+ ]
+}

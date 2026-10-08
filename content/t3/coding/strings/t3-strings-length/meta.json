@@ -1,0 +1,14 @@
+{
+ "id": "t3-strings-length",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "strings",
+ "title": "Length of a word",
+ "stars": 1,
+ "order": 1,
+ "summary": "strlen or a loop up to '\\0'.",
+ "hints": [
+  "`strlen(w)` (from `<string.h>`) counts the characters before the terminating `'\\0'`.",
+  "A `size_t` is printed with `%zu`."
+ ]
+}

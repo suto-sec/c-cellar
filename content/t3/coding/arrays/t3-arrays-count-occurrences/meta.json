@@ -1,0 +1,14 @@
+{
+ "id": "t3-arrays-count-occurrences",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "arrays",
+ "title": "Count occurrences",
+ "stars": 2,
+ "order": 4,
+ "summary": "Counting matches.",
+ "hints": [
+  "Read `x` after the array, then count the elements equal to it.",
+  "A counter that starts at 0 and increases inside an `if`."
+ ]
+}

@@ -1,0 +1,40 @@
+{
+ "cases": [
+  {
+   "stdin": "  hello world  \n",
+   "stdout": "[hello world]\n"
+  },
+  {
+   "stdin": "  hi  \n",
+   "stdout": "[hi]\n"
+  },
+  {
+   "stdin": "hi\n",
+   "stdout": "[hi]\n"
+  },
+  {
+   "stdin": "   \n",
+   "stdout": "[]\n"
+  },
+  {
+   "stdin": "\n",
+   "stdout": "[]\n"
+  },
+  {
+   "stdin": "a b  \n",
+   "stdout": "[a b]\n"
+  },
+  {
+   "stdin": "   leading\n",
+   "stdout": "[leading]\n"
+  },
+  {
+   "stdin": "trailing   \n",
+   "stdout": "[trailing]\n"
+  },
+  {
+   "stdin": " x \n",
+   "stdout": "[x]\n"
+  }
+ ]
+}

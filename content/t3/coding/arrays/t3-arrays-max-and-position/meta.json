@@ -1,0 +1,14 @@
+{
+ "id": "t3-arrays-max-and-position",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "arrays",
+ "title": "Maximum and where it is",
+ "stars": 2,
+ "order": 2,
+ "summary": "Searching an array.",
+ "hints": [
+  "Remember the INDEX of the best element, not just its value.",
+  "Only replace it when you find a strictly larger value, so the first one wins."
+ ]
+}

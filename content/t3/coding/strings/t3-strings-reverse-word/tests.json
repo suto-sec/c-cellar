@@ -1,0 +1,32 @@
+{
+ "cases": [
+  {
+   "stdin": "stressed\n",
+   "stdout": "desserts\n"
+  },
+  {
+   "stdin": "a\n",
+   "stdout": "a\n"
+  },
+  {
+   "stdin": "ab\n",
+   "stdout": "ba\n"
+  },
+  {
+   "stdin": "abc\n",
+   "stdout": "cba\n"
+  },
+  {
+   "stdin": "level\n",
+   "stdout": "level\n"
+  },
+  {
+   "stdin": "hello\n",
+   "stdout": "olleh\n"
+  },
+  {
+   "stdin": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy\n",
+   "stdout": "yxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n"
+  }
+ ]
+}

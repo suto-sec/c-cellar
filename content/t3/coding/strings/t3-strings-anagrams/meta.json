@@ -1,0 +1,14 @@
+{
+ "id": "t3-strings-anagrams",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "strings",
+ "title": "Are they anagrams?",
+ "stars": 4,
+ "order": 10,
+ "summary": "Counting letters in two words.",
+ "hints": [
+  "Count the letters of the first word, then subtract the letters of the second: if every counter ends at 0 they are anagrams.",
+  "Different lengths can never be anagrams (the counters would not be all zero)."
+ ]
+}

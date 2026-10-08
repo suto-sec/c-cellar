@@ -1,0 +1,14 @@
+{
+ "id": "t3-strings-to-upper",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "strings",
+ "title": "To upper case",
+ "stars": 2,
+ "order": 6,
+ "summary": "Changing characters in place.",
+ "hints": [
+  "`toupper` is in `<ctype.h>`; apply it to each character.",
+  "The newline stays in the line, so print it with `printf(\"%s\", line)`."
+ ]
+}

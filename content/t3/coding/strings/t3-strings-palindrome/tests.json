@@ -1,0 +1,40 @@
+{
+ "cases": [
+  {
+   "stdin": "racecar\n",
+   "stdout": "yes\n"
+  },
+  {
+   "stdin": "level\n",
+   "stdout": "yes\n"
+  },
+  {
+   "stdin": "hello\n",
+   "stdout": "no\n"
+  },
+  {
+   "stdin": "a\n",
+   "stdout": "yes\n"
+  },
+  {
+   "stdin": "ab\n",
+   "stdout": "no\n"
+  },
+  {
+   "stdin": "abba\n",
+   "stdout": "yes\n"
+  },
+  {
+   "stdin": "Abba\n",
+   "stdout": "no\n"
+  },
+  {
+   "stdin": "racecar\n",
+   "stdout": "yes\n"
+  },
+  {
+   "stdin": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n",
+   "stdout": "yes\n"
+  }
+ ]
+}

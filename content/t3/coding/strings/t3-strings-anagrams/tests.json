@@ -1,0 +1,36 @@
+{
+ "cases": [
+  {
+   "stdin": "listen silent\n",
+   "stdout": "anagram\n"
+  },
+  {
+   "stdin": "listen silent\n",
+   "stdout": "anagram\n"
+  },
+  {
+   "stdin": "abc abd\n",
+   "stdout": "not anagram\n"
+  },
+  {
+   "stdin": "a a\n",
+   "stdout": "anagram\n"
+  },
+  {
+   "stdin": "aab abb\n",
+   "stdout": "not anagram\n"
+  },
+  {
+   "stdin": "abc ab\n",
+   "stdout": "not anagram\n"
+  },
+  {
+   "stdin": "dormitory dirtyroom\n",
+   "stdout": "anagram\n"
+  },
+  {
+   "stdin": "night thing\n",
+   "stdout": "anagram\n"
+  }
+ ]
+}
