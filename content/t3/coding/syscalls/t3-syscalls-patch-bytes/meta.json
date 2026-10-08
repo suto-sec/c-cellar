@@ -1,0 +1,14 @@
+{
+ "id": "t3-syscalls-patch-bytes",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "syscalls",
+ "title": "Overwrite bytes in place",
+ "stars": 3,
+ "order": 6,
+ "summary": "lseek before write.",
+ "hints": [
+  "Without `O_TRUNC` opening a file keeps its content.",
+  "`lseek(fd, offset, SEEK_SET)` sets the position of the next `write`."
+ ]
+}

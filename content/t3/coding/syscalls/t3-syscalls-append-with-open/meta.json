@@ -1,0 +1,14 @@
+{
+ "id": "t3-syscalls-append-with-open",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "syscalls",
+ "title": "Append with O_APPEND",
+ "stars": 3,
+ "order": 5,
+ "summary": "Open flags and permissions.",
+ "hints": [
+  "`O_APPEND` makes every write go to the end of the file; `O_CREAT` creates it if it is missing (and needs the permissions argument).",
+  "Combine flags with `|`, not with `,`."
+ ]
+}

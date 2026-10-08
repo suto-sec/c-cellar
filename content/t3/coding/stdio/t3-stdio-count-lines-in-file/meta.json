@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-count-lines-in-file",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Count the lines of a file",
+ "stars": 2,
+ "order": 3,
+ "summary": "fgetc until EOF.",
+ "hints": [
+  "`fgetc(f)` returns one character at a time, or `EOF` at the end; keep it in an `int`.",
+  "Count the characters that are `'\\n'`."
+ ]
+}

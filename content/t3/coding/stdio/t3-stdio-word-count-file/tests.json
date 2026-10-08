@@ -1,0 +1,46 @@
+{
+ "cases": [
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'the quick brown\\nfox\\n' > f.txt",
+   "stdout": "lines=2 words=4 bytes=20\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'one two three\nfour five\n' > f.txt",
+   "stdout": "lines=2 words=5 bytes=24\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf single > f.txt",
+   "stdout": "lines=0 words=1 bytes=6\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf '  spaced   out  \n\n' > f.txt",
+   "stdout": "lines=2 words=2 bytes=18\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'a\nb\nc\n' > f.txt",
+   "stdout": "lines=3 words=3 bytes=6\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf '' > f.txt",
+   "stdout": "lines=0 words=0 bytes=0\n"
+  }
+ ]
+}

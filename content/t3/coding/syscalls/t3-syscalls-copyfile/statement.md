@@ -1,4 +1,4 @@
-# copyfile
+# copyfile with system calls
 
 Write `copyfile SRC DST` that copies the file `SRC` to `DST` using the **system calls** `open`, `read`, `write` and `close` (not `fopen`/`fread`).
 
@@ -8,6 +8,8 @@ Write `copyfile SRC DST` that copies the file `SRC` to `DST` using the **system 
 - With the wrong number of arguments print a usage message to stderr and exit with a non-zero status.
 - Exit with status 0 on success. Close both descriptors.
 
+**Example**
+
 ```
-$ ./prog notes.txt backup.txt && cat backup.txt
-```
+$ ./prog a.txt b.txt && cat b.txt
+abc```

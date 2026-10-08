@@ -1,0 +1,20 @@
+{
+ "cases": [
+  {
+   "cmd": "printf 'abc' | \"$BIN\" copy.txt; echo; cat copy.txt",
+   "stdout": "abc\nabc"
+  },
+  {
+   "cmd": "printf 'hello\\nworld\\n' | \"$BIN\" out.txt; echo ---; cat out.txt",
+   "stdout": "hello\nworld\n---\nhello\nworld\n"
+  },
+  {
+   "cmd": "seq 1 5000 | \"$BIN\" out.txt | cmp - out.txt && echo same",
+   "stdout": "same\n"
+  },
+  {
+   "cmd": "\"$BIN\" out.txt < /dev/null; wc -c < out.txt",
+   "stdout": "0\n"
+  }
+ ]
+}

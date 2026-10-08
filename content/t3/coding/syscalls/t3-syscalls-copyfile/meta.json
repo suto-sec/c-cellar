@@ -4,13 +4,13 @@
  "track": "derusting",
  "topic": "syscalls",
  "title": "copyfile with system calls",
+ "stars": 3,
  "order": 4,
- "summary": "open/read/write/close a file; handle errors with errno.",
+ "summary": "open/read/write/close; errors with errno.",
  "hints": [
-  "Read in a loop until read() returns 0; write exactly as many bytes as read() returned.",
-  "open(dst, O_WRONLY | O_CREAT | O_TRUNC, 0644) creates or empties the destination.",
-  "On failure, print strerror(errno) to stderr and return 1."
+  "Read in a loop until `read` returns 0; write exactly as many bytes as `read` returned.",
+  "`open(dst, O_WRONLY | O_CREAT | O_TRUNC, 0644)` creates or empties the destination.",
+  "On failure print `strerror(errno)` to stderr and return 1."
  ],
- "info": "open returns a descriptor or -1; read(fd, buf, n) returns the bytes read (0 at EOF, -1 on error); write(fd, buf, n) returns the bytes written; close(fd). Errors set errno; strerror(errno) gives text. Headers: <fcntl.h> <unistd.h> <errno.h> <string.h>.",
- "stars": 3
+ "info": "open returns a descriptor or -1; read(fd, buf, n) returns the bytes read (0 at EOF, -1 on error); write(fd, buf, n) returns the bytes written; close(fd). Errors set errno; strerror(errno) gives text."
 }

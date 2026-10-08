@@ -1,0 +1,32 @@
+{
+ "cases": [
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'a\\nb\\n' > f.txt",
+   "stdout": "   1  a\n   2  b\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'alpha\\nbeta\\ngamma\\n' > f.txt",
+   "stdout": "   1  alpha\n   2  beta\n   3  gamma\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf '\\n\\nx\\n' > f.txt",
+   "stdout": "   1  \n   2  \n   3  x\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "seq 1 12 > f.txt",
+   "stdout": "   1  1\n   2  2\n   3  3\n   4  4\n   5  5\n   6  6\n   7  7\n   8  8\n   9  9\n  10  10\n  11  11\n  12  12\n"
+  }
+ ]
+}

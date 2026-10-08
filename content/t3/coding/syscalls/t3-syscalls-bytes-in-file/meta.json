@@ -1,0 +1,14 @@
+{
+ "id": "t3-syscalls-bytes-in-file",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "syscalls",
+ "title": "Size with lseek",
+ "stars": 2,
+ "order": 2,
+ "summary": "open, lseek, close.",
+ "hints": [
+  "`lseek(fd, 0, SEEK_END)` returns the new position, which is the size of the file.",
+  "`open` returns -1 on failure and sets `errno`; `strerror(errno)` turns it into text."
+ ]
+}

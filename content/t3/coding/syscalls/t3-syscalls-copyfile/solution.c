@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
         return 1;
     }
     while ((n = read(in, buf, sizeof(buf))) > 0) {
-        if (write(out, buf, n) != n) {
+        if (write(out, buf, (size_t) n) != n) {
             fprintf(stderr, "write: %s\n", strerror(errno));
             close(in);
             close(out);

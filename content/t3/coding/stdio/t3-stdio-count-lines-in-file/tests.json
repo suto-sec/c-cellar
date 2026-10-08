@@ -1,0 +1,43 @@
+{
+ "cases": [
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'one\\ntwo\\nthree\\n' > f.txt",
+   "stdout": "3\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "seq 1 25 > f.txt",
+   "stdout": "25\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'a\\nb' > f.txt",
+   "stdout": "1\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": ": > f.txt",
+   "stdout": "0\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf '\\n\\n\\n' > f.txt",
+   "stdout": "3\n"
+  },
+  {
+   "cmd": "\"$BIN\" nope 2>/dev/null; echo \"rc=$?\"",
+   "stdout": "rc=1\n"
+  }
+ ]
+}

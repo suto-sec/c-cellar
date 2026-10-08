@@ -280,6 +280,8 @@ def check_exercise(ex):
             shutil.copyfile(ws / n, tmp / n)
         for h in d.glob("*.h"):  # always the original header, whatever happened to the workspace copy
             shutil.copyfile(h, tmp / h.name)
+        for hidden in (d / "hidden").glob("*") if (d / "hidden").is_dir() else []:  # files the student is linked with (e.g. a main.c)
+            shutil.copyfile(hidden, tmp / hidden.name)
         out = tmp / "prog"
         try:
             if ex.get("build"):  # multi-file exercise: its own build command must produce ./prog

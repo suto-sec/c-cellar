@@ -1,0 +1,25 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" f 6 WORLD; cat f; echo",
+   "setup": "printf 'hello world' > f",
+   "stdout": "hello WORLD\n"
+  },
+  {
+   "cmd": "\"$BIN\" f 2 XYZ; cat f; echo",
+   "setup": "printf 'abcdefgh' > f",
+   "stdout": "abXYZfgh\n"
+  },
+  {
+   "cmd": "\"$BIN\" f 0 12; cat f; echo",
+   "setup": "printf 'abcdefgh' > f",
+   "stdout": "12cdefgh\n"
+  },
+  {
+   "name": "writing past the end extends the file",
+   "cmd": "\"$BIN\" f 2 xyz; cat f; echo",
+   "setup": "printf 'abc' > f",
+   "stdout": "abxyz\n"
+  }
+ ]
+}

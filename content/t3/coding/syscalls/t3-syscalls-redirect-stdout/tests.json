@@ -1,0 +1,18 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" out.txt; echo ---; cat out.txt",
+   "stdout": "before\n---\ninside the file\n"
+  },
+  {
+   "cmd": "\"$BIN\" out.txt; echo ---; cat out.txt",
+   "stdout": "before\n---\ninside the file\n"
+  },
+  {
+   "name": "an existing file is emptied",
+   "cmd": "\"$BIN\" out.txt; echo ---; cat out.txt",
+   "setup": "echo old > out.txt",
+   "stdout": "before\n---\ninside the file\n"
+  }
+ ]
+}

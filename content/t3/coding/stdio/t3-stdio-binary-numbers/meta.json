@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-binary-numbers",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Binary file of integers",
+ "stars": 4,
+ "order": 9,
+ "summary": "fwrite and fread with ints.",
+ "hints": [
+  "`fwrite(v, sizeof(int), n, f)` writes `n` ints exactly as they are in memory (4 bytes each); open the file with \"wb\" (\"rb\" to read).",
+  "Convert the arguments with `atoi` into an `int` array first (allocate it or use a big fixed array)."
+ ]
+}

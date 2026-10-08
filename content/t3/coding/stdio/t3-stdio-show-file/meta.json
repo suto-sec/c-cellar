@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-show-file",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Show a file",
+ "stars": 2,
+ "order": 2,
+ "summary": "fopen, fgets and fputs.",
+ "hints": [
+  "Open with `fopen(name, \"r\")` and check for `NULL`; read with `fgets` until it returns `NULL`.",
+  "`fputs(line, stdout)` writes the line exactly as read (it already contains its newline)."
+ ]
+}

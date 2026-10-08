@@ -1,0 +1,50 @@
+{
+ "cases": [
+  {
+   "args": [
+    "f"
+   ],
+   "setup": "printf 'stressed' > f",
+   "stdout": "desserts"
+  },
+  {
+   "args": [
+    "f"
+   ],
+   "setup": "printf 'abc' > f",
+   "stdout": "cba"
+  },
+  {
+   "args": [
+    "f"
+   ],
+   "setup": "printf 'abc\\n' > f",
+   "stdout": "\ncba"
+  },
+  {
+   "args": [
+    "f"
+   ],
+   "setup": ": > f",
+   "stdout": ""
+  },
+  {
+   "args": [
+    "f"
+   ],
+   "setup": "printf 'x' > f",
+   "stdout": "x"
+  },
+  {
+   "args": [
+    "f"
+   ],
+   "setup": "seq 1 3 > f",
+   "stdout": "\n3\n2\n1"
+  },
+  {
+   "cmd": "\"$BIN\" nope 2>/dev/null; echo \"rc=$?\"",
+   "stdout": "rc=1\n"
+  }
+ ]
+}

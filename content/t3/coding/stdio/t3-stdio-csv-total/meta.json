@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-csv-total",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Total of a CSV file",
+ "stars": 4,
+ "order": 10,
+ "summary": "fgets + sscanf with a character class.",
+ "hints": [
+  "`sscanf(line, \"%63[^,],%lf\", name, &price)`: `%[^,]` reads everything up to a comma; the `,` in the format matches the comma.",
+  "`sscanf` returns the number of values it converted: only count the line when it is 2."
+ ]
+}

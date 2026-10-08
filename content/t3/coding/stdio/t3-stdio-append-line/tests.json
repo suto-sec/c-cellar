@@ -1,0 +1,21 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" todo.txt buy-milk && cat todo.txt",
+   "stdout": "buy-milk\n"
+  },
+  {
+   "cmd": "\"$BIN\" log.txt first && \"$BIN\" log.txt second && cat log.txt",
+   "stdout": "first\nsecond\n"
+  },
+  {
+   "cmd": "\"$BIN\" log.txt more && cat log.txt",
+   "setup": "echo start > log.txt",
+   "stdout": "start\nmore\n"
+  },
+  {
+   "cmd": "\"$BIN\" log.txt 'a b  c' && cat log.txt",
+   "stdout": "a b  c\n"
+  }
+ ]
+}

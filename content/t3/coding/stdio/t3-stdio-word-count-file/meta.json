@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-word-count-file",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Lines, words and bytes",
+ "stars": 3,
+ "order": 7,
+ "summary": "A tiny wc.",
+ "hints": [
+  "Read the file character by character, counting every byte, every `'\\n'`, and every time a non-space follows a space.",
+  "Use a flag `inword` that is 1 while you are inside a word."
+ ]
+}

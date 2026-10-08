@@ -1,0 +1,25 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" 10 20 30",
+   "stdout": "count=3 sum=60\n"
+  },
+  {
+   "cmd": "\"$BIN\" 1 2 3; wc -c < numbers.bin",
+   "stdout": "count=3 sum=6\n12\n"
+  },
+  {
+   "cmd": "\"$BIN\"; wc -c < numbers.bin",
+   "stdout": "count=0 sum=0\n0\n"
+  },
+  {
+   "cmd": "\"$BIN\" -5 5 100; wc -c < numbers.bin",
+   "stdout": "count=3 sum=100\n12\n"
+  },
+  {
+   "name": "the file holds raw 4-byte integers",
+   "cmd": "\"$BIN\" 7; od -An -tu4 numbers.bin | tr -s ' '",
+   "stdout": "count=1 sum=7\n 7\n"
+  }
+ ]
+}

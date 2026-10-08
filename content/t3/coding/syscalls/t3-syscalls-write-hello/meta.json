@@ -1,0 +1,14 @@
+{
+ "id": "t3-syscalls-write-hello",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "syscalls",
+ "title": "Write with write()",
+ "stars": 1,
+ "order": 1,
+ "summary": "The write system call.",
+ "hints": [
+  "`write(fd, buffer, count)` writes `count` bytes; descriptor 1 is standard output (`STDOUT_FILENO`).",
+  "`strlen(msg)` gives the number of bytes of a string. Include `<unistd.h>` for `write`."
+ ]
+}

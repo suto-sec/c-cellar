@@ -1,0 +1,21 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" todo.txt buy-milk && cat todo.txt",
+   "stdout": "buy-milk\n"
+  },
+  {
+   "cmd": "\"$BIN\" log first && \"$BIN\" log second && cat log",
+   "stdout": "first\nsecond\n"
+  },
+  {
+   "cmd": "\"$BIN\" log more && cat log",
+   "setup": "echo start > log",
+   "stdout": "start\nmore\n"
+  },
+  {
+   "cmd": "umask 022; \"$BIN\" new line && stat -c %a new",
+   "stdout": "644\n"
+  }
+ ]
+}

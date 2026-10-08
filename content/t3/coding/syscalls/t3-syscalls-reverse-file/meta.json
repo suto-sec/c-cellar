@@ -1,0 +1,14 @@
+{
+ "id": "t3-syscalls-reverse-file",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "syscalls",
+ "title": "Print a file backwards",
+ "stars": 4,
+ "order": 9,
+ "summary": "lseek to the end and walk back.",
+ "hints": [
+  "`lseek(fd, 0, SEEK_END)` gives the size; the last byte is at position size - 1.",
+  "Move to each position from the end down to 0, `read` one byte and `write` it to descriptor 1."
+ ]
+}

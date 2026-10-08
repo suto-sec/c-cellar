@@ -1,0 +1,36 @@
+{
+ "cases": [
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'hello\\n' > f.txt",
+   "stdout": "6\n"
+  },
+  {
+   "args": [
+    "f"
+   ],
+   "setup": "head -c 1000 /dev/zero > f",
+   "stdout": "1000\n"
+  },
+  {
+   "args": [
+    "f"
+   ],
+   "setup": ": > f",
+   "stdout": "0\n"
+  },
+  {
+   "args": [
+    "f"
+   ],
+   "setup": "printf 'abc' > f",
+   "stdout": "3\n"
+  },
+  {
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "nope: No such file or directory\nrc=1\n"
+  }
+ ]
+}

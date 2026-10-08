@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-file-size",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Size of a file",
+ "stars": 3,
+ "order": 6,
+ "summary": "fseek and ftell.",
+ "hints": [
+  "`fseek(f, 0, SEEK_END)` moves to the end of the file; `ftell(f)` then returns the position, i.e. the size.",
+  "Open the file in binary mode (`\"rb\"`) to count bytes exactly."
+ ]
+}

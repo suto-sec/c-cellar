@@ -1,0 +1,33 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" a.txt b.txt",
+   "setup": "printf 'hello' > a.txt",
+   "stdout": "copied 5 bytes\n"
+  },
+  {
+   "cmd": "\"$BIN\" src.txt dst.txt; cmp src.txt dst.txt && echo same",
+   "setup": "seq 1 5000 > src.txt",
+   "stdout": "copied 23893 bytes\nsame\n"
+  },
+  {
+   "cmd": "\"$BIN\" src.txt dst.txt; cat dst.txt; echo",
+   "setup": "printf 'tiny' > src.txt",
+   "stdout": "copied 4 bytes\ntiny\n"
+  },
+  {
+   "cmd": "\"$BIN\" src.txt dst.txt; wc -c < dst.txt",
+   "setup": ": > src.txt",
+   "stdout": "copied 0 bytes\n0\n"
+  },
+  {
+   "cmd": "\"$BIN\" src.bin dst.bin; cmp src.bin dst.bin && echo same",
+   "setup": "head -c 512 /dev/zero > src.bin",
+   "stdout": "copied 512 bytes\nsame\n"
+  },
+  {
+   "cmd": "\"$BIN\" nope.txt dst.txt 2>&1; echo \"rc=$?\"",
+   "stdout": "cannot open nope.txt\nrc=1\n"
+  }
+ ]
+}

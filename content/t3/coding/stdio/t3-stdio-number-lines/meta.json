@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-number-lines",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Number the lines",
+ "stars": 3,
+ "order": 8,
+ "summary": "Formatted output of file content.",
+ "hints": [
+  "Read with `fgets` and keep a counter.",
+  "`printf(\"%4d  %s\", n, line)`: the line already ends with its newline."
+ ]
+}

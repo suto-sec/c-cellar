@@ -1,9 +1,49 @@
-{"cases":[
- {"name":"copies a small file","setup":"printf 'hello\\nworld\\n' > src.txt","cmd":"\"$BIN\" src.txt dst.txt && cat dst.txt","stdout":"hello\nworld\n"},
- {"name":"copies a file bigger than the buffer","setup":"seq 1 50000 > big.txt","cmd":"\"$BIN\" big.txt copy.txt && cmp big.txt copy.txt && echo same","stdout":"same\n"},
- {"name":"empties an existing destination","setup":"echo new > src.txt; echo 'old content that is much longer than the new one' > dst.txt","cmd":"\"$BIN\" src.txt dst.txt && cat dst.txt","stdout":"new\n"},
- {"name":"new file gets mode 0644","setup":"echo x > src.txt","cmd":"umask 022; \"$BIN\" src.txt out.txt && stat -c %a out.txt","stdout":"644\n"},
- {"name":"missing source: status 1, nothing created","cmd":"\"$BIN\" nope.txt out.txt 2>/dev/null; echo \"rc=$?\"; test -e out.txt && echo created || echo absent","stdout":"rc=1\nabsent\n"},
- {"name":"missing source: error text on stderr","cmd":"\"$BIN\" nope.txt out.txt 2>&1 >/dev/null | grep -c 'No such file'","stdout":"1\n"},
- {"name":"wrong number of arguments","cmd":"\"$BIN\" onlyone","stdout":"","exit":"nonzero"}
-]}
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" a.txt b.txt && cat b.txt",
+   "setup": "printf 'abc' > a.txt",
+   "stdout": "abc"
+  },
+  {
+   "name": "copies a small file",
+   "cmd": "\"$BIN\" src.txt dst.txt && cat dst.txt",
+   "setup": "printf 'hello\\nworld\\n' > src.txt",
+   "stdout": "hello\nworld\n"
+  },
+  {
+   "name": "copies a file bigger than the buffer",
+   "cmd": "\"$BIN\" big.txt copy.txt && cmp big.txt copy.txt && echo same",
+   "setup": "seq 1 50000 > big.txt",
+   "stdout": "same\n"
+  },
+  {
+   "name": "empties an existing destination",
+   "cmd": "\"$BIN\" src.txt dst.txt && cat dst.txt",
+   "setup": "echo new > src.txt; echo 'old content that is much longer than the new one' > dst.txt",
+   "stdout": "new\n"
+  },
+  {
+   "name": "new file gets mode 0644",
+   "cmd": "umask 022; \"$BIN\" src.txt out.txt && stat -c %a out.txt",
+   "setup": "echo x > src.txt",
+   "stdout": "644\n"
+  },
+  {
+   "name": "missing source: status 1, nothing created",
+   "cmd": "\"$BIN\" nope.txt out.txt 2>/dev/null; echo \"rc=$?\"; test -e out.txt && echo created || echo absent",
+   "stdout": "rc=1\nabsent\n"
+  },
+  {
+   "name": "missing source: error text on stderr",
+   "cmd": "\"$BIN\" nope.txt out.txt 2>&1 >/dev/null | grep -c 'No such file'",
+   "stdout": "1\n"
+  },
+  {
+   "name": "wrong number of arguments",
+   "cmd": "\"$BIN\" onlyone",
+   "stdout": "",
+   "exit": "nonzero"
+  }
+ ]
+}

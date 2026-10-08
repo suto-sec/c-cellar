@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-copy-with-blocks",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Copy with fread and fwrite",
+ "stars": 3,
+ "order": 5,
+ "summary": "Binary block copy.",
+ "hints": [
+  "`fread(buf, 1, sizeof buf, in)` returns how many bytes it read; 0 at the end of the file.",
+  "Write exactly that many bytes with `fwrite(buf, 1, n, out)` (not `sizeof buf`), and add them to a counter."
+ ]
+}

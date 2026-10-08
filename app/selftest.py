@@ -41,7 +41,7 @@ def called_library_functions(sources):
 def solution_sources(ex):
     d = Path(ex["dir"])
     if ex.get("files"):
-        return [(d / "solution" / n).read_text(encoding="utf-8") for n in ex["files"]]
+        return [(d / "solution" / n).read_text(encoding="utf-8") for n in ex["files"] if n.endswith((".c", ".h"))]
     return [(d / "solution.c").read_text(encoding="utf-8")]
 
 

@@ -1,0 +1,24 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" notes.txt && cat notes.txt",
+   "stdout": "line 1\nline 2\nline 3\n"
+  },
+  {
+   "name": "creates the file",
+   "cmd": "\"$BIN\" out.txt && cat out.txt",
+   "stdout": "line 1\nline 2\nline 3\n"
+  },
+  {
+   "name": "replaces an existing file",
+   "cmd": "\"$BIN\" out.txt && cat out.txt",
+   "setup": "echo 'old content that is long' > out.txt",
+   "stdout": "line 1\nline 2\nline 3\n"
+  },
+  {
+   "name": "a file that cannot be created",
+   "cmd": "\"$BIN\" no/such/dir/out.txt 2>&1; echo \"rc=$?\"",
+   "stdout": "cannot create no/such/dir/out.txt\nrc=1\n"
+  }
+ ]
+}

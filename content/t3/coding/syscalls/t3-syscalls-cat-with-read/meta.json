@@ -1,0 +1,14 @@
+{
+ "id": "t3-syscalls-cat-with-read",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "syscalls",
+ "title": "cat with open, read and write",
+ "stars": 3,
+ "order": 3,
+ "summary": "The classic copy loop.",
+ "hints": [
+  "Loop while `read` returns more than 0; write exactly the number of bytes it returned.",
+  "`read` returns 0 at the end of the file and -1 on error."
+ ]
+}

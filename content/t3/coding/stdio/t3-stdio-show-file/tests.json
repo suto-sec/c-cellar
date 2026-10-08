@@ -1,0 +1,32 @@
+{
+ "cases": [
+  {
+   "args": [
+    "a.txt"
+   ],
+   "stdout": "hello\nworld\n"
+  },
+  {
+   "args": [
+    "a.txt"
+   ],
+   "stdout": "hello\nworld\n"
+  },
+  {
+   "args": [
+    "b.txt"
+   ],
+   "stdout": "no newline at the end"
+  },
+  {
+   "args": [
+    "empty.txt"
+   ],
+   "stdout": ""
+  },
+  {
+   "cmd": "\"$BIN\" nope.txt 2>&1; echo \"rc=$?\"",
+   "stdout": "cannot open nope.txt\nrc=1\n"
+  }
+ ]
+}

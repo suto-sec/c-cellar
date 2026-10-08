@@ -1,0 +1,39 @@
+{
+ "cases": [
+  {
+   "args": [
+    "f.csv"
+   ],
+   "setup": "printf 'pen,1.20\\nink,3.30\\n' > f.csv",
+   "stdout": "items=2 total=4.50\n"
+  },
+  {
+   "args": [
+    "f.csv"
+   ],
+   "setup": "printf 'apple,1.50\nbread,2.25\n' > f.csv",
+   "stdout": "items=2 total=3.75\n"
+  },
+  {
+   "args": [
+    "f.csv"
+   ],
+   "setup": "printf 'x,10\n' > f.csv",
+   "stdout": "items=1 total=10.00\n"
+  },
+  {
+   "args": [
+    "f.csv"
+   ],
+   "setup": "printf 'a,1\n\nbad line\nb,2.5\n' > f.csv",
+   "stdout": "items=2 total=3.50\n"
+  },
+  {
+   "args": [
+    "f.csv"
+   ],
+   "setup": "printf 'only,0.1\nonly,0.2\nonly,0.3\n' > f.csv",
+   "stdout": "items=3 total=0.60\n"
+  }
+ ]
+}
