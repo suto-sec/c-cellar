@@ -285,17 +285,22 @@ pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } p
 .accenttext { flex: 1; min-width: 0; padding: 6px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--text); font: inherit; font-size: 13px; }
 .accenttext:focus { outline: 2px solid var(--accent); border-color: transparent; }
 .accenttext.bad { border-color: var(--bad); background: var(--badbg); }
-.daily .dailytop { display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
-.daily .streak { font-weight: 700; }
-.daily .streak.on { color: var(--accent); }
+.daily .dailytop { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
 .dailymain { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .dailymain .main { flex: 1; min-width: 220px; }
 .dailymain .title { font-weight: 600; font-size: 16px; }
 .streakmini { display: inline-flex; align-items: center; gap: 3px; margin-left: 5px; }
 .streakmini .flame { font-size: 15px; }
 .streakmini.on { color: var(--accent); }
-.streakmini.risk b { color: var(--accent); }
-.streakmini.off .flame { filter: grayscale(1); opacity: .55; }
-.streakmini.off b { color: var(--muted); }
-#nav a.on .streakmini.off b, #nav a:hover .streakmini.off b { color: var(--muted); }
+.streakmini.risk .flame, .streakmini.off .flame { filter: grayscale(1); opacity: .45; }   /* unlit until today's challenge is passed */
+.streakmini.risk b, .streakmini.off b { color: var(--muted); }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.daily { border-left: 5px solid var(--line); }
+.daily.done { border-left-color: var(--ok); }
+.daily.todo { border-left-color: var(--accent); }
+.bigflame { font-size: 34px; line-height: 1; }
+.bigflame.unlit { filter: grayscale(1); opacity: .4; }
+.dailystreak { line-height: 1.35; }
+.daybadge { padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 13px; white-space: nowrap; }
+.daybadge.done { background: var(--okbg); color: var(--ok); border: 1px solid var(--ok); }
+.daybadge.todo { background: var(--warnbg); color: var(--warn); border: 1px solid var(--warn); }

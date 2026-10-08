@@ -151,17 +151,23 @@ function setStreak(st, id) {
   el.className = "streakmini " + (st.today_done ? "on" : n ? "risk" : "off");
   el.replaceChildren(h("span", { class: "flame", "aria-hidden": "true" }, "🔥"), h("b", {}, String(n)), h("span", { class: "sr" }, " day streak"));
 }
-/** Today's challenge and the streak (the Daily challenge page). */
+/** Today's challenge and the streak (the Daily challenge page): lit flame and a green "Done" badge once passed, unlit flame and "Not done yet" before. */
 function dailyCard(d) {
   const done = d.streak.today_done;
   const n = d.streak.current;
-  return h("div", { class: "panel daily" },
-    h("div", { class: "dailytop" }, h("b", {}, "Today"), h("span", { class: "muted" }, " · " + d.date), h("span", { class: "spacer" }),
-      h("span", { class: "streak" + (n ? " on" : ""), title: "Consecutive days on which you passed that day's challenge" }, `Streak: ${n} day${n === 1 ? "" : "s"}`), h("span", { class: "muted" }, ` · best ${d.streak.best}`)),
+  const days = `${n} day${n === 1 ? "" : "s"}`;
+  const state = d.status === "progress" ? "In progress" : d.status === "solution" ? "Solution viewed, not passed" : "Not done yet";
+  return h("div", { class: "panel daily " + (done ? "done" : "todo") },
+    h("div", { class: "dailytop" },
+      h("span", { class: "bigflame " + (done ? "lit" : "unlit"), "aria-hidden": "true" }, "🔥"),
+      h("div", { class: "dailystreak" }, h("b", {}, `Streak: ${days}`), h("span", { class: "muted" }, ` · best ${d.streak.best}`),
+        h("div", { class: "muted" }, done ? "Lit: today's challenge is done." : n ? `Unlit: pass today's challenge before midnight to keep it.` : "Unlit: pass today's challenge to start a streak.")),
+      h("span", { class: "spacer" }),
+      h("span", { class: "daybadge " + (done ? "done" : "todo") }, done ? "✔ Done today" : "○ " + state)),
     h("div", { class: "dailymain" },
-      h("div", { class: "main" }, h("a", { class: "title", href: "#/coding/" + d.id }, d.title), h("div", { class: "sub" }, d.chapter, " · ", stars(d.stars), " ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag))),
-        h("div", { class: "muted" }, done ? "✔ Done today. Come back tomorrow to keep your streak going." : n ? `Pass it before midnight to keep your ${n}-day streak.` : "Pass it today to start a streak.")),
-      h("a", { class: "btn" + (done ? "" : " primary"), href: "#/coding/" + d.id }, done ? "Open again" : "Start today's challenge")));
+      h("div", { class: "main" }, h("div", { class: "muted" }, "Today · " + d.date), h("a", { class: "title", href: "#/coding/" + d.id }, d.title),
+        h("div", { class: "sub" }, d.chapter, " · ", stars(d.stars), " ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag)))),
+      h("a", { class: "btn" + (done ? "" : " primary"), href: "#/coding/" + d.id }, done ? "Open again" : d.status === "todo" ? "Start today's challenge" : "Continue today's challenge")));
 }
 async function viewDaily() {
   setNav("daily");
