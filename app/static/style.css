@@ -240,3 +240,4 @@ pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } p
 .favbtn:hover, .favbtn.on { color: #d9a400; }
 .favmark { color: #d9a400; font-size: 12px; }
 .welcome h2 { font-size: 18px; margin: 22px 0 8px; }
+.refpane .linkbtn.back { margin: 0 0 12px; }

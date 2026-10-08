@@ -696,7 +696,12 @@ async function viewReference(focusId) {
   const pane = h("div", { class: "refpane" });
   let current = null, results = [], query = "";
 
-  const link = (e, showCat) => h("a", { href: "#/reference/" + e.id, "data-id": e.id, class: "reflink" + (e.id === current ? " on" : "") }, h("code", {}, e.title, favs.has(e.id) ? h("span", { class: "favmark", title: "Favorite" }, " ★") : null), showCat ? h("span", { class: "muted rcat" }, e.category) : null);
+  const deselect = () => { current = null; if (location.hash !== "#/reference") location.hash = "#/reference"; show(); };
+  const link = (e, showCat) => {
+    const a = h("a", { href: "#/reference/" + e.id, "data-id": e.id, class: "reflink" + (e.id === current ? " on" : "") }, h("code", {}, e.title, favs.has(e.id) ? h("span", { class: "favmark", title: "Favorite" }, " ★") : null), showCat ? h("span", { class: "muted rcat" }, e.category) : null);
+    a.addEventListener("click", (ev) => { if (e.id === current) { ev.preventDefault(); deselect(); } });   // clicking the selected entry again closes it
+    return a;
+  };
   const byTitle = (x, y) => x.title.localeCompare(y.title);
   const setCategory = (c) => { category = c; if (c) collapsed.delete(c); saveCollapsed(); if (current && c && byId.get(current).category !== c) current = null; drawNav(); show(); };
   const toggleFav = async (e) => {
@@ -732,7 +737,7 @@ async function viewReference(focusId) {
       on.scrollIntoView({ block: "nearest" });
     }
     const e = byId.get(current);
-    if (e) { pane.replaceChildren(entryCard(e, byId, { on: favs.has(e.id), toggle: () => toggleFav(e) })); app.scrollTop = 0; return; }
+    if (e) { pane.replaceChildren(h("button", { class: "linkbtn back", onclick: deselect }, "← Reference"), entryCard(e, byId, { on: favs.has(e.id), toggle: () => toggleFav(e) })); app.scrollTop = 0; return; }
     const entryRows = (list) => h("div", { class: "list" }, list.map((x) => h("a", { class: "row", href: "#/reference/" + x.id },
       h("div", { class: "main" }, h("div", { class: "title" }, h("code", {}, x.title), favs.has(x.id) ? h("span", { class: "favmark", title: "Favorite" }, " ★") : null), h("div", { class: "sub", html: rmd(x.summary) })), h("span", { class: "tag", title: "Course topic " + T(x.tag) }, T(x.tag)))));
     if (category) {
@@ -765,7 +770,7 @@ async function viewReference(focusId) {
     if (ev.key === "Enter") { location.hash = "#/reference/" + current; }
   });
   state.refSelect = (id) => {
-    if (id && byId.has(id)) { if (query && !results.some((e) => e.id === id)) { search.value = ""; query = ""; results = []; drawNav(); } current = id; if (category && byId.get(id).category !== category) { category = null; drawNav(); } } else if (!query) current = null;
+    if (id && byId.has(id)) { if (query && !results.some((e) => e.id === id)) { search.value = ""; query = ""; results = []; drawNav(); } current = id; if (category && byId.get(id).category !== category) { category = null; drawNav(); } } else current = null;
     show();
   };
   current = focusId && byId.has(focusId) ? focusId : null;
