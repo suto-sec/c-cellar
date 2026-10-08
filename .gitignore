@@ -1,0 +1,7 @@
+# local state: progress, VS Code settings, per-exercise workspaces
+.progress/
+__pycache__/
+*.pyc
+# course material is never part of the repo
+originals/
+*.pdf
