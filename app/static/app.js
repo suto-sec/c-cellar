@@ -139,6 +139,10 @@ async function loadDaily() {
   setStreak(d.streak, d.id);
   return d;
 }
+/** A flame icon drawn in the current colour (the accent colour when lit), so it follows the chosen theme colour. */
+function flameIcon(cls) {
+  return h("span", { class: cls, "aria-hidden": "true", html: '<svg viewBox="0 0 24 24"><path d="M12 2C12.3 5 15.5 6.6 15.6 10.4 16.9 9.5 17.7 8.2 17.8 6.8 19.9 8.8 21 11.2 21 13.8 21 18.3 17 22 12 22 7 22 3 18.3 3 13.8 3 10.7 4.7 8.3 6.6 6.6 6.8 8.2 7.6 9.4 8.9 10.2 8.4 7 9.8 4 12 2Z"/><path class="core" d="M12 22C9.6 22 8 20.4 8 18.4 8 16.5 9.4 15.4 10.5 13.6 11.3 14.8 11.9 15 12.6 14.3 13.9 15.4 16 16.4 16 18.4 16 20.4 14.4 22 12 22Z"/></svg>' });
+}
 /** The streak next to "Daily challenge" in the top bar: a flame and the number of days. */
 function setStreak(st, id) {
   const link = $("#navdaily"), el = $("#streak");
@@ -149,7 +153,7 @@ function setStreak(st, id) {
   link.title = st.today_done ? `Streak: ${plural}. Today's challenge is done; come back tomorrow.`
     : n ? `Streak: ${plural}. Pass today's challenge before midnight to keep it.` : "No streak yet. Pass today's challenge to start one.";
   el.className = "streakmini " + (st.today_done ? "on" : n ? "risk" : "off");
-  el.replaceChildren(h("span", { class: "flame", "aria-hidden": "true" }, "🔥"), h("b", {}, String(n)), h("span", { class: "sr" }, " day streak"));
+  el.replaceChildren(flameIcon("flame"), h("b", {}, String(n)), h("span", { class: "sr" }, " day streak"));
 }
 /** Today's challenge and the streak (the Daily challenge page): lit flame and a green "Done" badge once passed, unlit flame and "Not done yet" before. */
 function dailyCard(d) {
@@ -159,7 +163,7 @@ function dailyCard(d) {
   const state = d.status === "progress" ? "In progress" : d.status === "solution" ? "Solution viewed, not passed" : "Not done yet";
   return h("div", { class: "panel daily " + (done ? "done" : "todo") },
     h("div", { class: "dailytop" },
-      h("span", { class: "bigflame " + (done ? "lit" : "unlit"), "aria-hidden": "true" }, "🔥"),
+      flameIcon("bigflame " + (done ? "lit" : "unlit")),
       h("div", { class: "dailystreak" }, h("b", {}, `Streak: ${days}`), h("span", { class: "muted" }, ` · best ${d.streak.best}`),
         h("div", { class: "muted" }, done ? "Lit: today's challenge is done." : n ? `Unlit: pass today's challenge before midnight to keep it.` : "Unlit: pass today's challenge to start a streak.")),
       h("span", { class: "spacer" }),

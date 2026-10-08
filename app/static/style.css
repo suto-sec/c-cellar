@@ -289,17 +289,21 @@ pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } p
 .dailymain { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .dailymain .main { flex: 1; min-width: 220px; }
 .dailymain .title { font-weight: 600; font-size: 16px; }
-.streakmini { display: inline-flex; align-items: center; gap: 3px; margin-left: 5px; }
-.streakmini .flame { font-size: 15px; }
+.streakmini { display: inline-flex; align-items: center; gap: 4px; margin-left: 5px; }
+.flame svg, .bigflame svg { display: block; width: 100%; height: 100%; fill: currentColor; }
+.flame .core, .bigflame .core { fill: #fff; fill-opacity: .55; }
+.flame { display: inline-block; width: 17px; height: 17px; }
+.bigflame { display: block; }
 .streakmini.on { color: var(--accent); }
-.streakmini.risk .flame, .streakmini.off .flame { filter: grayscale(1); opacity: .45; }   /* unlit until today's challenge is passed */
+.streakmini.risk .flame, .streakmini.off .flame { color: var(--muted); opacity: .55; }   /* unlit until today's challenge is passed */
 .streakmini.risk b, .streakmini.off b { color: var(--muted); }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .daily { border-left: 5px solid var(--line); }
 .daily.done { border-left-color: var(--ok); }
 .daily.todo { border-left-color: var(--accent); }
-.bigflame { font-size: 34px; line-height: 1; }
-.bigflame.unlit { filter: grayscale(1); opacity: .4; }
+.bigflame { width: 38px; height: 38px; flex: none; }
+.bigflame.lit { color: var(--accent); }
+.bigflame.unlit { color: var(--muted); opacity: .5; }
 .dailystreak { line-height: 1.35; }
 .daybadge { padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 13px; white-space: nowrap; }
 .daybadge.done { background: var(--okbg); color: var(--ok); border: 1px solid var(--ok); }
