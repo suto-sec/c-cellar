@@ -1,0 +1,14 @@
+{
+ "id": "t3-structs-birthday",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "structs",
+ "title": "Modify a struct through a pointer",
+ "stars": 3,
+ "order": 5,
+ "summary": "The -> operator.",
+ "hints": [
+  "With a pointer to a struct, access a member with `->`: `p->age`. It is the same as `(*p).age`.",
+  "`p->age++;` increments the member of the caller's struct."
+ ]
+}

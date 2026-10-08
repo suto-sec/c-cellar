@@ -1,0 +1,14 @@
+{
+ "id": "t3-args-last-to-first",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "args",
+ "title": "Last to first",
+ "stars": 2,
+ "order": 4,
+ "summary": "Walking argv backwards.",
+ "hints": [
+  "The last argument is `argv[argc - 1]`.",
+  "Count down to 1, not to 0: `argv[0]` is the program name."
+ ]
+}

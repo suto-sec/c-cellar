@@ -1,0 +1,14 @@
+{
+ "id": "t3-structs-sort-students",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "structs",
+ "title": "Sort records",
+ "stars": 4,
+ "order": 7,
+ "summary": "qsort on an array of structs.",
+ "hints": [
+  "`qsort(array, count, sizeof(element), compare)`: your `compare` receives two `const void *` pointing at elements; cast them to `const struct student *`.",
+  "Return negative if the first should come first: `y->score - x->score` puts the higher score first; use `strcmp` on the names for ties."
+ ]
+}

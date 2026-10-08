@@ -1,0 +1,56 @@
+{
+ "cases": [
+  {
+   "args": [
+    "-n",
+    "3",
+    "-v",
+    "a.txt",
+    "b.txt"
+   ],
+   "stdout": "n=3 verbose=yes files=a.txt b.txt\n"
+  },
+  {
+   "args": [],
+   "stdout": "n=1 verbose=no files=none\n"
+  },
+  {
+   "args": [
+    "a.txt"
+   ],
+   "stdout": "n=1 verbose=no files=a.txt\n"
+  },
+  {
+   "args": [
+    "-v",
+    "a",
+    "b"
+   ],
+   "stdout": "n=1 verbose=yes files=a b\n"
+  },
+  {
+   "args": [
+    "-n",
+    "5"
+   ],
+   "stdout": "n=5 verbose=no files=none\n"
+  },
+  {
+   "args": [
+    "x",
+    "-n",
+    "12",
+    "-v",
+    "y"
+   ],
+   "stdout": "n=12 verbose=yes files=x y\n"
+  },
+  {
+   "args": [
+    "-v",
+    "-v"
+   ],
+   "stdout": "n=1 verbose=yes files=none\n"
+  }
+ ]
+}

@@ -1,0 +1,43 @@
+{
+ "cases": [
+  {
+   "args": [
+    "one",
+    "two"
+   ],
+   "stdout": "2 arguments\n"
+  },
+  {
+   "args": [],
+   "stdout": "0 arguments\n"
+  },
+  {
+   "args": [
+    "x"
+   ],
+   "stdout": "1 arguments\n"
+  },
+  {
+   "args": [
+    "a",
+    "b",
+    "c"
+   ],
+   "stdout": "3 arguments\n"
+  },
+  {
+   "args": [
+    "with space",
+    "x"
+   ],
+   "stdout": "2 arguments\n"
+  },
+  {
+   "args": [
+    "-n",
+    "5"
+   ],
+   "stdout": "2 arguments\n"
+  }
+ ]
+}

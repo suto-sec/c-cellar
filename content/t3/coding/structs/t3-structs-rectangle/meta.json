@@ -1,0 +1,14 @@
+{
+ "id": "t3-structs-rectangle",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "structs",
+ "title": "Functions on a struct",
+ "stars": 3,
+ "order": 4,
+ "summary": "Passing a struct by value.",
+ "hints": [
+  "A function can receive a struct: `int area(struct rect r)` gets a copy and uses `r.w`, `r.h`.",
+  "A comparison like `r.w == r.h` is already 1 or 0."
+ ]
+}

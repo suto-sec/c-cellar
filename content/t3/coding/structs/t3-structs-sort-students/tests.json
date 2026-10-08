@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "3\nbob 70\nann 90\ncid 70\n",
+   "stdout": "ann: 90\nbob: 70\ncid: 70\n"
+  },
+  {
+   "stdin": "1\nann 5\n",
+   "stdout": "ann: 5\n"
+  },
+  {
+   "stdin": "3\na 1\nb 2\nc 3\n",
+   "stdout": "c: 3\nb: 2\na: 1\n"
+  },
+  {
+   "stdin": "3\nzed 7\namy 7\nbob 9\n",
+   "stdout": "bob: 9\namy: 7\nzed: 7\n"
+  },
+  {
+   "stdin": "2\nx 0\ny 0\n",
+   "stdout": "x: 0\ny: 0\n"
+  },
+  {
+   "stdin": "5\nm 100\nn 50\no 75\np 75\nq 1\n",
+   "stdout": "m: 100\no: 75\np: 75\nn: 50\nq: 1\n"
+  }
+ ]
+}

@@ -1,0 +1,47 @@
+{
+ "cases": [
+  {
+   "args": [
+    "42",
+    "4x2",
+    "-1"
+   ],
+   "stdout": "ok 42\ninvalid 4x2\nok -1\n"
+  },
+  {
+   "args": [
+    "42"
+   ],
+   "stdout": "ok 42\n"
+  },
+  {
+   "args": [
+    "-7",
+    "+3"
+   ],
+   "stdout": "ok -7\nok 3\n"
+  },
+  {
+   "args": [
+    "12abc",
+    "abc",
+    "7"
+   ],
+   "stdout": "invalid 12abc\ninvalid abc\nok 7\n"
+  },
+  {
+   "args": [
+    ""
+   ],
+   "stdout": "invalid \n"
+  },
+  {
+   "args": [
+    "3.5",
+    "0x10",
+    "100"
+   ],
+   "stdout": "invalid 3.5\ninvalid 0x10\nok 100\n"
+  }
+ ]
+}

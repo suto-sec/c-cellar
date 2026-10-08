@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "3 4\n",
+   "stdout": "area=12 perimeter=14 square=no\n"
+  },
+  {
+   "stdin": "3 4\n",
+   "stdout": "area=12 perimeter=14 square=no\n"
+  },
+  {
+   "stdin": "5 5\n",
+   "stdout": "area=25 perimeter=20 square=yes\n"
+  },
+  {
+   "stdin": "1 1\n",
+   "stdout": "area=1 perimeter=4 square=yes\n"
+  },
+  {
+   "stdin": "10 2\n",
+   "stdout": "area=20 perimeter=24 square=no\n"
+  },
+  {
+   "stdin": "0 7\n",
+   "stdout": "area=0 perimeter=14 square=no\n"
+  }
+ ]
+}

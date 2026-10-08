@@ -1,0 +1,14 @@
+{
+ "id": "t3-structs-point-distance",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "structs",
+ "title": "Distance between two points",
+ "stars": 2,
+ "order": 1,
+ "summary": "A struct with two members.",
+ "hints": [
+  "Members are accessed with a dot: `a.x`, `a.y`. `scanf(\"%lf\", &a.x)` reads into a member.",
+  "distance = `sqrt(dx*dx + dy*dy)`."
+ ]
+}

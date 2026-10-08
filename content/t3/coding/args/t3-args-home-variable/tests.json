@@ -1,0 +1,24 @@
+{
+ "cases": [
+  {
+   "cmd": "env HOME=/home/ada \"$BIN\"",
+   "stdout": "HOME=/home/ada\n"
+  },
+  {
+   "cmd": "env HOME=/tmp/x \"$BIN\"",
+   "stdout": "HOME=/tmp/x\n"
+  },
+  {
+   "cmd": "env HOME=/ \"$BIN\"",
+   "stdout": "HOME=/\n"
+  },
+  {
+   "cmd": "env -u HOME \"$BIN\"",
+   "stdout": "HOME is not set\n"
+  },
+  {
+   "cmd": "env HOME='a b' \"$BIN\"",
+   "stdout": "HOME=a b\n"
+  }
+ ]
+}

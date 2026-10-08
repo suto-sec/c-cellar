@@ -1,0 +1,14 @@
+{
+ "id": "t3-args-sum-args",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "args",
+ "title": "Sum the arguments",
+ "stars": 2,
+ "order": 3,
+ "summary": "atoi.",
+ "hints": [
+  "Arguments are strings: `atoi(\"42\")` converts one to the int 42.",
+  "Add them in a loop over `argv[1]` ... `argv[argc - 1]`."
+ ]
+}

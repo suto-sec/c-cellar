@@ -1,0 +1,45 @@
+{
+ "cases": [
+  {
+   "args": [
+    "to",
+    "be",
+    "reproducible"
+   ],
+   "stdout": "12 reproducible\n"
+  },
+  {
+   "args": [],
+   "stdout": "no arguments\n"
+  },
+  {
+   "args": [
+    "a"
+   ],
+   "stdout": "1 a\n"
+  },
+  {
+   "args": [
+    "aa",
+    "b",
+    "ccc",
+    "dd"
+   ],
+   "stdout": "3 ccc\n"
+  },
+  {
+   "args": [
+    "xx",
+    "yy"
+   ],
+   "stdout": "2 xx\n"
+  },
+  {
+   "args": [
+    "",
+    "z"
+   ],
+   "stdout": "1 z\n"
+  }
+ ]
+}

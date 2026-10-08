@@ -1,0 +1,58 @@
+{
+ "cases": [
+  {
+   "args": [
+    "3",
+    "ha"
+   ],
+   "stdout": "ha\nha\nha\n"
+  },
+  {
+   "args": [
+    "3",
+    "hi"
+   ],
+   "stdout": "hi\nhi\nhi\n"
+  },
+  {
+   "args": [
+    "0",
+    "x"
+   ],
+   "stdout": ""
+  },
+  {
+   "args": [
+    "2",
+    "a b"
+   ],
+   "stdout": "a b\na b\n"
+  },
+  {
+   "args": [],
+   "stdout": "",
+   "exit": 2
+  },
+  {
+   "args": [
+    "3"
+   ],
+   "stdout": "",
+   "exit": 2
+  },
+  {
+   "args": [
+    "-1",
+    "x"
+   ],
+   "stdout": "",
+   "exit": 2
+  },
+  {
+   "name": "the usage message goes to stderr",
+   "cmd": "\"$BIN\" 1 2>&1 >/dev/null",
+   "stdout": "usage: repeat N TEXT\n",
+   "exit": 2
+  }
+ ]
+}

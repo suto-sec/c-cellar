@@ -1,0 +1,14 @@
+{
+ "id": "t3-structs-student-record",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "structs",
+ "title": "A student record",
+ "stars": 2,
+ "order": 2,
+ "summary": "A struct with a string, an int and a double.",
+ "hints": [
+  "A string member is an array: `char name[32];`; reading it with `%s` does not need `&`.",
+  "Numbers need `&`: `&s.age`."
+ ]
+}

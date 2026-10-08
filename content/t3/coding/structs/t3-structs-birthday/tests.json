@@ -1,0 +1,20 @@
+{
+ "cases": [
+  {
+   "stdin": "Grace 30\n",
+   "stdout": "Grace is now 32\n"
+  },
+  {
+   "stdin": "Ada 36\n",
+   "stdout": "Ada is now 38\n"
+  },
+  {
+   "stdin": "Bob 0\n",
+   "stdout": "Bob is now 2\n"
+  },
+  {
+   "stdin": "Old 99\n",
+   "stdout": "Old is now 101\n"
+  }
+ ]
+}

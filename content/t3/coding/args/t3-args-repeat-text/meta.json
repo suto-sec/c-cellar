@@ -1,0 +1,14 @@
+{
+ "id": "t3-args-repeat-text",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "args",
+ "title": "Repeat a text",
+ "stars": 3,
+ "order": 6,
+ "summary": "atoi, loops and a usage message.",
+ "hints": [
+  "Check `argc` first: you need exactly 3 (program name, N, TEXT).",
+  "`fprintf(stderr, ...)` writes to standard error; `return 2;` (or `exit(2)`) sets the exit status."
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-args-home-variable",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "args",
+ "title": "Read an environment variable",
+ "stars": 2,
+ "order": 8,
+ "summary": "getenv.",
+ "hints": [
+  "`getenv(\"NAME\")` (in `<stdlib.h>`) returns a pointer to the value, or `NULL` if the variable is not set.",
+  "Test for `NULL` before printing it."
+ ]
+}

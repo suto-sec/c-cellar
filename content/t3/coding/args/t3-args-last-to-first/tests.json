@@ -1,0 +1,37 @@
+{
+ "cases": [
+  {
+   "args": [
+    "one",
+    "two",
+    "three"
+   ],
+   "stdout": "three\ntwo\none\n"
+  },
+  {
+   "args": [],
+   "stdout": ""
+  },
+  {
+   "args": [
+    "a"
+   ],
+   "stdout": "a\n"
+  },
+  {
+   "args": [
+    "a",
+    "b",
+    "c"
+   ],
+   "stdout": "c\nb\na\n"
+  },
+  {
+   "args": [
+    "x y",
+    "z"
+   ],
+   "stdout": "z\nx y\n"
+  }
+ ]
+}

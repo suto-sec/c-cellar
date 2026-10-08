@@ -1,0 +1,14 @@
+{
+ "id": "t3-structs-enum-weekdays",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "structs",
+ "title": "An enum of days",
+ "stars": 3,
+ "order": 3,
+ "summary": "enum and an array of names.",
+ "hints": [
+  "Enum constants are integers starting at 0, so an enum value can index an array: `names[d]`.",
+  "The day after Sunday (6) is Monday (0): `(d + 1) % 7` also works."
+ ]
+}

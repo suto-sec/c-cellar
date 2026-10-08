@@ -1,0 +1,24 @@
+{
+ "cases": [
+  {
+   "stdin": "2\npen 10 1.50\nbook 2 12.25\n",
+   "stdout": "total=39.50\nmost expensive: book\n"
+  },
+  {
+   "stdin": "1\npen 10 1.5\n",
+   "stdout": "total=15.00\nmost expensive: pen\n"
+  },
+  {
+   "stdin": "2\na 1 2.0\nb 2 3.0\n",
+   "stdout": "total=8.00\nmost expensive: b\n"
+  },
+  {
+   "stdin": "2\nx 3 5.0\ny 1 5.0\n",
+   "stdout": "total=20.00\nmost expensive: x\n"
+  },
+  {
+   "stdin": "3\ncheap 100 0.1\ndear 1 99.99\nmid 5 10.0\n",
+   "stdout": "total=159.99\nmost expensive: dear\n"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-args-shout",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "args",
+ "title": "Shout",
+ "stars": 2,
+ "order": 5,
+ "summary": "Upper-casing the arguments.",
+ "hints": [
+  "`toupper` (from `<ctype.h>`) converts one character; apply it to every character of every argument.",
+  "Print a space between arguments but not after the last one."
+ ]
+}

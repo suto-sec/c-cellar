@@ -1,0 +1,14 @@
+{
+ "id": "t3-structs-inventory",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "structs",
+ "title": "Inventory value",
+ "stars": 3,
+ "order": 6,
+ "summary": "An array of structs.",
+ "hints": [
+  "Declare `struct item v[50];` and fill each element with `scanf(\"%31s %d %lf\", v[i].name, &v[i].qty, &v[i].price)`.",
+  "Remember the INDEX of the most expensive item while you add up the total."
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-structs-compare-dates",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "structs",
+ "title": "Compare two dates",
+ "stars": 3,
+ "order": 8,
+ "summary": "A struct and a function that compares.",
+ "hints": [
+  "Compare the years first; only when they are equal compare the months; then the days.",
+  "A function can return a negative number, zero or a positive number, like `strcmp`."
+ ]
+}

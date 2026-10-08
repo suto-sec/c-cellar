@@ -1,0 +1,14 @@
+{
+ "id": "t3-args-count-args",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "args",
+ "title": "How many arguments?",
+ "stars": 1,
+ "order": 1,
+ "summary": "argc.",
+ "hints": [
+  "`argc` counts the program name too, so the arguments are `argc - 1`.",
+  "Declare main as `int main(int argc, char *argv[])`."
+ ]
+}

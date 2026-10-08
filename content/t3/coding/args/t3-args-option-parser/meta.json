@@ -1,0 +1,14 @@
+{
+ "id": "t3-args-option-parser",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "args",
+ "title": "A small option parser",
+ "stars": 4,
+ "order": 10,
+ "summary": "Options before the file names.",
+ "hints": [
+  "Loop over `argv` with an index so that `-n` can also consume the next argument (`argv[++i]`).",
+  "Compare options with `strcmp(argv[i], \"-v\") == 0`; collect everything else in an array of `char *`."
+ ]
+}

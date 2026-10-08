@@ -1,0 +1,36 @@
+{
+ "cases": [
+  {
+   "args": [
+    "hello",
+    "world"
+   ],
+   "stdout": "HELLO WORLD\n"
+  },
+  {
+   "args": [],
+   "stdout": "\n"
+  },
+  {
+   "args": [
+    "hello"
+   ],
+   "stdout": "HELLO\n"
+  },
+  {
+   "args": [
+    "a",
+    "b c",
+    "d"
+   ],
+   "stdout": "A B C D\n"
+  },
+  {
+   "args": [
+    "Mixed",
+    "Case 1"
+   ],
+   "stdout": "MIXED CASE 1\n"
+  }
+ ]
+}

@@ -1,6 +1,34 @@
-{"cases":[
- {"name":"no arguments","args":[],"stdout":"Hello, world!\n"},
- {"name":"one argument","args":["Ada"],"stdout":"Hello, Ada!\n"},
- {"name":"two arguments","args":["Ada","Linus"],"stdout":"Hello, Ada!\nHello, Linus!\n"},
- {"name":"argument with a space","args":["Grace Hopper"],"stdout":"Hello, Grace Hopper!\n"}
-]}
+{
+ "cases": [
+  {
+   "args": [
+    "Ada",
+    "Linus"
+   ],
+   "stdout": "Hello, Ada!\nHello, Linus!\n"
+  },
+  {
+   "args": [],
+   "stdout": "Hello, world!\n"
+  },
+  {
+   "args": [
+    "Ada"
+   ],
+   "stdout": "Hello, Ada!\n"
+  },
+  {
+   "args": [
+    "Ada",
+    "Linus"
+   ],
+   "stdout": "Hello, Ada!\nHello, Linus!\n"
+  },
+  {
+   "args": [
+    "Grace Hopper"
+   ],
+   "stdout": "Hello, Grace Hopper!\n"
+  }
+ ]
+}

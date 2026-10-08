@@ -1,0 +1,14 @@
+{
+ "id": "t3-args-longest-arg",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "args",
+ "title": "The longest argument",
+ "stars": 3,
+ "order": 7,
+ "summary": "Comparing lengths.",
+ "hints": [
+  "Remember the index of the longest argument so far and compare `strlen` of each new one.",
+  "Replace it only when strictly longer, so the first one wins ties."
+ ]
+}

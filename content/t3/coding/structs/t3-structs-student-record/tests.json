@@ -1,0 +1,24 @@
+{
+ "cases": [
+  {
+   "stdin": "Ada 36 9.5\n",
+   "stdout": "Ada (36): 9.50\n"
+  },
+  {
+   "stdin": "Ada 36 9.5\n",
+   "stdout": "Ada (36): 9.50\n"
+  },
+  {
+   "stdin": "Linus 20 7\n",
+   "stdout": "Linus (20): 7.00\n"
+  },
+  {
+   "stdin": "Grace 85 10.0\n",
+   "stdout": "Grace (85): 10.00\n"
+  },
+  {
+   "stdin": "X 1 0.125\n",
+   "stdout": "X (1): 0.12\n"
+  }
+ ]
+}

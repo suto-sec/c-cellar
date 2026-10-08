@@ -1,0 +1,14 @@
+{
+ "id": "t3-args-validate-numbers",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "args",
+ "title": "Validate numbers",
+ "stars": 3,
+ "order": 9,
+ "summary": "strtol with an end pointer.",
+ "hints": [
+  "`strtol(s, &end, 10)` sets `end` to the first character it did not convert.",
+  "The whole text was a number if `end != s` and `*end == '\\0'`."
+ ]
+}

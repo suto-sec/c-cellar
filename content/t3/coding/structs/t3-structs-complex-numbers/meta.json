@@ -1,0 +1,14 @@
+{
+ "id": "t3-structs-complex-numbers",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "structs",
+ "title": "Complex numbers",
+ "stars": 4,
+ "order": 9,
+ "summary": "Returning structs from functions.",
+ "hints": [
+  "A function can return a struct by value: build a local struct and `return` it.",
+  "You can initialise a struct with `{value1, value2}` in member order."
+ ]
+}
