@@ -34,8 +34,6 @@ pre code { background: none; padding: 0; }
 #nav a:hover { background: var(--panel2); color: var(--text); }
 #nav a.on { background: var(--panel2); color: var(--text); }
 .spacer { flex: 1; }
-.tagpick { color: var(--muted); font-size: 13px; }
-.tagpick select { background: var(--panel2); border: 1px solid var(--line); border-radius: 7px; padding: 3px 8px; font-weight: 600; }
 .icon { display: inline-flex; align-items: center; justify-content: center; background: none; border: 1px solid var(--line); border-radius: 8px; width: 34px; height: 32px; padding: 0; cursor: pointer; color: var(--muted); }
 .icon:hover { color: var(--text); background: var(--panel2); }
 
@@ -200,3 +198,12 @@ kbd { background: var(--panel2); border: 1px solid var(--line); border-bottom-wi
 .entry .esum { font-size: 16px; margin: 6px 0 10px; }
 .welcome h1 { margin-top: 0; }
 @media (max-width: 800px) { .refwrap { grid-template-columns: 1fr; } .refside { position: static; max-height: none; } .refnav { max-height: 40vh; } }
+
+/* coding filters */
+.filters { display: flex; flex-wrap: wrap; gap: 8px 22px; align-items: center; margin: 0 0 12px; }
+.fgroup { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.flabel { color: var(--muted); font-size: 13px; margin-right: 2px; }
+.chip { border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 999px; padding: 3px 12px; font-size: 13px; cursor: pointer; min-height: 28px; }
+.chip:hover { background: var(--panel2); }
+.chip.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.row .tag { flex: none; }

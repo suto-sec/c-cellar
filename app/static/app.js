@@ -3,7 +3,12 @@
 
 const $ = (sel, el = document) => el.querySelector(sel);
 const app = $("#app");
-const state = { tag: localStorage.getItem("cellar.tag") || "t3", cfg: null, cleanup: null };
+const state = { cfg: null, cleanup: null };
+const T = (tag) => String(tag).toUpperCase();   // "t3" is shown as "T3" (the course topic, "tema")
+const FILTER_KEY = "cellar.filters";
+function loadFilters() {
+  try { const f = JSON.parse(localStorage.getItem(FILTER_KEY)); return { tags: f.tags || [], stars: f.stars || [] }; } catch (e) { return { tags: [], stars: [] }; }
+}
 
 // ------------------------------------------------------------------ helpers
 function h(tag, props, ...kids) {
@@ -62,7 +67,7 @@ function md(src) {
 }
 
 const STATUS = { passed: ["✔", "Passed"], progress: ["●", "In progress"], solution: ["◉", "Solution viewed"], todo: ["○", "Not started"] };
-const TRACKS = [["derusting", "C derusting", "You know C but have not used it in a while: small drills, chapter by chapter, from 1 to 5 stars."], ["exercises", "C exercises", "Exam-style programs that combine several chapters."]];
+const TRACKS = [["derusting", "C derusting / introduction", "You know C but have not used it in a while: small drills, chapter by chapter, from 1 to 5 stars."], ["exercises", "C exercises", "Exam-style programs that combine several chapters."]];
 const dots = (n) => h("span", { class: "dots", title: "Difficulty " + n + "/3" }, "●".repeat(n), h("i", {}, "●".repeat(3 - n)));
 const stars = (n) => h("span", { class: "stars", title: "Difficulty " + n + "/5" }, "★".repeat(n), h("i", {}, "★".repeat(5 - n)));
 const pct = (x) => Math.round(x * 100);
@@ -79,12 +84,12 @@ const page = (...kids) => h("div", { class: "page" }, ...kids);
 
 // ------------------------------------------------------------------ home
 const byOrder = (a, b) => (a.order - b.order) || a.id.localeCompare(b.id);
-/** Coding data of the current tag: chapters with their exercises, the suggested path and the next exercise to do. */
-function codingModel(idx) {
-  const tag = state.tag;
-  const items = idx.coding.filter((c) => c.tag === tag);
-  const chapters = idx.chapters.filter((c) => c.tag === tag).map((c) => ({ ...c, items: items.filter((i) => i.topic === c.id).sort(byOrder) })).filter((c) => c.items.length);
-  const path = (idx.paths[tag] || []).map((id) => items.find((i) => i.id === id)).filter(Boolean);
+/** Coding data for the given tags (none = all): chapters with their exercises, the suggested path and the next exercise to do. */
+function codingModel(idx, tags = []) {
+  const want = (t) => !tags.length || tags.includes(t);
+  const items = idx.coding.filter((c) => want(c.tag));
+  const chapters = idx.chapters.filter((c) => want(c.tag)).map((c) => ({ ...c, key: c.tag + "/" + c.id, items: items.filter((i) => i.tag === c.tag && i.topic === c.id).sort(byOrder) })).filter((c) => c.items.length);
+  const path = Object.keys(idx.paths).filter(want).flatMap((t) => idx.paths[t]).map((id) => items.find((i) => i.id === id)).filter(Boolean);
   const order = path.length ? path : chapters.flatMap((c) => c.items);
   const next = order.find((i) => i.status !== "passed");
   return { items, chapters, order, next, passed: items.filter((i) => i.status === "passed").length };
@@ -94,10 +99,9 @@ async function viewHome() {
   setNav("");
   const idx = await api("index");
   const m = codingModel(idx);
-  const theory = idx.theory.filter((t) => t.tag === state.tag);
-  const nq = theory.reduce((a, t) => a + t.count, 0), okq = theory.reduce((a, t) => a + t.correct, 0);
+  const nq = idx.theory.reduce((a, t) => a + t.count, 0), okq = idx.theory.reduce((a, t) => a + t.correct, 0);
   mount(page(
-    h("h1", {}, "c-cellar ", h("span", { class: "tag" }, state.tag)),
+    h("h1", {}, "c-cellar"),
     h("p", { class: "lead" }, "Practice C by writing it, and review the theory. Everything is checked locally."),
     h("div", { class: "list" },
       h("a", { class: "row", href: "#/coding" }, h("div", { class: "main" }, h("div", { class: "title" }, "Coding exercises"), h("div", { class: "sub" }, `${m.chapters.length} chapters from 1 to 5 stars, with an automatic checker`)), h("span", { class: "pct" }, `${m.passed}/${m.items.length}`)),
@@ -112,40 +116,63 @@ async function viewHome() {
 async function viewCodingList() {
   setNav("coding");
   const idx = await api("index");
-  const m = codingModel(idx);
+  const filters = loadFilters();
+  const save = () => localStorage.setItem(FILTER_KEY, JSON.stringify(filters));
   const search = h("input", { type: "search", placeholder: "Filter by title or chapter…" });
   const holder = h("div", {});
+  const filterBox = h("div", { class: "filters" });
+  const pathHolder = h("div", {});
   const openState = new Map();
-  const draw = () => {
+  const toggle = (list, v) => { const i = list.indexOf(v); if (i >= 0) list.splice(i, 1); else list.push(v); save(); render(); };
+  const chip = (label, on, onclick, title) => h("button", { class: "chip" + (on ? " on" : ""), "aria-pressed": String(on), title, onclick }, label);
+
+  const drawFilters = () => {
+    const active = filters.tags.length || filters.stars.length;
+    filterBox.replaceChildren(
+      h("div", { class: "fgroup" }, h("span", { class: "flabel" }, "Topic"), state.cfg.tags.map((t) => chip(T(t), filters.tags.includes(t), () => toggle(filters.tags, t), "Show only exercises of topic " + T(t)))),
+      h("div", { class: "fgroup" }, h("span", { class: "flabel" }, "Difficulty"), [1, 2, 3, 4, 5].map((n) => chip("★".repeat(n), filters.stars.includes(n), () => toggle(filters.stars, n), n + (n === 1 ? " star" : " stars")))),
+      active ? h("button", { class: "btn small", onclick: () => { filters.tags = []; filters.stars = []; save(); render(); } }, "Clear filters") : null);
+  };
+
+  const render = () => {
+    drawFilters();
+    const m = codingModel(idx, filters.tags);
     const q = search.value.toLowerCase();
+    const narrowed = q || filters.stars.length;
+    const keep = (c, i) => (!filters.stars.length || filters.stars.includes(i.stars)) && (!q || (i.title + " " + c.title + " " + i.summary).toLowerCase().includes(q));
+    let shown = 0;
     holder.replaceChildren(...TRACKS.map(([key, title, blurb]) => {
       const chs = m.chapters.filter((c) => c.track === key);
       if (!chs.length) return null;
       const sections = chs.map((c) => {
-        const rows = c.items.filter((i) => !q || (i.title + " " + c.title + " " + i.summary).toLowerCase().includes(q));
+        const rows = c.items.filter((i) => keep(c, i));
         if (!rows.length) return null;
+        shown += rows.length;
         const done = c.items.filter((i) => i.status === "passed").length;
         const isNext = m.next && c.items.includes(m.next);
-        const det = h("details", { class: "chapter", open: q ? true : openState.has(c.id) ? openState.get(c.id) : isNext || done === 0 && c === chs[0] },
-          h("summary", {}, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted csub" }, c.blurb), h("span", { class: "cprog" }, `${done}/${c.items.length}`),
+        const det = h("details", { class: "chapter", open: narrowed ? true : openState.has(c.key) ? openState.get(c.key) : isNext || done === 0 && c === chs[0] },
+          h("summary", {}, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted csub" }, c.blurb), narrowed ? h("span", { class: "muted", style: "font-size:13px" }, `${rows.length} shown`) : null, h("span", { class: "cprog" }, `${done}/${c.items.length}`),
             h("span", { class: "bar", style: "width:70px" }, h("span", { style: `width:${(done / c.items.length) * 100}%` }))),
           h("div", { class: "list" }, rows.map((i) => h("a", { class: "row", href: "#/coding/" + i.id },
             h("span", { class: "st " + i.status, title: STATUS[i.status][1] }, STATUS[i.status][0]),
-            h("div", { class: "main" }, h("div", { class: "title" }, i.title), h("div", { class: "sub" }, i.summary)), stars(i.stars)))));
-        det.addEventListener("toggle", () => openState.set(c.id, det.open));
+            h("div", { class: "main" }, h("div", { class: "title" }, i.title), h("div", { class: "sub" }, i.summary)), h("span", { class: "tag", title: "Course topic " + T(i.tag) }, T(i.tag)), stars(i.stars)))));
+        det.addEventListener("toggle", () => openState.set(c.key, det.open));
         return det;
       });
-      return h("section", {}, h("h2", {}, title, " ", h("span", { class: "muted" }, `${chs.reduce((a, c) => a + c.items.filter((i) => i.status === "passed").length, 0)}/${chs.reduce((a, c) => a + c.items.length, 0)}`)),
+      if (!sections.some(Boolean)) return null;   // nothing of this track matches the filters
+      const inTrack = chs.flatMap((c) => c.items);
+      return h("section", {}, h("h2", {}, title, " ", h("span", { class: "muted" }, `${inTrack.filter((i) => i.status === "passed").length}/${inTrack.length}`)),
         h("p", { class: "muted", style: "margin:-6px 0 10px" }, blurb), sections);
     }));
+    if (!shown) holder.append(h("p", { class: "muted" }, "No exercise matches these filters."));
+    pathHolder.replaceChildren(m.order.length ? h("div", { class: "panel", style: "display:flex;gap:14px;align-items:center;flex-wrap:wrap" },
+      h("div", { style: "flex:1;min-width:220px" }, h("b", {}, "Suggested path"), h("div", { class: "muted", style: "font-size:13px" }, `${m.passed} of ${m.items.length} passed. The path mixes the chapters so the difficulty climbs gradually.`),
+        h("div", { class: "bar", style: "margin-top:6px" }, h("span", { style: `width:${(m.passed / m.items.length) * 100}%` }))),
+      m.next ? h("a", { class: "btn primary", href: "#/coding/" + m.next.id }, (m.passed ? "Continue: " : "Start: ") + m.next.title) : h("b", {}, "Everything passed ✔")) : null);
   };
-  search.addEventListener("input", draw);
-  draw();
-  const pathBox = m.order.length ? h("div", { class: "panel", style: "display:flex;gap:14px;align-items:center;flex-wrap:wrap" },
-    h("div", { style: "flex:1;min-width:220px" }, h("b", {}, "Suggested path"), h("div", { class: "muted", style: "font-size:13px" }, `${m.passed} of ${m.items.length} passed. The path mixes the chapters so the difficulty climbs gradually.`),
-      h("div", { class: "bar", style: "margin-top:6px" }, h("span", { style: `width:${(m.passed / m.items.length) * 100}%` }))),
-    m.next ? h("a", { class: "btn primary", href: "#/coding/" + m.next.id }, (m.passed ? "Continue: " : "Start: ") + m.next.title) : h("b", {}, "Everything passed ✔")) : null;
-  mount(page(h("h1", {}, "Coding exercises"), h("p", { class: "lead" }, "Write your solution in VS Code next to the statement and press Check. Use Hint if you are stuck, and Answer as a last resort."), pathBox, h("div", { class: "tools" }, search), holder));
+  search.addEventListener("input", render);
+  render();
+  mount(page(h("h1", {}, "Coding exercises"), h("p", { class: "lead" }, "Write your solution in VS Code next to the statement and press Check. Use Hint if you are stuck, and Answer as a last resort."), pathHolder, filterBox, h("div", { class: "tools" }, search), holder));
 }
 
 // ------------------------------------------------------------------ exercise screen
@@ -258,7 +285,7 @@ async function viewExercise(id) {
   const url = `${location.protocol}//${location.hostname}:${state.cfg.vscode_port}/?folder=${encodeURIComponent(d.workspace)}&payload=${payload}`;
   const frame = h("iframe", { src: url, title: "VS Code", allow: "clipboard-read; clipboard-write" });
   const left = h("div", { class: "left statement" },
-    h("div", { class: "crumbs" }, h("a", { href: "#/coding" }, "Coding"), " › ", d.track === "derusting" ? "C derusting" : "C exercises", " › ", chapter ? chapter.title : d.topic, " · ", h("span", { class: "tag" }, d.tag), " ", stars(d.stars)),
+    h("div", { class: "crumbs" }, h("a", { href: "#/coding" }, "Coding"), " › ", d.track === "derusting" ? "C derusting / introduction" : "C exercises", " › ", chapter ? chapter.title : d.topic, " · ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag)), " ", stars(d.stars)),
     h("div", { html: md(d.statement) }),
     h("div", { class: "muted", style: "font-size:13px" }, "Write it in ", d.files.map((f, i) => [i ? ", " : "", h("code", {}, f)]), " in the editor on the right. It saves by itself."),
     h("div", { class: "actions" }, checkBtn, hintBtn, infoBtn, solBtn, resetBtn, h("span", { class: "spacer" }), chip),
@@ -291,12 +318,12 @@ async function viewExercise(id) {
 async function viewTheoryList() {
   setNav("theory");
   const idx = await api("index");
-  const sets = idx.theory.filter((t) => t.tag === state.tag);
+  const sets = idx.theory;
   mount(page(h("h1", {}, "Theory"), h("p", { class: "lead" }, "Short questions with an explanation after every answer."),
     h("div", { class: "list" }, sets.map((s) => {
       const p = s.count ? s.correct / s.count : 0;
       return h("a", { class: "row", href: "#/theory/" + s.id },
-        h("div", { class: "main" }, h("div", { class: "title" }, s.title), h("div", { class: "sub" }, `${s.count} questions · ${s.types.join(", ")} · ${s.answered} answered`)),
+        h("div", { class: "main" }, h("div", { class: "title" }, s.title, " ", h("span", { class: "tag" }, T(s.tag))), h("div", { class: "sub" }, `${s.count} questions · ${s.types.join(", ")} · ${s.answered} answered`)),
         h("div", { class: "bar", style: "width:120px" }, h("span", { style: `width:${pct(p)}%` })), h("span", { class: "pct" }, pct(p) + "%"));
     }))));
 }
@@ -519,7 +546,7 @@ function entryCard(e, byId) {
 
 async function viewReference(focusId) {
   setNav("reference");
-  const all = (await api("reference")).entries.filter((e) => e.tag === state.tag);
+  const all = (await api("reference")).entries;
   const preps = new Map(all.map((e) => [e.id, refPrep(e)]));
   const byId = new Map(all.map((e) => [e.id, e]));
   const cats = [];
@@ -542,7 +569,7 @@ async function viewReference(focusId) {
     if (e) { pane.replaceChildren(entryCard(e, byId)); app.scrollTop = 0; return; }
     const popular = ["printf", "scanf", "fgets", "malloc", "strcmp", "fopen", "open", "read"].map((n) => all.find((e) => rn(e.title) === n)).filter(Boolean);
     pane.replaceChildren(h("div", { class: "welcome" }, h("h1", {}, "Reference"),
-      h("p", { class: "lead" }, `${all.length} entries in ${cats.length} categories for ${state.tag}: one per function, command and keyword.`),
+      h("p", { class: "lead" }, `${all.length} entries in ${cats.length} categories: one per function, command and keyword.`),
       h("p", {}, "Type a name on the left, or pick one. Popular: ", popular.map((e) => [h("a", { href: "#/reference/" + e.id }, h("code", {}, e.title)), " "])),
       h("p", { class: "muted" }, "The search ranks the entry called exactly what you typed first, then names that start with it, then options and formats (try ", h("code", {}, "O_CREAT"), " or ", h("code", {}, "%zu"), "), and last text that merely mentions it.")));
   };
@@ -576,9 +603,10 @@ async function viewReference(focusId) {
 // ------------------------------------------------------------------ readiness
 async function viewReadiness() {
   setNav("readiness");
-  const r = await api("readiness?tag=" + state.tag);
+  const tag = state.cfg.tags[0];
+  const r = await api("readiness?tag=" + tag);
   const cls = (s) => (s >= 0.75 ? "" : s >= 0.4 ? "warn" : "bad");
-  mount(page(h("h1", {}, "Readiness ", h("span", { class: "tag" }, state.tag)),
+  mount(page(h("h1", {}, "Readiness ", h("span", { class: "tag" }, T(tag))),
     h("p", { class: "lead" }, "Coding exercises passed (half credit if you looked at the solution) and theory questions whose last answer was correct, per topic. Weakest first."),
     h("div", { class: "panel" }, h("div", { style: "display:flex;gap:14px;align-items:center" }, h("div", { class: "big" }, pct(r.overall) + "%"), h("div", { class: "bar " + cls(r.overall), style: "flex:1;height:12px" }, h("span", { style: `width:${pct(r.overall)}%` })))),
     h("div", { class: "list" }, r.topics.map((t) => h("div", { class: "row" },
@@ -628,10 +656,6 @@ function initSettings() {
 async function init() {
   initSettings();
   state.cfg = await api("config");
-  if (!state.cfg.tags.includes(state.tag)) state.tag = state.cfg.tags[0];
-  const sel = $("#tag");
-  sel.replaceChildren(...state.cfg.tags.map((t) => h("option", { value: t, selected: t === state.tag }, t)));
-  sel.addEventListener("change", () => { state.tag = sel.value; localStorage.setItem("cellar.tag", state.tag); route(); });
   window.addEventListener("hashchange", route);
   route();
 }
