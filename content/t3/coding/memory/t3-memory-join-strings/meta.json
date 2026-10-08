@@ -1,0 +1,14 @@
+{
+ "id": "t3-memory-join-strings",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "memory",
+ "title": "Join two strings",
+ "stars": 3,
+ "order": 4,
+ "summary": "Computing the size to allocate.",
+ "hints": [
+  "The result needs `strlen(a) + 1 + strlen(b) + 1` bytes (the separator and the terminator).",
+  "Copy `a`, store the separator, copy `b`, and end with `'\\0'`."
+ ]
+}

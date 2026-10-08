@@ -1,0 +1,14 @@
+{
+ "id": "t3-pointers-pointer-arithmetic",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "pointers",
+ "title": "Pointer arithmetic",
+ "stars": 3,
+ "order": 8,
+ "summary": "p + n, p[n] and p - q.",
+ "hints": [
+  "`*(p + 2)` is the third element; `p[3]` is the same as `*(p + 3)`.",
+  "Subtracting two pointers into the same array gives the number of ELEMENTS between them (a `ptrdiff_t`: print it as a `long`)."
+ ]
+}

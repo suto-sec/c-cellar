@@ -1,0 +1,14 @@
+{
+ "id": "t3-memory-digit-histogram",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "memory",
+ "title": "Histogram of digits",
+ "stars": 3,
+ "order": 2,
+ "summary": "calloc gives zeroed memory.",
+ "hints": [
+  "`calloc(10, sizeof(int))` returns 10 ints that are all zero: ideal for counters.",
+  "The digit itself is the index: `count[x]++`."
+ ]
+}

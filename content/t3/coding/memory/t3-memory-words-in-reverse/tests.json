@@ -1,0 +1,29 @@
+{
+ "cases": [
+  {
+   "stdin": "one two three\n",
+   "stdout": "three\ntwo\none\n"
+  },
+  {
+   "stdin": "",
+   "stdout": ""
+  },
+  {
+   "stdin": "one\n",
+   "stdout": "one\n"
+  },
+  {
+   "stdin": "a b c\n",
+   "stdout": "c\nb\na\n"
+  },
+  {
+   "stdin": "the quick brown fox jumps over the lazy dog\n",
+   "stdout": "dog\nlazy\nthe\nover\njumps\nfox\nbrown\nquick\nthe\n"
+  },
+  {
+   "name": "50000 words",
+   "cmd": "seq 1 50000 | \"$BIN\" | head -n 3",
+   "stdout": "50000\n49999\n49998\n"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-memory-dynamic-matrix",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "memory",
+ "title": "A matrix on the heap",
+ "stars": 4,
+ "order": 6,
+ "summary": "An array of pointers to rows.",
+ "hints": [
+  "First allocate an array of `r` pointers (`int **m`), then allocate each row with `malloc`.",
+  "Free in the opposite order: every row first, then the array of pointers."
+ ]
+}

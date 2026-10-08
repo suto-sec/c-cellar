@@ -1,0 +1,14 @@
+{
+ "id": "t3-memory-words-in-reverse",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "memory",
+ "title": "Remember every word",
+ "stars": 4,
+ "order": 7,
+ "summary": "A growing array of strings.",
+ "hints": [
+  "Keep a `char **` array of word copies; make it bigger with `realloc` when it is full.",
+  "Copy each word with `strdup`: the buffer you read into is reused for the next word."
+ ]
+}

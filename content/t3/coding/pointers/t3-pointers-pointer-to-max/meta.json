@@ -1,0 +1,14 @@
+{
+ "id": "t3-pointers-pointer-to-max",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "pointers",
+ "title": "Return a pointer to the maximum",
+ "stars": 3,
+ "order": 7,
+ "summary": "A function that returns a pointer.",
+ "hints": [
+  "Return the ADDRESS of the best element, not its value: `return best;` where `best` is an `int *`.",
+  "Return the first maximum: replace `best` only when you find a strictly larger value."
+ ]
+}

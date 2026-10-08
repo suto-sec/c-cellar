@@ -1,0 +1,14 @@
+{
+ "id": "t3-pointers-my-strcpy",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "pointers",
+ "title": "Your own strcpy",
+ "stars": 3,
+ "order": 5,
+ "summary": "Copying with two pointers.",
+ "hints": [
+  "Copy one character at a time until you have copied the terminator.",
+  "`*dst++ = *src++` copies a character and advances both pointers; its value is the character copied, so it can be the loop condition."
+ ]
+}

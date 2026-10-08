@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "    indented text\n",
+   "stdout": "[indented text]\n"
+  },
+  {
+   "stdin": "   hello\n",
+   "stdout": "[hello]\n"
+  },
+  {
+   "stdin": "hello\n",
+   "stdout": "[hello]\n"
+  },
+  {
+   "stdin": "     \n",
+   "stdout": "[]\n"
+  },
+  {
+   "stdin": "\n",
+   "stdout": "[]\n"
+  },
+  {
+   "stdin": " a b \n",
+   "stdout": "[a b ]\n"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-pointers-reverse-in-place",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "pointers",
+ "title": "Reverse in place with two pointers",
+ "stars": 3,
+ "order": 6,
+ "summary": "One pointer from each end.",
+ "hints": [
+  "Keep a pointer to the first element and another to the last; swap what they point to and move them inward.",
+  "Stop when the first pointer is no longer before the second (`a < b`)."
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-pointers-apply-function",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "pointers",
+ "title": "A function as an argument",
+ "stars": 5,
+ "order": 10,
+ "summary": "Pointers to functions.",
+ "hints": [
+  "A parameter `int (*f)(int)` is a pointer to a function taking an `int` and returning an `int`; call it like a function: `f(x)`.",
+  "Loop over the array and store `f(v[i])` back in `v[i]`."
+ ]
+}

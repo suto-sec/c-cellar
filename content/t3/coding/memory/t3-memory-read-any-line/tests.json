@@ -1,0 +1,29 @@
+{
+ "cases": [
+  {
+   "stdin": "the quick brown fox\n",
+   "stdout": "19\n"
+  },
+  {
+   "stdin": "\n",
+   "stdout": "0\n"
+  },
+  {
+   "stdin": "a\n",
+   "stdout": "1\n"
+  },
+  {
+   "stdin": "hello world\n",
+   "stdout": "11\n"
+  },
+  {
+   "stdin": "no newline",
+   "stdout": "10\n"
+  },
+  {
+   "name": "500000 characters on one line",
+   "cmd": "head -c 500000 /dev/zero | tr '\\0' x | \"$BIN\"",
+   "stdout": "500000\n"
+  }
+ ]
+}

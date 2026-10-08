@@ -1,0 +1,14 @@
+{
+ "id": "t3-pointers-divmod",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "pointers",
+ "title": "Quotient and remainder",
+ "stars": 2,
+ "order": 2,
+ "summary": "Returning two results through pointers.",
+ "hints": [
+  "A function can return only one value, but it can write results through pointers it receives.",
+  "Inside the function, `*q` is the variable the caller passed with `&`."
+ ]
+}

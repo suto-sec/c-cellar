@@ -1,0 +1,24 @@
+{
+ "cases": [
+  {
+   "stdin": "memory\n",
+   "stdout": "copy: memory\n"
+  },
+  {
+   "stdin": "a\n",
+   "stdout": "copy: a\n"
+  },
+  {
+   "stdin": "hello\n",
+   "stdout": "copy: hello\n"
+  },
+  {
+   "stdin": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n",
+   "stdout": "copy: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n"
+  },
+  {
+   "stdin": "one two three\n",
+   "stdout": "copy: one\ncopy: two\ncopy: three\n"
+  }
+ ]
+}

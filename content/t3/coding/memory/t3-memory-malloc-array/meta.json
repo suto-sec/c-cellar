@@ -1,0 +1,14 @@
+{
+ "id": "t3-memory-malloc-array",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "memory",
+ "title": "An array of the size you are told",
+ "stars": 2,
+ "order": 1,
+ "summary": "malloc and free.",
+ "hints": [
+  "`malloc(n * sizeof(int))` returns a pointer to room for `n` ints; you can then use it like an array: `v[i]`.",
+  "Check that `malloc` did not return `NULL`, and call `free(v)` when you are done."
+ ]
+}

@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "17 5\n",
+   "stdout": "q=3 r=2\n"
+  },
+  {
+   "stdin": "17 5\n",
+   "stdout": "q=3 r=2\n"
+  },
+  {
+   "stdin": "10 2\n",
+   "stdout": "q=5 r=0\n"
+  },
+  {
+   "stdin": "-7 2\n",
+   "stdout": "q=-3 r=-1\n"
+  },
+  {
+   "stdin": "0 3\n",
+   "stdout": "q=0 r=0\n"
+  },
+  {
+   "stdin": "100 7\n",
+   "stdout": "q=14 r=2\n"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-pointers-my-strlen",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "pointers",
+ "title": "Your own strlen",
+ "stars": 2,
+ "order": 4,
+ "summary": "Pointers and the terminating zero.",
+ "hints": [
+  "Walk a pointer along the string until it points to `'\\0'`.",
+  "The length is the difference between the final pointer and the start: `p - s`."
+ ]
+}

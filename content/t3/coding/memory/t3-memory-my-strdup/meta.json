@@ -1,0 +1,14 @@
+{
+ "id": "t3-memory-my-strdup",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "memory",
+ "title": "Your own strdup",
+ "stars": 3,
+ "order": 3,
+ "summary": "Allocate exactly what you need.",
+ "hints": [
+  "The copy needs `strlen(s) + 1` bytes: do not forget the terminator.",
+  "Return NULL if `malloc` fails; otherwise copy with `strcpy` or `memcpy` and return the new pointer."
+ ]
+}

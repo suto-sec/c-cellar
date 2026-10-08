@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "1 2 3\n",
+   "stdout": "3 2 1\n"
+  },
+  {
+   "stdin": "",
+   "stdout": "\n"
+  },
+  {
+   "stdin": "5",
+   "stdout": "5\n"
+  },
+  {
+   "stdin": "1 2 3",
+   "stdout": "3 2 1\n"
+  },
+  {
+   "stdin": "10 20 30 40 50\n",
+   "stdout": "50 40 30 20 10\n"
+  },
+  {
+   "stdin": "-1 0 1",
+   "stdout": "1 0 -1\n"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-pointers-sum-with-pointer",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "pointers",
+ "title": "Sum with a pointer",
+ "stars": 2,
+ "order": 3,
+ "summary": "Walking an array with pointer arithmetic.",
+ "hints": [
+  "`*v` is the element `v` points to, and `v++` moves to the next element (a pointer moves by whole elements).",
+  "Stop when the pointer reaches `v + n`, the address just after the last element."
+ ]
+}

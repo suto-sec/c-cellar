@@ -1,0 +1,14 @@
+{
+ "id": "t3-memory-read-any-line",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "memory",
+ "title": "A line of any length",
+ "stars": 3,
+ "order": 5,
+ "summary": "Growing a buffer with realloc.",
+ "hints": [
+  "Start with a small buffer and double its size with `realloc` whenever it is full.",
+  "Keep the new pointer in a temporary variable: if `realloc` fails you must still free the old block."
+ ]
+}

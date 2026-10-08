@@ -1,0 +1,24 @@
+{
+ "cases": [
+  {
+   "stdin": "pointer\n",
+   "stdout": "pointer: 7\n"
+  },
+  {
+   "stdin": "a\n",
+   "stdout": "a: 1\n"
+  },
+  {
+   "stdin": "hello\n",
+   "stdout": "hello: 5\n"
+  },
+  {
+   "stdin": "abcdefghij\n",
+   "stdout": "abcdefghij: 10\n"
+  },
+  {
+   "stdin": "one two three\n",
+   "stdout": "one: 3\ntwo: 3\nthree: 5\n"
+  }
+ ]
+}

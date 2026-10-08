@@ -1,0 +1,14 @@
+{
+ "id": "t3-memory-linked-list",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "memory",
+ "title": "A linked list",
+ "stars": 5,
+ "order": 8,
+ "summary": "Structures that point to each other.",
+ "hints": [
+  "A node is a `struct` with the value and a pointer to the next node: `struct node { int value; struct node *next; };`.",
+  "To insert at the front: `n->next = head; head = n;`. To free the list, remember `head->next` BEFORE freeing `head`."
+ ]
+}

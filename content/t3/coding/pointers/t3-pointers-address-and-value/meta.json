@@ -1,0 +1,14 @@
+{
+ "id": "t3-pointers-address-and-value",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "pointers",
+ "title": "Address and value",
+ "stars": 1,
+ "order": 1,
+ "summary": "&, * and a pointer variable.",
+ "hints": [
+  "`int *p = &x;` makes `p` point to `x`; `*p = 20;` writes through the pointer.",
+  "Compare the pointer with the address: `p == &x`."
+ ]
+}
