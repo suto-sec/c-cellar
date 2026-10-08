@@ -289,10 +289,12 @@ pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } p
 .dailymain { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .dailymain .main { flex: 1; min-width: 220px; }
 .dailymain .title { font-weight: 600; font-size: 16px; }
-.streakmini { display: inline-flex; align-items: center; gap: 4px; margin-left: 5px; }
+#navdaily { display: inline-flex; align-items: center; gap: 8px; }
+#navdaily[hidden] { display: none; }
+.streakmini { display: inline-flex; align-items: center; gap: 4px; font-size: 16px; line-height: 1; }
 .flame svg, .bigflame svg { display: block; width: 100%; height: 100%; fill: currentColor; }
 .flame .core, .bigflame .core { fill: #fff; fill-opacity: .55; }
-.flame { display: inline-block; width: 17px; height: 17px; }
+.flame { display: inline-block; width: 22px; height: 22px; }
 .bigflame { display: block; }
 .streakmini.on { color: var(--accent); }
 .streakmini.risk .flame, .streakmini.off .flame { color: var(--muted); opacity: .55; }   /* unlit until today's challenge is passed */
@@ -308,3 +310,4 @@ pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } p
 .daybadge { padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 13px; white-space: nowrap; }
 .daybadge.done { background: var(--okbg); color: var(--ok); border: 1px solid var(--ok); }
 .daybadge.todo { background: var(--warnbg); color: var(--warn); border: 1px solid var(--warn); }
+.streakmini b, .streakmini .flame { position: relative; top: -1px; }   /* optical centring with the text beside them */
