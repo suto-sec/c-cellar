@@ -5,3 +5,4 @@ __pycache__/
 # course material is never part of the repo
 originals/
 *.pdf
+server.log
