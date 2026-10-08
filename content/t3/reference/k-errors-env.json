@@ -114,7 +114,7 @@
    ],
    "syntax": "char *getenv(const char *name);",
    "header": "<stdlib.h>",
-   "description": "Returns a pointer to the value or NULL if the variable is not set. Do not modify the string: copy it first (for instance before `strtok`).",
+   "description": "Returns a pointer to the value or NULL if the variable is not set. Do not modify the string: copy it first (for instance before `strtok_r`).",
    "details": [
     {
      "name": "PATH",

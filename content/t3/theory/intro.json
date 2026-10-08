@@ -159,7 +159,7 @@
    "type": "fill",
    "difficulty": 2,
    "prompt": "Complete the command that compiles `main.c` with the C11 standard, debugging information and the output file `prog`.",
-   "explain": "`-std=c11` selects the language standard, `-g` adds debugging information (gdb, valgrind) and `-o prog` names the output file.",
+   "explain": "`-std=c11` selects the language standard, `-g` adds debugging information and `-o prog` names the output file.",
    "ref": [
     "gcc"
    ],

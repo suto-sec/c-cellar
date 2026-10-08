@@ -395,15 +395,14 @@
    "type": "predict",
    "difficulty": 3,
    "prompt": "What does this program print?",
-   "explain": "`round` rounds halves away from zero. `fmod` is the floating-point remainder (7.5 - 3*2 = 1.5). `abs` is for ints and `fabs` for doubles.",
+   "explain": "`fmod` is the floating-point remainder and its sign follows the first operand (7.5 - 3*2 = 1.5, -7.5 + 3*2 = -1.5). `abs` is for ints and `fabs` for doubles.",
    "ref": [
-    "round",
     "fmod",
     "abs",
     "fabs"
    ],
-   "code": "#include <stdio.h>\n#include <math.h>\n#include <stdlib.h>\n\nint main(void)\n{\n    printf(\"%.1f %.1f %.1f\\n\", round(2.5), round(-2.5), fmod(7.5, 2));\n    printf(\"%d %.1f\\n\", abs(-5), fabs(-2.5));\n    return 0;\n}\n",
-   "answer": "3.0 -3.0 1.5\n5 2.5"
+   "code": "#include <stdio.h>\n#include <math.h>\n#include <stdlib.h>\n\nint main(void)\n{\n    printf(\"%.1f %.1f\\n\", fmod(7.5, 2), fmod(-7.5, 2));\n    printf(\"%d %.1f\\n\", abs(-5), fabs(-2.5));\n    return 0;\n}\n",
+   "answer": "1.5 -1.5\n5 2.5"
   },
   {
    "id": "t3-q-operators-x03",

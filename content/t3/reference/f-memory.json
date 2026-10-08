@@ -68,11 +68,10 @@
    "description": "The pointer must come from `malloc`, `calloc` or `realloc` and be freed once. `free(NULL)` does nothing. Set the pointer to NULL afterwards if it will still be around.",
    "example": "free(v);\nv = NULL;",
    "mistakes": [
-    "Double free, use after free, freeing a pointer into the middle of a block (valgrind finds these)."
+    "Double free, use after free, freeing a pointer into the middle of a block."
    ],
    "see": [
-    "t3-ref-malloc",
-    "t3-ref-valgrind"
+    "t3-ref-malloc"
    ]
   },
   {

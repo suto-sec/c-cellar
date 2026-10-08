@@ -7,7 +7,7 @@
  "order": 5,
  "summary": "getenv + string handling + access(X_OK), like a tiny `which -a`.",
  "hints": [
-  "getenv(\"PATH\") returns a pointer into the environment: copy it before you change it (strtok writes into the string).",
+  "getenv(\"PATH\") returns a pointer into the environment: copy it before you change it (strtok_r writes into the string).",
   "Split on ':' and build \"dir/name\" with snprintf into a char buffer.",
   "access(path, X_OK) == 0 means the file exists and you may execute it."
  ],

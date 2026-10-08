@@ -50,8 +50,7 @@
    "description": "`ceil(2.1)` is 3.0 and `ceil(-2.1)` is -2.0. Link with `-lm`.",
    "example": "int pages = (int) ceil(n / 10.0);",
    "see": [
-    "t3-ref-floor",
-    "t3-ref-round"
+    "t3-ref-floor"
    ]
   },
   {
@@ -64,21 +63,6 @@
    "description": "`floor(2.9)` is 2.0 and `floor(-2.1)` is -3.0. Link with `-lm`.",
    "example": "int whole = (int) floor(x);",
    "see": [
-    "t3-ref-ceil",
-    "t3-ref-round"
-   ]
-  },
-  {
-   "id": "t3-ref-round",
-   "title": "round",
-   "category": "Math",
-   "summary": "Round to the nearest integer value (halves away from zero).",
-   "syntax": "double round(double x);",
-   "header": "<math.h>",
-   "description": "`round(2.5)` is 3.0 and `round(-2.5)` is -3.0. Link with `-lm`.",
-   "example": "long n = lround(x);   /* or (long) round(x) */",
-   "see": [
-    "t3-ref-floor",
     "t3-ref-ceil"
    ]
   },

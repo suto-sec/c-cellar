@@ -58,7 +58,7 @@
     },
     {
      "name": "-g",
-     "text": "add debugging information (for gdb and valgrind)"
+     "text": "add debugging information"
     },
     {
      "name": "-O2",
@@ -96,8 +96,7 @@
    ],
    "see": [
     "t3-ref-make",
-    "t3-ref-ar",
-    "t3-ref-gdb"
+    "t3-ref-ar"
    ]
   },
   {
@@ -174,70 +173,6 @@
    ],
    "see": [
     "t3-ref-gcc"
-   ]
-  },
-  {
-   "id": "t3-ref-gdb",
-   "title": "gdb",
-   "category": "Building programs",
-   "summary": "Debug a program step by step.",
-   "syntax": "gdb ./prog",
-   "description": "Compile with `-g`. Start with `gdb ./prog`, set a breakpoint, run and inspect variables.",
-   "details": [
-    {
-     "name": "break main",
-     "text": "stop at the start of main (`b`)"
-    },
-    {
-     "name": "run args",
-     "text": "start the program (`r`)"
-    },
-    {
-     "name": "next",
-     "text": "run the next line without entering calls (`n`)"
-    },
-    {
-     "name": "step",
-     "text": "run the next line, entering calls (`s`)"
-    },
-    {
-     "name": "print x",
-     "text": "show a variable or expression (`p`)"
-    },
-    {
-     "name": "bt",
-     "text": "backtrace: the chain of calls, useful after a crash"
-    },
-    {
-     "name": "continue",
-     "text": "run until the next breakpoint (`c`)"
-    },
-    {
-     "name": "quit",
-     "text": "leave gdb (`q`)"
-    }
-   ],
-   "example": "gcc -g -o prog prog.c\ngdb ./prog\n(gdb) break main\n(gdb) run\n(gdb) next\n(gdb) print i",
-   "see": [
-    "t3-ref-gcc",
-    "t3-ref-valgrind"
-   ]
-  },
-  {
-   "id": "t3-ref-valgrind",
-   "title": "valgrind",
-   "category": "Building programs",
-   "summary": "Find memory errors and leaks.",
-   "syntax": "valgrind --leak-check=full ./prog",
-   "description": "Runs the program on a virtual machine that reports invalid reads and writes, use of uninitialised values, double frees and unreleased heap blocks. Compile with `-g` so it can show line numbers.",
-   "example": "gcc -g -o prog prog.c\nvalgrind --leak-check=full ./prog",
-   "mistakes": [
-    "Ignoring \"definitely lost\" blocks."
-   ],
-   "see": [
-    "t3-ref-malloc",
-    "t3-ref-free",
-    "t3-ref-gdb"
    ]
   },
   {

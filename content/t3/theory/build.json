@@ -224,14 +224,12 @@
    "type": "match",
    "difficulty": 2,
    "prompt": "Match each tool with its job.",
-   "explain": "Together with gcc these are the tools of the C workflow.",
+   "explain": "Together with gcc these are the tools of the build workflow.",
    "ref": [
     "ar",
     "ld",
     "ldd",
-    "make",
-    "gdb",
-    "valgrind"
+    "make"
    ],
    "pairs": [
     [
@@ -249,14 +247,6 @@
     [
      "make",
      "rebuilds only what changed"
-    ],
-    [
-     "gdb",
-     "a debugger to run a program step by step"
-    ],
-    [
-     "valgrind",
-     "finds memory errors and leaks"
     ]
    ]
   },

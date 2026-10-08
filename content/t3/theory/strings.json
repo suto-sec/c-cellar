@@ -94,18 +94,6 @@
    "answer": "4 7"
   },
   {
-   "id": "t3-q-strings-07",
-   "type": "predict",
-   "difficulty": 3,
-   "prompt": "What does this program print?",
-   "explain": "`strtok` returns the pieces between the delimiters, one per call; later calls pass `NULL` to continue with the same string.",
-   "ref": [
-    "strtok"
-   ],
-   "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    char line[] = \"a:b:c\";\n    char *t = strtok(line, \":\");\n\n    while (t != NULL) {\n        printf(\"[%s]\", t);\n        t = strtok(NULL, \":\");\n    }\n    printf(\"\\n\");\n    return 0;\n}\n",
-   "answer": "[a][b][c]"
-  },
-  {
    "id": "t3-q-strings-08",
    "type": "single",
    "difficulty": 3,
@@ -361,37 +349,12 @@
    "type": "predict",
    "difficulty": 3,
    "prompt": "What does this program print?",
-   "explain": "`strspn` counts the leading characters that are all in the given set (`12`), and `strcspn` counts the leading characters that are NOT in the set (`12`, up to the first `a`).",
+   "explain": "`strtok_r` returns the pieces between the delimiters, one per call, and skips empty fields (`a::b` has no piece between the two colons). Later calls pass `NULL`; the position is kept in `save`. It writes `'\\0'` into the string, so it needs a modifiable array.",
    "ref": [
-    "strspn",
-    "strcspn"
-   ],
-   "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    printf(\"%zu %zu\\n\", strspn(\"12ab\", \"0123456789\"), strcspn(\"12ab\", \"ab\"));\n    return 0;\n}\n",
-   "answer": "2 2"
-  },
-  {
-   "id": "t3-q-strings-x04",
-   "type": "single",
-   "difficulty": 3,
-   "prompt": "Why is `strtok_r` preferred to `strtok`?",
-   "explain": "`strtok` stores its position in a hidden static variable, so two loops cannot interleave. `strtok_r` takes a `saveptr`. Both write `'\\0'` into the string.",
-   "ref": [
-    "strtok",
     "strtok_r"
    ],
-   "options": [
-    "It keeps its state in a variable you provide, so it is safe to nest and to use from several threads",
-    "It is faster",
-    "It does not modify the string",
-    "It also trims spaces"
-   ],
-   "answer": 0,
-   "option_notes": [
-    "Correct.",
-    "Speed is the same.",
-    "Both modify the string.",
-    "Neither trims spaces."
-   ]
+   "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    char line[] = \"a::b:c\";\n    char *save;\n    char *t = strtok_r(line, \":\", &save);\n\n    while (t != NULL) {\n        printf(\"[%s]\", t);\n        t = strtok_r(NULL, \":\", &save);\n    }\n    printf(\"\\n\");\n    return 0;\n}\n",
+   "answer": "[a][b][c]"
   },
   {
    "id": "t3-q-strings-x05",
