@@ -40,6 +40,206 @@
     "fprintf",
     "stdin"
    ]
+  },
+  {
+   "id": "t3-q-errors-01",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print? (The reason of a failed fopen.)",
+   "explain": "`fopen` returns NULL and sets `errno` to `ENOENT`; `strerror` gives its message.",
+   "ref": [
+    "fopen",
+    "errno",
+    "strerror"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n#include <errno.h>\n\nint main(void)\n{\n    FILE *f = fopen(\"missing.txt\", \"r\");\n\n    if (f == NULL)\n        printf(\"%s\\n\", strerror(errno));\n    return 0;\n}\n",
+   "answer": "No such file or directory"
+  },
+  {
+   "id": "t3-q-errors-02",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "The second `mkdir` fails with `EEXIST`, whose message is `File exists`.",
+   "ref": [
+    "mkdir",
+    "errno",
+    "strerror"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n#include <errno.h>\n#include <sys/stat.h>\n\nint main(void)\n{\n    mkdir(\"d\", 0755);\n    if (mkdir(\"d\", 0755) == -1)\n        printf(\"%s\\n\", strerror(errno));\n    return 0;\n}\n",
+   "answer": "File exists"
+  },
+  {
+   "id": "t3-q-errors-03",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (An out-of-range number.)",
+   "explain": "The value does not fit in a `long`, so `strtol` returns `LONG_MAX` and sets `errno` to `ERANGE`. Set `errno = 0` first so you can tell.",
+   "ref": [
+    "strtol",
+    "errno"
+   ],
+   "code": "#include <stdio.h>\n#include <stdlib.h>\n#include <errno.h>\n\nint main(void)\n{\n    errno = 0;\n    strtol(\"99999999999999999999\", NULL, 10);\n    printf(\"%d\\n\", errno == ERANGE);\n    return 0;\n}\n",
+   "answer": "1"
+  },
+  {
+   "id": "t3-q-errors-04",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does `perror(\"open\")` print?",
+   "explain": "`perror(prefix)` writes `prefix: message` and a newline to stderr, using `errno`. Call it right after the failing call.",
+   "ref": [
+    "perror",
+    "errno"
+   ],
+   "options": [
+    "`open: ` followed by the message of the current errno, on standard error",
+    "Only the word open",
+    "The message on standard output",
+    "The numeric value of errno"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "It adds the message.",
+    "It uses stderr.",
+    "It prints text, not the number."
+   ]
+  },
+  {
+   "id": "t3-q-errors-05",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "When is the value of `errno` meaningful?",
+   "explain": "Library functions never reset `errno` to 0 on success. Test the return value first, then read `errno`.",
+   "ref": [
+    "errno"
+   ],
+   "options": [
+    "Right after a call that reported failure; a successful call may leave an old value",
+    "Always: it is 0 when everything is fine",
+    "Only for system calls",
+    "Only after exit"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "It is not cleared on success.",
+    "Library functions use it as well.",
+    "It is read while the program runs."
+   ]
+  },
+  {
+   "id": "t3-q-errors-06",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "What exit status means that a program finished successfully?",
+   "explain": "By convention 0 is success and any other value signals an error. The shell shows the status of the last command in `$?`.",
+   "ref": [
+    "exit",
+    "main"
+   ],
+   "options": [
+    "0",
+    "1",
+    "-1",
+    "255"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "1 is the usual generic failure.",
+    "Statuses are 0-255.",
+    "That is a failure."
+   ]
+  },
+  {
+   "id": "t3-q-errors-07",
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "Which statements about standard error are true?",
+   "explain": "Error messages go to stderr so that they stay visible when the normal output is redirected. `perror` also uses stderr, and `errno` is only set on failures.",
+   "ref": [
+    "fprintf",
+    "perror",
+    "errno"
+   ],
+   "options": [
+    "`fprintf(stderr, ...)` is not affected by a redirection like `> out.txt`",
+    "stderr is the file descriptor 2",
+    "`perror` writes to standard output",
+    "`errno` is set to a non-zero value whenever a call succeeds"
+   ],
+   "answer": [
+    0,
+    1
+   ],
+   "option_notes": [
+    "True: only `2>` redirects it.",
+    "True.",
+    "False: it uses stderr.",
+    "False."
+   ]
+  },
+  {
+   "id": "t3-q-errors-08",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "To use `errno` you must include the header <{{0}}.h>.",
+   "explain": "`<errno.h>` declares `errno` and the constants such as `ENOENT` and `EEXIST`.",
+   "ref": [
+    "errno"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "errno"
+     ],
+     "ignore_space": true
+    }
+   ]
+  },
+  {
+   "id": "t3-q-errors-09",
+   "type": "order",
+   "difficulty": 2,
+   "prompt": "Put the steps of handling a failing library call in order.",
+   "explain": "Check right away, report the reason where it can be seen, and do not continue with a broken state.",
+   "ref": [
+    "errno",
+    "strerror",
+    "exit"
+   ],
+   "items": [
+    "Call the function",
+    "Compare the return value with the failure value (NULL or -1)",
+    "Print a message with strerror(errno) on stderr",
+    "Exit with a non-zero status"
+   ]
+  },
+  {
+   "id": "t3-q-errors-10",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Why are error messages printed to stderr and not to stdout?",
+   "explain": "A user who runs `prog > result.txt` still sees the errors on the screen, and a program that reads the output does not receive them as data.",
+   "ref": [
+    "fprintf",
+    "stdin"
+   ],
+   "options": [
+    "They stay visible when stdout is redirected to a file or a pipe, and they are not mixed into the program's results",
+    "stderr is faster",
+    "stdout cannot print text",
+    "It is required by the compiler"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Speed is not the reason.",
+    "stdout prints text.",
+    "No such rule."
+   ]
   }
  ]
 }

@@ -1,0 +1,298 @@
+{
+ "id": "t3-th-programs",
+ "tag": "t3",
+ "title": "Exam-style programs",
+ "chapter": "programs",
+ "questions": [
+  {
+   "id": "t3-q-programs-01",
+   "type": "predict",
+   "difficulty": 4,
+   "prompt": "What does this program print? (A linked list built at the front.)",
+   "explain": "Every new node becomes the head, so the list holds the squares in reverse order of insertion: 16, 9, 4, 1.",
+   "ref": [
+    "struct",
+    "malloc",
+    "free"
+   ],
+   "code": "#include <stdio.h>\n#include <stdlib.h>\n\nstruct node {\n    int v;\n    struct node *next;\n};\n\nint main(void)\n{\n    struct node *head = NULL;\n\n    for (int i = 1; i <= 4; i++) {\n        struct node *n = malloc(sizeof *n);\n        n->v = i * i;\n        n->next = head;\n        head = n;\n    }\n    for (struct node *p = head; p != NULL; p = p->next)\n        printf(\"%d \", p->v);\n    printf(\"\\n\");\n    while (head != NULL) {\n        struct node *t = head->next;\n        free(head);\n        head = t;\n    }\n    return 0;\n}\n",
+   "answer": "16 9 4 1"
+  },
+  {
+   "id": "t3-q-programs-02",
+   "type": "predict",
+   "difficulty": 4,
+   "prompt": "What does this program print? (One pass of bubble sort.)",
+   "explain": "A single pass swaps neighbours that are out of order and carries the largest value (5) to the end; the rest is only partly sorted.",
+   "ref": [
+    "arrays"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int v[5] = {5, 1, 4, 2, 3};\n\n    for (int j = 0; j < 4; j++)\n        if (v[j] > v[j + 1]) {\n            int t = v[j];\n            v[j] = v[j + 1];\n            v[j + 1] = t;\n        }\n    for (int i = 0; i < 5; i++)\n        printf(\"%d \", v[i]);\n    printf(\"\\n\");\n    return 0;\n}\n",
+   "answer": "1 4 2 3 5"
+  },
+  {
+   "id": "t3-q-programs-03",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (Write numbers to a file, read them back.)",
+   "explain": "The file holds 10, 20, 30 and 40: four numbers adding up to 100.",
+   "ref": [
+    "fopen",
+    "fprintf",
+    "fscanf"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    FILE *f = fopen(\"n.txt\", \"w\");\n    int x, sum = 0, count = 0;\n\n    for (int i = 1; i <= 4; i++)\n        fprintf(f, \"%d\\n\", i * 10);\n    fclose(f);\n    f = fopen(\"n.txt\", \"r\");\n    while (fscanf(f, \"%d\", &x) == 1) {\n        sum += x;\n        count++;\n    }\n    fclose(f);\n    printf(\"%d %d\\n\", count, sum);\n    return 0;\n}\n",
+   "answer": "4 100"
+  },
+  {
+   "id": "t3-q-programs-04",
+   "type": "predict",
+   "difficulty": 4,
+   "prompt": "What does this program print? (Walking a string with a pointer.)",
+   "explain": "Subtracting 32 turns a lower-case ASCII letter into the upper-case one; the comma becomes a semicolon and the space is unchanged.",
+   "ref": [
+    "strings",
+    "pointers"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    char s[] = \"hello, world\";\n    char *p = s;\n\n    while (*p != '\\0') {\n        if (*p == ',')\n            *p = ';';\n        else if (*p >= 'a' && *p <= 'z')\n            *p -= 32;\n        p++;\n    }\n    printf(\"%s\\n\", s);\n    return 0;\n}\n",
+   "answer": "HELLO; WORLD"
+  },
+  {
+   "id": "t3-q-programs-05",
+   "type": "predict",
+   "difficulty": 5,
+   "prompt": "What does this program print? (Recursion that prints before and after.)",
+   "explain": "Each call prints its `n` before the recursive call (going down: 3 2 1) and again after it returns (coming back: 1 2 3).",
+   "ref": [
+    "functions"
+   ],
+   "code": "#include <stdio.h>\n\nvoid f(int n)\n{\n    if (n == 0)\n        return;\n    printf(\"%d \", n);\n    f(n - 1);\n    printf(\"%d \", n);\n}\n\nint main(void)\n{\n    f(3);\n    printf(\"\\n\");\n    return 0;\n}\n",
+   "answer": "3 2 1 1 2 3"
+  },
+  {
+   "id": "t3-q-programs-06",
+   "type": "predict",
+   "difficulty": 4,
+   "prompt": "What does this program print? (An array of structs modified through pointers.)",
+   "explain": "`&t[0]` and `t + 1` are both pointers to elements of the array, so `add` changes the originals: ann 1 + 4 and bob 5 + 1.",
+   "ref": [
+    "struct",
+    "typedef",
+    "pointers"
+   ],
+   "code": "#include <stdio.h>\n\ntypedef struct {\n    char name[8];\n    int pts;\n} Player;\n\nvoid add(Player *p, int n)\n{\n    p->pts += n;\n}\n\nint main(void)\n{\n    Player t[2] = {{\"ann\", 1}, {\"bob\", 5}};\n\n    add(&t[0], 4);\n    add(t + 1, 1);\n    printf(\"%s=%d %s=%d\\n\", t[0].name, t[0].pts, t[1].name, t[1].pts);\n    return 0;\n}\n",
+   "answer": "ann=5 bob=6"
+  },
+  {
+   "id": "t3-q-programs-07",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (qsort with a comparison function.)",
+   "explain": "The comparison returns `b - a`, so larger numbers sort first: descending order.",
+   "ref": [
+    "qsort"
+   ],
+   "code": "#include <stdio.h>\n#include <stdlib.h>\n\nstatic int cmp(const void *a, const void *b)\n{\n    return *(const int *) b - *(const int *) a;\n}\n\nint main(void)\n{\n    int v[5] = {3, 9, 1, 7, 5};\n\n    qsort(v, 5, sizeof(int), cmp);\n    for (int i = 0; i < 5; i++)\n        printf(\"%d \", v[i]);\n    printf(\"\\n\");\n    return 0;\n}\n",
+   "answer": "9 7 5 3 1"
+  },
+  {
+   "id": "t3-q-programs-08",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (Character classes from <ctype.h>.)",
+   "explain": "Upper-case letters: `C` and `F` (2). Digits: `9` and `9` (2). Spaces: two. The `!` and the lower-case letters are not counted.",
+   "ref": [
+    "isupper",
+    "isdigit",
+    "isspace"
+   ],
+   "code": "#include <stdio.h>\n#include <ctype.h>\n\nint main(void)\n{\n    const char *s = \"C99 is Fun!\";\n    int up = 0, digits = 0, spaces = 0;\n\n    for (const char *p = s; *p != '\\0'; p++) {\n        if (isupper((unsigned char) *p))\n            up++;\n        if (isdigit((unsigned char) *p))\n            digits++;\n        if (isspace((unsigned char) *p))\n            spaces++;\n    }\n    printf(\"%d %d %d\\n\", up, digits, spaces);\n    return 0;\n}\n",
+   "answer": "2 2 2"
+  },
+  {
+   "id": "t3-q-programs-09",
+   "type": "single",
+   "difficulty": 4,
+   "prompt": "What is the bug in this loop that copies `src` into `dst`?",
+   "explain": "The loop stops when `*src` is `'\\0'` BEFORE copying it. After the loop `dst[i]` must be set to `'\\0'` (or use `strcpy`).",
+   "ref": [
+    "strcpy",
+    "strings"
+   ],
+   "options": [
+    "It never copies the terminating '\\0', so `dst` is not a valid string",
+    "It copies one character too many",
+    "It reads past the end of dst",
+    "Nothing"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "It copies one too few (the terminator).",
+    "It writes up to the length of src.",
+    "The result is not terminated."
+   ],
+   "code": "int i;\nfor (i = 0; src[i] != '\\0'; i++)\n    dst[i] = src[i];"
+  },
+  {
+   "id": "t3-q-programs-10",
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "Which of these are the most common causes of a segmentation fault?",
+   "explain": "All three access memory the program must not touch. A wrong printf format is also undefined behaviour but is far less likely to crash.",
+   "ref": [
+    "pointers",
+    "arrays",
+    "strings"
+   ],
+   "options": [
+    "Dereferencing a NULL or uninitialised pointer",
+    "Writing past the end of an array",
+    "Modifying a string literal",
+    "Printing with the wrong format using printf"
+   ],
+   "answer": [
+    0,
+    1,
+    2
+   ],
+   "option_notes": [
+    "A classic cause.",
+    "A classic cause.",
+    "Literals are in read-only memory.",
+    "Usually prints garbage rather than crashing (but it is a bug)."
+   ]
+  },
+  {
+   "id": "t3-q-programs-x01",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (Binary search in a sorted array.)",
+   "explain": "`bsearch` returns a pointer to the matching element; subtracting the start of the array gives its index, 3.",
+   "ref": [
+    "bsearch"
+   ],
+   "code": "#include <stdio.h>\n#include <stdlib.h>\n\nstatic int cmp(const void *a, const void *b)\n{\n    return *(const int *) a - *(const int *) b;\n}\n\nint main(void)\n{\n    int v[] = {1, 3, 5, 7, 9}, key = 7;\n    int *p = bsearch(&key, v, 5, sizeof(int), cmp);\n\n    printf(\"%ld\\n\", (long) (p - v));\n    return 0;\n}\n",
+   "answer": "3"
+  },
+  {
+   "id": "t3-q-programs-x02",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "A program calls `srand(42)` at the start and then `rand()` several times. If you run it twice, what do you get?",
+   "explain": "`rand` is a deterministic generator: the same seed gives the same numbers. Seed it once with something that changes, such as `time(NULL)`, for varying results.",
+   "ref": [
+    "rand",
+    "srand"
+   ],
+   "options": [
+    "The same sequence both times",
+    "A different sequence each time",
+    "Always 42",
+    "An error"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Only if you seed with a changing value.",
+    "42 is the seed, not the result.",
+    "It is valid."
+   ]
+  },
+  {
+   "id": "t3-q-programs-x03",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does `time(NULL)` return?",
+   "explain": "It is a `time_t` count of seconds; convert it with `localtime` or `strftime`. For CPU time use `clock()` divided by `CLOCKS_PER_SEC`.",
+   "ref": [
+    "time",
+    "clock"
+   ],
+   "options": [
+    "The number of seconds since January 1, 1970 (the Epoch)",
+    "The hour of the day",
+    "The CPU time of the program",
+    "The date as a string"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Not a clock face.",
+    "That is clock().",
+    "A number, not text."
+   ]
+  },
+  {
+   "id": "t3-q-programs-x04",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does `system(\"ls -l\")` do?",
+   "explain": "`system` starts a shell (`sh -c`), runs the command and returns its exit status. Never build the command from untrusted input.",
+   "ref": [
+    "system"
+   ],
+   "options": [
+    "Runs the command in a shell, waits for it, and returns its status",
+    "Lists the files into a string",
+    "Replaces the program with ls",
+    "Only checks that ls exists"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Output goes to the terminal, not into a variable.",
+    "The program continues afterwards.",
+    "It really runs it."
+   ]
+  },
+  {
+   "id": "t3-q-programs-x05",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "How do you read the manual page of the system call `open`, and not of the shell command with the same name?",
+   "explain": "Section 2 holds system calls, section 3 library functions and section 1 commands: `man 2 open`, `man 3 printf`.",
+   "ref": [
+    "man"
+   ],
+   "options": [
+    "man 2 open",
+    "man open 1",
+    "help open",
+    "man -s open"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "The section number comes before the name.",
+    "`help` is a shell built-in.",
+    "The section is given as a plain number."
+   ]
+  },
+  {
+   "id": "t3-q-programs-x06",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "`return 3;` at the end of `main` is equivalent to which call?",
+   "explain": "Returning from `main` ends the program with that exit status, just like `exit`. The shell shows it in `$?`.",
+   "ref": [
+    "return",
+    "exit",
+    "main"
+   ],
+   "options": [
+    "exit(3)",
+    "abort()",
+    "return(3) in the shell",
+    "sleep(3)"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "abort ends abnormally.",
+    "Not a call.",
+    "Unrelated."
+   ]
+  }
+ ]
+}

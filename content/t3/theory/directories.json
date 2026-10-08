@@ -20,6 +20,250 @@
    "ref": [
     "readdir"
    ]
+  },
+  {
+   "id": "t3-q-directories-01",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (Counting entries.)",
+   "explain": "The directory holds `a`, `b` and the hidden `.c`. `readdir` also returns `.` and `..`, which the loop skips, so the count is 3.",
+   "ref": [
+    "mkdir",
+    "opendir",
+    "readdir",
+    "closedir"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n#include <dirent.h>\n#include <sys/stat.h>\n\nint main(void)\n{\n    DIR *d;\n    struct dirent *e;\n    int n = 0;\n\n    mkdir(\"d\", 0755);\n    fclose(fopen(\"d/a\", \"w\"));\n    fclose(fopen(\"d/b\", \"w\"));\n    fclose(fopen(\"d/.c\", \"w\"));\n    d = opendir(\"d\");\n    while ((e = readdir(d)) != NULL)\n        if (strcmp(e->d_name, \".\") != 0 && strcmp(e->d_name, \"..\") != 0)\n            n++;\n    closedir(d);\n    printf(\"%d\\n\", n);\n    return 0;\n}\n",
+   "answer": "3"
+  },
+  {
+   "id": "t3-q-directories-02",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (chdir changes the program's own directory.)",
+   "explain": "After `chdir(\"sub\")`, `getcwd` returns the absolute path ending in `/sub`; `strrchr(cwd, '/') + 1` skips to the last component.",
+   "ref": [
+    "chdir",
+    "getcwd",
+    "strrchr"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n#include <unistd.h>\n#include <sys/stat.h>\n\nint main(void)\n{\n    char cwd[512];\n\n    mkdir(\"sub\", 0755);\n    chdir(\"sub\");\n    getcwd(cwd, sizeof(cwd));\n    printf(\"%s\\n\", strrchr(cwd, '/') + 1);\n    return 0;\n}\n",
+   "answer": "sub"
+  },
+  {
+   "id": "t3-q-directories-03",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print? (The reason of a failure.)",
+   "explain": "`opendir` returns NULL when it fails and sets `errno` (here `ENOENT`); `strerror` turns it into text.",
+   "ref": [
+    "opendir",
+    "errno",
+    "strerror"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n#include <errno.h>\n#include <dirent.h>\n\nint main(void)\n{\n    DIR *d = opendir(\"no_such_directory\");\n\n    if (d == NULL)\n        printf(\"%s\\n\", strerror(errno));\n    return 0;\n}\n",
+   "answer": "No such file or directory"
+  },
+  {
+   "id": "t3-q-directories-04",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (rmdir only removes empty directories.)",
+   "explain": "`rmdir` refuses a directory that still has entries (`ENOTEMPTY`): remove the files first.",
+   "ref": [
+    "rmdir",
+    "errno"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n#include <errno.h>\n#include <unistd.h>\n#include <sys/stat.h>\n\nint main(void)\n{\n    mkdir(\"d\", 0755);\n    fclose(fopen(\"d/a\", \"w\"));\n    if (rmdir(\"d\") == -1)\n        printf(\"%s\\n\", strerror(errno));\n    return 0;\n}\n",
+   "answer": "Directory not empty"
+  },
+  {
+   "id": "t3-q-directories-05",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "In which order does `readdir` return the entries of a directory?",
+   "explain": "The order depends on the file system. Collect the names (copy them with `strdup`) and sort with `qsort`.",
+   "ref": [
+    "readdir",
+    "qsort"
+   ],
+   "options": [
+    "No particular order: sort them yourself if you need one",
+    "Alphabetical order",
+    "Newest first",
+    "Directories before files"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Not guaranteed.",
+    "Not guaranteed.",
+    "Not guaranteed."
+   ]
+  },
+  {
+   "id": "t3-q-directories-06",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "A program calls `chdir(\"/tmp\")`. What happens to the shell that started it?",
+   "explain": "Each process has its own current directory. This is why `cd` has to be a built-in command of the shell, not a program.",
+   "ref": [
+    "chdir"
+   ],
+   "options": [
+    "Nothing: the program changes only its own working directory",
+    "The shell also moves to /tmp",
+    "The shell crashes",
+    "Only the next command is affected"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Processes cannot change their parent's directory.",
+    "No crash.",
+    "No effect on the shell at all."
+   ]
+  },
+  {
+   "id": "t3-q-directories-07",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What do `opendir` and `readdir` return?",
+   "explain": "`DIR *d = opendir(path)` opens the directory; each `readdir(d)` returns a pointer to the next entry (its name is `d_name`) or NULL when there are no more.",
+   "ref": [
+    "opendir",
+    "readdir"
+   ],
+   "options": [
+    "A `DIR *` (NULL on error) and a `struct dirent *` (NULL at the end)",
+    "Two file descriptors",
+    "Both return a `FILE *`",
+    "A string with the name"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "They use special types, not descriptors.",
+    "`FILE *` is for files.",
+    "The name is a member of the returned structure."
+   ]
+  },
+  {
+   "id": "t3-q-directories-08",
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "Which statements about the entries `.` and `..` are true?",
+   "explain": "Both appear in every directory listing returned by `readdir`; programs usually skip them with `strcmp`.",
+   "ref": [
+    "readdir"
+   ],
+   "options": [
+    "`.` is the directory itself",
+    "`..` is its parent directory",
+    "`readdir` returns them like any other entry",
+    "`readdir` never returns them"
+   ],
+   "answer": [
+    0,
+    1,
+    2
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "True.",
+    "False."
+   ]
+  },
+  {
+   "id": "t3-q-directories-09",
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "To get the next entry of an open directory you call {{0}}.",
+   "explain": "`readdir(dir)` returns the next entry, or NULL at the end.",
+   "ref": [
+    "readdir"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "readdir"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "t3-q-directories-10",
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each directory function with what it does.",
+   "explain": "These are declared in `<sys/stat.h>`, `<unistd.h>` and `<dirent.h>`.",
+   "ref": [
+    "mkdir",
+    "rmdir",
+    "getcwd",
+    "chdir",
+    "opendir",
+    "closedir"
+   ],
+   "pairs": [
+    [
+     "mkdir",
+     "creates a directory"
+    ],
+    [
+     "rmdir",
+     "removes an empty directory"
+    ],
+    [
+     "getcwd",
+     "gives the absolute path of the current directory"
+    ],
+    [
+     "chdir",
+     "changes the current directory of the program"
+    ],
+    [
+     "opendir",
+     "opens a directory for reading"
+    ],
+    [
+     "closedir",
+     "closes it again"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-directories-11",
+   "type": "order",
+   "difficulty": 1,
+   "prompt": "Put the steps of listing a directory in order.",
+   "explain": "Open, check, loop until the end, then close.",
+   "ref": [
+    "opendir",
+    "readdir",
+    "closedir"
+   ],
+   "items": [
+    "Open it with opendir",
+    "Check that the result is not NULL",
+    "Call readdir in a loop until it returns NULL",
+    "Use each entry's d_name",
+    "Close it with closedir"
+   ]
+  },
+  {
+   "id": "t3-q-directories-x01",
+   "type": "predict",
+   "difficulty": 4,
+   "prompt": "What does this program print? (rewinddir starts again.)",
+   "explain": "After the first loop the directory is exhausted; `rewinddir` moves back to the first entry, so the second loop sees the same entries.",
+   "ref": [
+    "rewinddir",
+    "readdir"
+   ],
+   "code": "#include <stdio.h>\n#include <dirent.h>\n#include <sys/stat.h>\n\nint main(void)\n{\n    DIR *d;\n    struct dirent *e;\n    int n1 = 0, n2 = 0;\n\n    mkdir(\"d\", 0755);\n    fclose(fopen(\"d/a\", \"w\"));\n    fclose(fopen(\"d/b\", \"w\"));\n    d = opendir(\"d\");\n    while ((e = readdir(d)) != NULL)\n        if (e->d_name[0] != '.')\n            n1++;\n    rewinddir(d);\n    while ((e = readdir(d)) != NULL)\n        if (e->d_name[0] != '.')\n            n2++;\n    closedir(d);\n    printf(\"%d %d\\n\", n1, n2);\n    return 0;\n}\n",
+   "answer": "2 2"
   }
  ]
 }

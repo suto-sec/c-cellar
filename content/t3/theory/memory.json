@@ -347,6 +347,74 @@
      "gives a block back"
     ]
    ]
+  },
+  {
+   "id": "t3-q-memory-x01",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "When must you use `memmove` instead of `memcpy`?",
+   "explain": "`memcpy` has undefined behaviour for overlapping blocks; `memmove` behaves as if it copied through a temporary buffer. Shifting elements inside one array is the typical use.",
+   "ref": [
+    "memmove",
+    "memcpy"
+   ],
+   "options": [
+    "When the source and destination blocks may overlap",
+    "When the data is a string",
+    "When the block is on the stack",
+    "When copying more than 1 KB"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Both work with any bytes.",
+    "Location is irrelevant.",
+    "Size is irrelevant."
+   ]
+  },
+  {
+   "id": "t3-q-memory-x02",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (Filling and comparing memory.)",
+   "explain": "`memset` fills 4 bytes with `x`; the terminator was added by hand. `memcmp` compares the bytes: `c` is smaller than `d`, so the result is negative and the comparison is true (1).",
+   "ref": [
+    "memset",
+    "memcmp"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    char b[5];\n\n    memset(b, 'x', 4);\n    b[4] = '\\0';\n    printf(\"%s %d\\n\", b, memcmp(\"abc\", \"abd\", 3) < 0);\n    return 0;\n}\n",
+   "answer": "xxxx 1"
+  },
+  {
+   "id": "t3-q-memory-x03",
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each memory function with what it does.",
+   "explain": "They work on raw bytes with an explicit length, unlike the `str...` functions that stop at `'\\0'`.",
+   "ref": [
+    "memcpy",
+    "memmove",
+    "memset",
+    "memcmp"
+   ],
+   "pairs": [
+    [
+     "memcpy",
+     "copies bytes between blocks that do not overlap"
+    ],
+    [
+     "memmove",
+     "copies bytes even if the blocks overlap"
+    ],
+    [
+     "memset",
+     "fills a block with one byte value"
+    ],
+    [
+     "memcmp",
+     "compares two blocks byte by byte"
+    ]
+   ]
   }
  ]
 }

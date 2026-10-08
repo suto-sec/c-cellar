@@ -319,6 +319,253 @@
      "Never checks the destination size"
     ]
    ]
+  },
+  {
+   "id": "t3-q-strings-x01",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Which of these initialises a string correctly?",
+   "explain": "A brace list of characters initialises an ARRAY. `char *s = {...}` is not valid (a course slide shows it), `char s = \"Hola\"` stores a pointer in a char, and C has no `string` type.",
+   "ref": [
+    "strings"
+   ],
+   "options": [
+    "char s[] = {'H', 'o', 'l', 'a', '\\0'};",
+    "char *s = {'H', 'o', 'l', 'a', '\\0'};",
+    "char s = \"Hola\";",
+    "string s = \"Hola\";"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct (the same as `char s[] = \"Hola\";`).",
+    "A pointer cannot be initialised with a list of chars.",
+    "A single char cannot hold a string.",
+    "There is no `string` type in C."
+   ]
+  },
+  {
+   "id": "t3-q-strings-x02",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (strncmp compares only n characters.)",
+   "explain": "The first two characters `ap` are equal, so `strncmp` returns 0. `strstr` returns a pointer to the first occurrence of `tw`, so printing it shows `two`.",
+   "ref": [
+    "strncmp",
+    "strstr"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    printf(\"%d %s\\n\", strncmp(\"apple\", \"apricot\", 2), strstr(\"one two\", \"tw\"));\n    return 0;\n}\n",
+   "answer": "0 two"
+  },
+  {
+   "id": "t3-q-strings-x03",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "explain": "`strspn` counts the leading characters that are all in the given set (`12`), and `strcspn` counts the leading characters that are NOT in the set (`12`, up to the first `a`).",
+   "ref": [
+    "strspn",
+    "strcspn"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    printf(\"%zu %zu\\n\", strspn(\"12ab\", \"0123456789\"), strcspn(\"12ab\", \"ab\"));\n    return 0;\n}\n",
+   "answer": "2 2"
+  },
+  {
+   "id": "t3-q-strings-x04",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Why is `strtok_r` preferred to `strtok`?",
+   "explain": "`strtok` stores its position in a hidden static variable, so two loops cannot interleave. `strtok_r` takes a `saveptr`. Both write `'\\0'` into the string.",
+   "ref": [
+    "strtok",
+    "strtok_r"
+   ],
+   "options": [
+    "It keeps its state in a variable you provide, so it is safe to nest and to use from several threads",
+    "It is faster",
+    "It does not modify the string",
+    "It also trims spaces"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Speed is the same.",
+    "Both modify the string.",
+    "Neither trims spaces."
+   ]
+  },
+  {
+   "id": "t3-q-strings-x05",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What does `strncat(dst, src, n)` do?",
+   "explain": "The destination needs room for `strlen(dst) + n + 1` bytes. Unlike `strncpy`, `strncat` always terminates the result.",
+   "ref": [
+    "strncat",
+    "strncpy"
+   ],
+   "options": [
+    "Appends at most n characters of src to dst and always adds the terminator",
+    "Copies n characters over dst",
+    "Compares n characters",
+    "Appends exactly n characters even past the end of src"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "That is strncpy.",
+    "That is strncmp.",
+    "It stops at the end of src."
+   ]
+  },
+  {
+   "id": "t3-q-strings-x06",
+   "type": "predict",
+   "difficulty": 1,
+   "prompt": "What does this program print?",
+   "explain": "`toupper` converts a lower-case letter to upper case and `tolower` the opposite; other characters are unchanged.",
+   "ref": [
+    "toupper",
+    "tolower"
+   ],
+   "code": "#include <stdio.h>\n#include <ctype.h>\n\nint main(void)\n{\n    printf(\"%c%c\\n\", toupper('a'), tolower('Q'));\n    return 0;\n}\n",
+   "answer": "Aq"
+  },
+  {
+   "id": "t3-q-strings-x07",
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "Which of these return non-zero for the character `'7'`?",
+   "explain": "`'7'` is a decimal digit, so it is also alphanumeric and a hexadecimal digit. It is not a letter and not punctuation.",
+   "ref": [
+    "isdigit",
+    "isalnum",
+    "isalpha",
+    "isxdigit",
+    "ispunct"
+   ],
+   "options": [
+    "isdigit",
+    "isalnum",
+    "isalpha",
+    "isxdigit",
+    "ispunct"
+   ],
+   "answer": [
+    0,
+    1,
+    3
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "False.",
+    "True.",
+    "False."
+   ]
+  },
+  {
+   "id": "t3-q-strings-x08",
+   "type": "sort",
+   "difficulty": 2,
+   "prompt": "Sort these characters by the kind of character they are.",
+   "explain": "`isalpha`, `isdigit`, `isspace` and `ispunct` classify characters; the newline counts as white space.",
+   "ref": [
+    "isalpha",
+    "isdigit",
+    "isspace",
+    "ispunct"
+   ],
+   "categories": [
+    "Letter",
+    "Digit",
+    "White space",
+    "Punctuation"
+   ],
+   "items": [
+    [
+     "'a'",
+     "Letter"
+    ],
+    [
+     "'Z'",
+     "Letter"
+    ],
+    [
+     "'5'",
+     "Digit"
+    ],
+    [
+     "' '",
+     "White space"
+    ],
+    [
+     "'\\n'",
+     "White space"
+    ],
+    [
+     "'!'",
+     "Punctuation"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-strings-x09",
+   "type": "match",
+   "difficulty": 3,
+   "prompt": "Match each character test with what it checks.",
+   "explain": "These tests come from `<ctype.h>`.",
+   "ref": [
+    "isprint",
+    "isgraph",
+    "iscntrl",
+    "isxdigit",
+    "islower"
+   ],
+   "pairs": [
+    [
+     "isprint",
+     "a printable character, including the space"
+    ],
+    [
+     "isgraph",
+     "a printable character except the space"
+    ],
+    [
+     "iscntrl",
+     "a control character such as the newline"
+    ],
+    [
+     "isxdigit",
+     "a hexadecimal digit (0-9, a-f, A-F)"
+    ],
+    [
+     "islower",
+     "a lower-case letter"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-strings-x10",
+   "type": "single",
+   "difficulty": 4,
+   "prompt": "Why do programs cast the argument of `isalpha` and similar functions to `unsigned char`?",
+   "explain": "Where `char` is signed, bytes above 127 become negative numbers, which these functions do not accept. Write `isalpha((unsigned char) c)`.",
+   "ref": [
+    "isalpha"
+   ],
+   "options": [
+    "Their argument must be an unsigned char value or EOF; a negative char value is undefined behaviour",
+    "To make them faster",
+    "Because they return chars",
+    "To convert to upper case"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "The cast has no speed effect.",
+    "They return ints.",
+    "Unrelated."
+   ]
   }
  ]
 }

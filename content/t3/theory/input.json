@@ -307,6 +307,30 @@
     "False: the newline stays in the buffer.",
     "True."
    ]
+  },
+  {
+   "id": "t3-q-input-x01",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What is wrong with `size_t limit; scanf(\"%d\", &limit);` on a 64-bit system?",
+   "explain": "The conversion must match the type: `%zu` is for `size_t`. (A course slide uses `%d` for a `size_t`.) With the wrong one only half of the variable is written.",
+   "ref": [
+    "scanf",
+    "types"
+   ],
+   "options": [
+    "`%d` reads an int (4 bytes) but `size_t` is 8 bytes: use `%zu`",
+    "Nothing",
+    "scanf cannot read into a size_t",
+    "It must be `&limit` without `size_t`"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "gcc -Wall warns about it.",
+    "It can, with the right conversion.",
+    "The address is right; the conversion is not."
+   ]
   }
  ]
 }

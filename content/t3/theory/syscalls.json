@@ -137,6 +137,426 @@
     "write",
     "close"
    ]
+  },
+  {
+   "id": "t3-q-syscalls-01",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Two descriptors are opened on the same file:",
+   "explain": "Each `open` creates its OWN entry in the system-wide table (with its own position) pointing to the same i-node, and the i-node counts 2 opens. Only `dup`/`dup2` share an entry (and raise its duplicates count).",
+   "ref": [
+    "fd",
+    "open"
+   ],
+   "options": [
+    "The kernel creates 2 entries in the intermediate table (duplicates = 1 each) and the i-node's `nopens` is 2",
+    "1 entry with duplicates = 2 and nopens = 1",
+    "2 entries and nopens = 1",
+    "1 entry and nopens = 2"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "That is what `dup` would do.",
+    "nopens counts the opens: 2.",
+    "Two opens make two entries."
+   ],
+   "code": "fd1 = open(\"data.txt\", O_RDONLY);\nfd2 = open(\"data.txt\", O_RDONLY);\n\nfd table (per process)   intermediate table              i-node table\n fd1 -> entry A           A: i-node 12, pos, dup = ?     12: nopens = ?\n fd2 -> entry B           B: i-node 12, pos, dup = ?"
+  },
+  {
+   "id": "t3-q-syscalls-02",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "After `dup2(fd1, 1)`, how are the tables?",
+   "explain": "`dup2(old, new)` first closes `new` and then makes it refer to the SAME open-file entry as `old` (positions and flags are shared). No new open of the file happens, so `nopens` stays the same.",
+   "ref": [
+    "dup",
+    "fd"
+   ],
+   "options": [
+    "Descriptor 1 points to the same intermediate entry as fd1, whose duplicates count is now 2; the i-node's nopens does not change",
+    "A new entry is created and nopens grows",
+    "fd1 is closed",
+    "Descriptor 1 keeps its old file and fd1 points to the terminal"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "No new entry: the entry is shared.",
+    "fd1 stays open.",
+    "It is `new` that changes, not `old`."
+   ],
+   "code": "fd1 = open(\"data.txt\", O_RDONLY);   /* fd1 = 3, one entry (dup = 1), nopens = 1 */\ndup2(fd1, 1);"
+  },
+  {
+   "id": "t3-q-syscalls-03",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "A process closes one of two descriptors created with `dup`. Can it still read through the other one?",
+   "explain": "`close` releases one descriptor. The underlying open file is released when the last descriptor that refers to it is closed.",
+   "ref": [
+    "dup",
+    "close"
+   ],
+   "options": [
+    "Yes: the open file stays open until its last descriptor is closed",
+    "No: closing one closes the file for both",
+    "Only if it calls lseek first",
+    "Only for writing"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Each descriptor is closed on its own.",
+    "lseek is unrelated.",
+    "Reading works too."
+   ]
+  },
+  {
+   "id": "t3-q-syscalls-04",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (The file contains abcdef; `dup` shares the position.)",
+   "explain": "`dup` makes both descriptors share ONE open file and one position: the first read consumes `a`, so the second returns `b`.",
+   "ref": [
+    "dup",
+    "read"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n#include <errno.h>\n#include <fcntl.h>\n#include <unistd.h>\n\nint main(void)\n{\n    int fd, fd2;\n    char c;\n\n    FILE *g = fopen(\"t.txt\", \"w\");\n\n    fputs(\"abcdef\", g);\n    fclose(g);\n    fd = open(\"t.txt\", O_RDONLY);\n    fd2 = dup(fd);\n    read(fd, &c, 1);\n    read(fd2, &c, 1);\n    printf(\"%c\\n\", c);\n    return 0;\n}\n",
+   "answer": "b"
+  },
+  {
+   "id": "t3-q-syscalls-05",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (Same file, but two separate opens.)",
+   "explain": "Each `open` has its own position, so `fd2` still starts at the beginning and reads `a` again.",
+   "ref": [
+    "open",
+    "read",
+    "fd"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n#include <errno.h>\n#include <fcntl.h>\n#include <unistd.h>\n\nint main(void)\n{\n    int fd, fd2;\n    char c;\n\n    FILE *g = fopen(\"t.txt\", \"w\");\n\n    fputs(\"abcdef\", g);\n    fclose(g);\n    fd = open(\"t.txt\", O_RDONLY);\n    fd2 = open(\"t.txt\", O_RDONLY);\n    read(fd, &c, 1);\n    read(fd2, &c, 1);\n    printf(\"%c\\n\", c);\n    return 0;\n}\n",
+   "answer": "a"
+  },
+  {
+   "id": "t3-q-syscalls-06",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (lseek with SEEK_END.)",
+   "explain": "`lseek(fd, 0, SEEK_END)` returns the size (6). `lseek(fd, -2, SEEK_END)` goes to offset 4, which holds `e`.",
+   "ref": [
+    "lseek",
+    "read"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n#include <errno.h>\n#include <fcntl.h>\n#include <unistd.h>\n\nint main(void)\n{\n    int fd;\n    off_t size;\n    char c;\n\n    FILE *g = fopen(\"t.txt\", \"w\");\n\n    fputs(\"abcdef\", g);\n    fclose(g);\n    fd = open(\"t.txt\", O_RDONLY);\n    size = lseek(fd, 0, SEEK_END);\n    lseek(fd, -2, SEEK_END);\n    read(fd, &c, 1);\n    printf(\"%ld %c\\n\", (long) size, c);\n    return 0;\n}\n",
+   "answer": "6 e"
+  },
+  {
+   "id": "t3-q-syscalls-07",
+   "type": "predict",
+   "difficulty": 4,
+   "prompt": "What does this program print? (O_APPEND always writes at the end.)",
+   "explain": "With `O_APPEND` the position is moved to the end before EVERY write, so the `lseek` to 0 has no effect on where the data goes.",
+   "ref": [
+    "open",
+    "lseek",
+    "write"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n#include <errno.h>\n#include <fcntl.h>\n#include <unistd.h>\n\nint main(void)\n{\n    int fd;\n    FILE *f;\n    char buf[16];\n\n    FILE *g = fopen(\"t.txt\", \"w\");\n\n    fputs(\"abcdef\", g);\n    fclose(g);\n    fd = open(\"t.txt\", O_WRONLY | O_APPEND);\n    lseek(fd, 0, SEEK_SET);\n    write(fd, \"XY\", 2);\n    close(fd);\n    f = fopen(\"t.txt\", \"r\");\n    fgets(buf, sizeof(buf), f);\n    printf(\"%s\\n\", buf);\n    return 0;\n}\n",
+   "answer": "abcdefXY"
+  },
+  {
+   "id": "t3-q-syscalls-08",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (After the redirection the output goes to a file.)",
+   "explain": "`dup2(fd, 1)` makes descriptor 1 refer to the file: `after` is written to `o.txt`, not to the terminal. The `fflush` before it makes sure `before` was written to the terminal first.",
+   "ref": [
+    "dup",
+    "open",
+    "printf"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n#include <errno.h>\n#include <fcntl.h>\n#include <unistd.h>\n\nint main(void)\n{\n    int fd;\n\n    printf(\"before\\n\");\n    fflush(stdout);\n    fd = open(\"o.txt\", O_WRONLY | O_CREAT | O_TRUNC, 0644);\n    dup2(fd, 1);\n    close(fd);\n    printf(\"after\\n\");\n    return 0;\n}\n",
+   "answer": "before"
+  },
+  {
+   "id": "t3-q-syscalls-09",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "What does `read(fd, buf, n)` return at the end of the file?",
+   "explain": "`read` returns the number of bytes read; 0 means end of file and -1 means error (see `errno`). `EOF` is a stdio constant.",
+   "ref": [
+    "read"
+   ],
+   "options": [
+    "0",
+    "-1",
+    "n",
+    "EOF"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "-1 is an error.",
+    "That is only when n bytes were available.",
+    "System calls do not return EOF."
+   ]
+  },
+  {
+   "id": "t3-q-syscalls-10",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What happens with `open(\"f\", O_WRONLY | O_CREAT | O_EXCL, 0644)` if `f` already exists?",
+   "explain": "`O_EXCL` together with `O_CREAT` means 'create it, but only if it does not exist yet'. It is used to avoid overwriting.",
+   "ref": [
+    "open"
+   ],
+   "options": [
+    "It fails (returns -1, errno EEXIST)",
+    "It opens and empties the file",
+    "It opens the file without changing it",
+    "It creates f.1"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "That is O_TRUNC.",
+    "That is plain open.",
+    "No file is renamed."
+   ]
+  },
+  {
+   "id": "t3-q-syscalls-11",
+   "type": "single",
+   "difficulty": 4,
+   "prompt": "What is wrong with `open(\"f\", O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP, S_IROTH)`?",
+   "explain": "`open` takes the permissions as one value: `S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH`. Because `open` is variadic the extra argument compiles without error, and `S_IROTH` is lost. (A course slide example has this typo.)",
+   "ref": [
+    "open"
+   ],
+   "options": [
+    "The permissions must be ORed into ONE argument: the extra argument is silently ignored",
+    "Nothing",
+    "S_IRUSR is not a permission",
+    "O_TRUNC cannot be combined with O_CREAT"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "The last argument is ignored, a real bug.",
+    "It is a permission bit.",
+    "They are commonly combined."
+   ]
+  },
+  {
+   "id": "t3-q-syscalls-12",
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "Which statements about file descriptors are true?",
+   "explain": "A descriptor is a small non-negative number. A negative result (-1) means the call failed.",
+   "ref": [
+    "fd",
+    "open"
+   ],
+   "options": [
+    "`open` returns the lowest descriptor number that is not in use",
+    "Each process has its own table of descriptors",
+    "A valid descriptor can be negative",
+    "0, 1 and 2 are standard input, output and error"
+   ],
+   "answer": [
+    0,
+    1,
+    3
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "False: -1 signals an error.",
+    "True."
+   ]
+  },
+  {
+   "id": "t3-q-syscalls-13",
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "Complete the call so that the file is created if it does not exist and every write goes to the end.",
+   "explain": "`O_CREAT` creates the file when needed (and requires the permissions argument); `O_APPEND` appends.",
+   "ref": [
+    "open"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "O_CREAT"
+     ],
+     "ignore_space": true
+    }
+   ],
+   "code": "fd = open(\"log\", O_WRONLY | {{0}} | O_APPEND, 0644);"
+  },
+  {
+   "id": "t3-q-syscalls-14",
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "`write` returns the number of bytes actually {{0}}, which can be less than requested.",
+   "explain": "Always check the return value of `write`, and write exactly the bytes you got from `read`.",
+   "ref": [
+    "write"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "written"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "t3-q-syscalls-15",
+   "type": "match",
+   "difficulty": 1,
+   "prompt": "Match each system call with what it does.",
+   "explain": "These are the basic file system calls of `<fcntl.h>` and `<unistd.h>`.",
+   "ref": [
+    "open",
+    "read",
+    "write",
+    "lseek",
+    "close",
+    "dup2"
+   ],
+   "pairs": [
+    [
+     "open",
+     "gets a descriptor for a file"
+    ],
+    [
+     "read",
+     "copies bytes from a descriptor into memory"
+    ],
+    [
+     "write",
+     "copies bytes from memory to a descriptor"
+    ],
+    [
+     "lseek",
+     "changes the position in a file"
+    ],
+    [
+     "close",
+     "releases a descriptor"
+    ],
+    [
+     "dup2",
+     "makes one descriptor a copy of another"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-syscalls-16",
+   "type": "order",
+   "difficulty": 3,
+   "prompt": "Put the steps of redirecting standard output into a file in order.",
+   "explain": "Flush first (or the old text could end up in the file), duplicate onto descriptor 1, and close the extra descriptor.",
+   "ref": [
+    "dup2",
+    "open",
+    "close"
+   ],
+   "items": [
+    "Open the file with open(..., O_WRONLY | O_CREAT | O_TRUNC, 0644)",
+    "Flush anything still buffered in stdout",
+    "dup2(fd, 1) so descriptor 1 refers to the file",
+    "close(fd), no longer needed",
+    "Print: it now goes into the file"
+   ]
+  },
+  {
+   "id": "t3-q-syscalls-17",
+   "type": "sort",
+   "difficulty": 2,
+   "prompt": "Sort these calls into system calls and C library (stdio) functions.",
+   "explain": "System calls use integer descriptors and talk to the kernel directly; the stdio functions use buffered `FILE *` streams built on top of them.",
+   "ref": [
+    "open",
+    "fopen"
+   ],
+   "categories": [
+    "System call",
+    "C library function"
+   ],
+   "items": [
+    [
+     "open",
+     "System call"
+    ],
+    [
+     "read",
+     "System call"
+    ],
+    [
+     "write",
+     "System call"
+    ],
+    [
+     "lseek",
+     "System call"
+    ],
+    [
+     "fopen",
+     "C library function"
+    ],
+    [
+     "fgets",
+     "C library function"
+    ],
+    [
+     "fprintf",
+     "C library function"
+    ],
+    [
+     "fseek",
+     "C library function"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-syscalls-x01",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What is the type of the value returned by `read` and `write`, and why is it signed?",
+   "explain": "A signed type is needed to return -1 on failure. (Course slides write `size_t`, which cannot represent -1.)",
+   "ref": [
+    "read",
+    "write"
+   ],
+   "options": [
+    "`ssize_t`: it must be able to hold -1 for errors as well as byte counts",
+    "`size_t`",
+    "`unsigned int`",
+    "`char`"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Unsigned types cannot be negative.",
+    "Unsigned cannot hold -1.",
+    "Too small for counts."
+   ]
+  },
+  {
+   "id": "t3-q-syscalls-x02",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (access tests a path.)",
+   "explain": "`access` returns 0 when the check succeeds and -1 when it fails. `F_OK` only tests that the file exists.",
+   "ref": [
+    "access"
+   ],
+   "code": "#include <stdio.h>\n#include <unistd.h>\n\nint main(void)\n{\n    fclose(fopen(\"t.txt\", \"w\"));\n    printf(\"%d %d\\n\", access(\"t.txt\", F_OK), access(\"nope.txt\", F_OK));\n    return 0;\n}\n",
+   "answer": "0 -1"
   }
  ]
 }

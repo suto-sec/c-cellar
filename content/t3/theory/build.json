@@ -87,6 +87,378 @@
    "ref": [
     "make"
    ]
+  },
+  {
+   "id": "t3-q-build-01",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What is the purpose of an include guard (`#ifndef X_H` / `#define X_H` / ... / `#endif`) in a header?",
+   "explain": "If two headers include the same third header, the declarations would appear twice and types such as structs would be redefined. The guard makes the second inclusion empty.",
+   "ref": [
+    "#ifdef",
+    "modules"
+   ],
+   "options": [
+    "It prevents the header from being processed twice in the same source file",
+    "It makes the header private to one file",
+    "It speeds up the linker",
+    "It hides the functions of the header"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Privacy is `static`.",
+    "It is about the preprocessor, not the linker.",
+    "Nothing is hidden."
+   ]
+  },
+  {
+   "id": "t3-q-build-02",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What belongs in a header file (`.h`)?",
+   "explain": "A header is the interface of a module: what it offers. The implementation goes in the `.c` file.",
+   "ref": [
+    "modules",
+    "#include"
+   ],
+   "options": [
+    "Declarations: prototypes, type definitions and constants",
+    "The complete code of every function",
+    "The `main` function",
+    "Compiled object code"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Definitions in a header cause 'multiple definition' errors when two files include it.",
+    "Normally main is in a .c file.",
+    "Object code is in .o files."
+   ]
+  },
+  {
+   "id": "t3-q-build-03",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Two `.c` files include a header that DEFINES (with a body) the function `int add(int a, int b)`. What happens at link time?",
+   "explain": "Each `.c` file compiles its own copy of the function; the linker then finds two definitions of the same symbol. Put only the prototype in the header.",
+   "ref": [
+    "modules",
+    "ld"
+   ],
+   "options": [
+    "A multiple definition error: the function exists twice",
+    "Nothing: it works",
+    "The linker picks the first one silently",
+    "A warning about unused code"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "It fails to link.",
+    "The linker refuses.",
+    "It is an error."
+   ]
+  },
+  {
+   "id": "t3-q-build-04",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does a function declared `static` in a `.c` file mean for the other files?",
+   "explain": "At file level `static` gives internal linkage: helper functions that are not part of a module's interface should be static.",
+   "ref": [
+    "static",
+    "modules"
+   ],
+   "options": [
+    "It is invisible to them: it is private to that file",
+    "It runs only once",
+    "It is available to every file",
+    "It cannot be called"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "That is a static local variable.",
+    "That is the default without static.",
+    "It can be called inside its own file."
+   ]
+  },
+  {
+   "id": "t3-q-build-05",
+   "type": "order",
+   "difficulty": 2,
+   "prompt": "Put the steps of creating and using a static library in order.",
+   "explain": "A static library is an archive of object files; the linker copies the parts a program uses into the executable.",
+   "ref": [
+    "ar",
+    "gcc"
+   ],
+   "items": [
+    "Compile the sources with gcc -c to get object files",
+    "Pack them with ar rcs libname.a a.o b.o",
+    "Compile the program with gcc main.c -L. -lname -o prog",
+    "Run ./prog (the library code is already inside it)"
+   ]
+  },
+  {
+   "id": "t3-q-build-06",
+   "type": "order",
+   "difficulty": 3,
+   "prompt": "Put the steps of building and running with a dynamic library in order.",
+   "explain": "The program only records that it needs `libname.so`. If the loader cannot find it, the program does not start (`ldd prog` shows 'not found').",
+   "ref": [
+    "ld",
+    "ldd",
+    "gcc"
+   ],
+   "items": [
+    "Compile the library sources with gcc -fPIC -shared -o libname.so ...",
+    "Compile the program with gcc main.c -L. -lname -o prog",
+    "Tell the loader where the library is (export LD_LIBRARY_PATH=.)",
+    "Run ./prog: the loader finds libname.so at start-up"
+   ]
+  },
+  {
+   "id": "t3-q-build-07",
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each tool with its job.",
+   "explain": "Together with gcc these are the tools of the C workflow.",
+   "ref": [
+    "ar",
+    "ld",
+    "ldd",
+    "make",
+    "gdb",
+    "valgrind"
+   ],
+   "pairs": [
+    [
+     "ar",
+     "packs object files into a static library"
+    ],
+    [
+     "ld",
+     "the linker that joins object files and libraries"
+    ],
+    [
+     "ldd",
+     "lists the shared libraries a program needs"
+    ],
+    [
+     "make",
+     "rebuilds only what changed"
+    ],
+    [
+     "gdb",
+     "a debugger to run a program step by step"
+    ],
+    [
+     "valgrind",
+     "finds memory errors and leaks"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-build-08",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Why should library options such as `-lm` come AFTER the source files in `gcc main.c -lm -o prog`?",
+   "explain": "With `gcc -lm main.c` the linker meets the library before it knows which functions are needed and may drop it, causing 'undefined reference' errors.",
+   "ref": [
+    "gcc"
+   ],
+   "options": [
+    "The linker resolves symbols from left to right: a library is only searched for symbols that are already missing",
+    "gcc only accepts them last by syntax",
+    "It is just a convention",
+    "Otherwise the library is deleted"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "The order is not a syntax rule.",
+    "It has real consequences.",
+    "Nothing is deleted."
+   ]
+  },
+  {
+   "id": "t3-q-build-09",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does a Makefile do when you run `make prog` and `prog` is newer than all its dependencies?",
+   "explain": "`make` compares timestamps: a target is rebuilt only when it does not exist or when one of its dependencies is newer.",
+   "ref": [
+    "make"
+   ],
+   "options": [
+    "Nothing: the target is up to date",
+    "It rebuilds prog",
+    "It deletes prog",
+    "It reports an error"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "That would happen only if a dependency changed.",
+    "Cleaning is a separate target.",
+    "Up to date is not an error."
+   ]
+  },
+  {
+   "id": "t3-q-build-10",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "In a Makefile recipe, what are `$@` and `$<`?",
+   "explain": "In `%.o: %.c` with the recipe `gcc -c $< -o $@`, `$<` is the `.c` file and `$@` the `.o` file. `$^` is all the dependencies.",
+   "ref": [
+    "make"
+   ],
+   "options": [
+    "`$@` is the target and `$<` is the first dependency",
+    "`$@` is the first dependency and `$<` the target",
+    "Both are the current directory",
+    "They are shell variables"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Reversed.",
+    "They are make's automatic variables.",
+    "They belong to make, not to the shell."
+   ]
+  },
+  {
+   "id": "t3-q-build-11",
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "A Makefile target that is not a file, such as `clean`, is declared with `{{0}}` so that make always runs it.",
+   "explain": "Without `.PHONY`, a file named `clean` would make the target 'up to date' and the recipe would never run.",
+   "ref": [
+    "make"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      ".PHONY"
+     ],
+     "ignore_space": true
+    }
+   ]
+  },
+  {
+   "id": "t3-q-build-12",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "Which command compiles `a.c` into an object file WITHOUT linking?",
+   "explain": "`-c` stops after producing `a.o`. `-E` stops after the preprocessor and `-S` after generating assembly.",
+   "ref": [
+    "gcc"
+   ],
+   "options": [
+    "gcc -c a.c",
+    "gcc a.c -o a",
+    "gcc -E a.c",
+    "gcc -S a.c"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "That also links.",
+    "That prints the preprocessed source.",
+    "That stops at assembly code, not an object file."
+   ]
+  },
+  {
+   "id": "t3-q-build-13",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "The linker reports `undefined reference to 'foo'`. What does it mean?",
+   "explain": "The compiler accepted the call (it saw a prototype) but the linker could not find the function's body: a missing source file, library or `-l` option.",
+   "ref": [
+    "gcc",
+    "ld"
+   ],
+   "options": [
+    "Some code calls foo but no object file or library provides its definition",
+    "foo is declared twice",
+    "There is a syntax error in foo",
+    "foo has the wrong number of arguments"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "That is 'multiple definition'.",
+    "Syntax errors come from the compiler.",
+    "Argument errors come from the compiler."
+   ]
+  },
+  {
+   "id": "t3-q-build-14",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "gcc warns `implicit declaration of function 'foo'`. What is the usual cause?",
+   "explain": "The compiler does not know the function's type. Include the right header (for `printf`, `<stdio.h>`) or add a prototype.",
+   "ref": [
+    "functions",
+    "#include"
+   ],
+   "options": [
+    "You call foo without including its header or declaring a prototype",
+    "foo is too long",
+    "foo has no body",
+    "foo is static"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Length is irrelevant.",
+    "A missing body is a link error.",
+    "static is allowed."
+   ]
+  },
+  {
+   "id": "t3-q-build-15",
+   "type": "sort",
+   "difficulty": 3,
+   "prompt": "Sort these problems by the stage that reports them.",
+   "explain": "Knowing the stage tells you where to look: the header search path, the code's syntax, the files and libraries given to gcc, or the program's logic.",
+   "ref": [
+    "gcc"
+   ],
+   "categories": [
+    "Preprocessor",
+    "Compiler",
+    "Linker",
+    "Run time"
+   ],
+   "items": [
+    [
+     "#include \"missing.h\": no such file",
+     "Preprocessor"
+    ],
+    [
+     "a missing semicolon",
+     "Compiler"
+    ],
+    [
+     "an unknown type name",
+     "Compiler"
+    ],
+    [
+     "undefined reference to a function",
+     "Linker"
+    ],
+    [
+     "multiple definition of a function",
+     "Linker"
+    ],
+    [
+     "a segmentation fault",
+     "Run time"
+    ]
+   ]
   }
  ]
 }

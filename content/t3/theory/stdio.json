@@ -50,6 +50,480 @@
     "fopen",
     "open"
    ]
+  },
+  {
+   "id": "t3-q-stdio-01",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print? (Write a file, read its first line.)",
+   "explain": "`fgets` reads one line, including its newline, so `printf(\"%s\", line)` prints `hello` and moves to a new line.",
+   "ref": [
+    "fopen",
+    "fprintf",
+    "fgets",
+    "fclose"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    FILE *f = fopen(\"t.txt\", \"w\");\n    char line[32];\n\n    fprintf(f, \"hello\\nworld\\n\");\n    fclose(f);\n    f = fopen(\"t.txt\", \"r\");\n    fgets(line, sizeof(line), f);\n    printf(\"%s\", line);\n    fclose(f);\n    return 0;\n}\n",
+   "answer": "hello"
+  },
+  {
+   "id": "t3-q-stdio-02",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print? (Append mode.)",
+   "explain": "Mode `\"a\"` keeps the existing content and writes at the end, so the file holds both lines.",
+   "ref": [
+    "fopen",
+    "fgetc",
+    "putchar"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    FILE *f = fopen(\"t.txt\", \"w\");\n    int c;\n\n    fputs(\"1\\n\", f);\n    fclose(f);\n    f = fopen(\"t.txt\", \"a\");\n    fputs(\"2\\n\", f);\n    fclose(f);\n    f = fopen(\"t.txt\", \"r\");\n    while ((c = fgetc(f)) != EOF)\n        putchar(c);\n    fclose(f);\n    return 0;\n}\n",
+   "answer": "1\n2"
+  },
+  {
+   "id": "t3-q-stdio-03",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (`r+` does not truncate.)",
+   "explain": "`r+` opens an existing file for reading AND writing without emptying it. The write starts at the beginning and overwrites the first two characters.",
+   "ref": [
+    "fopen"
+   ],
+   "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void)\n{\n    FILE *f = fopen(\"t.txt\", \"w\");\n    char buf[16];\n\n    fputs(\"abcdef\", f);\n    fclose(f);\n    f = fopen(\"t.txt\", \"r+\");\n    fputs(\"XY\", f);\n    fclose(f);\n    f = fopen(\"t.txt\", \"r\");\n    fgets(buf, sizeof(buf), f);\n    printf(\"%s\\n\", buf);\n    fclose(f);\n    return 0;\n}\n",
+   "answer": "XYcdef"
+  },
+  {
+   "id": "t3-q-stdio-04",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (Moving inside a file.)",
+   "explain": "`fseek(f, 3, SEEK_SET)` positions at offset 3 (the character `3`); `fseek(f, -2, SEEK_END)` goes two bytes before the end (the character `8`).",
+   "ref": [
+    "fseek",
+    "fgetc"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    FILE *f = fopen(\"t.txt\", \"w+\");\n    int a, b;\n\n    fputs(\"0123456789\", f);\n    fseek(f, 3, SEEK_SET);\n    a = fgetc(f);\n    fseek(f, -2, SEEK_END);\n    b = fgetc(f);\n    printf(\"%c %c\\n\", a, b);\n    fclose(f);\n    return 0;\n}\n",
+   "answer": "3 8"
+  },
+  {
+   "id": "t3-q-stdio-05",
+   "type": "predict",
+   "difficulty": 4,
+   "prompt": "What does this program print? (The classic `feof` mistake.)",
+   "explain": "`feof` becomes true only AFTER a read hits the end. The file has 2 characters, but the third `fgetc` (which fails) still counts: the loop runs 3 times. Test the return value of the read instead.",
+   "ref": [
+    "feof",
+    "fgetc"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    FILE *f = fopen(\"t.txt\", \"w\");\n    int n = 0;\n\n    fputs(\"ab\", f);\n    fclose(f);\n    f = fopen(\"t.txt\", \"r\");\n    while (!feof(f)) {\n        fgetc(f);\n        n++;\n    }\n    printf(\"%d\\n\", n);\n    fclose(f);\n    return 0;\n}\n",
+   "answer": "3"
+  },
+  {
+   "id": "t3-q-stdio-06",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (fread counts ITEMS.)",
+   "explain": "The file has 10 bytes: two full blocks of 4 and a last block of 2. A short count at the end signals end of file (or an error).",
+   "ref": [
+    "fread"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    FILE *f = fopen(\"t.bin\", \"wb\");\n    char buf[4];\n    size_t a, b, c;\n\n    for (int i = 0; i < 10; i++)\n        fputc('x', f);\n    fclose(f);\n    f = fopen(\"t.bin\", \"rb\");\n    a = fread(buf, 1, 4, f);\n    b = fread(buf, 1, 4, f);\n    c = fread(buf, 1, 4, f);\n    printf(\"%zu %zu %zu\\n\", a, b, c);\n    fclose(f);\n    return 0;\n}\n",
+   "answer": "4 4 2"
+  },
+  {
+   "id": "t3-q-stdio-07",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print? (stdio streams and descriptors.)",
+   "explain": "`stdin`, `stdout` and `stderr` are `FILE *` streams over the descriptors 0, 1 and 2.",
+   "ref": [
+    "fileno",
+    "stdin"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    printf(\"%d %d %d\\n\", fileno(stdin), fileno(stdout), fileno(stderr));\n    return 0;\n}\n",
+   "answer": "0 1 2"
+  },
+  {
+   "id": "t3-q-stdio-08",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print? (Reading words with fscanf.)",
+   "explain": "`%s` reads one white-space separated word, and the newline counts as white space, so there are three words.",
+   "ref": [
+    "fscanf"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    FILE *f = fopen(\"t.txt\", \"w\");\n    char w[32];\n    int n = 0;\n\n    fputs(\"one two\\nthree\\n\", f);\n    fclose(f);\n    f = fopen(\"t.txt\", \"r\");\n    while (fscanf(f, \"%31s\", w) == 1)\n        n++;\n    printf(\"%d words\\n\", n);\n    fclose(f);\n    return 0;\n}\n",
+   "answer": "3 words"
+  },
+  {
+   "id": "t3-q-stdio-09",
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "What does `fopen(\"data.txt\", \"r\")` return if the file does not exist?",
+   "explain": "Mode `\"r\"` requires the file to exist. On failure `fopen` returns NULL and sets `errno` (use `strerror(errno)`).",
+   "ref": [
+    "fopen",
+    "errno"
+   ],
+   "options": [
+    "NULL (and errno is set)",
+    "A valid FILE * for an empty file",
+    "-1",
+    "It creates the file"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "That would be mode \"w\" or \"a\".",
+    "-1 is the failure value of system calls like `open`.",
+    "Only \"w\", \"a\" and the + modes create it."
+   ]
+  },
+  {
+   "id": "t3-q-stdio-10",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Why must you call `fclose` on a file you wrote?",
+   "explain": "stdio keeps data in a buffer and writes it when the buffer is full or on `fclose`/`fflush`. A program that ends abnormally can lose buffered output.",
+   "ref": [
+    "fclose",
+    "fflush"
+   ],
+   "options": [
+    "Output is buffered: without it the last data may never reach the file",
+    "To delete the file",
+    "To lock the file for other users",
+    "It is only needed for reading"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "`remove` deletes files.",
+    "It does not lock anything.",
+    "It is needed for both."
+   ]
+  },
+  {
+   "id": "t3-q-stdio-11",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "On Linux, what is the effect of the `b` in `fopen(path, \"rb\")`?",
+   "explain": "The `b` only matters on systems that translate line endings (such as Windows). On Linux it is accepted and ignored.",
+   "ref": [
+    "fopen"
+   ],
+   "options": [
+    "None: text and binary files are the same on POSIX systems",
+    "It makes the file read-only",
+    "It reads bytes in reverse",
+    "It requires a binary executable"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Read-only comes from `r`.",
+    "No such effect.",
+    "It is about data, not executables."
+   ]
+  },
+  {
+   "id": "t3-q-stdio-12",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "`fread(buf, 4, 10, f)` returns 3. What does it mean?",
+   "explain": "`fread` returns the number of ITEMS read, not bytes. A short count means end of file or error: tell them apart with `feof` and `ferror`.",
+   "ref": [
+    "fread",
+    "feof",
+    "ferror"
+   ],
+   "options": [
+    "3 complete items of 4 bytes were read (the end of the file or an error was reached)",
+    "3 bytes were read",
+    "3 lines were read",
+    "The file has 3 characters"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "Items, not bytes.",
+    "fread does not know about lines.",
+    "It read 3 * 4 = 12 bytes."
+   ]
+  },
+  {
+   "id": "t3-q-stdio-13",
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "`fclose` also {{0}} the data that is still waiting in the stream's buffer.",
+   "explain": "Closing a stream first writes (flushes) its buffered output to the file.",
+   "ref": [
+    "fclose",
+    "fflush"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "flushes",
+      "writes",
+      "flush",
+      "writes out"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "t3-q-stdio-14",
+   "type": "match",
+   "difficulty": 3,
+   "prompt": "Match each file mode of `fopen` with its behaviour.",
+   "explain": "Remember: `w` destroys the old content, `a` keeps it and appends, `r` never creates.",
+   "ref": [
+    "fopen"
+   ],
+   "pairs": [
+    [
+     "\"r\"",
+     "read; the file must exist"
+    ],
+    [
+     "\"w\"",
+     "write; empties the file or creates it"
+    ],
+    [
+     "\"a\"",
+     "write at the end; creates the file if missing"
+    ],
+    [
+     "\"r+\"",
+     "read and write an existing file without emptying it"
+    ],
+    [
+     "\"w+\"",
+     "read and write; empties or creates the file"
+    ],
+    [
+     "\"a+\"",
+     "read anywhere, but writes always go to the end"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-stdio-15",
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each stdio function with its purpose.",
+   "explain": "Text functions work with lines and formats; `fread`/`fwrite` move raw bytes.",
+   "ref": [
+    "fgets",
+    "fputs",
+    "fprintf",
+    "fread",
+    "fwrite",
+    "fseek"
+   ],
+   "pairs": [
+    [
+     "fgets",
+     "reads one line, at most size - 1 characters"
+    ],
+    [
+     "fputs",
+     "writes a string without adding a newline"
+    ],
+    [
+     "fprintf",
+     "writes formatted text to a stream"
+    ],
+    [
+     "fread",
+     "reads blocks of binary data"
+    ],
+    [
+     "fwrite",
+     "writes blocks of binary data"
+    ],
+    [
+     "fseek",
+     "moves the position in the file"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-stdio-16",
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "Which statements about `stdin`, `stdout` and `stderr` are true?",
+   "explain": "stdin is descriptor 0, stdout is 1 and stderr is 2. stderr is unbuffered so that error messages appear at once.",
+   "ref": [
+    "stdin",
+    "fprintf"
+   ],
+   "options": [
+    "They are `FILE *` streams that are open when the program starts",
+    "`stderr` is not buffered",
+    "`stdin` uses the file descriptor 1",
+    "`fprintf(stderr, ...)` writes on the file descriptor 2"
+   ],
+   "answer": [
+    0,
+    1,
+    3
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "False: stdin is 0.",
+    "True."
+   ]
+  },
+  {
+   "id": "t3-q-stdio-17",
+   "type": "order",
+   "difficulty": 1,
+   "prompt": "Put the steps of reading a text file line by line in order.",
+   "explain": "Check every fopen, loop until the read function reports the end, and release the stream at the end.",
+   "ref": [
+    "fopen",
+    "fgets",
+    "fclose"
+   ],
+   "items": [
+    "Open the file with fopen",
+    "Check that fopen did not return NULL",
+    "Call fgets in a loop until it returns NULL",
+    "Process each line",
+    "Close the file with fclose"
+   ]
+  },
+  {
+   "id": "t3-q-stdio-18",
+   "type": "sort",
+   "difficulty": 2,
+   "prompt": "Sort these stdio functions by the kind of data they handle.",
+   "explain": "Use text functions for people-readable files, `fread`/`fwrite` for raw records, and the position functions to move around.",
+   "ref": [
+    "fgets",
+    "fread",
+    "fseek"
+   ],
+   "categories": [
+    "Text (lines, characters, formats)",
+    "Binary blocks",
+    "Position"
+   ],
+   "items": [
+    [
+     "fgets",
+     "Text (lines, characters, formats)"
+    ],
+    [
+     "fprintf",
+     "Text (lines, characters, formats)"
+    ],
+    [
+     "fscanf",
+     "Text (lines, characters, formats)"
+    ],
+    [
+     "fread",
+     "Binary blocks"
+    ],
+    [
+     "fwrite",
+     "Binary blocks"
+    ],
+    [
+     "fseek",
+     "Position"
+    ],
+    [
+     "ftell",
+     "Position"
+    ],
+    [
+     "rewind",
+     "Position"
+    ]
+   ]
+  },
+  {
+   "id": "t3-q-stdio-x01",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (ftell and rewind.)",
+   "explain": "After reading three characters the position is 3. `rewind` goes back to the start, so the next character is `a`.",
+   "ref": [
+    "ftell",
+    "rewind",
+    "fgetc"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    FILE *f = fopen(\"t.txt\", \"w+\");\n\n    fputs(\"abcdef\", f);\n    rewind(f);\n    fgetc(f);\n    fgetc(f);\n    fgetc(f);\n    printf(\"%ld \", ftell(f));\n    rewind(f);\n    printf(\"%c\\n\", fgetc(f));\n    fclose(f);\n    return 0;\n}\n",
+   "answer": "3 a"
+  },
+  {
+   "id": "t3-q-stdio-x02",
+   "type": "predict",
+   "difficulty": 4,
+   "prompt": "What does this program print? (Saving a position.)",
+   "explain": "`fgetpos` saves the position after `x`; the next read returns `y`; `fsetpos` goes back, so the read after it returns `y` again.",
+   "ref": [
+    "fgetpos",
+    "fsetpos"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    FILE *f = fopen(\"t.txt\", \"w+\");\n    fpos_t pos;\n    int a, b;\n\n    fputs(\"xyz\", f);\n    rewind(f);\n    fgetc(f);\n    fgetpos(f, &pos);\n    a = fgetc(f);\n    fsetpos(f, &pos);\n    b = fgetc(f);\n    printf(\"%c%c\\n\", a, b);\n    fclose(f);\n    return 0;\n}\n",
+   "answer": "yy"
+  },
+  {
+   "id": "t3-q-stdio-x03",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (Renaming and removing.)",
+   "explain": "After `rename` only `b.txt` exists (0 then 1); after `remove` it is gone again (0).",
+   "ref": [
+    "rename",
+    "remove",
+    "fopen"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    FILE *f = fopen(\"a.txt\", \"w\");\n\n    fclose(f);\n    rename(\"a.txt\", \"b.txt\");\n    printf(\"%d\", fopen(\"a.txt\", \"r\") != NULL);\n    printf(\"%d\", fopen(\"b.txt\", \"r\") != NULL);\n    remove(\"b.txt\");\n    printf(\"%d\\n\", fopen(\"b.txt\", \"r\") != NULL);\n    return 0;\n}\n",
+   "answer": "010"
+  },
+  {
+   "id": "t3-q-stdio-x04",
+   "type": "predict",
+   "difficulty": 1,
+   "prompt": "What does this program print?",
+   "explain": "`fputc(c, stream)` writes one character; `putchar(c)` is the same as `fputc(c, stdout)`.",
+   "ref": [
+    "fputc",
+    "putchar"
+   ],
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    fputc('A', stdout);\n    fputc('\\n', stdout);\n    return 0;\n}\n",
+   "answer": "A"
+  },
+  {
+   "id": "t3-q-stdio-x05",
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What does `fdopen(fd, \"w\")` do?",
+   "explain": "Use it when you have a descriptor (from `open`, `dup2`, a pipe...) and want the stdio functions. `fileno` does the opposite: from a `FILE *` to its descriptor.",
+   "ref": [
+    "fdopen",
+    "fileno"
+   ],
+   "options": [
+    "Creates a FILE * stream around an already open file descriptor",
+    "Opens a file by name",
+    "Duplicates the descriptor",
+    "Closes the descriptor"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "That is fopen.",
+    "That is dup.",
+    "That is close."
+   ]
   }
  ]
 }

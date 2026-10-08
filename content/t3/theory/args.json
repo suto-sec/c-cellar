@@ -242,6 +242,30 @@
     "False.",
     "True."
    ]
+  },
+  {
+   "id": "t3-q-args-x01",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print? (atof stops at the first bad character.)",
+   "explain": "`atof` converts the leading number and ignores the rest, giving no way to detect the problem. Use `strtod` to find out where it stopped.",
+   "ref": [
+    "atof"
+   ],
+   "code": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void)\n{\n    printf(\"%.2f\\n\", atof(\"3.14abc\"));\n    return 0;\n}\n",
+   "answer": "3.14"
+  },
+  {
+   "id": "t3-q-args-x02",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "explain": "`strtod` works like `strtol` for doubles: `end` points to the first character it did not convert.",
+   "ref": [
+    "strtod"
+   ],
+   "code": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void)\n{\n    char *end;\n    double d = strtod(\"2.5kg\", &end);\n\n    printf(\"%.1f [%s]\\n\", d, end);\n    return 0;\n}\n",
+   "answer": "2.5 [kg]"
   }
  ]
 }

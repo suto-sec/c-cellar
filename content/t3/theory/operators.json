@@ -374,6 +374,98 @@
      "Bitwise"
     ]
    ]
+  },
+  {
+   "id": "t3-q-operators-x01",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print? (Link with -lm.)",
+   "explain": "`floor` rounds down (-2.5 becomes -3.0) and `ceil` rounds up (2.1 becomes 3.0). `pow(2, 10)` is 1024.",
+   "ref": [
+    "sqrt",
+    "pow",
+    "floor",
+    "ceil"
+   ],
+   "code": "#include <stdio.h>\n#include <math.h>\n\nint main(void)\n{\n    printf(\"%.1f %.1f %.1f %.1f\\n\", sqrt(16.0), pow(2, 10), floor(-2.5), ceil(2.1));\n    return 0;\n}\n",
+   "answer": "4.0 1024.0 -3.0 3.0"
+  },
+  {
+   "id": "t3-q-operators-x02",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "explain": "`round` rounds halves away from zero. `fmod` is the floating-point remainder (7.5 - 3*2 = 1.5). `abs` is for ints and `fabs` for doubles.",
+   "ref": [
+    "round",
+    "fmod",
+    "abs",
+    "fabs"
+   ],
+   "code": "#include <stdio.h>\n#include <math.h>\n#include <stdlib.h>\n\nint main(void)\n{\n    printf(\"%.1f %.1f %.1f\\n\", round(2.5), round(-2.5), fmod(7.5, 2));\n    printf(\"%d %.1f\\n\", abs(-5), fabs(-2.5));\n    return 0;\n}\n",
+   "answer": "3.0 -3.0 1.5\n5 2.5"
+  },
+  {
+   "id": "t3-q-operators-x03",
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "To use `sqrt` the program must be linked with the math library: `gcc prog.c -o prog {{0}}`.",
+   "explain": "`-lm` links `libm`. Put it after the source files.",
+   "ref": [
+    "sqrt",
+    "gcc"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "-lm"
+     ],
+     "ignore_space": true
+    }
+   ]
+  },
+  {
+   "id": "t3-q-operators-x04",
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each math function with its meaning.",
+   "explain": "These functions of `<math.h>` take and return doubles.",
+   "ref": [
+    "sqrt",
+    "pow",
+    "exp",
+    "log",
+    "log10",
+    "sin",
+    "cos",
+    "tan"
+   ],
+   "pairs": [
+    [
+     "sqrt",
+     "square root"
+    ],
+    [
+     "pow",
+     "x raised to the power y"
+    ],
+    [
+     "exp",
+     "e raised to x"
+    ],
+    [
+     "log",
+     "natural logarithm"
+    ],
+    [
+     "log10",
+     "base-10 logarithm"
+    ],
+    [
+     "sin",
+     "sine of an angle in radians"
+    ]
+   ]
   }
  ]
 }

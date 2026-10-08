@@ -430,6 +430,30 @@
     "Use the memory through the pointer",
     "free the block and set the pointer to NULL"
    ]
+  },
+  {
+   "id": "t3-q-pointers-x01",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "A `char *a` holds the address 0x10000000. What does it hold after `a++`?",
+   "explain": "Pointer arithmetic moves by `sizeof(*a)` and `sizeof(char)` is 1 by definition in C. (A course quiz may give 'depends on the size of char' as its answer; in standard C it never does.)",
+   "ref": [
+    "pointers",
+    "sizeof"
+   ],
+   "options": [
+    "0x10000001",
+    "0x10000004",
+    "0x10000002",
+    "It depends on the size of a char on the machine"
+   ],
+   "answer": 0,
+   "option_notes": [
+    "Correct.",
+    "That would be an `int *` with 4-byte ints.",
+    "A char is one byte.",
+    "Always 1: sizes are measured in chars."
+   ]
   }
  ]
 }
