@@ -241,7 +241,7 @@ async function viewExercise(id) {
         const ok = r.cases.filter((c) => c.ok).length;
         nodes.push(h("div", { class: "panel " + (r.passed ? "ok" : "bad") }, h("b", {}, r.passed ? `✔ All ${r.cases.length} checks passed` : `✘ ${ok}/${r.cases.length} checks passed`),
           r.passed && next ? h("span", {}, " — ", h("a", { href: "#/coding/" + next.id }, "next: " + next.title)) : null));
-        if (r.log.trim()) nodes.push(h("details", { class: "case" }, h("summary", {}, h("span", { class: "mark", style: "color:var(--warn)" }, "!"), "Compiler warnings (fix them)"), h("div", { class: "body" }, h("pre", { class: "compile-log" }, r.log))));
+        if (r.log.trim()) nodes.push(h("details", { class: "case" }, h("summary", {}, h("span", { class: "mark", style: "color:var(--warn)" }, "!"), r.build ? "Build output" : "Compiler warnings (fix them)"), h("div", { class: "body" }, h("pre", { class: "compile-log" }, r.log))));
         r.cases.forEach((c) => nodes.push(renderCase(c)));
       }
       results.replaceChildren(...nodes);

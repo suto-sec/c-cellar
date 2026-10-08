@@ -175,6 +175,8 @@ def run_case(case, binary, fixtures, tmp, idx):
         shutil.copytree(fixtures, cdir)
     else:
         cdir.mkdir()
+    if (cdir / binary.name).exists():  # multi-file exercises: run the copy of the build next to its libraries and objects
+        binary = cdir / binary.name
     env = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "HOME": str(cdir), "BIN": str(binary),
            "LANG": "C.UTF-8", "TMPDIR": str(cdir)}
     env.update(case.get("env", {}))
@@ -301,10 +303,17 @@ def check_exercise(ex):
             return {"compiled": False, "log": log, "cases": [], "passed": False}
         cases = []
         fixtures = d / "fixtures"
+        if ex.get("build"):  # every case starts from a copy of the finished build directory (timestamps kept)
+            built = tmp / "_build"
+            built.mkdir()
+            for f in tmp.iterdir():
+                if f.is_file():
+                    shutil.copy2(f, built / f.name)
+            fixtures = built
         for i, c in enumerate(tests["cases"]):
             cases.append(run_case(c, out, fixtures, tmp, i))
     passed = all(c["ok"] for c in cases)
-    return {"compiled": True, "log": log, "cases": cases, "passed": passed}
+    return {"compiled": True, "log": log, "cases": cases, "passed": passed, "build": bool(ex.get("build"))}
 
 
 def solution_text(ex):

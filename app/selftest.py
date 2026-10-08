@@ -91,7 +91,7 @@ def main():
             err(f"{ex['id']}: solution does not compile:\n{r['log']}")
         elif bad:
             err(f"{ex['id']}: solution fails: {bad}")
-        elif r["log"].strip():
+        elif r["log"].strip() and (not ex.get("build") or "warning" in r["log"].lower()):
             err(f"{ex['id']}: solution compiles with warnings:\n{r['log']}")
         else:
             print(f"  ok   {ex['id']}: passes {len(r['cases'])} cases")
