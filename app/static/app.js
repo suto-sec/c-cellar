@@ -16,7 +16,7 @@ function h(tag, props, ...kids) {
     else if (k in el && k !== "list") el[k] = v;
     else el.setAttribute(k, v === true ? "" : v);
   }
-  for (const kid of kids.flat()) {
+  for (const kid of kids.flat(Infinity)) {
     if (kid == null || kid === false) continue;
     el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
   }
@@ -62,8 +62,9 @@ function md(src) {
 }
 
 const STATUS = { passed: ["✔", "Passed"], progress: ["●", "In progress"], solution: ["◉", "Solution viewed"], todo: ["○", "Not started"] };
-const TRACKS = [["derusting", "C derusting", "You know C but have not used it in a while: small warm-ups."], ["exercises", "C exercises", "Exam-style programs of growing difficulty."]];
+const TRACKS = [["derusting", "C derusting", "You know C but have not used it in a while: small drills, chapter by chapter, from 1 to 5 stars."], ["exercises", "C exercises", "Exam-style programs that combine several chapters."]];
 const dots = (n) => h("span", { class: "dots", title: "Difficulty " + n + "/3" }, "●".repeat(n), h("i", {}, "●".repeat(3 - n)));
+const stars = (n) => h("span", { class: "stars", title: "Difficulty " + n + "/5" }, "★".repeat(n), h("i", {}, "★".repeat(5 - n)));
 const pct = (x) => Math.round(x * 100);
 
 function setNav(name) {
@@ -77,53 +78,74 @@ function mount(...nodes) {
 const page = (...kids) => h("div", { class: "page" }, ...kids);
 
 // ------------------------------------------------------------------ home
+const byOrder = (a, b) => (a.order - b.order) || a.id.localeCompare(b.id);
+/** Coding data of the current tag: chapters with their exercises, the suggested path and the next exercise to do. */
+function codingModel(idx) {
+  const tag = state.tag;
+  const items = idx.coding.filter((c) => c.tag === tag);
+  const chapters = idx.chapters.filter((c) => c.tag === tag).map((c) => ({ ...c, items: items.filter((i) => i.topic === c.id).sort(byOrder) })).filter((c) => c.items.length);
+  const path = (idx.paths[tag] || []).map((id) => items.find((i) => i.id === id)).filter(Boolean);
+  const order = path.length ? path : chapters.flatMap((c) => c.items);
+  const next = order.find((i) => i.status !== "passed");
+  return { items, chapters, order, next, passed: items.filter((i) => i.status === "passed").length };
+}
+
 async function viewHome() {
   setNav("");
-  const [idx, rd] = await Promise.all([api("index"), api("readiness?tag=" + state.tag)]);
-  const coding = idx.coding.filter((c) => c.tag === state.tag).sort(byOrder);
+  const idx = await api("index");
+  const m = codingModel(idx);
   const theory = idx.theory.filter((t) => t.tag === state.tag);
-  const passed = coding.filter((c) => c.status === "passed").length;
   const nq = theory.reduce((a, t) => a + t.count, 0), okq = theory.reduce((a, t) => a + t.correct, 0);
-  const next = coding.find((c) => c.status !== "passed");
   mount(page(
     h("h1", {}, "c-cellar ", h("span", { class: "tag" }, state.tag)),
     h("p", { class: "lead" }, "Practice C by writing it, and review the theory. Everything is checked locally."),
     h("div", { class: "list" },
-      h("a", { class: "row", href: "#/coding" }, h("div", { class: "main" }, h("div", { class: "title" }, "Coding exercises"), h("div", { class: "sub" }, "Derusting warm-ups and exam-style exercises with an automatic checker")), h("span", { class: "pct" }, `${passed}/${coding.length}`)),
+      h("a", { class: "row", href: "#/coding" }, h("div", { class: "main" }, h("div", { class: "title" }, "Coding exercises"), h("div", { class: "sub" }, `${m.chapters.length} chapters from 1 to 5 stars, with an automatic checker`)), h("span", { class: "pct" }, `${m.passed}/${m.items.length}`)),
       h("a", { class: "row", href: "#/theory" }, h("div", { class: "main" }, h("div", { class: "title" }, "Theory questions"), h("div", { class: "sub" }, "Single choice, multiple choice, fill in the blank and drag to reorder")), h("span", { class: "pct" }, `${okq}/${nq}`)),
-      h("a", { class: "row", href: "#/reference" }, h("div", { class: "main" }, h("div", { class: "title" }, "Reference"), h("div", { class: "sub" }, "Searchable C reference: syntax, options, examples, common mistakes")), h("span", { class: "pct" }, String(idx.reference))),
-      h("a", { class: "row", href: "#/readiness" }, h("div", { class: "main" }, h("div", { class: "title" }, "Readiness"), h("div", { class: "sub" }, "How prepared you are per topic, and what to review")), h("span", { class: "pct" }, pct(rd.overall) + "%")),
+      h("a", { class: "row", href: "#/reference" }, h("div", { class: "main" }, h("div", { class: "title" }, "Reference"), h("div", { class: "sub" }, "One entry per function, command and keyword: syntax, options, examples, common mistakes")), h("span", { class: "pct" }, String(idx.reference))),
     ),
-    next ? h("p", {}, h("a", { class: "btn primary", href: "#/coding/" + next.id }, (passed ? "Continue: " : "Start: ") + next.title)) : null,
+    m.next ? h("p", {}, h("a", { class: "btn primary", href: "#/coding/" + m.next.id }, (m.passed ? "Continue: " : "Start: ") + m.next.title)) : null,
   ));
 }
-const TRACK_ORDER = Object.fromEntries(TRACKS.map(([k], i) => [k, i]));
-const byOrder = (a, b) => (TRACK_ORDER[a.track] ?? 9) - (TRACK_ORDER[b.track] ?? 9) || (a.order - b.order) || a.id.localeCompare(b.id);
 
 // ------------------------------------------------------------------ coding list
 async function viewCodingList() {
   setNav("coding");
   const idx = await api("index");
-  const items = idx.coding.filter((c) => c.tag === state.tag).sort(byOrder);
-  const search = h("input", { type: "search", placeholder: "Filter by title or topic…" });
+  const m = codingModel(idx);
+  const search = h("input", { type: "search", placeholder: "Filter by title or chapter…" });
   const holder = h("div", {});
+  const openState = new Map();
   const draw = () => {
     const q = search.value.toLowerCase();
     holder.replaceChildren(...TRACKS.map(([key, title, blurb]) => {
-      const rows = items.filter((c) => c.track === key && (c.title + " " + c.topic + " " + c.summary).toLowerCase().includes(q));
-      if (!rows.length) return null;
-      const done = items.filter((c) => c.track === key && c.status === "passed").length;
-      return h("section", {}, h("h2", {}, title, " ", h("span", { class: "muted" }, `${done}/${items.filter((c) => c.track === key).length}`)),
-        h("p", { class: "muted", style: "margin:-6px 0 10px" }, blurb),
-        h("div", { class: "list" }, rows.map((c) => h("a", { class: "row", href: "#/coding/" + c.id },
-          h("span", { class: "st " + c.status, title: STATUS[c.status][1] }, STATUS[c.status][0]),
-          h("div", { class: "main" }, h("div", { class: "title" }, c.title), h("div", { class: "sub" }, c.summary)),
-          h("span", { class: "tag" }, c.topic), dots(c.difficulty)))));
+      const chs = m.chapters.filter((c) => c.track === key);
+      if (!chs.length) return null;
+      const sections = chs.map((c) => {
+        const rows = c.items.filter((i) => !q || (i.title + " " + c.title + " " + i.summary).toLowerCase().includes(q));
+        if (!rows.length) return null;
+        const done = c.items.filter((i) => i.status === "passed").length;
+        const isNext = m.next && c.items.includes(m.next);
+        const det = h("details", { class: "chapter", open: q ? true : openState.has(c.id) ? openState.get(c.id) : isNext || done === 0 && c === chs[0] },
+          h("summary", {}, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted csub" }, c.blurb), h("span", { class: "cprog" }, `${done}/${c.items.length}`),
+            h("span", { class: "bar", style: "width:70px" }, h("span", { style: `width:${(done / c.items.length) * 100}%` }))),
+          h("div", { class: "list" }, rows.map((i) => h("a", { class: "row", href: "#/coding/" + i.id },
+            h("span", { class: "st " + i.status, title: STATUS[i.status][1] }, STATUS[i.status][0]),
+            h("div", { class: "main" }, h("div", { class: "title" }, i.title), h("div", { class: "sub" }, i.summary)), stars(i.stars)))));
+        det.addEventListener("toggle", () => openState.set(c.id, det.open));
+        return det;
+      });
+      return h("section", {}, h("h2", {}, title, " ", h("span", { class: "muted" }, `${chs.reduce((a, c) => a + c.items.filter((i) => i.status === "passed").length, 0)}/${chs.reduce((a, c) => a + c.items.length, 0)}`)),
+        h("p", { class: "muted", style: "margin:-6px 0 10px" }, blurb), sections);
     }));
   };
   search.addEventListener("input", draw);
   draw();
-  mount(page(h("h1", {}, "Coding exercises"), h("p", { class: "lead" }, "Write your solution in VS Code next to the statement and press Check."), h("div", { class: "tools" }, search), holder));
+  const pathBox = m.order.length ? h("div", { class: "panel", style: "display:flex;gap:14px;align-items:center;flex-wrap:wrap" },
+    h("div", { style: "flex:1;min-width:220px" }, h("b", {}, "Suggested path"), h("div", { class: "muted", style: "font-size:13px" }, `${m.passed} of ${m.items.length} passed. The path mixes the chapters so the difficulty climbs gradually.`),
+      h("div", { class: "bar", style: "margin-top:6px" }, h("span", { style: `width:${(m.passed / m.items.length) * 100}%` }))),
+    m.next ? h("a", { class: "btn primary", href: "#/coding/" + m.next.id }, (m.passed ? "Continue: " : "Start: ") + m.next.title) : h("b", {}, "Everything passed ✔")) : null;
+  mount(page(h("h1", {}, "Coding exercises"), h("p", { class: "lead" }, "Write your solution in VS Code next to the statement and press Check. Use Hint if you are stuck, and Answer as a last resort."), pathBox, h("div", { class: "tools" }, search), holder));
 }
 
 // ------------------------------------------------------------------ exercise screen
@@ -165,7 +187,8 @@ function renderCase(c) {
 async function viewExercise(id) {
   setNav("coding");
   const [d, idx] = await Promise.all([api("coding/" + id), api("index")]);
-  const list = idx.coding.filter((c) => c.tag === d.tag).sort(byOrder);
+  const list = codingModel(idx).order;
+  const chapter = idx.chapters.find((c) => c.tag === d.tag && c.id === d.topic);
   const pos = list.findIndex((c) => c.id === id);
   const prev = list[pos - 1], next = list[pos + 1];
   const chip = h("span", { class: "status-chip" });
@@ -187,15 +210,15 @@ async function viewExercise(id) {
     const old = $(".infobox", extras);
     if (old) old.remove(); else extras.prepend(h("div", { class: "panel infobox", html: md(d.info || "No extra info.") }));
   });
-  const solBtn = h("button", { class: "btn" }, "Show solution");
+  const solBtn = h("button", { class: "btn" }, "Answer");
   solBtn.addEventListener("click", async () => {
     const st = (await api("coding/" + id)).status;
-    if (st !== "passed" && !confirm("Show the solution? The exercise will be marked “solution viewed” until you pass it.")) return;
+    if (st !== "passed" && !confirm("Show the answer? The exercise will be marked “solution viewed” until you pass it.")) return;
     const r = await api("coding/" + id + "/solution", {});
     setStatus(r.status);
     const old = $(".solbox", extras);
     if (old) old.remove();
-    extras.append(h("div", { class: "panel solbox" }, h("b", {}, "Reference solution"), h("pre", {}, h("code", {}, r.solution))));
+    extras.append(h("div", { class: "panel solbox" }, h("b", {}, "Answer (reference solution)"), h("pre", {}, h("code", {}, r.solution))));
   });
   const resetBtn = h("button", { class: "btn" }, "Reset file");
   resetBtn.addEventListener("click", async () => {
@@ -235,9 +258,9 @@ async function viewExercise(id) {
   const url = `${location.protocol}//${location.hostname}:${state.cfg.vscode_port}/?folder=${encodeURIComponent(d.workspace)}&payload=${payload}`;
   const frame = h("iframe", { src: url, title: "VS Code", allow: "clipboard-read; clipboard-write" });
   const left = h("div", { class: "left statement" },
-    h("div", { class: "crumbs" }, h("a", { href: "#/coding" }, "Coding"), " › ", d.track === "derusting" ? "C derusting" : "C exercises", " · ", h("span", { class: "tag" }, d.tag), " · ", h("span", { class: "tag" }, d.topic), " ", dots(d.difficulty)),
+    h("div", { class: "crumbs" }, h("a", { href: "#/coding" }, "Coding"), " › ", d.track === "derusting" ? "C derusting" : "C exercises", " › ", chapter ? chapter.title : d.topic, " · ", h("span", { class: "tag" }, d.tag), " ", stars(d.stars)),
     h("div", { html: md(d.statement) }),
-    h("div", { class: "muted", style: "font-size:13px" }, "Edit ", h("code", {}, "answer.c"), " in the editor on the right (folder ", h("code", {}, d.workspace.split("/").slice(-2).join("/")), ")."),
+    h("div", { class: "muted", style: "font-size:13px" }, "Write it in ", d.files.map((f, i) => [i ? ", " : "", h("code", {}, f)]), " in the editor on the right. It saves by itself."),
     h("div", { class: "actions" }, checkBtn, hintBtn, infoBtn, solBtn, resetBtn, h("span", { class: "spacer" }), chip),
     hintBox, results, extras,
     h("div", { class: "qnav" }, prev ? h("a", { class: "btn small", href: "#/coding/" + prev.id }, "← " + prev.title) : null, h("span", { class: "spacer" }), next ? h("a", { class: "btn small", href: "#/coding/" + next.id }, next.title + " →") : null));
@@ -440,40 +463,114 @@ async function viewTheorySet(id) {
 }
 
 // ------------------------------------------------------------------ reference
+const rn = (x) => String(x || "").toLowerCase();
+const rmd = (t) => esc(t).replace(/`([^`]+)`/g, "<code>$1</code>");
+function refPrep(e) {
+  return { name: rn(e.title), aliases: (e.aliases || []).map(rn), flags: (e.details || []).map((d) => rn(d.name)),
+    syntax: rn(e.syntax), summary: rn(e.summary), cat: rn(e.category), header: rn(e.header),
+    body: rn([e.description, e.example, (e.mistakes || []).join(" "), (e.details || []).map((d) => d.text).join(" ")].join(" ")) };
+}
+/** How well one search word matches one entry: a name beats a prefix, which beats an option, a summary and, last, a mention in the text. */
+function refScore(p, t) {
+  let best = 0;
+  const up = (v) => { if (v > best) best = v; };
+  const long = t.length >= 3;
+  if (p.name === t || p.aliases.includes(t)) up(1000);
+  else if (p.name.startsWith(t)) up(800 - Math.min(99, p.name.length - t.length));
+  else if (p.aliases.some((a) => a.startsWith(t))) up(600);
+  else if (long && p.name.includes(t)) up(350);
+  else if (long && p.aliases.some((a) => a.includes(t))) up(300);
+  if (p.flags.some((f) => f.split(/[\s,|/]+/).includes(t))) up(450);       // one of its options, flags or formats: O_CREAT, %zu
+  else if (long && p.flags.some((f) => f.includes(t))) up(250);
+  if (long && p.syntax.includes(t)) up(260);
+  if (long && p.header.includes(t)) up(120);
+  if (long && p.summary.includes(t)) up(150);
+  if (t.length >= 2 && p.cat.startsWith(t)) up(60);
+  if (long && best < 150 && p.body.includes(t)) up(40);
+  return best;
+}
+function refRank(entries, preps, query) {
+  const terms = rn(query).split(/\s+/).filter(Boolean);
+  const scored = [];
+  for (const e of entries) {
+    let sum = 0;
+    for (const t of terms) { const v = refScore(preps.get(e.id), t); if (!v) { sum = 0; break; } sum += v; }
+    if (sum) scored.push([e, sum]);
+  }
+  // when something matches by name or option, entries that merely mention the word in their text are noise
+  const strong = scored.some(([, v]) => v >= 250 * terms.length);
+  const out = strong ? scored.filter(([, v]) => v >= 120 * terms.length) : scored;
+  out.sort((x, y) => y[1] - x[1] || x[0].title.length - y[0].title.length || x[0].title.localeCompare(y[0].title));
+  return out.map(([e]) => e);
+}
+
+function entryCard(e, byId) {
+  return h("article", { class: "entry" },
+    e.header ? h("span", { class: "hdr" }, e.header) : null,
+    h("h3", {}, h("code", {}, e.title)), h("div", { class: "cat" }, e.category, e.aliases && e.aliases.length ? ` · also: ${e.aliases.join(", ")}` : ""),
+    h("p", { class: "esum", html: rmd(e.summary) }),
+    e.syntax ? h("pre", {}, h("code", {}, e.syntax)) : null,
+    e.description ? h("div", { html: e.description.split("\n").map((p) => "<p>" + rmd(p) + "</p>").join("") }) : null,
+    e.details ? h("dl", {}, e.details.flatMap((d) => [h("dt", {}, d.name), h("dd", { html: rmd(d.text) })])) : null,
+    e.example ? [h("h5", {}, "Example"), h("pre", {}, h("code", {}, e.example))] : null,
+    e.mistakes ? [h("h5", {}, "Common mistakes"), h("ul", {}, e.mistakes.map((m) => h("li", { html: rmd(m) })))] : null,
+    e.see ? h("div", { class: "muted", style: "margin-top:10px" }, "See also: ", e.see.map((s) => { const t = byId.get(s); return t ? [h("a", { href: "#/reference/" + s }, h("code", {}, t.title)), " "] : null; })) : null);
+}
+
 async function viewReference(focusId) {
   setNav("reference");
   const all = (await api("reference")).entries.filter((e) => e.tag === state.tag);
-  const cats = [...new Set(all.map((e) => e.category))];
-  let cat = null;
-  const search = h("input", { type: "search", placeholder: "Search: open, fgets, %zu, dup2, LD_LIBRARY_PATH…", autofocus: true });
-  const list = h("div", {});
-  const catBox = h("div", { class: "refcats" });
-  const text = (e) => [e.title, e.summary, e.syntax, e.header, e.description, e.example, e.category, (e.details || []).map((d) => d.name + " " + d.text).join(" "), (e.mistakes || []).join(" ")].join(" ").toLowerCase();
-  const index = new Map(all.map((e) => [e.id, text(e)]));
-  const draw = () => {
-    const q = search.value.trim().toLowerCase();
-    const terms = q.split(/\s+/).filter(Boolean);
-    const shown = all.filter((e) => (!cat || e.category === cat) && terms.every((t) => index.get(e.id).includes(t)));
-    shown.sort((a, b) => (b.title.toLowerCase().includes(q) ? 1 : 0) - (a.title.toLowerCase().includes(q) ? 1 : 0));
-    catBox.replaceChildren(h("a", { href: "javascript:void 0", class: !cat ? "on" : "", onclick: () => { cat = null; draw(); } }, "All"), ...cats.map((c) => h("a", { href: "javascript:void 0", class: cat === c ? "on" : "", onclick: () => { cat = c; draw(); } }, c)));
-    list.replaceChildren(...(shown.length ? shown.map(entryCard) : [h("p", { class: "muted" }, "No entries match.")]));
+  const preps = new Map(all.map((e) => [e.id, refPrep(e)]));
+  const byId = new Map(all.map((e) => [e.id, e]));
+  const cats = [];
+  for (const e of all) if (!cats.includes(e.category)) cats.push(e.category);
+  const search = h("input", { type: "search", placeholder: "Search a function or command: printf, open, dup2…", autofocus: true, autocomplete: "off", spellcheck: false });
+  const nav = h("nav", { class: "refnav" });
+  const pane = h("div", { class: "refpane" });
+  let current = null, results = [], query = "";
+
+  const link = (e, showCat) => h("a", { href: "#/reference/" + e.id, "data-id": e.id, class: "reflink" + (e.id === current ? " on" : "") }, h("code", {}, e.title), showCat ? h("span", { class: "muted rcat" }, e.category) : null);
+  const drawNav = () => {
+    if (query) nav.replaceChildren(...(results.length ? results.map((e) => link(e, true)) : [h("p", { class: "muted", style: "padding:6px 10px" }, "No entry matches.")]));
+    else nav.replaceChildren(...cats.map((c) => h("section", {}, h("h4", {}, c), all.filter((e) => e.category === c).sort((x, y) => x.title.localeCompare(y.title)).map((e) => link(e, false)))));
   };
-  const entryCard = (e) => h("article", { class: "entry" + (e.id === focusId ? " hl" : ""), id: e.id },
-    e.header ? h("span", { class: "hdr" }, e.header) : null,
-    h("h3", {}, e.title), h("div", { class: "cat" }, e.category),
-    h("p", {}, e.summary),
-    e.syntax ? h("pre", {}, h("code", {}, e.syntax)) : null,
-    e.description ? h("div", { html: e.description.split("\n").map((p) => "<p>" + esc(p).replace(/`([^`]+)`/g, "<code>$1</code>") + "</p>").join("") }) : null,
-    e.details ? h("dl", {}, e.details.flatMap((d) => [h("dt", {}, d.name), h("dd", { html: esc(d.text).replace(/`([^`]+)`/g, "<code>$1</code>") })])) : null,
-    e.example ? [h("h5", {}, "Example"), h("pre", {}, h("code", {}, e.example))] : null,
-    e.mistakes ? [h("h5", {}, "Common mistakes"), h("ul", {}, e.mistakes.map((m) => h("li", { html: esc(m).replace(/`([^`]+)`/g, "<code>$1</code>") })))] : null,
-    e.see ? h("div", { class: "muted", style: "margin-top:8px" }, "See also: ", e.see.map((s) => { const t = all.find((x) => x.id === s); return t ? [h("a", { href: "#/reference/" + s }, t.title), " "] : null; })) : null);
-  search.addEventListener("input", draw);
-  draw();
-  mount(page(h("h1", {}, "Reference"), h("p", { class: "lead" }, `${all.length} entries for ${state.tag}. Every word you type must match.`), h("div", { class: "tools" }, search),
-    h("div", { class: "refgrid" }, catBox, list)));
-  const target = focusId && document.getElementById(focusId);
-  if (target) target.scrollIntoView(); else search.focus();
+  const show = () => {
+    nav.querySelectorAll(".reflink").forEach((a) => a.classList.toggle("on", a.dataset.id === current));
+    const on = nav.querySelector(".reflink.on");
+    if (on) on.scrollIntoView({ block: "nearest" });
+    const e = byId.get(current);
+    if (e) { pane.replaceChildren(entryCard(e, byId)); app.scrollTop = 0; return; }
+    const popular = ["printf", "scanf", "fgets", "malloc", "strcmp", "fopen", "open", "read"].map((n) => all.find((e) => rn(e.title) === n)).filter(Boolean);
+    pane.replaceChildren(h("div", { class: "welcome" }, h("h1", {}, "Reference"),
+      h("p", { class: "lead" }, `${all.length} entries in ${cats.length} categories for ${state.tag}: one per function, command and keyword.`),
+      h("p", {}, "Type a name on the left, or pick one. Popular: ", popular.map((e) => [h("a", { href: "#/reference/" + e.id }, h("code", {}, e.title)), " "])),
+      h("p", { class: "muted" }, "The search ranks the entry called exactly what you typed first, then names that start with it, then options and formats (try ", h("code", {}, "O_CREAT"), " or ", h("code", {}, "%zu"), "), and last text that merely mentions it.")));
+  };
+  const applyQuery = () => {
+    query = search.value.trim();
+    results = query ? refRank(all, preps, query) : [];
+    if (query) current = results.length ? results[0].id : null;
+    drawNav();
+    show();
+  };
+  search.addEventListener("input", applyQuery);
+  search.addEventListener("keydown", (ev) => {
+    if (!query || !results.length) return;
+    const i = results.findIndex((e) => e.id === current);
+    if (ev.key === "ArrowDown" || ev.key === "ArrowUp") { ev.preventDefault(); current = results[Math.max(0, Math.min(results.length - 1, i + (ev.key === "ArrowDown" ? 1 : -1)))].id; show(); }
+    if (ev.key === "Enter") { location.hash = "#/reference/" + current; }
+  });
+  state.refSelect = (id) => {
+    if (id && byId.has(id)) { if (query && !results.some((e) => e.id === id)) { search.value = ""; query = ""; results = []; drawNav(); } current = id; } else if (!query) current = null;
+    show();
+  };
+  current = focusId && byId.has(focusId) ? focusId : null;
+  drawNav();
+  mount(h("div", { class: "refwrap" }, h("aside", { class: "refside" }, search, nav), pane));
+  state.cleanup = () => { state.refSelect = null; };
+  show();
+  search.focus();
+  setTimeout(() => search.focus(), 60);
 }
 
 // ------------------------------------------------------------------ readiness
@@ -496,6 +593,7 @@ async function viewReadiness() {
 async function route() {
   const [, a, b] = location.hash.split("/");
   try {
+    if (a === "reference" && state.refSelect) { state.refSelect(b); return; }
     if (!a) await viewHome();
     else if (a === "coding") await (b ? viewExercise(b) : viewCodingList());
     else if (a === "theory") await (b ? viewTheorySet(b) : viewTheoryList());
@@ -507,15 +605,28 @@ async function route() {
   }
 }
 
-async function init() {
-  const theme = localStorage.getItem("cellar.theme");
-  if (theme) document.documentElement.dataset.theme = theme;
-  $("#theme").addEventListener("click", () => {
-    const dark = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim() === "#17140f";
-    const next = dark ? "light" : "dark";
-    document.documentElement.dataset.theme = next;
-    localStorage.setItem("cellar.theme", next);
+function applyTheme(mode) {
+  if (mode === "light" || mode === "dark") document.documentElement.dataset.theme = mode;
+  else delete document.documentElement.dataset.theme;
+}
+function initSettings() {
+  const btn = $("#settings"), pop = $("#settings-pop");
+  let mode = localStorage.getItem("cellar.theme") || "system";
+  applyTheme(mode);
+  const radios = ["system", "light", "dark"].map((m) => {
+    const input = h("input", { type: "radio", name: "theme", value: m, checked: m === mode, onchange: () => { mode = m; localStorage.setItem("cellar.theme", m); applyTheme(m); } });
+    return h("label", { class: "seg" }, input, h("span", {}, m[0].toUpperCase() + m.slice(1)));
   });
+  pop.replaceChildren(h("div", { class: "pop-title" }, "Settings"), h("div", { class: "pop-row" }, h("span", { class: "muted" }, "Theme"), h("div", { class: "segs", role: "radiogroup", "aria-label": "Theme" }, radios)),
+    h("div", { class: "pop-note muted" }, "The code editor follows your system theme."));
+  const close = () => { pop.hidden = true; btn.setAttribute("aria-expanded", "false"); };
+  btn.addEventListener("click", (e) => { e.stopPropagation(); pop.hidden = !pop.hidden; btn.setAttribute("aria-expanded", String(!pop.hidden)); });
+  document.addEventListener("click", (e) => { if (!pop.hidden && !pop.contains(e.target)) close(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !pop.hidden) { close(); btn.focus(); } });
+}
+
+async function init() {
+  initSettings();
   state.cfg = await api("config");
   if (!state.cfg.tags.includes(state.tag)) state.tag = state.cfg.tags[0];
   const sel = $("#tag");
