@@ -1,0 +1,4 @@
+{"id":"t3-e05-findexe","tag":"t3","track":"exercises","topic":"files","title":"findexe: search the PATH","difficulty":3,"order":5,
+ "summary":"getenv + string handling + access(X_OK), like a tiny `which -a`.",
+ "hints":["getenv(\"PATH\") returns a pointer into the environment: copy it before you change it (strtok writes into the string).","Split on ':' and build \"dir/name\" with snprintf into a char buffer.","access(path, X_OK) == 0 means the file exists and you may execute it."],
+ "info":"getenv(name) returns NULL if unset. strtok_r(s, \":\", &save) splits a modifiable string. access(path, X_OK) checks execute permission for the real user."}

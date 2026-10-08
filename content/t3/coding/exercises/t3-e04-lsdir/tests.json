@@ -1,0 +1,9 @@
+{"cases":[
+ {"name":"sorted listing without . and ..","args":["d"],"stdout":".hidden\napple\nbanana\ncherry\n"},
+ {"name":"works with . as the argument","cmd":"cd d && \"$BIN\" .","stdout":".hidden\napple\nbanana\ncherry\n"},
+ {"name":"empty directory prints nothing","setup":"mkdir empty","cmd":"\"$BIN\" empty","stdout":""},
+ {"name":"many entries (more than a small fixed array)","setup":"mkdir many; for i in $(seq 1 300); do : > many/f$i; done","cmd":"\"$BIN\" many | head -n 3; \"$BIN\" many | wc -l","stdout":"f1\nf10\nf100\n300\n"},
+ {"name":"not a directory: status 1, nothing on stdout","cmd":"\"$BIN\" d/apple 2>/dev/null; echo \"rc=$?\"","stdout":"rc=1\n"},
+ {"name":"missing directory: status 1","cmd":"\"$BIN\" nope 2>/dev/null; echo \"rc=$?\"","stdout":"rc=1\n"},
+ {"name":"error text on stderr","cmd":"\"$BIN\" nope 2>&1 >/dev/null | grep -c 'No such file'","stdout":"1\n"}
+]}

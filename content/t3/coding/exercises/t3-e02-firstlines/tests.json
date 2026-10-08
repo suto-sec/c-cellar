@@ -1,0 +1,9 @@
+{"cases":[
+ {"name":"default is 5 lines","cmd":"seq 1 20 | \"$BIN\"","stdout":"1\n2\n3\n4\n5\n"},
+ {"name":"-3","cmd":"seq 1 20 | \"$BIN\" -3","stdout":"1\n2\n3\n"},
+ {"name":"fewer lines than N","cmd":"seq 1 3 | \"$BIN\" -10","stdout":"1\n2\n3\n"},
+ {"name":"empty input","cmd":"\"$BIN\" -4 < /dev/null","stdout":""},
+ {"name":"last line without newline is not changed","cmd":"printf 'a\\nb' | \"$BIN\" -5","stdout":"a\nb"},
+ {"name":"-1","cmd":"seq 1 20 | \"$BIN\" -1","stdout":"1\n"},
+ {"name":"a 3000-character line counts as one line","cmd":"{ head -c 3000 /dev/zero | tr '\\0' x; echo; echo second; echo third; } | \"$BIN\" -2 | wc -c","stdout":"3008\n"}
+]}
