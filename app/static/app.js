@@ -314,7 +314,7 @@ async function viewExercise(id) {
     h("div", { class: "muted", style: "font-size:13px" }, "Write it in ", d.files.map((f, i) => [i ? ", " : "", h("code", {}, f)]), " in the editor on the right. It saves by itself."),
     h("div", { class: "actions" }, checkBtn, hintBtn, infoBtn, solBtn, resetBtn, h("span", { class: "spacer" }), chip),
     hintBox, results, extras,
-    h("div", { class: "qnav" }, prev ? h("a", { class: "btn small", href: "#/coding/" + prev.id }, "← " + prev.title) : null, h("span", { class: "spacer" }), next ? h("a", { class: "btn small", href: "#/coding/" + next.id }, next.title + " →") : null));
+    h("div", { class: "qnav" }, prev ? h("a", { class: "btn small step prev", href: "#/coding/" + prev.id }, h("span", { class: "steplabel" }, "Previous"), "← " + prev.title) : null, h("span", { class: "spacer" }), next ? h("a", { class: "btn small step next", href: "#/coding/" + next.id }, h("span", { class: "steplabel" }, "Next"), next.title + " →") : null));
   const divider = h("div", { class: "divider", title: "Drag to resize" });
   const right = h("div", { class: "right" }, frame);
   const w = parseFloat(localStorage.getItem("cellar.split")) || 46;
