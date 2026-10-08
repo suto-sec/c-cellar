@@ -1,0 +1,14 @@
+{
+ "id": "t3-programs-rot13-file",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "programs",
+ "title": "ROT13 a file",
+ "stars": 4,
+ "order": 8,
+ "summary": "Reading one file and writing another.",
+ "hints": [
+  "Read with `fgetc` and write with `fputc`, one character at a time.",
+  "For a lower-case letter: `'a' + (c - 'a' + 13) % 26`; the same with `'A'` for upper case."
+ ]
+}

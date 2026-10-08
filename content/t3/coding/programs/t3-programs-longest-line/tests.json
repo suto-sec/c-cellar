@@ -1,0 +1,57 @@
+{
+ "cases": [
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'cat\\nelephant\\ndog\\n' > f.txt",
+   "stdout": "8: elephant\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'short\nthe longest line here\nmedium line\n' > f.txt",
+   "stdout": "21: the longest line here\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'only\n' > f.txt",
+   "stdout": "4: only\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'a\nbb\nbb\n' > f.txt",
+   "stdout": "2: bb\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'tab\there\n  spaces  \n' > f.txt",
+   "stdout": "10:   spaces  \n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'no trailing newline' > f.txt",
+   "stdout": "19: no trailing newline\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": ": > f.txt",
+   "stdout": "empty\n"
+  },
+  {
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "cannot open nope\nrc=1\n"
+  }
+ ]
+}

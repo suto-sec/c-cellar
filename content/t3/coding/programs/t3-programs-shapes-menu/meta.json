@@ -1,0 +1,15 @@
+{
+ "id": "t3-programs-shapes-menu",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "programs",
+ "title": "A shapes calculator",
+ "stars": 3,
+ "order": 3,
+ "summary": "A command loop reading lines from standard input.",
+ "hints": [
+  "Read each line with `fgets`; `sscanf(line, \"%31s\", cmd)` gets the first word.",
+  "Compare the word with `strcmp`, then read the numbers with `sscanf(line, \"%*s %lf %lf\", &a, &b)` (`%*s` skips the first word).",
+  "Stop the loop on `quit`."
+ ]
+}

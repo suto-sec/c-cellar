@@ -1,0 +1,15 @@
+{
+ "id": "t3-programs-top-word",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "programs",
+ "title": "The most frequent word",
+ "stars": 5,
+ "order": 12,
+ "summary": "Words, case folding, counting and ties.",
+ "hints": [
+  "Read the file character by character: letters (made lower case) go into a word buffer; any other character ends the current word.",
+  "Keep a growing array of `struct { char word[64]; int count; }`; for each word look it up (a linear search is fine) and add 1 or append a new entry.",
+  "At the end pick the entry with the highest count; on equal counts the smaller word (by `strcmp`) wins."
+ ]
+}

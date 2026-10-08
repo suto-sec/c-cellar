@@ -1,0 +1,14 @@
+{
+ "id": "t3-programs-last-lines",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "programs",
+ "title": "The last lines",
+ "stars": 5,
+ "order": 11,
+ "summary": "A circular buffer of lines.",
+ "hints": [
+  "Allocate an array of `N` line pointers; line number `k` goes into slot `k % N`, replacing (and freeing) the oldest line.",
+  "At the end the oldest of the lines you kept is line `total - N` (or 0 if there were fewer than `N`): print from there, wrapping with `% N`."
+ ]
+}

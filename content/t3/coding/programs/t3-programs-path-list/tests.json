@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "cmd": "env PATH=/bin:/usr/bin \"$BIN\"",
+   "stdout": "1 /bin\n2 /usr/bin\n"
+  },
+  {
+   "cmd": "env PATH=/usr/bin \"$BIN\"",
+   "stdout": "1 /usr/bin\n"
+  },
+  {
+   "cmd": "env PATH=a:b:c \"$BIN\"",
+   "stdout": "1 a\n2 b\n3 c\n"
+  },
+  {
+   "cmd": "env PATH=::x::y: \"$BIN\"",
+   "stdout": "1 x\n2 y\n"
+  },
+  {
+   "cmd": "env PATH=/usr/local/bin:/usr/bin:/bin \"$BIN\"",
+   "stdout": "1 /usr/local/bin\n2 /usr/bin\n3 /bin\n"
+  },
+  {
+   "cmd": "env -u PATH \"$BIN\"; echo \"rc=$?\"",
+   "stdout": "no PATH\nrc=1\n"
+  }
+ ]
+}

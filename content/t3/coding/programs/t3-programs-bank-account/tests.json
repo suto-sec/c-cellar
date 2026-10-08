@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "deposit 100\nwithdraw 30\nbalance\n",
+   "stdout": "ok\nok\nbalance: 70\n"
+  },
+  {
+   "stdin": "balance\n",
+   "stdout": "balance: 0\n"
+  },
+  {
+   "stdin": "withdraw 5\ndeposit 5\nwithdraw 5\nbalance\n",
+   "stdout": "insufficient funds\nok\nok\nbalance: 0\n"
+  },
+  {
+   "stdin": "deposit 10\nsteal 5\nbalance\n",
+   "stdout": "ok\nunknown command\nbalance: 10\n"
+  },
+  {
+   "stdin": "deposit 1\ndeposit 2\ndeposit 3\nwithdraw 7\nbalance\nwithdraw 6\nbalance\n",
+   "stdout": "ok\nok\nok\ninsufficient funds\nbalance: 6\nok\nbalance: 0\n"
+  },
+  {
+   "stdin": "",
+   "stdout": ""
+  }
+ ]
+}

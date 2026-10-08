@@ -1,0 +1,32 @@
+{
+ "cases": [
+  {
+   "stdin": "15 0 10\n",
+   "stdout": "10\n"
+  },
+  {
+   "stdin": "5 0 10\n",
+   "stdout": "5\n"
+  },
+  {
+   "stdin": "-5 0 10\n",
+   "stdout": "0\n"
+  },
+  {
+   "stdin": "50 0 10\n",
+   "stdout": "10\n"
+  },
+  {
+   "stdin": "0 0 0\n",
+   "stdout": "0\n"
+  },
+  {
+   "stdin": "7 7 7\n",
+   "stdout": "7\n"
+  },
+  {
+   "stdin": "-3 -5 -1\n",
+   "stdout": "-3\n"
+  }
+ ]
+}

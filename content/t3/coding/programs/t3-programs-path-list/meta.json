@@ -1,0 +1,14 @@
+{
+ "id": "t3-programs-path-list",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "programs",
+ "title": "List the PATH",
+ "stars": 3,
+ "order": 4,
+ "summary": "getenv and splitting a string.",
+ "hints": [
+  "`getenv(\"PATH\")` returns a pointer you must not modify: copy it (`strdup`) before splitting.",
+  "`strtok_r(copy, \":\", &save)` returns the pieces one by one (and skips empty ones); call it again with `NULL`."
+ ]
+}

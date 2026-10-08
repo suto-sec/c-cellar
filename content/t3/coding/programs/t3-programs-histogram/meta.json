@@ -1,0 +1,14 @@
+{
+ "id": "t3-programs-histogram",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "programs",
+ "title": "A histogram of numbers",
+ "stars": 4,
+ "order": 9,
+ "summary": "Counting into buckets and drawing with stars.",
+ "hints": [
+  "The bucket of a value `x` is `x / 10`: use an array of 10 counters.",
+  "`%02d` prints a number with at least two digits, padded with a zero."
+ ]
+}

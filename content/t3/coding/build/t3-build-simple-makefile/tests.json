@@ -1,0 +1,22 @@
+{
+ "cases": [
+  {
+   "stdout": "3 + 4 = 7\n"
+  },
+  {
+   "name": "a second make has nothing to do",
+   "cmd": "make 2>&1 | head -n 1",
+   "stdout": "make: 'prog' is up to date.\n"
+  },
+  {
+   "name": "clean removes objects and prog",
+   "cmd": "make clean >/dev/null; ls | grep -c '\\.o$'; test -e prog && echo prog || echo noprog",
+   "stdout": "0\nnoprog\n"
+  },
+  {
+   "name": "touching the header rebuilds both objects and relinks",
+   "cmd": "touch util.h; make 2>&1 | grep -c 'gcc'",
+   "stdout": "3\n"
+  }
+ ]
+}

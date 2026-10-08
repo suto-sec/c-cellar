@@ -1,0 +1,65 @@
+{
+ "cases": [
+  {
+   "args": [
+    "sat",
+    "f.txt"
+   ],
+   "stdout": "The cat sat.\nA dog sat on the mat.\n"
+  },
+  {
+   "args": [
+    "-n",
+    "sat",
+    "f.txt"
+   ],
+   "stdout": "1:The cat sat.\n2:A dog sat on the mat.\n"
+  },
+  {
+   "args": [
+    "-n",
+    "sat",
+    "f.txt"
+   ],
+   "stdout": "1:The cat sat.\n2:A dog sat on the mat.\n"
+  },
+  {
+   "args": [
+    "the",
+    "f.txt"
+   ],
+   "stdout": "A dog sat on the mat.\nthe end\n"
+  },
+  {
+   "args": [
+    "zzz",
+    "f.txt"
+   ],
+   "stdout": "",
+   "exit": 1
+  },
+  {
+   "args": [
+    "-n",
+    "The",
+    "f.txt"
+   ],
+   "stdout": "1:The cat sat.\n"
+  },
+  {
+   "args": [
+    "-n",
+    "a",
+    "nope"
+   ],
+   "stdout": "",
+   "exit": 2
+  },
+  {
+   "name": "the error message goes to stderr",
+   "cmd": "\"$BIN\" x nope 2>&1 >/dev/null",
+   "stdout": "cannot open nope\n",
+   "exit": 2
+  }
+ ]
+}

@@ -1,0 +1,19 @@
+{
+ "id": "t3-build-simple-makefile",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "build",
+ "title": "Write a Makefile",
+ "stars": 3,
+ "order": 4,
+ "summary": "Rules, dependencies and a clean target.",
+ "hints": [
+  "A rule looks like `target: dependencies`, followed by a line that starts with a TAB and gives the command.",
+  "In a pattern rule, `$<` is the first dependency (the `.c` file) and `$@` the target (the `.o` file).",
+  "Declare `clean` as `.PHONY` so it works even if a file called `clean` exists."
+ ],
+ "files": [
+  "Makefile"
+ ],
+ "build": "make"
+}

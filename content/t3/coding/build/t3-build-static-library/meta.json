@@ -1,0 +1,21 @@
+{
+ "id": "t3-build-static-library",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "build",
+ "title": "A static library",
+ "stars": 4,
+ "order": 5,
+ "summary": "ar and -l.",
+ "hints": [
+  "The library file is `libstrutil.a`: `-lstrutil` finds it (the `lib` prefix and the `.a` are implied) and `-L.` says to look in the current directory.",
+  "`ar rcs libstrutil.a strutil.o` packs the object file into the archive.",
+  "Make `prog` depend on `libstrutil.a` so it is built first."
+ ],
+ "files": [
+  "strutil.h",
+  "strutil.c",
+  "Makefile"
+ ],
+ "build": "make"
+}

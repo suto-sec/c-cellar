@@ -1,0 +1,21 @@
+{
+ "id": "t3-build-header-and-source",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "build",
+ "title": "A header and a source file",
+ "stars": 2,
+ "order": 1,
+ "summary": "Declaration in .h, definition in .c.",
+ "hints": [
+  "The header holds the DECLARATION (prototype): `int clamp(int v, int lo, int hi);`. The `.c` file holds the DEFINITION.",
+  "Both `util.c` and `main.c` must `#include \"util.h\"` (with quotes, since it is your own header).",
+  "An include guard is `#ifndef UTIL_H` / `#define UTIL_H` / ... / `#endif`."
+ ],
+ "files": [
+  "util.h",
+  "util.c",
+  "main.c"
+ ],
+ "build": "gcc -Wall -Wextra -o prog main.c util.c"
+}

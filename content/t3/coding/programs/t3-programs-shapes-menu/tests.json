@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "circle 1\nrectangle 3 4\ntriangle 5 6\nquit\n",
+   "stdout": "area=3.14\narea=12.00\narea=15.00\n"
+  },
+  {
+   "stdin": "rectangle 2.5 2\ncircle 2\n",
+   "stdout": "area=5.00\narea=12.57\n"
+  },
+  {
+   "stdin": "hexagon 3\ncircle 3\nquit\ncircle 100\n",
+   "stdout": "unknown command\narea=28.27\n"
+  },
+  {
+   "stdin": "",
+   "stdout": ""
+  },
+  {
+   "stdin": "quit\n",
+   "stdout": ""
+  },
+  {
+   "stdin": "triangle 3 3\nbogus\nrectangle 1 1\n",
+   "stdout": "area=4.50\nunknown command\narea=1.00\n"
+  }
+ ]
+}

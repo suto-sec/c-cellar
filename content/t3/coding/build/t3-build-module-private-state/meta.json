@@ -1,0 +1,19 @@
+{
+ "id": "t3-build-module-private-state",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "build",
+ "title": "Private state in a module",
+ "stars": 3,
+ "order": 3,
+ "summary": "static at file level.",
+ "hints": [
+  "A global variable declared `static` in a `.c` file can only be used inside that file: that is how a module keeps its state private.",
+  "`static int last = 0;` outside any function, and `return ++last;` inside `next_id`."
+ ],
+ "files": [
+  "ids.h",
+  "ids.c"
+ ],
+ "build": "gcc -Wall -Wextra -o prog main.c ids.c"
+}

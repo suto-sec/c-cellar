@@ -1,0 +1,56 @@
+{
+ "cases": [
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'pear\\napple\\nfig\\n' > f.txt",
+   "stdout": "apple\nfig\npear\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'b\na\nb\na\n' > f.txt",
+   "stdout": "a\na\nb\nb\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'one\n' > f.txt",
+   "stdout": "one\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'zebra\nant\nMango\napple\n' > f.txt",
+   "stdout": "Mango\nant\napple\nzebra\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'no trailing\nnewline at\nthe end' > f.txt",
+   "stdout": "newline at\nno trailing\nthe end\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf '' > f.txt",
+   "stdout": ""
+  },
+  {
+   "name": "20000 lines",
+   "cmd": "\"$BIN\" f.txt | head -n 3",
+   "setup": "seq 1 20000 | sort -r > f.txt",
+   "stdout": "1\n10\n100\n"
+  },
+  {
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "cannot open nope\nrc=1\n"
+  }
+ ]
+}

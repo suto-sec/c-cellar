@@ -1,0 +1,14 @@
+{
+ "id": "t3-programs-bank-account",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "programs",
+ "title": "A bank account",
+ "stars": 5,
+ "order": 10,
+ "summary": "A small state machine driven by commands.",
+ "hints": [
+  "Keep the balance in a `struct account` and pass a pointer to it to your functions.",
+  "Read a line with `fgets`, the command word with `sscanf(line, \"%31s\", cmd)` and the amount with `sscanf(line, \"%*s %ld\", &n)`."
+ ]
+}

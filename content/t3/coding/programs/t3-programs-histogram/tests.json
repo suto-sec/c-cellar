@@ -1,0 +1,50 @@
+{
+ "cases": [
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf '5 15 12 99 0 55 56 57\n' > f.txt",
+   "stdout": "00-09: **\n10-19: **\n50-59: ***\n90-99: *\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf '100 -5 200\n' > f.txt",
+   "stdout": ""
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf '10 11 12 13 14\n' > f.txt",
+   "stdout": "10-19: *****\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf '0 9 10 19 20 29 30 39 40 49 50 59 60 69 70 79 80 89 90 99\n' > f.txt",
+   "stdout": "00-09: **\n10-19: **\n20-29: **\n30-39: **\n40-49: **\n50-59: **\n60-69: **\n70-79: **\n80-89: **\n90-99: **\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf '' > f.txt",
+   "stdout": ""
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 42 > f.txt",
+   "stdout": "40-49: *\n"
+  },
+  {
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "cannot open nope\nrc=1\n"
+  }
+ ]
+}

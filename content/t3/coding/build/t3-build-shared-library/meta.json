@@ -1,0 +1,21 @@
+{
+ "id": "t3-build-shared-library",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "build",
+ "title": "A shared library",
+ "stars": 5,
+ "order": 6,
+ "summary": "-fPIC, -shared and LD_LIBRARY_PATH.",
+ "hints": [
+  "`-shared -fPIC` builds a shared object; its name must be `lib<name>.so` so that `-lcalc` finds it.",
+  "A shared library is not copied into `prog`: at run time the loader searches the directories of `LD_LIBRARY_PATH`.",
+  "`ldd prog` lists the dynamic libraries a program needs."
+ ],
+ "files": [
+  "calc.h",
+  "calc.c",
+  "Makefile"
+ ],
+ "build": "make"
+}

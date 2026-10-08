@@ -1,0 +1,15 @@
+{
+ "id": "t3-programs-count-range",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "programs",
+ "title": "Count from FIRST to LAST",
+ "stars": 3,
+ "order": 1,
+ "summary": "Argument checking, atoi and a loop with a step.",
+ "hints": [
+  "Count the arguments first (3 or 4 including the program name), then convert them with `atoi`.",
+  "The loop condition depends on the sign of the step: `x <= last` when counting up, `x >= last` when counting down.",
+  "Print a space before every number except the first."
+ ]
+}

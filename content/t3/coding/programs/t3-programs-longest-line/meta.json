@@ -1,0 +1,14 @@
+{
+ "id": "t3-programs-longest-line",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "programs",
+ "title": "The longest line",
+ "stars": 3,
+ "order": 2,
+ "summary": "fgets, strlen and a running best.",
+ "hints": [
+  "Read each line with `fgets`, remove the newline (`line[strcspn(line, \"\\n\")] = '\\0';`) and compare its `strlen` with the best so far.",
+  "Keep a copy of the best line with `strcpy`; replace it only when strictly longer."
+ ]
+}

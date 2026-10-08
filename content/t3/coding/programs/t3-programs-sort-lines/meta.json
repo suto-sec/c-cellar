@@ -1,0 +1,14 @@
+{
+ "id": "t3-programs-sort-lines",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "programs",
+ "title": "Sort the lines of a file",
+ "stars": 4,
+ "order": 6,
+ "summary": "Dynamic storage of any number of lines and qsort.",
+ "hints": [
+  "Store each line (a copy made with `strdup`) in a `char *` array that you grow with `realloc`.",
+  "`qsort` on an array of `char *` needs a comparison function that calls `strcmp` on `*(char * const *) a`."
+ ]
+}

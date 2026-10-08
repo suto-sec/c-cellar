@@ -1,0 +1,19 @@
+{
+ "id": "t3-build-include-guards",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "build",
+ "title": "Include guards",
+ "stars": 3,
+ "order": 2,
+ "summary": "Including a header twice.",
+ "hints": [
+  "Wrap the whole header: `#ifndef COUNTER_H`, then `#define COUNTER_H`, the declarations, and `#endif` at the end.",
+  "`#pragma once` at the top of the header also works with gcc."
+ ],
+ "files": [
+  "counter.h",
+  "counter.c"
+ ],
+ "build": "gcc -Wall -Wextra -o prog main.c counter.c"
+}

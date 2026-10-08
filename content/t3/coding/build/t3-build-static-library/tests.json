@@ -1,0 +1,17 @@
+{
+ "cases": [
+  {
+   "stdout": "a=4 z=0 space=2\n"
+  },
+  {
+   "name": "the library contains strutil.o",
+   "cmd": "ar t libstrutil.a",
+   "stdout": "strutil.o\n"
+  },
+  {
+   "name": "count_char is linked into prog",
+   "cmd": "nm prog | grep -c ' T count_char'",
+   "stdout": "1\n"
+  }
+ ]
+}

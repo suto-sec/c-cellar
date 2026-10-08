@@ -1,0 +1,18 @@
+{
+ "cases": [
+  {
+   "cmd": "LD_LIBRARY_PATH=. \"$BIN\"",
+   "stdout": "square(9) = 81\n"
+  },
+  {
+   "name": "prog is linked dynamically against libcalc",
+   "cmd": "ldd prog | grep -c libcalc",
+   "stdout": "1\n"
+  },
+  {
+   "name": "without LD_LIBRARY_PATH the loader cannot find it",
+   "cmd": "\"$BIN\" 2>&1 | grep -c 'cannot open shared object'",
+   "stdout": "1\n"
+  }
+ ]
+}

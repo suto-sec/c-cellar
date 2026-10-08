@@ -1,0 +1,15 @@
+{
+ "id": "t3-programs-grep-lite",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "programs",
+ "title": "A tiny grep",
+ "stars": 4,
+ "order": 7,
+ "summary": "Options, strstr and an exit status.",
+ "hints": [
+  "Skip the optional `-n` first and then take the pattern and the file name from the remaining arguments.",
+  "`strstr(line, pattern)` returns a pointer to the first occurrence, or `NULL`.",
+  "The lines you read from the file already end with `\\n`: print them with `fputs`."
+ ]
+}

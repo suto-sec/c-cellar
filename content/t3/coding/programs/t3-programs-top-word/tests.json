@@ -1,0 +1,65 @@
+{
+ "cases": [
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'The cat and the dog. The END!\n' > f.txt",
+   "stdout": "the 3\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'a b c\n' > f.txt",
+   "stdout": "a 1\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'Hello hello HELLO world\n' > f.txt",
+   "stdout": "hello 3\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf '' > f.txt",
+   "stdout": "no words\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf '123 456 !!!\n' > f.txt",
+   "stdout": "no words\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'one two two three three\n' > f.txt",
+   "stdout": "three 2\n"
+  },
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'it'\"'\"'s it'\"'\"'s not\n' > f.txt",
+   "stdout": "it 2\n"
+  },
+  {
+   "name": "thousands of different words",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "seq 1 3000 | sed 's/[0-9]/x&/g' | tr '0-9' 'a-j' > f.txt; printf 'zz zz zz\\n' >> f.txt",
+   "stdout": "zz 3\n"
+  },
+  {
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "cannot open nope\nrc=1\n"
+  }
+ ]
+}
