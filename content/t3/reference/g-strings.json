@@ -1,0 +1,238 @@
+{
+ "order": 7,
+ "entries": [
+  {
+   "id": "t3-ref-strlen",
+   "title": "strlen",
+   "category": "Strings",
+   "summary": "Length of a string, without the terminator.",
+   "syntax": "size_t strlen(const char *s);",
+   "header": "<string.h>",
+   "description": "Counts the characters before the `'\\0'`. It walks the whole string each time: do not call it in a loop condition on a long string.",
+   "example": "size_t n = strlen(\"Hola\");   /* 4 */",
+   "mistakes": [
+    "Allocating `strlen(s)` bytes for a copy (you need +1)."
+   ],
+   "see": [
+    "t3-ref-strcpy",
+    "t3-ref-strings"
+   ]
+  },
+  {
+   "id": "t3-ref-strcpy",
+   "title": "strcpy",
+   "category": "Strings",
+   "summary": "Copy a string, including its terminator.",
+   "syntax": "char *strcpy(char *dst, const char *src);",
+   "header": "<string.h>",
+   "description": "`dst` must be big enough for `strlen(src) + 1` bytes: nothing checks it. Returns `dst`.",
+   "example": "char name[16];\nstrcpy(name, \"Ada\");",
+   "mistakes": [
+    "Destination too small (buffer overflow)."
+   ],
+   "see": [
+    "t3-ref-strncpy",
+    "t3-ref-strdup",
+    "t3-ref-strcat"
+   ]
+  },
+  {
+   "id": "t3-ref-strncpy",
+   "title": "strncpy",
+   "category": "Strings",
+   "summary": "Copy at most n characters of a string.",
+   "syntax": "char *strncpy(char *dst, const char *src, size_t n);",
+   "header": "<string.h>",
+   "description": "If `src` has `n` or more characters, `dst` is NOT terminated; if it has fewer, the rest of `n` bytes is padded with zeros. Terminate it yourself: `dst[n - 1] = '\\0'`.",
+   "example": "strncpy(dst, src, sizeof dst - 1);\ndst[sizeof dst - 1] = '\\0';",
+   "mistakes": [
+    "Assuming the result is always a valid string."
+   ],
+   "see": [
+    "t3-ref-strcpy",
+    "t3-ref-snprintf"
+   ]
+  },
+  {
+   "id": "t3-ref-strcat",
+   "title": "strcat",
+   "category": "Strings",
+   "summary": "Append a string to another.",
+   "syntax": "char *strcat(char *dst, const char *src);",
+   "header": "<string.h>",
+   "description": "Copies `src` after the end of `dst`. The destination must have room for both strings plus the terminator.",
+   "example": "char path[64] = \"/usr\";\nstrcat(path, \"/bin\");   /* \"/usr/bin\" */",
+   "mistakes": [
+    "Destination too small."
+   ],
+   "see": [
+    "t3-ref-strncat",
+    "t3-ref-strcpy",
+    "t3-ref-snprintf"
+   ]
+  },
+  {
+   "id": "t3-ref-strncat",
+   "title": "strncat",
+   "category": "Strings",
+   "summary": "Append at most n characters of a string.",
+   "syntax": "char *strncat(char *dst, const char *src, size_t n);",
+   "header": "<string.h>",
+   "description": "Appends at most `n` characters and always adds the terminator, so `dst` needs `strlen(dst) + n + 1` bytes.",
+   "example": "strncat(dst, src, sizeof dst - strlen(dst) - 1);",
+   "see": [
+    "t3-ref-strcat"
+   ]
+  },
+  {
+   "id": "t3-ref-strcmp",
+   "title": "strcmp",
+   "category": "Strings",
+   "summary": "Compare two strings.",
+   "syntax": "int strcmp(const char *a, const char *b);",
+   "header": "<string.h>",
+   "description": "Returns 0 if they are equal, a negative number if `a` comes before `b` and a positive one otherwise (character codes decide). Use it for equality and ordering, never `==`.",
+   "example": "if (strcmp(argv[1], \"-h\") == 0) { /* equal */ }\nqsort(names, n, sizeof *names, cmp);   /* cmp uses strcmp */",
+   "mistakes": [
+    "Reading `strcmp` as true when equal: it returns 0 then."
+   ],
+   "see": [
+    "t3-ref-strncmp",
+    "t3-ref-qsort"
+   ]
+  },
+  {
+   "id": "t3-ref-strncmp",
+   "title": "strncmp",
+   "category": "Strings",
+   "summary": "Compare at most the first n characters.",
+   "syntax": "int strncmp(const char *a, const char *b, size_t n);",
+   "header": "<string.h>",
+   "description": "Like `strcmp` but stops after `n` characters: handy for prefixes.",
+   "example": "if (strncmp(line, \"#\", 1) == 0) { /* a comment */ }",
+   "see": [
+    "t3-ref-strcmp"
+   ]
+  },
+  {
+   "id": "t3-ref-strchr",
+   "title": "strchr",
+   "category": "Strings",
+   "summary": "Find the first occurrence of a character.",
+   "syntax": "char *strchr(const char *s, int c);",
+   "header": "<string.h>",
+   "description": "Returns a pointer to the first `c` in `s`, or NULL. `strchr(s, '\\0')` points to the terminator.",
+   "example": "char *dot = strchr(name, '.');\nif (dot != NULL) *dot = '\\0';",
+   "mistakes": [
+    "Using the result without checking for NULL."
+   ],
+   "see": [
+    "t3-ref-strrchr",
+    "t3-ref-strstr"
+   ]
+  },
+  {
+   "id": "t3-ref-strrchr",
+   "title": "strrchr",
+   "category": "Strings",
+   "summary": "Find the last occurrence of a character.",
+   "syntax": "char *strrchr(const char *s, int c);",
+   "header": "<string.h>",
+   "description": "Returns a pointer to the last `c` in `s`, or NULL. Typical use: the extension or the file name in a path.",
+   "example": "const char *base = strrchr(path, '/');",
+   "see": [
+    "t3-ref-strchr"
+   ]
+  },
+  {
+   "id": "t3-ref-strstr",
+   "title": "strstr",
+   "category": "Strings",
+   "summary": "Find the first occurrence of a substring.",
+   "syntax": "char *strstr(const char *haystack, const char *needle);",
+   "header": "<string.h>",
+   "description": "Returns a pointer to the start of the first match, or NULL.",
+   "example": "if (strstr(line, \"error\") != NULL) { /* found */ }",
+   "see": [
+    "t3-ref-strchr",
+    "t3-ref-strcmp"
+   ]
+  },
+  {
+   "id": "t3-ref-strdup",
+   "title": "strdup",
+   "category": "Strings",
+   "summary": "Make a heap copy of a string.",
+   "syntax": "char *strdup(const char *s);",
+   "header": "<string.h>",
+   "description": "Allocates `strlen(s) + 1` bytes with `malloc` and copies `s`. You must `free` the copy. Returns NULL if out of memory.",
+   "example": "char *copy = strdup(name);\n/* … */\nfree(copy);",
+   "mistakes": [
+    "Forgetting to free it."
+   ],
+   "see": [
+    "t3-ref-malloc",
+    "t3-ref-strcpy"
+   ]
+  },
+  {
+   "id": "t3-ref-strtok",
+   "title": "strtok",
+   "category": "Strings",
+   "summary": "Split a string into tokens (modifies it).",
+   "syntax": "char *strtok(char *s, const char *delims);",
+   "header": "<string.h>",
+   "description": "The first call gets the string, later calls get NULL. It writes `'\\0'` into the string, so it needs a modifiable copy (never a literal), and it keeps hidden state, so it is not usable in two loops at once. Skips empty fields.",
+   "example": "char line[] = \"a:b:c\";\nfor (char *t = strtok(line, \":\"); t != NULL; t = strtok(NULL, \":\"))\n    puts(t);",
+   "mistakes": [
+    "Passing a string literal.",
+    "Nesting two `strtok` loops."
+   ],
+   "see": [
+    "t3-ref-strtok_r",
+    "t3-ref-strcspn",
+    "t3-ref-strdup"
+   ]
+  },
+  {
+   "id": "t3-ref-strtok_r",
+   "title": "strtok_r",
+   "category": "Strings",
+   "summary": "strtok with the state kept in a variable you provide.",
+   "syntax": "char *strtok_r(char *s, const char *delims, char **saveptr);",
+   "header": "<string.h>",
+   "description": "Same splitting as `strtok`, but safe to nest and to use from several threads. Pass the same `saveptr` on every call of one loop.",
+   "example": "char *save;\nfor (char *t = strtok_r(copy, \":\", &save); t != NULL; t = strtok_r(NULL, \":\", &save))\n    puts(t);",
+   "see": [
+    "t3-ref-strtok"
+   ]
+  },
+  {
+   "id": "t3-ref-strcspn",
+   "title": "strcspn",
+   "category": "Strings",
+   "summary": "Length of the initial part of a string that has none of the given characters.",
+   "syntax": "size_t strcspn(const char *s, const char *reject);",
+   "header": "<string.h>",
+   "description": "Returns the index of the first character of `s` that is in `reject` (or `strlen(s)` if none). Common idiom to strip a newline: `s[strcspn(s, \"\\n\")] = '\\0';`.",
+   "example": "line[strcspn(line, \"\\n\")] = '\\0';",
+   "see": [
+    "t3-ref-fgets",
+    "t3-ref-strchr"
+   ]
+  },
+  {
+   "id": "t3-ref-strspn",
+   "title": "strspn",
+   "category": "Strings",
+   "summary": "Length of the initial part of a string made only of the given characters.",
+   "syntax": "size_t strspn(const char *s, const char *accept);",
+   "header": "<string.h>",
+   "description": "Returns how many characters at the start of `s` are all in `accept`.",
+   "example": "size_t digits = strspn(s, \"0123456789\");",
+   "see": [
+    "t3-ref-strcspn"
+   ]
+  }
+ ]
+}

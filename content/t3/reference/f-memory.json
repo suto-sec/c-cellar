@@ -1,0 +1,139 @@
+{
+ "order": 6,
+ "entries": [
+  {
+   "id": "t3-ref-malloc",
+   "title": "malloc",
+   "category": "Memory",
+   "summary": "Allocate size bytes on the heap (uninitialised).",
+   "syntax": "void *malloc(size_t size);",
+   "header": "<stdlib.h>",
+   "description": "Returns a pointer to `size` bytes, or NULL if there is not enough memory: check it. The memory holds garbage until you write it. You must `free` it exactly once. In C no cast of the result is needed.",
+   "example": "int *v = malloc(n * sizeof *v);\nif (v == NULL)\n    return 1;\n/* … use v[0] … v[n-1] … */\nfree(v);",
+   "mistakes": [
+    "Allocating `strlen(s)` for a string instead of `strlen(s) + 1`.",
+    "Forgetting `free` (a leak) or using the block after `free`."
+   ],
+   "see": [
+    "t3-ref-calloc",
+    "t3-ref-realloc",
+    "t3-ref-free",
+    "t3-ref-sizeof"
+   ]
+  },
+  {
+   "id": "t3-ref-calloc",
+   "title": "calloc",
+   "category": "Memory",
+   "summary": "Allocate n * size bytes, all set to zero.",
+   "syntax": "void *calloc(size_t n, size_t size);",
+   "header": "<stdlib.h>",
+   "description": "Like `malloc`, but the memory is zero-filled and the multiplication is checked for overflow. Returns NULL on failure.",
+   "example": "int *counts = calloc(26, sizeof(int));   /* 26 zeros */",
+   "see": [
+    "t3-ref-malloc",
+    "t3-ref-free"
+   ]
+  },
+  {
+   "id": "t3-ref-realloc",
+   "title": "realloc",
+   "category": "Memory",
+   "summary": "Change the size of a heap block (it may move).",
+   "syntax": "void *realloc(void *ptr, size_t size);",
+   "header": "<stdlib.h>",
+   "description": "Returns the new block (the content is kept up to the smaller size) or NULL on failure, in which case the old block is still valid. The block may move, so always use the returned pointer. `realloc(NULL, n)` behaves like `malloc(n)`.",
+   "details": [
+    {
+     "name": "safe pattern",
+     "text": "`tmp = realloc(p, n); if (tmp == NULL) { …handle… } else p = tmp;`"
+    }
+   ],
+   "example": "int *tmp = realloc(v, 2 * cap * sizeof *v);\nif (tmp == NULL) { free(v); return 1; }\nv = tmp;\ncap *= 2;",
+   "mistakes": [
+    "`p = realloc(p, n)`: when it fails you lose the old block (a leak)."
+   ],
+   "see": [
+    "t3-ref-malloc",
+    "t3-ref-free"
+   ]
+  },
+  {
+   "id": "t3-ref-free",
+   "title": "free",
+   "category": "Memory",
+   "summary": "Release a heap block.",
+   "syntax": "void free(void *ptr);",
+   "header": "<stdlib.h>",
+   "description": "The pointer must come from `malloc`, `calloc` or `realloc` and be freed once. `free(NULL)` does nothing. Set the pointer to NULL afterwards if it will still be around.",
+   "example": "free(v);\nv = NULL;",
+   "mistakes": [
+    "Double free, use after free, freeing a pointer into the middle of a block (valgrind finds these)."
+   ],
+   "see": [
+    "t3-ref-malloc",
+    "t3-ref-valgrind"
+   ]
+  },
+  {
+   "id": "t3-ref-memcpy",
+   "title": "memcpy",
+   "category": "Memory",
+   "summary": "Copy n bytes between non-overlapping blocks.",
+   "syntax": "void *memcpy(void *dst, const void *src, size_t n);",
+   "header": "<string.h>",
+   "description": "The areas must not overlap (use `memmove` if they might). Returns `dst`.",
+   "example": "memcpy(dst, src, n * sizeof *src);",
+   "mistakes": [
+    "Overlapping source and destination."
+   ],
+   "see": [
+    "t3-ref-memmove",
+    "t3-ref-memset"
+   ]
+  },
+  {
+   "id": "t3-ref-memmove",
+   "title": "memmove",
+   "category": "Memory",
+   "summary": "Copy n bytes; the areas may overlap.",
+   "syntax": "void *memmove(void *dst, const void *src, size_t n);",
+   "header": "<string.h>",
+   "description": "Behaves as if the bytes were first copied to a temporary area. Use it to shift elements inside one array.",
+   "example": "memmove(&v[i + 1], &v[i], (n - i) * sizeof v[0]);   /* make room at i */",
+   "see": [
+    "t3-ref-memcpy"
+   ]
+  },
+  {
+   "id": "t3-ref-memset",
+   "title": "memset",
+   "category": "Memory",
+   "summary": "Fill n bytes with one byte value.",
+   "syntax": "void *memset(void *s, int c, size_t n);",
+   "header": "<string.h>",
+   "description": "Sets each of the `n` bytes to `(unsigned char) c`. Mostly used with 0 to clear a buffer. Not meant for filling `int` arrays with other values.",
+   "example": "char buf[64];\nmemset(buf, 0, sizeof buf);",
+   "mistakes": [
+    "`memset(v, 1, n)` on an int array does not set the elements to 1."
+   ],
+   "see": [
+    "t3-ref-memcpy",
+    "t3-ref-calloc"
+   ]
+  },
+  {
+   "id": "t3-ref-memcmp",
+   "title": "memcmp",
+   "category": "Memory",
+   "summary": "Compare two blocks of n bytes.",
+   "syntax": "int memcmp(const void *a, const void *b, size_t n);",
+   "header": "<string.h>",
+   "description": "Returns 0 if they are equal, negative or positive like `strcmp`. Works on any data, not just strings.",
+   "example": "if (memcmp(a, b, sizeof a) == 0) { /* identical */ }",
+   "see": [
+    "t3-ref-strcmp"
+   ]
+  }
+ ]
+}

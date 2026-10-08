@@ -1,0 +1,134 @@
+{
+ "order": 5,
+ "entries": [
+  {
+   "id": "t3-ref-mkdir",
+   "title": "mkdir",
+   "category": "Directories",
+   "summary": "Create a directory.",
+   "syntax": "int mkdir(const char *path, mode_t mode);",
+   "header": "<sys/stat.h>",
+   "description": "Returns 0 on success, -1 on error (`EEXIST` if it exists). The permissions are `mode & ~umask`; directories usually need the execute bits, e.g. `0755`.",
+   "example": "if (mkdir(\"out\", 0755) == -1)\n    perror(\"mkdir\");",
+   "see": [
+    "t3-ref-rmdir",
+    "t3-ref-chdir"
+   ]
+  },
+  {
+   "id": "t3-ref-rmdir",
+   "title": "rmdir",
+   "category": "Directories",
+   "summary": "Remove an empty directory.",
+   "syntax": "int rmdir(const char *path);",
+   "header": "<unistd.h>",
+   "description": "Returns 0 on success; fails with `ENOTEMPTY` if the directory is not empty.",
+   "example": "rmdir(\"out\");",
+   "see": [
+    "t3-ref-mkdir",
+    "t3-ref-remove"
+   ]
+  },
+  {
+   "id": "t3-ref-getcwd",
+   "title": "getcwd",
+   "category": "Directories",
+   "summary": "Absolute path of the current working directory.",
+   "syntax": "char *getcwd(char *buf, size_t size);",
+   "header": "<unistd.h>",
+   "description": "Fills `buf` and returns it, or returns NULL on error (`ERANGE` if the buffer is too small).",
+   "example": "char cwd[4096];\nif (getcwd(cwd, sizeof cwd) != NULL)\n    puts(cwd);",
+   "mistakes": [
+    "A too small buffer."
+   ],
+   "see": [
+    "t3-ref-chdir"
+   ]
+  },
+  {
+   "id": "t3-ref-chdir",
+   "title": "chdir",
+   "category": "Directories",
+   "summary": "Change the current working directory of the program.",
+   "syntax": "int chdir(const char *path);",
+   "header": "<unistd.h>",
+   "description": "Returns 0 on success, -1 on error. It changes the directory of YOUR process only: a program cannot change the directory of the shell that started it.",
+   "example": "if (chdir(\"/tmp\") == -1)\n    perror(\"/tmp\");",
+   "mistakes": [
+    "Expecting the calling shell to change directory."
+   ],
+   "see": [
+    "t3-ref-getcwd",
+    "t3-ref-getenv"
+   ]
+  },
+  {
+   "id": "t3-ref-opendir",
+   "title": "opendir",
+   "category": "Directories",
+   "summary": "Open a directory for reading.",
+   "aliases": [
+    "DIR"
+   ],
+   "syntax": "DIR *opendir(const char *path);",
+   "header": "<dirent.h>",
+   "description": "Returns a `DIR *` or NULL on error (not a directory, no permission…).",
+   "example": "DIR *d = opendir(\".\");\nif (d == NULL) { perror(\".\"); return 1; }",
+   "see": [
+    "t3-ref-readdir",
+    "t3-ref-closedir"
+   ]
+  },
+  {
+   "id": "t3-ref-readdir",
+   "title": "readdir",
+   "category": "Directories",
+   "summary": "Next entry of an open directory.",
+   "aliases": [
+    "dirent",
+    "d_name"
+   ],
+   "syntax": "struct dirent *readdir(DIR *dir);",
+   "header": "<dirent.h>",
+   "description": "Returns the next entry, or NULL at the end. The name is `entry->d_name`. The order is arbitrary and includes `.` (the directory) and `..` (its parent): skip them with `strcmp` when you do not want them. The returned pointer is overwritten by the next call: copy the name (`strdup`) if you need it later.",
+   "example": "struct dirent *e;\nwhile ((e = readdir(d)) != NULL) {\n    if (!strcmp(e->d_name, \".\") || !strcmp(e->d_name, \"..\")) continue;\n    puts(e->d_name);\n}",
+   "mistakes": [
+    "Keeping `d_name` pointers after the next `readdir`.",
+    "Assuming sorted output."
+   ],
+   "see": [
+    "t3-ref-opendir",
+    "t3-ref-closedir",
+    "t3-ref-strcmp",
+    "t3-ref-strdup"
+   ]
+  },
+  {
+   "id": "t3-ref-closedir",
+   "title": "closedir",
+   "category": "Directories",
+   "summary": "Close a directory opened with opendir.",
+   "syntax": "int closedir(DIR *dir);",
+   "header": "<dirent.h>",
+   "description": "Returns 0 on success, -1 on error.",
+   "example": "closedir(d);",
+   "see": [
+    "t3-ref-opendir",
+    "t3-ref-readdir"
+   ]
+  },
+  {
+   "id": "t3-ref-rewinddir",
+   "title": "rewinddir",
+   "category": "Directories",
+   "summary": "Go back to the first entry of an open directory.",
+   "syntax": "void rewinddir(DIR *dir);",
+   "header": "<dirent.h>",
+   "description": "The next `readdir` returns the first entry again.",
+   "example": "rewinddir(d);",
+   "see": [
+    "t3-ref-readdir"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,295 @@
+{
+ "order": 3,
+ "entries": [
+  {
+   "id": "t3-ref-fopen",
+   "title": "fopen",
+   "category": "Files (stdio)",
+   "summary": "Open a file as a stream (FILE *).",
+   "aliases": [
+    "FILE"
+   ],
+   "syntax": "FILE *fopen(const char *path, const char *mode);",
+   "header": "<stdio.h>",
+   "description": "Returns NULL on failure and sets `errno`. Streams are buffered: data may reach the file only when the buffer is full or you call `fclose` or `fflush`.",
+   "details": [
+    {
+     "name": "\"r\"",
+     "text": "read; the file must exist"
+    },
+    {
+     "name": "\"w\"",
+     "text": "write; creates the file or empties it"
+    },
+    {
+     "name": "\"a\"",
+     "text": "append at the end; creates it if missing"
+    },
+    {
+     "name": "\"r+\"",
+     "text": "read and write; must exist; not emptied"
+    },
+    {
+     "name": "\"w+\"",
+     "text": "read and write; creates or empties"
+    },
+    {
+     "name": "\"a+\"",
+     "text": "read anywhere, write always at the end"
+    }
+   ],
+   "example": "FILE *f = fopen(\"out.txt\", \"w\");\nif (f == NULL) {\n    perror(\"out.txt\");\n    return 1;\n}\nfprintf(f, \"hello\\n\");\nfclose(f);",
+   "mistakes": [
+    "Not checking for NULL.",
+    "Using \"w\" when you meant to keep the old content."
+   ],
+   "see": [
+    "t3-ref-fclose",
+    "t3-ref-fprintf",
+    "t3-ref-fgets",
+    "t3-ref-errno"
+   ]
+  },
+  {
+   "id": "t3-ref-fclose",
+   "title": "fclose",
+   "category": "Files (stdio)",
+   "summary": "Flush and close a stream.",
+   "syntax": "int fclose(FILE *stream);",
+   "header": "<stdio.h>",
+   "description": "Writes the buffered data, releases the stream and returns 0 (or `EOF` on error). Without it the last data may never reach the file.",
+   "example": "fclose(f);",
+   "mistakes": [
+    "Forgetting to close a file you wrote to."
+   ],
+   "see": [
+    "t3-ref-fopen",
+    "t3-ref-fflush"
+   ]
+  },
+  {
+   "id": "t3-ref-fflush",
+   "title": "fflush",
+   "category": "Files (stdio)",
+   "summary": "Write the buffered output of a stream now.",
+   "syntax": "int fflush(FILE *stream);",
+   "header": "<stdio.h>",
+   "description": "Useful before a prompt, before `fork`, or before switching to low-level calls on the same file. `fflush(stdout)` makes the prompt visible even without a newline.",
+   "example": "printf(\"Name: \");\nfflush(stdout);",
+   "see": [
+    "t3-ref-fclose",
+    "t3-ref-printf"
+   ]
+  },
+  {
+   "id": "t3-ref-fread",
+   "title": "fread",
+   "category": "Files (stdio)",
+   "summary": "Read blocks of binary data.",
+   "syntax": "size_t fread(void *ptr, size_t size, size_t n, FILE *stream);",
+   "header": "<stdio.h>",
+   "description": "Reads up to `n` items of `size` bytes and returns the number of ITEMS read. A short count means end of file or an error: tell them apart with `feof` and `ferror`. The bytes are stored exactly as in the file.",
+   "example": "unsigned char buf[256];\nsize_t n;\nwhile ((n = fread(buf, 1, sizeof(buf), in)) > 0)\n    fwrite(buf, 1, n, out);",
+   "mistakes": [
+    "Writing `sizeof buf` bytes at the end of the file instead of the `n` read."
+   ],
+   "see": [
+    "t3-ref-fwrite",
+    "t3-ref-feof"
+   ]
+  },
+  {
+   "id": "t3-ref-fwrite",
+   "title": "fwrite",
+   "category": "Files (stdio)",
+   "summary": "Write blocks of binary data.",
+   "syntax": "size_t fwrite(const void *ptr, size_t size, size_t n, FILE *stream);",
+   "header": "<stdio.h>",
+   "description": "Writes `n` items of `size` bytes and returns the number of items written; less than `n` means an error.",
+   "example": "int v[3] = {1, 2, 3};\nfwrite(v, sizeof(int), 3, f);",
+   "mistakes": [
+    "Swapping `size` and `n` (the return value then counts differently)."
+   ],
+   "see": [
+    "t3-ref-fread",
+    "t3-ref-fopen"
+   ]
+  },
+  {
+   "id": "t3-ref-fseek",
+   "title": "fseek",
+   "category": "Files (stdio)",
+   "summary": "Move the position in a stream.",
+   "aliases": [
+    "SEEK_SET",
+    "SEEK_CUR",
+    "SEEK_END"
+   ],
+   "syntax": "int fseek(FILE *stream, long offset, int whence);",
+   "header": "<stdio.h>",
+   "description": "Returns 0 on success. `whence` is the origin of the offset.",
+   "details": [
+    {
+     "name": "SEEK_SET",
+     "text": "from the start of the file"
+    },
+    {
+     "name": "SEEK_CUR",
+     "text": "from the current position"
+    },
+    {
+     "name": "SEEK_END",
+     "text": "from the end of the file (the offset is usually negative or 0)"
+    }
+   ],
+   "example": "fseek(f, 0, SEEK_END);\nlong size = ftell(f);\nrewind(f);",
+   "see": [
+    "t3-ref-ftell",
+    "t3-ref-rewind",
+    "t3-ref-lseek"
+   ]
+  },
+  {
+   "id": "t3-ref-ftell",
+   "title": "ftell",
+   "category": "Files (stdio)",
+   "summary": "Current position in a stream.",
+   "syntax": "long ftell(FILE *stream);",
+   "header": "<stdio.h>",
+   "description": "Returns the offset in bytes from the start, or -1 on error. After `fseek(f, 0, SEEK_END)` it is the file size.",
+   "example": "long pos = ftell(f);",
+   "see": [
+    "t3-ref-fseek",
+    "t3-ref-rewind"
+   ]
+  },
+  {
+   "id": "t3-ref-rewind",
+   "title": "rewind",
+   "category": "Files (stdio)",
+   "summary": "Go back to the start of a stream.",
+   "syntax": "void rewind(FILE *stream);",
+   "header": "<stdio.h>",
+   "description": "Equivalent to `fseek(stream, 0, SEEK_SET)` and clears the error and end-of-file flags.",
+   "example": "rewind(f);",
+   "see": [
+    "t3-ref-fseek",
+    "t3-ref-fgetpos"
+   ]
+  },
+  {
+   "id": "t3-ref-fgetpos",
+   "title": "fgetpos",
+   "category": "Files (stdio)",
+   "summary": "Save the position of a stream (as an opaque fpos_t).",
+   "syntax": "int fgetpos(FILE *stream, fpos_t *pos);",
+   "header": "<stdio.h>",
+   "description": "Stores the current position in `*pos`; restore it later with `fsetpos`. Works for positions that do not fit in a long.",
+   "example": "fpos_t p;\nfgetpos(f, &p);\n/* … read … */\nfsetpos(f, &p);",
+   "see": [
+    "t3-ref-fsetpos",
+    "t3-ref-ftell"
+   ]
+  },
+  {
+   "id": "t3-ref-fsetpos",
+   "title": "fsetpos",
+   "category": "Files (stdio)",
+   "summary": "Restore a position saved with fgetpos.",
+   "syntax": "int fsetpos(FILE *stream, const fpos_t *pos);",
+   "header": "<stdio.h>",
+   "description": "Returns 0 on success.",
+   "example": "fsetpos(f, &p);",
+   "see": [
+    "t3-ref-fgetpos",
+    "t3-ref-fseek"
+   ]
+  },
+  {
+   "id": "t3-ref-feof",
+   "title": "feof",
+   "category": "Files (stdio)",
+   "summary": "Has the end of the file been reached (by a previous read)?",
+   "syntax": "int feof(FILE *stream);",
+   "header": "<stdio.h>",
+   "description": "True only AFTER a read hit the end of the file, so `while (!feof(f))` runs once too often. Test the return value of the read function instead; use `feof` to find out why a read stopped.",
+   "example": "if (fgets(buf, sizeof buf, f) == NULL && feof(f))\n    puts(\"end of file\");",
+   "mistakes": [
+    "`while (!feof(f))` as the loop condition."
+   ],
+   "see": [
+    "t3-ref-ferror",
+    "t3-ref-fgets"
+   ]
+  },
+  {
+   "id": "t3-ref-ferror",
+   "title": "ferror",
+   "category": "Files (stdio)",
+   "summary": "Did a read or write on the stream fail?",
+   "syntax": "int ferror(FILE *stream);",
+   "header": "<stdio.h>",
+   "description": "Non-zero if the error flag is set. Together with `feof` it explains why a read function returned fewer items than asked.",
+   "example": "if (ferror(f))\n    fprintf(stderr, \"read error\\n\");",
+   "see": [
+    "t3-ref-feof",
+    "t3-ref-errno"
+   ]
+  },
+  {
+   "id": "t3-ref-fdopen",
+   "title": "fdopen",
+   "category": "Files (stdio)",
+   "summary": "Wrap an open file descriptor in a stream.",
+   "syntax": "FILE *fdopen(int fd, const char *mode);",
+   "header": "<stdio.h>",
+   "description": "Lets you use stdio functions on a descriptor from `open`, `dup2` or a pipe. Closing the stream closes the descriptor.",
+   "example": "FILE *f = fdopen(fd, \"w\");",
+   "see": [
+    "t3-ref-fileno",
+    "t3-ref-open"
+   ]
+  },
+  {
+   "id": "t3-ref-fileno",
+   "title": "fileno",
+   "category": "Files (stdio)",
+   "summary": "The file descriptor of a stream.",
+   "syntax": "int fileno(FILE *stream);",
+   "header": "<stdio.h>",
+   "description": "Returns the integer descriptor (stdin is 0, stdout 1, stderr 2). Useful with `dup2` and `fstat`.",
+   "example": "int fd = fileno(f);",
+   "see": [
+    "t3-ref-fdopen",
+    "t3-ref-dup2"
+   ]
+  },
+  {
+   "id": "t3-ref-rename",
+   "title": "rename",
+   "category": "Files (stdio)",
+   "summary": "Rename or move a file.",
+   "syntax": "int rename(const char *old, const char *new);",
+   "header": "<stdio.h>",
+   "description": "Returns 0 on success, -1 on error. If `new` exists it is replaced.",
+   "example": "if (rename(\"a.txt\", \"b.txt\") != 0)\n    perror(\"rename\");",
+   "see": [
+    "t3-ref-remove"
+   ]
+  },
+  {
+   "id": "t3-ref-remove",
+   "title": "remove",
+   "category": "Files (stdio)",
+   "summary": "Delete a file.",
+   "syntax": "int remove(const char *path);",
+   "header": "<stdio.h>",
+   "description": "Returns 0 on success, -1 on error (check `errno`).",
+   "example": "remove(\"tmp.txt\");",
+   "see": [
+    "t3-ref-rename",
+    "t3-ref-rmdir"
+   ]
+  }
+ ]
+}

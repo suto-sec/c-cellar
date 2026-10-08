@@ -1,0 +1,190 @@
+{
+ "order": 8,
+ "entries": [
+  {
+   "id": "t3-ref-isalpha",
+   "title": "isalpha",
+   "category": "Characters",
+   "summary": "Is it a letter?",
+   "syntax": "int isalpha(int c);",
+   "header": "<ctype.h>",
+   "description": "Takes a character code (an unsigned char value or EOF) and returns non-zero (true) or 0 (false). Depends on the locale; in the C locale it is ASCII.",
+   "example": "if (isalpha((unsigned char) c)) letters++;",
+   "mistakes": [
+    "Passing a negative `char` value: cast it, `(unsigned char) c`."
+   ],
+   "see": [
+    "t3-ref-toupper",
+    "t3-ref-tolower"
+   ]
+  },
+  {
+   "id": "t3-ref-isdigit",
+   "title": "isdigit",
+   "category": "Characters",
+   "summary": "Is it a decimal digit 0-9?",
+   "syntax": "int isdigit(int c);",
+   "header": "<ctype.h>",
+   "description": "Takes a character code (an unsigned char value or EOF) and returns non-zero (true) or 0 (false). Depends on the locale; in the C locale it is ASCII.",
+   "example": "if (isdigit((unsigned char) c)) n = n * 10 + (c - '0');",
+   "see": [
+    "t3-ref-toupper",
+    "t3-ref-tolower"
+   ]
+  },
+  {
+   "id": "t3-ref-isalnum",
+   "title": "isalnum",
+   "category": "Characters",
+   "summary": "Is it a letter or a digit?",
+   "syntax": "int isalnum(int c);",
+   "header": "<ctype.h>",
+   "description": "Takes a character code (an unsigned char value or EOF) and returns non-zero (true) or 0 (false). Depends on the locale; in the C locale it is ASCII.",
+   "example": "while (isalnum((unsigned char) *p)) p++;",
+   "see": [
+    "t3-ref-toupper",
+    "t3-ref-tolower"
+   ]
+  },
+  {
+   "id": "t3-ref-isspace",
+   "title": "isspace",
+   "category": "Characters",
+   "summary": "Is it whitespace (space, \\t, \\n, \\v, \\f, \\r)?",
+   "syntax": "int isspace(int c);",
+   "header": "<ctype.h>",
+   "description": "Takes a character code (an unsigned char value or EOF) and returns non-zero (true) or 0 (false). Depends on the locale; in the C locale it is ASCII.",
+   "example": "while (isspace((unsigned char) *p)) p++;",
+   "see": [
+    "t3-ref-toupper",
+    "t3-ref-tolower"
+   ]
+  },
+  {
+   "id": "t3-ref-isupper",
+   "title": "isupper",
+   "category": "Characters",
+   "summary": "Is it an upper-case letter?",
+   "syntax": "int isupper(int c);",
+   "header": "<ctype.h>",
+   "description": "Takes a character code (an unsigned char value or EOF) and returns non-zero (true) or 0 (false). Depends on the locale; in the C locale it is ASCII.",
+   "example": "if (isupper((unsigned char) c)) caps++;",
+   "see": [
+    "t3-ref-toupper",
+    "t3-ref-tolower"
+   ]
+  },
+  {
+   "id": "t3-ref-islower",
+   "title": "islower",
+   "category": "Characters",
+   "summary": "Is it a lower-case letter?",
+   "syntax": "int islower(int c);",
+   "header": "<ctype.h>",
+   "description": "Takes a character code (an unsigned char value or EOF) and returns non-zero (true) or 0 (false). Depends on the locale; in the C locale it is ASCII.",
+   "example": "if (islower((unsigned char) c)) c = toupper((unsigned char) c);",
+   "see": [
+    "t3-ref-toupper",
+    "t3-ref-tolower"
+   ]
+  },
+  {
+   "id": "t3-ref-ispunct",
+   "title": "ispunct",
+   "category": "Characters",
+   "summary": "Is it a punctuation character (printable, not space, letter or digit)?",
+   "syntax": "int ispunct(int c);",
+   "header": "<ctype.h>",
+   "description": "Takes a character code (an unsigned char value or EOF) and returns non-zero (true) or 0 (false). Depends on the locale; in the C locale it is ASCII.",
+   "example": "if (ispunct((unsigned char) c)) marks++;",
+   "see": [
+    "t3-ref-toupper",
+    "t3-ref-tolower"
+   ]
+  },
+  {
+   "id": "t3-ref-isxdigit",
+   "title": "isxdigit",
+   "category": "Characters",
+   "summary": "Is it a hexadecimal digit (0-9, a-f, A-F)?",
+   "syntax": "int isxdigit(int c);",
+   "header": "<ctype.h>",
+   "description": "Takes a character code (an unsigned char value or EOF) and returns non-zero (true) or 0 (false). Depends on the locale; in the C locale it is ASCII.",
+   "example": "if (isxdigit((unsigned char) c)) hex++;",
+   "see": [
+    "t3-ref-toupper",
+    "t3-ref-tolower"
+   ]
+  },
+  {
+   "id": "t3-ref-isprint",
+   "title": "isprint",
+   "category": "Characters",
+   "summary": "Is it printable (including the space)?",
+   "syntax": "int isprint(int c);",
+   "header": "<ctype.h>",
+   "description": "Takes a character code (an unsigned char value or EOF) and returns non-zero (true) or 0 (false). Depends on the locale; in the C locale it is ASCII.",
+   "example": "if (!isprint((unsigned char) c)) c = '?';",
+   "see": [
+    "t3-ref-toupper",
+    "t3-ref-tolower"
+   ]
+  },
+  {
+   "id": "t3-ref-isgraph",
+   "title": "isgraph",
+   "category": "Characters",
+   "summary": "Is it printable and not a space?",
+   "syntax": "int isgraph(int c);",
+   "header": "<ctype.h>",
+   "description": "Takes a character code (an unsigned char value or EOF) and returns non-zero (true) or 0 (false). Depends on the locale; in the C locale it is ASCII.",
+   "example": "if (isgraph((unsigned char) c)) visible++;",
+   "see": [
+    "t3-ref-toupper",
+    "t3-ref-tolower"
+   ]
+  },
+  {
+   "id": "t3-ref-iscntrl",
+   "title": "iscntrl",
+   "category": "Characters",
+   "summary": "Is it a control character?",
+   "syntax": "int iscntrl(int c);",
+   "header": "<ctype.h>",
+   "description": "Takes a character code (an unsigned char value or EOF) and returns non-zero (true) or 0 (false). Depends on the locale; in the C locale it is ASCII.",
+   "example": "if (iscntrl((unsigned char) c)) ctrl++;",
+   "see": [
+    "t3-ref-toupper",
+    "t3-ref-tolower"
+   ]
+  },
+  {
+   "id": "t3-ref-toupper",
+   "title": "toupper",
+   "category": "Characters",
+   "summary": "Convert a letter to upper case.",
+   "syntax": "int toupper(int c);",
+   "header": "<ctype.h>",
+   "description": "Returns the upper-case version of a lower-case letter and any other character unchanged. It does not modify strings: apply it to each character.",
+   "example": "for (char *p = s; *p; p++)\n    *p = toupper((unsigned char) *p);",
+   "see": [
+    "t3-ref-tolower",
+    "t3-ref-islower"
+   ]
+  },
+  {
+   "id": "t3-ref-tolower",
+   "title": "tolower",
+   "category": "Characters",
+   "summary": "Convert a letter to lower case.",
+   "syntax": "int tolower(int c);",
+   "header": "<ctype.h>",
+   "description": "Returns the lower-case version of an upper-case letter and any other character unchanged.",
+   "example": "for (char *p = s; *p; p++)\n    *p = tolower((unsigned char) *p);",
+   "see": [
+    "t3-ref-toupper",
+    "t3-ref-isupper"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,292 @@
+{
+ "order": 4,
+ "entries": [
+  {
+   "id": "t3-ref-fd",
+   "title": "fd",
+   "category": "System calls (files)",
+   "summary": "File descriptors: the integers that identify open files.",
+   "aliases": [
+    "descriptor",
+    "file descriptor"
+   ],
+   "syntax": "int fd;   0 stdin   1 stdout   2 stderr",
+   "header": "<unistd.h>",
+   "description": "A descriptor is a non-negative integer that indexes a per-process table of open files. Calls that create one (`open`, `creat`, `dup`) return the LOWEST unused number; `dup2` lets you choose it. Each `open` of a file creates a new open-file entry with its own position; `dup` and `dup2` create another descriptor for the SAME entry, so the position is shared. Errors return -1 and set `errno`; a valid descriptor is never negative.",
+   "see": [
+    "t3-ref-open",
+    "t3-ref-dup",
+    "t3-ref-close"
+   ]
+  },
+  {
+   "id": "t3-ref-open",
+   "title": "open",
+   "category": "System calls (files)",
+   "summary": "Open or create a file and get a descriptor.",
+   "aliases": [
+    "O_RDONLY",
+    "O_WRONLY",
+    "O_RDWR",
+    "O_CREAT",
+    "O_TRUNC",
+    "O_APPEND",
+    "O_EXCL",
+    "S_IRUSR",
+    "S_IWUSR",
+    "S_IXUSR",
+    "S_IRGRP",
+    "S_IWGRP",
+    "S_IXGRP",
+    "S_IROTH",
+    "S_IWOTH",
+    "S_IXOTH",
+    "mode_t"
+   ],
+   "syntax": "int open(const char *path, int flags);\nint open(const char *path, int flags, mode_t mode);",
+   "header": "<fcntl.h>",
+   "description": "Exactly one access mode plus any extra flags joined with `|`. `mode` (permissions of a new file) is needed with `O_CREAT` and ignored otherwise; the real permissions are `mode & ~umask`. Returns the descriptor or -1.",
+   "details": [
+    {
+     "name": "O_RDONLY",
+     "text": "open for reading only"
+    },
+    {
+     "name": "O_WRONLY",
+     "text": "open for writing only"
+    },
+    {
+     "name": "O_RDWR",
+     "text": "open for reading and writing"
+    },
+    {
+     "name": "O_CREAT",
+     "text": "create the file if it does not exist (needs `mode`)"
+    },
+    {
+     "name": "O_TRUNC",
+     "text": "empty the file if it exists"
+    },
+    {
+     "name": "O_APPEND",
+     "text": "every write goes to the end"
+    },
+    {
+     "name": "O_EXCL",
+     "text": "with O_CREAT: fail if the file already exists"
+    },
+    {
+     "name": "S_IRUSR S_IWUSR S_IXUSR",
+     "text": "owner may read / write / execute"
+    },
+    {
+     "name": "S_IRGRP S_IWGRP S_IXGRP",
+     "text": "group permissions"
+    },
+    {
+     "name": "S_IROTH S_IWOTH S_IXOTH",
+     "text": "other users' permissions"
+    },
+    {
+     "name": "0644",
+     "text": "the same permissions as an octal number: owner rw, group r, others r"
+    }
+   ],
+   "example": "int fd = open(\"log.txt\", O_WRONLY | O_CREAT | O_APPEND, 0644);\nif (fd < 0) { perror(\"log.txt\"); return 1; }",
+   "mistakes": [
+    "Using `,` instead of `|` between flags.",
+    "Forgetting `mode` with O_CREAT."
+   ],
+   "see": [
+    "t3-ref-creat",
+    "t3-ref-read",
+    "t3-ref-write",
+    "t3-ref-close",
+    "t3-ref-fd"
+   ]
+  },
+  {
+   "id": "t3-ref-creat",
+   "title": "creat",
+   "category": "System calls (files)",
+   "summary": "Create (or empty) a file and open it for writing.",
+   "syntax": "int creat(const char *path, mode_t mode);",
+   "header": "<fcntl.h>",
+   "description": "Exactly `open(path, O_WRONLY | O_CREAT | O_TRUNC, mode)`. Returns the descriptor or -1.",
+   "example": "int fd = creat(\"out.txt\", 0640);",
+   "see": [
+    "t3-ref-open"
+   ]
+  },
+  {
+   "id": "t3-ref-read",
+   "title": "read",
+   "category": "System calls (files)",
+   "summary": "Read bytes from a descriptor.",
+   "aliases": [
+    "ssize_t"
+   ],
+   "syntax": "ssize_t read(int fd, void *buf, size_t count);",
+   "header": "<unistd.h>",
+   "description": "Returns the number of bytes read (possibly LESS than `count`), 0 at the end of the file, or -1 on error. The file position advances by the amount read.",
+   "example": "char buf[256];\nssize_t n;\nwhile ((n = read(in, buf, sizeof buf)) > 0)\n    write(out, buf, n);",
+   "mistakes": [
+    "Treating a short read as the end of the file: only 0 means that.",
+    "Declaring the result as `int` or `size_t`: it must be signed (`ssize_t`)."
+   ],
+   "see": [
+    "t3-ref-write",
+    "t3-ref-open",
+    "t3-ref-close"
+   ]
+  },
+  {
+   "id": "t3-ref-write",
+   "title": "write",
+   "category": "System calls (files)",
+   "summary": "Write bytes to a descriptor.",
+   "syntax": "ssize_t write(int fd, const void *buf, size_t count);",
+   "header": "<unistd.h>",
+   "description": "Returns the number of bytes written, which can be less than `count` (for example after a signal): check it. Returns -1 on error. Write exactly what you read: `write(out, buf, n)` with `n` the return value of `read`.",
+   "example": "if (write(fd, msg, strlen(msg)) < 0)\n    perror(\"write\");",
+   "mistakes": [
+    "Writing `sizeof buf` bytes instead of the bytes actually read."
+   ],
+   "see": [
+    "t3-ref-read",
+    "t3-ref-open",
+    "t3-ref-printf"
+   ]
+  },
+  {
+   "id": "t3-ref-lseek",
+   "title": "lseek",
+   "category": "System calls (files)",
+   "summary": "Change the position of a descriptor.",
+   "aliases": [
+    "off_t"
+   ],
+   "syntax": "off_t lseek(int fd, off_t offset, int whence);",
+   "header": "<unistd.h>",
+   "description": "Returns the new position from the start of the file, or -1. `lseek(fd, 0, SEEK_END)` returns the file size; `lseek(fd, 0, SEEK_CUR)` the current position.",
+   "details": [
+    {
+     "name": "SEEK_SET",
+     "text": "position = offset"
+    },
+    {
+     "name": "SEEK_CUR",
+     "text": "position = current position + offset"
+    },
+    {
+     "name": "SEEK_END",
+     "text": "position = file size + offset"
+    }
+   ],
+   "example": "off_t size = lseek(fd, 0, SEEK_END);\nlseek(fd, 0, SEEK_SET);   /* back to the start */",
+   "see": [
+    "t3-ref-read",
+    "t3-ref-fseek"
+   ]
+  },
+  {
+   "id": "t3-ref-close",
+   "title": "close",
+   "category": "System calls (files)",
+   "summary": "Release a descriptor.",
+   "syntax": "int close(int fd);",
+   "header": "<unistd.h>",
+   "description": "Returns 0 on success, -1 on error. The number becomes free and may be reused by the next `open`. A process has a limited number of descriptors: close what you open.",
+   "example": "close(fd);",
+   "mistakes": [
+    "Leaking descriptors in a loop."
+   ],
+   "see": [
+    "t3-ref-open",
+    "t3-ref-dup"
+   ]
+  },
+  {
+   "id": "t3-ref-dup",
+   "title": "dup",
+   "category": "System calls (files)",
+   "summary": "Copy a descriptor into the lowest free number.",
+   "syntax": "int dup(int oldfd);",
+   "header": "<unistd.h>",
+   "description": "The new descriptor refers to the same open file: the same position and flags. Returns the new descriptor or -1.",
+   "example": "int copy = dup(1);   /* another way to write on stdout */",
+   "mistakes": [
+    "Expecting the copies to have independent positions."
+   ],
+   "see": [
+    "t3-ref-dup2",
+    "t3-ref-fd"
+   ]
+  },
+  {
+   "id": "t3-ref-dup2",
+   "title": "dup2",
+   "category": "System calls (files)",
+   "summary": "Make newfd a copy of oldfd (closing newfd first); the basis of redirection.",
+   "syntax": "int dup2(int oldfd, int newfd);",
+   "header": "<unistd.h>",
+   "description": "If `newfd` was open it is closed first; if `oldfd == newfd` nothing happens. Both descriptors then share the same position. Returns `newfd` or -1.",
+   "details": [
+    {
+     "name": "redirect stdout to a file",
+     "text": "open the file, `dup2(fd, STDOUT_FILENO)`, `close(fd)`; later `printf` output goes to the file (flush stdio first)"
+    }
+   ],
+   "example": "int fd = open(\"out.txt\", O_WRONLY | O_CREAT | O_TRUNC, 0644);\ndup2(fd, STDOUT_FILENO);\nclose(fd);\nprintf(\"this goes to out.txt\\n\");",
+   "mistakes": [
+    "Forgetting to flush the stdio buffers before redirecting."
+   ],
+   "see": [
+    "t3-ref-dup",
+    "t3-ref-open",
+    "t3-ref-fileno"
+   ]
+  },
+  {
+   "id": "t3-ref-access",
+   "title": "access",
+   "category": "System calls (files)",
+   "summary": "Test whether the file exists or you may read, write or execute it.",
+   "aliases": [
+    "F_OK",
+    "R_OK",
+    "W_OK",
+    "X_OK"
+   ],
+   "syntax": "int access(const char *path, int mode);",
+   "header": "<unistd.h>",
+   "description": "Returns 0 if the access is allowed, -1 otherwise (see `errno`). `mode` is `F_OK` (exists), or `R_OK`, `W_OK`, `X_OK` joined with `|`.",
+   "details": [
+    {
+     "name": "F_OK",
+     "text": "the file exists"
+    },
+    {
+     "name": "R_OK",
+     "text": "may read"
+    },
+    {
+     "name": "W_OK",
+     "text": "may write"
+    },
+    {
+     "name": "X_OK",
+     "text": "may execute (or search, for a directory)"
+    }
+   ],
+   "example": "if (access(\"/usr/bin/gcc\", X_OK) == 0)\n    puts(\"gcc is executable\");",
+   "mistakes": [
+    "Using it to 'check, then open': the file can change in between; just try `open` and check the result."
+   ],
+   "see": [
+    "t3-ref-getenv",
+    "t3-ref-open"
+   ]
+  }
+ ]
+}

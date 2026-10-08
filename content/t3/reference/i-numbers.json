@@ -1,0 +1,208 @@
+{
+ "order": 9,
+ "entries": [
+  {
+   "id": "t3-ref-atoi",
+   "title": "atoi",
+   "category": "Numbers and conversion",
+   "summary": "Convert a string to an int (no error detection).",
+   "aliases": [
+    "atol"
+   ],
+   "syntax": "int atoi(const char *s);",
+   "header": "<stdlib.h>",
+   "description": "Skips leading whitespace and reads an optional sign and digits; stops at the first other character. Returns 0 when there is no number, so you cannot tell \"0\" from \"abc\". Use `strtol` when errors matter.",
+   "example": "int n = atoi(argv[1]);   /* \"42\" → 42 */",
+   "mistakes": [
+    "Using it on untrusted input."
+   ],
+   "see": [
+    "t3-ref-strtol",
+    "t3-ref-atof"
+   ]
+  },
+  {
+   "id": "t3-ref-atof",
+   "title": "atof",
+   "category": "Numbers and conversion",
+   "summary": "Convert a string to a double.",
+   "syntax": "double atof(const char *s);",
+   "header": "<stdlib.h>",
+   "description": "Like `atoi` for floating point; no error detection. Use `strtod` for that.",
+   "example": "double x = atof(\"3.5\");",
+   "see": [
+    "t3-ref-strtod",
+    "t3-ref-atoi"
+   ]
+  },
+  {
+   "id": "t3-ref-strtol",
+   "title": "strtol",
+   "category": "Numbers and conversion",
+   "summary": "Convert a string to a long, with error detection and a base.",
+   "aliases": [
+    "strtoul"
+   ],
+   "syntax": "long strtol(const char *s, char **end, int base);",
+   "header": "<stdlib.h>",
+   "description": "Sets `*end` to the first character not converted: when `*end == '\\0'` the whole string was a number; `*end == s` means no digits at all. Overflow sets `errno` to `ERANGE`. `base` 10 for decimal, 16 for hexadecimal, 0 to detect `0x` and `0`.",
+   "example": "char *end;\nerrno = 0;\nlong v = strtol(argv[1], &end, 10);\nif (end == argv[1] || *end != '\\0' || errno == ERANGE)\n    return 1;   /* not a valid number */",
+   "mistakes": [
+    "Ignoring `end`."
+   ],
+   "see": [
+    "t3-ref-atoi",
+    "t3-ref-strtod",
+    "t3-ref-errno"
+   ]
+  },
+  {
+   "id": "t3-ref-strtod",
+   "title": "strtod",
+   "category": "Numbers and conversion",
+   "summary": "Convert a string to a double, with error detection.",
+   "syntax": "double strtod(const char *s, char **end);",
+   "header": "<stdlib.h>",
+   "description": "Works like `strtol`: `*end` points after the converted text.",
+   "example": "char *end;\ndouble x = strtod(s, &end);",
+   "see": [
+    "t3-ref-strtol",
+    "t3-ref-atof"
+   ]
+  },
+  {
+   "id": "t3-ref-abs",
+   "title": "abs",
+   "category": "Numbers and conversion",
+   "summary": "Absolute value of an int.",
+   "aliases": [
+    "labs"
+   ],
+   "syntax": "int abs(int n);",
+   "header": "<stdlib.h>",
+   "description": "`abs(INT_MIN)` overflows. Use `labs` for long and `fabs` for double.",
+   "example": "int d = abs(a - b);",
+   "mistakes": [
+    "Using `abs` on a double (use `fabs`)."
+   ],
+   "see": [
+    "t3-ref-fabs"
+   ]
+  },
+  {
+   "id": "t3-ref-rand",
+   "title": "rand",
+   "category": "Numbers and conversion",
+   "summary": "Pseudo-random integer from 0 to RAND_MAX.",
+   "aliases": [
+    "RAND_MAX"
+   ],
+   "syntax": "int rand(void);",
+   "header": "<stdlib.h>",
+   "description": "The sequence is the same every run unless you seed it once with `srand`. For a number in [0, n) use `rand() % n` (slightly biased but fine for exercises).",
+   "example": "srand(time(NULL));\nint dice = rand() % 6 + 1;",
+   "mistakes": [
+    "Calling `srand(time(NULL))` before every `rand()`."
+   ],
+   "see": [
+    "t3-ref-srand",
+    "t3-ref-time"
+   ]
+  },
+  {
+   "id": "t3-ref-srand",
+   "title": "srand",
+   "category": "Numbers and conversion",
+   "summary": "Seed the random number generator.",
+   "syntax": "void srand(unsigned int seed);",
+   "header": "<stdlib.h>",
+   "description": "Call it once at the start. The same seed gives the same sequence, which is useful to reproduce a run.",
+   "example": "srand(42);   /* repeatable */",
+   "see": [
+    "t3-ref-rand",
+    "t3-ref-time"
+   ]
+  },
+  {
+   "id": "t3-ref-qsort",
+   "title": "qsort",
+   "category": "Numbers and conversion",
+   "summary": "Sort an array.",
+   "syntax": "void qsort(void *base, size_t n, size_t size, int (*cmp)(const void *, const void *));",
+   "header": "<stdlib.h>",
+   "description": "Sorts `n` elements of `size` bytes in place. `cmp` receives pointers to two ELEMENTS and returns negative, 0 or positive. For ints compare with `(x > y) - (x < y)` (subtracting can overflow); for an array of `char *` the callback receives `char **`.",
+   "example": "static int cmp_int(const void *a, const void *b)\n{\n    int x = *(const int *) a, y = *(const int *) b;\n    return (x > y) - (x < y);\n}\nqsort(v, n, sizeof v[0], cmp_int);",
+   "mistakes": [
+    "Returning `x - y` (overflow).",
+    "Treating the callback arguments as elements instead of pointers to them."
+   ],
+   "see": [
+    "t3-ref-bsearch",
+    "t3-ref-strcmp"
+   ]
+  },
+  {
+   "id": "t3-ref-bsearch",
+   "title": "bsearch",
+   "category": "Numbers and conversion",
+   "summary": "Binary search in a sorted array.",
+   "syntax": "void *bsearch(const void *key, const void *base, size_t n, size_t size, int (*cmp)(const void *, const void *));",
+   "header": "<stdlib.h>",
+   "description": "The array must be sorted with the same ordering as `cmp`. Returns a pointer to a matching element or NULL.",
+   "example": "int *p = bsearch(&key, v, n, sizeof v[0], cmp_int);",
+   "see": [
+    "t3-ref-qsort"
+   ]
+  },
+  {
+   "id": "t3-ref-system",
+   "title": "system",
+   "category": "Numbers and conversion",
+   "summary": "Run a shell command.",
+   "syntax": "int system(const char *command);",
+   "header": "<stdlib.h>",
+   "description": "Starts a shell to run `command` and waits for it. Returns the command's status (use `WEXITSTATUS`). Never build the command from untrusted text.",
+   "example": "system(\"ls -l\");",
+   "mistakes": [
+    "Passing user input to the shell."
+   ],
+   "see": [
+    "t3-ref-exit"
+   ]
+  },
+  {
+   "id": "t3-ref-time",
+   "title": "time",
+   "category": "Numbers and conversion",
+   "summary": "Current time as seconds since 1970.",
+   "aliases": [
+    "time_t"
+   ],
+   "syntax": "time_t time(time_t *t);",
+   "header": "<time.h>",
+   "description": "`time(NULL)` returns the current calendar time. Often used as a seed: `srand(time(NULL))`.",
+   "example": "time_t now = time(NULL);",
+   "see": [
+    "t3-ref-srand",
+    "t3-ref-clock"
+   ]
+  },
+  {
+   "id": "t3-ref-clock",
+   "title": "clock",
+   "category": "Numbers and conversion",
+   "summary": "Processor time used by the program.",
+   "aliases": [
+    "CLOCKS_PER_SEC",
+    "clock_t"
+   ],
+   "syntax": "clock_t clock(void);",
+   "header": "<time.h>",
+   "description": "Divide the difference of two calls by `CLOCKS_PER_SEC` to get seconds of CPU time.",
+   "example": "clock_t t0 = clock();\n/* … work … */\ndouble s = (double)(clock() - t0) / CLOCKS_PER_SEC;",
+   "see": [
+    "t3-ref-time"
+   ]
+  }
+ ]
+}

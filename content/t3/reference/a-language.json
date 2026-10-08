@@ -1,0 +1,664 @@
+{
+ "order": 1,
+ "entries": [
+  {
+   "id": "t3-ref-types",
+   "title": "types",
+   "category": "Language",
+   "summary": "Integer and floating-point types, sizes, and how values are converted.",
+   "aliases": [
+    "int",
+    "char",
+    "short",
+    "long",
+    "unsigned",
+    "signed",
+    "float",
+    "double",
+    "void",
+    "size_t",
+    "bool",
+    "stdint.h",
+    "int8_t",
+    "int16_t",
+    "int32_t",
+    "int64_t",
+    "uint8_t",
+    "uint16_t",
+    "uint32_t",
+    "uint64_t",
+    "cast",
+    "stdbool.h",
+    "stddef.h"
+   ],
+   "syntax": "int8_t … int64_t, uint8_t … uint64_t, size_t, char, short, int, long, float, double, void, bool",
+   "header": "<stdint.h> <stddef.h> <stdbool.h>",
+   "description": "Use the fixed-width types of <stdint.h> when the size matters (`int32_t`, `uint8_t`). `size_t` is the unsigned type of `sizeof` and of most sizes and counts in the library; print it with `%zu`. `char` is for text; for a raw byte use `uint8_t`. `bool`, `true` and `false` need <stdbool.h> (C99); before that, 0 is false and any other value is true.\nIn an expression the narrower operand is promoted to the wider type; in an assignment the value is converted to the type of the variable (floating point → integer truncates toward zero). A cast `(type) expr` forces a conversion.",
+   "details": [
+    {
+     "name": "integer division",
+     "text": "`7 / 2` is 3 and `-7 / 2` is -3 (truncation toward zero); `7 % 2` is 1."
+    },
+    {
+     "name": "mixed arithmetic",
+     "text": "`7 / 2.0` is 3.5. `(double) a / b` converts before dividing; `(double)(a / b)` converts after."
+    },
+    {
+     "name": "float literals",
+     "text": "`3.14` is a double, `3.14f` a float; `10L` is a long."
+    }
+   ],
+   "example": "int a = 5;\na = a + 7.3;               /* 12.3 is truncated: a == 12 */\ndouble r = (double) 7 / 2;  /* 3.5 */",
+   "mistakes": [
+    "Dividing two ints and expecting a fraction.",
+    "Assuming `int` or `long` has a given size."
+   ],
+   "see": [
+    "t3-ref-limits-h",
+    "t3-ref-sizeof",
+    "t3-ref-printf"
+   ]
+  },
+  {
+   "id": "t3-ref-limits-h",
+   "title": "limits.h",
+   "category": "Language",
+   "summary": "Minimum and maximum values of the integer types.",
+   "aliases": [
+    "INT_MAX",
+    "INT_MIN",
+    "UINT_MAX",
+    "LONG_MAX",
+    "LONG_MIN",
+    "ULONG_MAX",
+    "CHAR_BIT",
+    "CHAR_MAX",
+    "CHAR_MIN",
+    "SHRT_MAX",
+    "SHRT_MIN",
+    "USHRT_MAX",
+    "UCHAR_MAX",
+    "SCHAR_MAX",
+    "SCHAR_MIN"
+   ],
+   "syntax": "INT_MAX, INT_MIN, UINT_MAX, LONG_MAX, CHAR_BIT, …",
+   "header": "<limits.h>",
+   "description": "The constants tell you the range of each type on the current system. On Linux x86-64: `CHAR_BIT` 8, `INT_MAX` 2147483647, `LONG_MAX` 9223372036854775807. Going beyond the range of a signed type is undefined behaviour; unsigned types wrap around.",
+   "details": [
+    {
+     "name": "CHAR_BIT",
+     "text": "bits in a char (8)"
+    },
+    {
+     "name": "CHAR_MAX CHAR_MIN",
+     "text": "range of char"
+    },
+    {
+     "name": "SCHAR_MAX SCHAR_MIN",
+     "text": "range of signed char"
+    },
+    {
+     "name": "UCHAR_MAX",
+     "text": "maximum unsigned char"
+    },
+    {
+     "name": "SHRT_MAX SHRT_MIN USHRT_MAX",
+     "text": "range of short"
+    },
+    {
+     "name": "INT_MAX INT_MIN UINT_MAX",
+     "text": "range of int"
+    },
+    {
+     "name": "LONG_MAX LONG_MIN ULONG_MAX",
+     "text": "range of long"
+    }
+   ],
+   "example": "#include <limits.h>\nprintf(\"%d\\n\", INT_MAX);   /* 2147483647 */",
+   "mistakes": [
+    "Signed overflow: `INT_MAX + 1` is undefined."
+   ],
+   "see": [
+    "t3-ref-types"
+   ]
+  },
+  {
+   "id": "t3-ref-operators",
+   "title": "operators",
+   "category": "Language",
+   "summary": "Arithmetic, relational, logical, bitwise and assignment operators, with precedence.",
+   "aliases": [
+    "&&",
+    "||",
+    "!",
+    "<<",
+    ">>",
+    "%",
+    "++",
+    "--",
+    "?:",
+    "+=",
+    "-=",
+    "*=",
+    "/=",
+    "&",
+    "|",
+    "^",
+    "~",
+    "==",
+    "!=",
+    "precedence",
+    "ternary"
+   ],
+   "syntax": "+ - * / %   == != < <= > >=   && || !   & | ^ ~ << >>   = += -= *= /=   ++ --   ?:",
+   "description": "Precedence from highest to lowest: `()` `[]` `.` `->`; unary `! ~ ++ -- + - * & sizeof (cast)` (right to left); `* / %`; `+ -`; `<< >>`; `< <= > >=`; `== !=`; `&`; `^`; `|`; `&&`; `||`; `?:`; assignments (right to left); `,`. When in doubt, add parentheses.",
+   "details": [
+    {
+     "name": "&& || !",
+     "text": "logical operators, yielding 0 or 1. `&&` and `||` short-circuit: the right side is evaluated only if needed (`p != NULL && p->x > 0` is safe)."
+    },
+    {
+     "name": "++ --",
+     "text": "`i++` yields the old value then increments; `++i` increments first."
+    },
+    {
+     "name": "& | ^ ~",
+     "text": "bitwise and, or, xor, not on every bit"
+    },
+    {
+     "name": "<< >>",
+     "text": "shift left / right: `x << n` multiplies by 2^n"
+    },
+    {
+     "name": "= += -= *= /=",
+     "text": "assignment; `a += b` means `a = a + b`"
+    },
+    {
+     "name": "?:",
+     "text": "`c ? a : b` is `a` when `c` is true, else `b`"
+    },
+    {
+     "name": "% (modulo)",
+     "text": "remainder of the integer division; the sign follows the dividend"
+    }
+   ],
+   "example": "if (x = 5) { }        /* BUG: assigns 5 (always true); you meant == */\nint a = 3, b = a++;   /* b == 3, a == 4 */\nint big = (n > 10) ? 10 : n;",
+   "mistakes": [
+    "Writing `=` instead of `==` in a condition.",
+    "Modifying the same variable twice in one expression (`i = i++ + 1`): undefined."
+   ],
+   "see": [
+    "t3-ref-types",
+    "t3-ref-if"
+   ]
+  },
+  {
+   "id": "t3-ref-if",
+   "title": "if",
+   "category": "Language",
+   "summary": "Run code only when a condition is true (else: otherwise).",
+   "aliases": [
+    "else"
+   ],
+   "syntax": "if (cond) { … } else if (cond) { … } else { … }",
+   "description": "The condition is an integer: 0 is false, anything else is true. Braces are optional around a single statement but always safer. `else` pairs with the nearest `if`.",
+   "example": "if (n < 0)\n    printf(\"negative\\n\");\nelse if (n == 0)\n    printf(\"zero\\n\");\nelse\n    printf(\"positive\\n\");",
+   "mistakes": [
+    "A stray `;` after `if (…)` makes the body empty.",
+    "Comparing floats with `==`."
+   ],
+   "see": [
+    "t3-ref-operators",
+    "t3-ref-switch"
+   ]
+  },
+  {
+   "id": "t3-ref-switch",
+   "title": "switch",
+   "category": "Language",
+   "summary": "Choose between several integer values.",
+   "aliases": [
+    "case",
+    "default"
+   ],
+   "syntax": "switch (expr) { case v1: …; break; case v2: …; break; default: …; }",
+   "description": "`expr` must be an integer (char included); each `case` needs a constant. Execution continues into the next `case` until a `break` (fall-through), which is occasionally useful and often a bug. `default` handles every other value.",
+   "example": "switch (c) {\ncase 'a':\ncase 'e':\n    puts(\"vowel\");\n    break;\ndefault:\n    puts(\"other\");\n}",
+   "mistakes": [
+    "Forgetting `break`.",
+    "Using strings or floats as `case` values (not allowed)."
+   ],
+   "see": [
+    "t3-ref-if",
+    "t3-ref-break"
+   ]
+  },
+  {
+   "id": "t3-ref-while",
+   "title": "while",
+   "category": "Language",
+   "summary": "Repeat while a condition is true (checked before each pass).",
+   "syntax": "while (cond) { … }",
+   "description": "The body runs zero or more times. Something inside must eventually make the condition false (or use `break`).",
+   "example": "int i = 0;\nwhile (i < 3) {\n    printf(\"%d\\n\", i);\n    i++;\n}",
+   "mistakes": [
+    "Forgetting to update the variable: infinite loop."
+   ],
+   "see": [
+    "t3-ref-for",
+    "t3-ref-do",
+    "t3-ref-break"
+   ]
+  },
+  {
+   "id": "t3-ref-do",
+   "title": "do",
+   "category": "Language",
+   "summary": "do … while: repeat, checking the condition after each pass (at least one pass).",
+   "aliases": [
+    "do-while"
+   ],
+   "syntax": "do { … } while (cond);",
+   "description": "Useful when the body must run once before the test, such as asking for a value until it is valid. Note the `;` after the condition.",
+   "example": "int n;\ndo {\n    printf(\"1-10? \");\n    scanf(\"%d\", &n);\n} while (n < 1 || n > 10);",
+   "mistakes": [
+    "Forgetting the final `;`."
+   ],
+   "see": [
+    "t3-ref-while",
+    "t3-ref-for"
+   ]
+  },
+  {
+   "id": "t3-ref-for",
+   "title": "for",
+   "category": "Language",
+   "summary": "Counting loop: initialise; test; update.",
+   "syntax": "for (init; cond; update) { … }",
+   "description": "`init` runs once, `cond` is tested before every pass and `update` runs after every pass. All three parts are optional (`for (;;)` is an infinite loop). A variable declared in `init` (C99) exists only inside the loop.",
+   "example": "for (int i = 0; i < n; i++)\n    sum += v[i];",
+   "mistakes": [
+    "Off-by-one: `<=` instead of `<` when walking an array.",
+    "A stray `;` after the `)` makes the body empty."
+   ],
+   "see": [
+    "t3-ref-while",
+    "t3-ref-break",
+    "t3-ref-continue"
+   ]
+  },
+  {
+   "id": "t3-ref-break",
+   "title": "break",
+   "category": "Language",
+   "summary": "Leave the innermost loop or switch immediately.",
+   "syntax": "break;",
+   "description": "Control continues after the loop or switch. It does not leave outer loops.",
+   "example": "while (1) {\n    if (done) break;\n}",
+   "see": [
+    "t3-ref-continue",
+    "t3-ref-switch"
+   ]
+  },
+  {
+   "id": "t3-ref-continue",
+   "title": "continue",
+   "category": "Language",
+   "summary": "Skip the rest of this loop pass and start the next.",
+   "syntax": "continue;",
+   "description": "In a `for` loop the update expression still runs before the next test.",
+   "example": "for (int i = 0; i < n; i++) {\n    if (v[i] < 0) continue;\n    sum += v[i];\n}",
+   "see": [
+    "t3-ref-break",
+    "t3-ref-for"
+   ]
+  },
+  {
+   "id": "t3-ref-return",
+   "title": "return",
+   "category": "Language",
+   "summary": "Leave the current function, optionally giving back a value.",
+   "syntax": "return expr;   return;",
+   "description": "In `main`, the value is the exit status of the program (0 = success). A function must not return the address of one of its local variables.",
+   "example": "int max(int a, int b)\n{\n    return a > b ? a : b;\n}",
+   "mistakes": [
+    "Returning a pointer to a local array."
+   ],
+   "see": [
+    "t3-ref-functions",
+    "t3-ref-main"
+   ]
+  },
+  {
+   "id": "t3-ref-functions",
+   "title": "functions",
+   "category": "Language",
+   "summary": "Declaring (prototype) and defining functions; arguments are passed by value.",
+   "aliases": [
+    "prototype",
+    "recursion"
+   ],
+   "syntax": "type name(type a, type b);   /* prototype */\ntype name(type a, type b) { … return value; }",
+   "description": "A function must be declared before it is called, at least by a prototype. Arguments are copies: to let a function change the caller's variable, pass its address and write through the pointer. An array argument is passed as a pointer to its first element, so pass the length separately. `void` in the return type means no value; `f(void)` means no parameters.",
+   "example": "int media(int a, int b);            /* prototype */\nint media(int a, int b) { return (a + b) / 2; }\nvoid swap(int *a, int *b) { int t = *a; *a = *b; *b = t; }",
+   "mistakes": [
+    "Writing `swap(int a, int b)` and expecting the caller's variables to change.",
+    "Using a function before declaring it."
+   ],
+   "see": [
+    "t3-ref-pointers",
+    "t3-ref-return",
+    "t3-ref-main"
+   ]
+  },
+  {
+   "id": "t3-ref-main",
+   "title": "main",
+   "category": "Language",
+   "summary": "The entry point; command-line arguments and environment.",
+   "aliases": [
+    "argc",
+    "argv",
+    "envp"
+   ],
+   "syntax": "int main(void)\nint main(int argc, char *argv[])\nint main(int argc, char *argv[], char *envp[])",
+   "description": "`argc` is the number of arguments including the program name; `argv[0]` is the program name and `argv[argc]` is NULL. Every argument is a string: use `atoi` or `strtol` for numbers. `envp` (a common Unix extension) is a NULL-terminated array of `NAME=value` strings; `getenv` is the portable way to read one. The value returned (or passed to `exit`) is the exit status: 0 means success.",
+   "example": "/* ./prog a b c  →  argc == 4, argv[2] is \"b\" */\nfor (int i = 1; i < argc; i++)\n    printf(\"%s\\n\", argv[i]);",
+   "mistakes": [
+    "Starting at `argv[0]` and treating the program name as an argument.",
+    "Reading `argv[1]` without checking `argc`."
+   ],
+   "see": [
+    "t3-ref-getenv",
+    "t3-ref-strtol",
+    "t3-ref-exit"
+   ]
+  },
+  {
+   "id": "t3-ref-static",
+   "title": "static",
+   "category": "Language",
+   "summary": "Keep a local variable's value between calls, or make a global private to its file.",
+   "syntax": "static type name = init;",
+   "description": "Inside a function, a `static` variable is created once, initialised once (with a constant) and keeps its value between calls. At file level, `static` limits a variable or function to that source file.",
+   "example": "int next(void)\n{\n    static int n = 0;\n    return ++n;   /* 1, 2, 3, … on successive calls */\n}",
+   "mistakes": [
+    "Expecting a static local to be re-initialised on each call."
+   ],
+   "see": [
+    "t3-ref-modules"
+   ]
+  },
+  {
+   "id": "t3-ref-const",
+   "title": "const",
+   "category": "Language",
+   "summary": "Declare a value that must not be changed.",
+   "syntax": "const type name = value;   const char *p;",
+   "description": "The compiler rejects assignments to a `const` object. `const char *p` is a pointer to characters you may not modify through `p`; library functions use it for parameters they only read. A `const` variable is a typed alternative to `#define` constants.",
+   "example": "const int MAX = 64;\nsize_t strlen(const char *s);",
+   "mistakes": [
+    "Casting `const` away and modifying a string literal."
+   ],
+   "see": [
+    "t3-ref-define"
+   ]
+  },
+  {
+   "id": "t3-ref-enum",
+   "title": "enum",
+   "category": "Language",
+   "summary": "Named integer constants.",
+   "syntax": "enum name { A, B = 5, C };",
+   "description": "Values count up from 0 unless set (`C` above is 6). An enum type is an integer: it can be used in `switch` and compared. `typedef` gives it a shorter name.",
+   "example": "enum color { RED, GREEN, BLUE };\nenum color c = GREEN;   /* 1 */",
+   "see": [
+    "t3-ref-typedef",
+    "t3-ref-switch"
+   ]
+  },
+  {
+   "id": "t3-ref-typedef",
+   "title": "typedef",
+   "category": "Language",
+   "summary": "Give an existing type another name.",
+   "syntax": "typedef existing_type new_name;",
+   "description": "Most often used to avoid writing `struct` every time, or to name an enum.",
+   "example": "typedef struct { float real, imag; } Complex;\nComplex c = {1.5f, -2.3f};\ntypedef unsigned char byte;",
+   "see": [
+    "t3-ref-struct",
+    "t3-ref-enum"
+   ]
+  },
+  {
+   "id": "t3-ref-struct",
+   "title": "struct",
+   "category": "Language",
+   "summary": "A record: several named members in one object.",
+   "aliases": [
+    "union",
+    "->"
+   ],
+   "syntax": "struct tag { type a; type b; };   struct tag v;   v.a   p->a",
+   "description": "Access members with `.` on a struct and `->` on a pointer to a struct (`p->x` is `(*p).x`). Assigning a struct copies all its members; structs can be passed to and returned from functions by value (large ones are usually passed by pointer). Initialise with `{1, 2}` or, in C99, `{.x = 1, .y = 2}`. `sizeof` may include padding.",
+   "example": "struct point { int x, y; };\nstruct point a = {1, 2};\nstruct point *p = &a;\np->x = 7;   /* a.x == 7 */",
+   "mistakes": [
+    "Writing `p.x` when `p` is a pointer.",
+    "Comparing two structs with `==` (not allowed)."
+   ],
+   "see": [
+    "t3-ref-typedef",
+    "t3-ref-pointers",
+    "t3-ref-malloc"
+   ]
+  },
+  {
+   "id": "t3-ref-sizeof",
+   "title": "sizeof",
+   "category": "Language",
+   "summary": "Size in bytes of a type or object, as a size_t.",
+   "syntax": "sizeof(type)   sizeof expr",
+   "description": "Computed at compile time. On an array variable it is the size of the whole array; on a pointer it is the size of an address (4 or 8 bytes). When an array is passed to a function it becomes a pointer, so `sizeof` inside the function gives the pointer size.",
+   "example": "int a[10];\nint *p = a;\nsizeof(a)                 /* 10 * sizeof(int) */\nsizeof(p)                 /* 8 on 64-bit */\nsizeof(a) / sizeof(a[0])  /* 10 elements */",
+   "mistakes": [
+    "Using sizeof on a pointer parameter to count elements."
+   ],
+   "see": [
+    "t3-ref-types",
+    "t3-ref-arrays",
+    "t3-ref-malloc"
+   ]
+  },
+  {
+   "id": "t3-ref-pointers",
+   "title": "pointers",
+   "category": "Language",
+   "summary": "Addresses: &, *, pointer arithmetic, NULL and void *.",
+   "aliases": [
+    "NULL",
+    "address-of",
+    "*",
+    "dereference"
+   ],
+   "syntax": "type *p;   p = &x;   *p = value;   p + 1   NULL   void *",
+   "description": "`&x` is the address of `x`; `*p` is the object `p` points to. `NULL` points to nothing and must not be dereferenced. Arithmetic is scaled by the pointed-to type: `p + 1` is `sizeof(*p)` bytes further. `a[i]` is `*(a + i)`. `void *` is a generic pointer that converts to and from any object pointer. Pointers are passed by value too: a function that must change the caller's pointer needs a `type **`.",
+   "details": [
+    {
+     "name": "a[i] ≡ *(a + i)",
+     "text": "also `*(i + a)` and `i[a]`; `&a[i]` ≡ `a + i`"
+    },
+    {
+     "name": "p - q",
+     "text": "number of elements between two pointers into the same array (a ptrdiff_t)"
+    }
+   ],
+   "example": "int a = 3, *p = &a;\n*p = 7;               /* a == 7 */\nint v[] = {25, 1, 3};\n*(v + 2)             /* 3, same as v[2] */",
+   "mistakes": [
+    "Dereferencing NULL or an uninitialised pointer.",
+    "Keeping a pointer to an object that no longer exists (dangling pointer)."
+   ],
+   "see": [
+    "t3-ref-arrays",
+    "t3-ref-malloc",
+    "t3-ref-sizeof"
+   ]
+  },
+  {
+   "id": "t3-ref-arrays",
+   "title": "arrays",
+   "category": "Language",
+   "summary": "Fixed-size sequences of elements of one type.",
+   "aliases": [
+    "[]",
+    "array"
+   ],
+   "syntax": "type a[N];   type a[] = {…};   type m[R][C];",
+   "description": "Indices run from 0 to N-1 and are NOT checked: going outside is undefined behaviour. In most expressions the array name becomes a pointer to its first element. A two-dimensional array is an array of arrays, stored row after row. An array parameter is really a pointer, so the length must be passed too. `sizeof(a) / sizeof(a[0])` gives the element count of the real array.",
+   "example": "int v[5] = {25, 1, 3, 4, 1};\nint m[2][3] = {{1, 2, 3}, {4, 5, 6}};\nfor (int i = 0; i < 5; i++) sum += v[i];",
+   "mistakes": [
+    "`v[5]` on a 5-element array (one past the end).",
+    "Reading an array that was never initialised."
+   ],
+   "see": [
+    "t3-ref-pointers",
+    "t3-ref-sizeof",
+    "t3-ref-strings"
+   ]
+  },
+  {
+   "id": "t3-ref-strings",
+   "title": "strings",
+   "category": "Language",
+   "summary": "A string is a char array ended by '\\0'.",
+   "aliases": [
+    "'\\0'",
+    "string"
+   ],
+   "syntax": "char s[] = \"Hola\";   char *t = \"Hola\";",
+   "description": "There is no string type. A string of length n needs n + 1 bytes: the last one is the terminator `'\\0'`. A literal like `\"Hola\"` lives in read-only memory: do not modify it through a `char *`; use an array for a modifiable copy. Compare contents with `strcmp`, never with `==` (that compares addresses). `<string.h>` has the functions.",
+   "example": "char buf[6];\nstrcpy(buf, \"Hello\");        /* 5 letters + '\\0' = 6 */\nchar *copy = malloc(strlen(buf) + 1);",
+   "mistakes": [
+    "Allocating `strlen(s)` bytes instead of `strlen(s) + 1`.",
+    "`if (s == \"yes\")` compares pointers, not text."
+   ],
+   "see": [
+    "t3-ref-strlen",
+    "t3-ref-strcmp",
+    "t3-ref-malloc"
+   ]
+  },
+  {
+   "id": "t3-ref-escapes",
+   "title": "escapes",
+   "category": "Language",
+   "summary": "Escape sequences inside character and string literals.",
+   "syntax": "'\\n'  '\\t'  '\\\\'  '\\''  '\\\"'  '\\0'  '\\xhh'  '\\ooo'",
+   "description": "A backslash starts a special character. A string literal ends with an implicit `'\\0'`. `'a'` is a char (an int in C) and `\"a\"` is a string of two bytes.",
+   "details": [
+    {
+     "name": "\\n",
+     "text": "newline (LF)"
+    },
+    {
+     "name": "\\t",
+     "text": "horizontal tab"
+    },
+    {
+     "name": "\\r",
+     "text": "carriage return"
+    },
+    {
+     "name": "\\b",
+     "text": "backspace"
+    },
+    {
+     "name": "\\\\",
+     "text": "a backslash"
+    },
+    {
+     "name": "\\'",
+     "text": "a single quote"
+    },
+    {
+     "name": "\\\"",
+     "text": "a double quote"
+    },
+    {
+     "name": "\\0",
+     "text": "the null character that ends strings"
+    },
+    {
+     "name": "\\xhh \\ooo",
+     "text": "a character by hexadecimal or octal code"
+    }
+   ],
+   "example": "printf(\"a\\tb\\n\");   /* a, a tab, b, a newline */",
+   "mistakes": [
+    "Writing `\"\\n\"` where you meant the two characters backslash and n: use `\"\\\\n\"`."
+   ],
+   "see": [
+    "t3-ref-strings",
+    "t3-ref-printf"
+   ]
+  },
+  {
+   "id": "t3-ref-include",
+   "title": "#include",
+   "category": "Language",
+   "summary": "Insert another file's text before compiling.",
+   "syntax": "#include <file.h>\n#include \"file.h\"",
+   "description": "`<…>` searches the system directories, `\"…\"` searches the current directory first (use it for your own headers). Headers contain declarations (prototypes, types, constants); the code of the library comes in at link time.",
+   "example": "#include <stdio.h>    /* printf, fopen … */\n#include \"util.h\"     /* your own header */",
+   "mistakes": [
+    "Forgetting a header: the compiler then guesses the prototype (-Wall warns)."
+   ],
+   "see": [
+    "t3-ref-define",
+    "t3-ref-ifdef",
+    "t3-ref-modules"
+   ]
+  },
+  {
+   "id": "t3-ref-define",
+   "title": "#define",
+   "category": "Language",
+   "summary": "Define a text-substitution macro or a constant.",
+   "aliases": [
+    "#undef",
+    "macro"
+   ],
+   "syntax": "#define NAME text\n#define SQR(x) ((x) * (x))\n#undef NAME",
+   "description": "The preprocessor replaces every use of the name by the text before compilation. Parenthesise macro parameters and the whole expansion. A `;` at the end of a `#define` becomes part of every expansion.",
+   "example": "#define MAX_SIZE 64\n#define SQR(x) ((x) * (x))\nint v[MAX_SIZE];\nint s = SQR(2 + 1);   /* 9, thanks to the parentheses */",
+   "mistakes": [
+    "`#define SQR(x) x * x` makes `SQR(2 + 1)` expand to `2 + 1 * 2 + 1`."
+   ],
+   "see": [
+    "t3-ref-const",
+    "t3-ref-ifdef"
+   ]
+  },
+  {
+   "id": "t3-ref-ifdef",
+   "title": "#ifdef",
+   "category": "Language",
+   "summary": "Conditional compilation and include guards.",
+   "aliases": [
+    "#ifndef",
+    "#endif",
+    "#else",
+    "#if",
+    "#pragma",
+    "#pragma once",
+    "include guard"
+   ],
+   "syntax": "#ifdef NAME … #endif\n#ifndef NAME … #endif\n#if expr … #else … #endif\n#pragma once",
+   "description": "Code between the directives is compiled only if the condition holds. The classic include guard `#ifndef FILE_H` / `#define FILE_H` / … / `#endif`, or `#pragma once`, keeps a header from being included twice.",
+   "example": "#ifndef UTIL_H\n#define UTIL_H\nint media(int a, int b);\n#endif",
+   "see": [
+    "t3-ref-define",
+    "t3-ref-modules"
+   ]
+  }
+ ]
+}

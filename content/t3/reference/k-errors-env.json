@@ -1,0 +1,140 @@
+{
+ "order": 11,
+ "entries": [
+  {
+   "id": "t3-ref-errno",
+   "title": "errno",
+   "category": "Errors and environment",
+   "summary": "Why the last call failed.",
+   "aliases": [
+    "ENOENT",
+    "EACCES",
+    "EEXIST",
+    "ENOTDIR",
+    "EISDIR",
+    "EINVAL",
+    "ENOMEM",
+    "ERANGE",
+    "EINTR"
+   ],
+   "syntax": "extern int errno;",
+   "header": "<errno.h>",
+   "description": "When a system call or library function fails (usually by returning -1 or NULL) it stores a reason in `errno`. It is only meaningful right after a call that reported failure: a successful call may change it. Turn it into text with `strerror` or `perror`; print errors to `stderr`.",
+   "details": [
+    {
+     "name": "ENOENT",
+     "text": "no such file or directory"
+    },
+    {
+     "name": "EACCES",
+     "text": "permission denied"
+    },
+    {
+     "name": "EEXIST",
+     "text": "file exists"
+    },
+    {
+     "name": "ENOTDIR",
+     "text": "not a directory"
+    },
+    {
+     "name": "EISDIR",
+     "text": "is a directory"
+    },
+    {
+     "name": "EINVAL",
+     "text": "invalid argument"
+    },
+    {
+     "name": "ENOMEM",
+     "text": "out of memory"
+    },
+    {
+     "name": "ERANGE",
+     "text": "result out of range"
+    },
+    {
+     "name": "EINTR",
+     "text": "interrupted by a signal"
+    }
+   ],
+   "example": "FILE *f = fopen(path, \"r\");\nif (f == NULL)\n    fprintf(stderr, \"%s: %s\\n\", path, strerror(errno));",
+   "mistakes": [
+    "Reading `errno` after a call that succeeded.",
+    "Another call (even `printf`) changing it before you read it."
+   ],
+   "see": [
+    "t3-ref-strerror",
+    "t3-ref-perror",
+    "t3-ref-fopen"
+   ]
+  },
+  {
+   "id": "t3-ref-strerror",
+   "title": "strerror",
+   "category": "Errors and environment",
+   "summary": "Text describing an error code.",
+   "syntax": "char *strerror(int errnum);",
+   "header": "<string.h>",
+   "description": "`strerror(errno)` gives a message such as \"No such file or directory\". The returned string must not be modified.",
+   "example": "fprintf(stderr, \"open failed: %s\\n\", strerror(errno));",
+   "see": [
+    "t3-ref-errno",
+    "t3-ref-perror"
+   ]
+  },
+  {
+   "id": "t3-ref-exit",
+   "title": "exit",
+   "category": "Errors and environment",
+   "summary": "End the program at once with a status.",
+   "aliases": [
+    "EXIT_SUCCESS",
+    "EXIT_FAILURE",
+    "status"
+   ],
+   "syntax": "void exit(int status);",
+   "header": "<stdlib.h>",
+   "description": "Flushes and closes the stdio streams and ends the process. `status` 0 (or `EXIT_SUCCESS`) means success; non-zero (`EXIT_FAILURE` is 1) means failure and is what the shell sees in `$?`. Returning `n` from `main` is the same as `exit(n)`.",
+   "example": "if (argc != 2) {\n    fprintf(stderr, \"usage: %s file\\n\", argv[0]);\n    exit(1);\n}",
+   "see": [
+    "t3-ref-main",
+    "t3-ref-errno"
+   ]
+  },
+  {
+   "id": "t3-ref-getenv",
+   "title": "getenv",
+   "category": "Errors and environment",
+   "summary": "Value of an environment variable.",
+   "aliases": [
+    "PATH",
+    "HOME",
+    "environ"
+   ],
+   "syntax": "char *getenv(const char *name);",
+   "header": "<stdlib.h>",
+   "description": "Returns a pointer to the value or NULL if the variable is not set. Do not modify the string: copy it first (for instance before `strtok`).",
+   "details": [
+    {
+     "name": "PATH",
+     "text": "directories separated by `:`, searched in order when you run a command"
+    },
+    {
+     "name": "HOME",
+     "text": "the user's home directory"
+    }
+   ],
+   "example": "const char *home = getenv(\"HOME\");\nif (home == NULL) home = \"/\";",
+   "mistakes": [
+    "Using the result without checking for NULL.",
+    "Modifying the returned string."
+   ],
+   "see": [
+    "t3-ref-main",
+    "t3-ref-access",
+    "t3-ref-strtok_r"
+   ]
+  }
+ ]
+}

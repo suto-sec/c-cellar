@@ -1,0 +1,267 @@
+{
+ "order": 12,
+ "entries": [
+  {
+   "id": "t3-ref-modules",
+   "title": "modules",
+   "category": "Building programs",
+   "summary": "Splitting a program into .h and .c files.",
+   "aliases": [
+    "header"
+   ],
+   "syntax": "util.h: types + prototypes (with an include guard)\nutil.c: #include \"util.h\" + the implementation",
+   "description": "The header is the interface; the source file implements it and includes its own header so the compiler checks both agree. Names that are internal to the module are `static`. Each `.c` is compiled separately into a `.o` and the linker joins them. Never define variables or functions in a header that several files include.",
+   "example": "/* util.h */\n#pragma once\nint media(int a, int b);\n\n/* util.c */\n#include \"util.h\"\nint media(int a, int b) { return (a + b) / 2; }\n\n/* main.c */\n#include \"util.h\"",
+   "mistakes": [
+    "Defining (not just declaring) a function in a header."
+   ],
+   "see": [
+    "t3-ref-include",
+    "t3-ref-ifdef",
+    "t3-ref-static",
+    "t3-ref-gcc"
+   ]
+  },
+  {
+   "id": "t3-ref-gcc",
+   "title": "gcc",
+   "category": "Building programs",
+   "summary": "Compile and link C programs.",
+   "aliases": [
+    "cc"
+   ],
+   "syntax": "gcc [options] file.c … -o program",
+   "description": "Stages: preprocessing, compilation, assembly, linking; by default gcc does all of them.",
+   "details": [
+    {
+     "name": "-o name",
+     "text": "name of the output file"
+    },
+    {
+     "name": "-c",
+     "text": "compile to an object file (`a.c` → `a.o`), do not link"
+    },
+    {
+     "name": "-Wall -Wextra",
+     "text": "enable the useful warnings; fix every one"
+    },
+    {
+     "name": "-Werror",
+     "text": "turn warnings into errors"
+    },
+    {
+     "name": "-std=c11",
+     "text": "choose the language standard (c99, c11…)"
+    },
+    {
+     "name": "-g",
+     "text": "add debugging information (for gdb and valgrind)"
+    },
+    {
+     "name": "-O2",
+     "text": "optimise"
+    },
+    {
+     "name": "-I dir",
+     "text": "extra directory for header files"
+    },
+    {
+     "name": "-L dir",
+     "text": "extra directory for libraries"
+    },
+    {
+     "name": "-l name",
+     "text": "link against `libname.a` or `libname.so`"
+    },
+    {
+     "name": "-lm",
+     "text": "link the math library"
+    },
+    {
+     "name": "-E",
+     "text": "stop after the preprocessor"
+    },
+    {
+     "name": "-shared -fPIC",
+     "text": "build a dynamic library"
+    }
+   ],
+   "example": "gcc -Wall -Wextra -g main.c util.c -o prog\ngcc -c util.c -o util.o\ngcc main.o util.o -o prog",
+   "mistakes": [
+    "Ignoring warnings: most are real bugs.",
+    "Putting `-lm` before the source file (libraries go last)."
+   ],
+   "see": [
+    "t3-ref-make",
+    "t3-ref-ar",
+    "t3-ref-gdb"
+   ]
+  },
+  {
+   "id": "t3-ref-ar",
+   "title": "ar",
+   "category": "Building programs",
+   "summary": "Create a static library.",
+   "aliases": [
+    "static library",
+    "libname.a"
+   ],
+   "syntax": "ar rcs libname.a a.o b.o",
+   "description": "Packs object files into `libname.a`. The linker copies only the parts a program uses. `r` adds or replaces files, `c` creates the archive quietly, `s` writes an index.",
+   "example": "gcc -c a.c b.c\nar rcs libutil.a a.o b.o\ngcc main.c -L. -lutil -o prog",
+   "mistakes": [
+    "Listing a dependent library before the one it needs."
+   ],
+   "see": [
+    "t3-ref-gcc",
+    "t3-ref-ld"
+   ]
+  },
+  {
+   "id": "t3-ref-ld",
+   "title": "ld",
+   "category": "Building programs",
+   "summary": "The linker (gcc calls it for you).",
+   "aliases": [
+    "dynamic library",
+    "libname.so",
+    "LD_LIBRARY_PATH",
+    "-shared"
+   ],
+   "syntax": "ld -shared -o libname.so a.o b.o",
+   "description": "Joins object files and libraries into an executable or, with `-shared`, a dynamic library. In practice use `gcc -shared -fPIC -o libname.so a.c b.c`, which also takes care of position-independent code.",
+   "example": "gcc -shared -fPIC -o libutil.so a.c b.c\ngcc main.c -L. -lutil -o prog\nLD_LIBRARY_PATH=. ./prog",
+   "see": [
+    "t3-ref-ar",
+    "t3-ref-ldd",
+    "t3-ref-gcc"
+   ]
+  },
+  {
+   "id": "t3-ref-ldd",
+   "title": "ldd",
+   "category": "Building programs",
+   "summary": "List the dynamic libraries a program needs.",
+   "syntax": "ldd program",
+   "description": "Shows each `.so` and where the loader finds it; `not found` means the loader cannot locate it (set `LD_LIBRARY_PATH` or install the library).",
+   "example": "ldd ./prog",
+   "see": [
+    "t3-ref-ld",
+    "t3-ref-gcc"
+   ]
+  },
+  {
+   "id": "t3-ref-make",
+   "title": "make",
+   "category": "Building programs",
+   "summary": "Rebuild only what changed, following a Makefile.",
+   "aliases": [
+    "Makefile",
+    ".PHONY",
+    "CFLAGS",
+    "$@",
+    "$<"
+   ],
+   "syntax": "make [target]\ntarget: dependencies\n<TAB>command",
+   "description": "`make target` runs the recipe of a rule when the target does not exist or a dependency is newer. Recipe lines MUST start with a TAB. Variables (`CC = gcc`, `CFLAGS = -Wall -g`) are used as `$(CC)`. A pattern rule such as `%.o: %.c` explains how to build any object from its source; in a recipe `$<` is the first dependency, `$^` all of them and `$@` the target. A target that is not a file (like `clean`) is declared with `.PHONY`.",
+   "example": "CC = gcc\nCFLAGS = -Wall -Wextra -g\n\nprog: main.o util.o\n\t$(CC) $(CFLAGS) $^ -o $@\n\n%.o: %.c\n\t$(CC) $(CFLAGS) -c $< -o $@\n\n.PHONY: clean\nclean:\n\trm -f *.o prog",
+   "mistakes": [
+    "Using spaces instead of a TAB.",
+    "Forgetting `-c` in the rule that builds an object file."
+   ],
+   "see": [
+    "t3-ref-gcc"
+   ]
+  },
+  {
+   "id": "t3-ref-gdb",
+   "title": "gdb",
+   "category": "Building programs",
+   "summary": "Debug a program step by step.",
+   "syntax": "gdb ./prog",
+   "description": "Compile with `-g`. Start with `gdb ./prog`, set a breakpoint, run and inspect variables.",
+   "details": [
+    {
+     "name": "break main",
+     "text": "stop at the start of main (`b`)"
+    },
+    {
+     "name": "run args",
+     "text": "start the program (`r`)"
+    },
+    {
+     "name": "next",
+     "text": "run the next line without entering calls (`n`)"
+    },
+    {
+     "name": "step",
+     "text": "run the next line, entering calls (`s`)"
+    },
+    {
+     "name": "print x",
+     "text": "show a variable or expression (`p`)"
+    },
+    {
+     "name": "bt",
+     "text": "backtrace: the chain of calls, useful after a crash"
+    },
+    {
+     "name": "continue",
+     "text": "run until the next breakpoint (`c`)"
+    },
+    {
+     "name": "quit",
+     "text": "leave gdb (`q`)"
+    }
+   ],
+   "example": "gcc -g -o prog prog.c\ngdb ./prog\n(gdb) break main\n(gdb) run\n(gdb) next\n(gdb) print i",
+   "see": [
+    "t3-ref-gcc",
+    "t3-ref-valgrind"
+   ]
+  },
+  {
+   "id": "t3-ref-valgrind",
+   "title": "valgrind",
+   "category": "Building programs",
+   "summary": "Find memory errors and leaks.",
+   "syntax": "valgrind --leak-check=full ./prog",
+   "description": "Runs the program on a virtual machine that reports invalid reads and writes, use of uninitialised values, double frees and unreleased heap blocks. Compile with `-g` so it can show line numbers.",
+   "example": "gcc -g -o prog prog.c\nvalgrind --leak-check=full ./prog",
+   "mistakes": [
+    "Ignoring \"definitely lost\" blocks."
+   ],
+   "see": [
+    "t3-ref-malloc",
+    "t3-ref-free",
+    "t3-ref-gdb"
+   ]
+  },
+  {
+   "id": "t3-ref-man",
+   "title": "man",
+   "category": "Building programs",
+   "summary": "Read the manual page of a function or command.",
+   "syntax": "man [section] name",
+   "description": "Section 1 is commands, 2 system calls, 3 library functions. `man 2 open` is the system call, `man 3 printf` the library function. Inside: `/text` searches, `n` next match, `q` quits. The synopsis shows the headers to include.",
+   "details": [
+    {
+     "name": "man 2 name",
+     "text": "system calls: open, read, write, dup2, chdir…"
+    },
+    {
+     "name": "man 3 name",
+     "text": "library functions: printf, fopen, strcmp, malloc…"
+    },
+    {
+     "name": "man -k word",
+     "text": "search the manual page titles"
+    }
+   ],
+   "example": "man 2 open\nman 3 strtol",
+   "see": [
+    "t3-ref-gcc"
+   ]
+  }
+ ]
+}

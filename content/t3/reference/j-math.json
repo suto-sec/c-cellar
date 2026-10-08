@@ -1,0 +1,182 @@
+{
+ "order": 10,
+ "entries": [
+  {
+   "id": "t3-ref-sqrt",
+   "title": "sqrt",
+   "category": "Math",
+   "summary": "Square root.",
+   "syntax": "double sqrt(double x);",
+   "header": "<math.h>",
+   "description": "Domain error for negative numbers (returns NaN). Link with `-lm`.",
+   "example": "double d = sqrt(x * x + y * y);",
+   "see": [
+    "t3-ref-pow"
+   ]
+  },
+  {
+   "id": "t3-ref-pow",
+   "title": "pow",
+   "category": "Math",
+   "summary": "x raised to the power y.",
+   "syntax": "double pow(double x, double y);",
+   "header": "<math.h>",
+   "description": "Both arguments and the result are `double`: `pow(2, 10)` is 1024.0. Link with `-lm`.",
+   "example": "double area = 3.14159 * pow(r, 2);",
+   "see": [
+    "t3-ref-sqrt"
+   ]
+  },
+  {
+   "id": "t3-ref-fabs",
+   "title": "fabs",
+   "category": "Math",
+   "summary": "Absolute value of a double.",
+   "syntax": "double fabs(double x);",
+   "header": "<math.h>",
+   "description": "`abs` is for ints. Link with `-lm`.",
+   "example": "double d = fabs(a - b);",
+   "see": [
+    "t3-ref-abs"
+   ]
+  },
+  {
+   "id": "t3-ref-ceil",
+   "title": "ceil",
+   "category": "Math",
+   "summary": "Round up to the next integer value.",
+   "syntax": "double ceil(double x);",
+   "header": "<math.h>",
+   "description": "`ceil(2.1)` is 3.0 and `ceil(-2.1)` is -2.0. Link with `-lm`.",
+   "example": "int pages = (int) ceil(n / 10.0);",
+   "see": [
+    "t3-ref-floor",
+    "t3-ref-round"
+   ]
+  },
+  {
+   "id": "t3-ref-floor",
+   "title": "floor",
+   "category": "Math",
+   "summary": "Round down to the previous integer value.",
+   "syntax": "double floor(double x);",
+   "header": "<math.h>",
+   "description": "`floor(2.9)` is 2.0 and `floor(-2.1)` is -3.0. Link with `-lm`.",
+   "example": "int whole = (int) floor(x);",
+   "see": [
+    "t3-ref-ceil",
+    "t3-ref-round"
+   ]
+  },
+  {
+   "id": "t3-ref-round",
+   "title": "round",
+   "category": "Math",
+   "summary": "Round to the nearest integer value (halves away from zero).",
+   "syntax": "double round(double x);",
+   "header": "<math.h>",
+   "description": "`round(2.5)` is 3.0 and `round(-2.5)` is -3.0. Link with `-lm`.",
+   "example": "long n = lround(x);   /* or (long) round(x) */",
+   "see": [
+    "t3-ref-floor",
+    "t3-ref-ceil"
+   ]
+  },
+  {
+   "id": "t3-ref-fmod",
+   "title": "fmod",
+   "category": "Math",
+   "summary": "Floating-point remainder.",
+   "syntax": "double fmod(double x, double y);",
+   "header": "<math.h>",
+   "description": "The sign of the result follows `x`. `%` works only on integers. Link with `-lm`.",
+   "example": "double r = fmod(7.5, 2);   /* 1.5 */",
+   "see": [
+    "t3-ref-abs"
+   ]
+  },
+  {
+   "id": "t3-ref-sin",
+   "title": "sin",
+   "category": "Math",
+   "summary": "Sine (argument in radians).",
+   "syntax": "double sin(double x);",
+   "header": "<math.h>",
+   "description": "Degrees to radians: multiply by pi / 180. Link with `-lm`.",
+   "example": "double s = sin(30 * 3.14159265 / 180);   /* 0.5 */",
+   "see": [
+    "t3-ref-cos",
+    "t3-ref-tan"
+   ]
+  },
+  {
+   "id": "t3-ref-cos",
+   "title": "cos",
+   "category": "Math",
+   "summary": "Cosine (argument in radians).",
+   "syntax": "double cos(double x);",
+   "header": "<math.h>",
+   "description": "See `sin` for the conversion from degrees. Link with `-lm`.",
+   "example": "double c = cos(0);   /* 1.0 */",
+   "see": [
+    "t3-ref-sin",
+    "t3-ref-tan"
+   ]
+  },
+  {
+   "id": "t3-ref-tan",
+   "title": "tan",
+   "category": "Math",
+   "summary": "Tangent (argument in radians).",
+   "syntax": "double tan(double x);",
+   "header": "<math.h>",
+   "description": "See `sin` for the conversion from degrees. Link with `-lm`.",
+   "example": "double t = tan(0.785398);   /* ≈ 1 */",
+   "see": [
+    "t3-ref-sin",
+    "t3-ref-cos"
+   ]
+  },
+  {
+   "id": "t3-ref-exp",
+   "title": "exp",
+   "category": "Math",
+   "summary": "e raised to x.",
+   "syntax": "double exp(double x);",
+   "header": "<math.h>",
+   "description": "The inverse of `log`. Link with `-lm`.",
+   "example": "double e = exp(1);   /* 2.71828… */",
+   "see": [
+    "t3-ref-log",
+    "t3-ref-pow"
+   ]
+  },
+  {
+   "id": "t3-ref-log",
+   "title": "log",
+   "category": "Math",
+   "summary": "Natural logarithm.",
+   "syntax": "double log(double x);",
+   "header": "<math.h>",
+   "description": "Domain error for x <= 0. `log10` is the base-10 logarithm. Link with `-lm`.",
+   "example": "double l = log(10);   /* 2.302… */",
+   "see": [
+    "t3-ref-log10",
+    "t3-ref-exp"
+   ]
+  },
+  {
+   "id": "t3-ref-log10",
+   "title": "log10",
+   "category": "Math",
+   "summary": "Base-10 logarithm.",
+   "syntax": "double log10(double x);",
+   "header": "<math.h>",
+   "description": "`(int) log10(n) + 1` is the number of digits of a positive integer `n`. Link with `-lm`.",
+   "example": "int digits = (int) log10(n) + 1;",
+   "see": [
+    "t3-ref-log"
+   ]
+  }
+ ]
+}

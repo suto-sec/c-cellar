@@ -1,0 +1,379 @@
+{
+ "order": 2,
+ "entries": [
+  {
+   "id": "t3-ref-printf",
+   "title": "printf",
+   "category": "Console I/O",
+   "summary": "Print formatted text to standard output.",
+   "aliases": [
+    "%d",
+    "%i",
+    "%u",
+    "%zu",
+    "%x",
+    "%X",
+    "%o",
+    "%f",
+    "%e",
+    "%g",
+    "%c",
+    "%s",
+    "%p",
+    "%%",
+    "%ld",
+    "%lld",
+    "format"
+   ],
+   "syntax": "int printf(const char *format, …);",
+   "header": "<stdio.h>",
+   "description": "The format is plain text plus conversions `%[flags][width][.precision][length]conversion`. Each conversion consumes one argument, which must match its type. Returns the number of characters printed.",
+   "details": [
+    {
+     "name": "%d %i",
+     "text": "signed int (`%ld` long, `%lld` long long, `%hd` short)"
+    },
+    {
+     "name": "%u",
+     "text": "unsigned int"
+    },
+    {
+     "name": "%zu",
+     "text": "size_t"
+    },
+    {
+     "name": "%x %X",
+     "text": "unsigned int in hexadecimal (lower / upper case)"
+    },
+    {
+     "name": "%o",
+     "text": "unsigned int in octal"
+    },
+    {
+     "name": "%f",
+     "text": "double in decimal notation; `%.2f` prints 2 decimals"
+    },
+    {
+     "name": "%e %g",
+     "text": "exponent notation / shorter of %f and %e"
+    },
+    {
+     "name": "%c",
+     "text": "one character"
+    },
+    {
+     "name": "%s",
+     "text": "string (char *); `%.3s` at most 3 characters"
+    },
+    {
+     "name": "%p",
+     "text": "pointer; cast it to `(void *)`"
+    },
+    {
+     "name": "%%",
+     "text": "a literal percent sign"
+    },
+    {
+     "name": "flags",
+     "text": "`-` left-justify, `+` always show the sign, `0` pad with zeros, space = space before positive numbers"
+    },
+    {
+     "name": "width",
+     "text": "`%5d` pads to at least 5 characters; `%*d` takes the width from an argument"
+    },
+    {
+     "name": "precision",
+     "text": "`%.2f` decimals, `%.3s` maximum characters, `%.3d` minimum digits"
+    }
+   ],
+   "example": "printf(\"%05d|%5.2f|%s|%c\\n\", 79, 3.14159, \"hi\", 'x');   /* 00079| 3.14|hi|x */\nprintf(\"%zu bytes\\n\", sizeof(int));\nprintf(\"%p\\n\", (void *) &x);",
+   "mistakes": [
+    "`%d` with a `size_t`, `long` or double argument: use `%zu`, `%ld`, `%f`.",
+    "Passing user text as the format (`printf(s)`): write `printf(\"%s\", s)`."
+   ],
+   "see": [
+    "t3-ref-fprintf",
+    "t3-ref-snprintf",
+    "t3-ref-scanf",
+    "t3-ref-escapes"
+   ]
+  },
+  {
+   "id": "t3-ref-fprintf",
+   "title": "fprintf",
+   "category": "Console I/O",
+   "summary": "Print formatted text to a stream (a file, stdout or stderr).",
+   "syntax": "int fprintf(FILE *stream, const char *format, …);",
+   "header": "<stdio.h>",
+   "description": "Same formats as `printf`, but the first argument says where to write: `stdout`, `stderr` or a `FILE *` from `fopen`. Errors belong on `stderr` so they stay visible when the output is redirected.",
+   "example": "fprintf(stderr, \"%s: %s\\n\", path, strerror(errno));\nfprintf(f, \"%d %s\\n\", id, name);",
+   "mistakes": [
+    "Printing error messages with printf: they get mixed into the normal output."
+   ],
+   "see": [
+    "t3-ref-printf",
+    "t3-ref-stdin",
+    "t3-ref-fopen"
+   ]
+  },
+  {
+   "id": "t3-ref-snprintf",
+   "title": "snprintf",
+   "category": "Console I/O",
+   "summary": "Format into a string, never writing more than n bytes.",
+   "syntax": "int snprintf(char *buf, size_t n, const char *format, …);",
+   "header": "<stdio.h>",
+   "description": "Writes at most `n - 1` characters and always terminates the string. Returns the length the full result would have had, so a value `>= n` means it was truncated. Prefer it to `sprintf`.",
+   "example": "char path[256];\nsnprintf(path, sizeof(path), \"%s/%s\", dir, name);",
+   "mistakes": [
+    "Passing `strlen(buf)` instead of the buffer size as `n`."
+   ],
+   "see": [
+    "t3-ref-sprintf",
+    "t3-ref-printf"
+   ]
+  },
+  {
+   "id": "t3-ref-sprintf",
+   "title": "sprintf",
+   "category": "Console I/O",
+   "summary": "Format into a string (unchecked: can overflow the buffer).",
+   "syntax": "int sprintf(char *buf, const char *format, …);",
+   "header": "<stdio.h>",
+   "description": "Like `printf` but the result goes into `buf`, which must be large enough: nothing checks it. Use `snprintf` in new code.",
+   "example": "char buf[32];\nsprintf(buf, \"%d-%d\", 3, 4);   /* \"3-4\" */",
+   "mistakes": [
+    "Buffer overflow when the result is longer than the buffer."
+   ],
+   "see": [
+    "t3-ref-snprintf"
+   ]
+  },
+  {
+   "id": "t3-ref-scanf",
+   "title": "scanf",
+   "category": "Console I/O",
+   "summary": "Read formatted input from standard input; every argument is an address.",
+   "syntax": "int scanf(const char *format, …);",
+   "header": "<stdio.h>",
+   "description": "Returns the number of items successfully assigned, or `EOF` if the input ended before the first conversion: always check it. Whitespace in the format (and before `%d`, `%f`, `%s`) skips any amount of whitespace; `%c` does not skip (write `\" %c\"`). `%d` reads an int, `%ld` a long, `%f` a float, `%lf` a double, `%s` a word, `%c` a character. `%s` stops at whitespace: give it a width (`%9s` for a `char[10]`).",
+   "example": "int n;\nif (scanf(\"%d\", &n) != 1)\n    return 1;            /* not a number, or end of input */\ndouble r;\nscanf(\"%lf\", &r);",
+   "mistakes": [
+    "Forgetting the `&`: `scanf(\"%d\", n)` writes to a random address.",
+    "Using `%f` for a double (it must be `%lf`)."
+   ],
+   "see": [
+    "t3-ref-sscanf",
+    "t3-ref-fscanf",
+    "t3-ref-fgets",
+    "t3-ref-printf"
+   ]
+  },
+  {
+   "id": "t3-ref-sscanf",
+   "title": "sscanf",
+   "category": "Console I/O",
+   "summary": "Read formatted values from a string.",
+   "syntax": "int sscanf(const char *str, const char *format, …);",
+   "header": "<stdio.h>",
+   "description": "Like `scanf` but reads from `str`. Often used after `fgets` to parse a line safely. Returns the number of items assigned.",
+   "example": "char line[64];\nint a, b;\nfgets(line, sizeof(line), stdin);\nif (sscanf(line, \"%d %d\", &a, &b) == 2) { /* both read */ }",
+   "mistakes": [
+    "Not checking the return value."
+   ],
+   "see": [
+    "t3-ref-scanf",
+    "t3-ref-fgets"
+   ]
+  },
+  {
+   "id": "t3-ref-fscanf",
+   "title": "fscanf",
+   "category": "Files (stdio)",
+   "summary": "Read formatted input from a file.",
+   "syntax": "int fscanf(FILE *stream, const char *format, …);",
+   "header": "<stdio.h>",
+   "description": "Like `scanf` on a stream. Returns the number of items assigned, or `EOF` at the end of the file. A loop such as `while (fscanf(f, \"%63s\", word) == 1)` reads word by word.",
+   "example": "char word[64];\nwhile (fscanf(f, \"%63s\", word) == 1)\n    puts(word);",
+   "mistakes": [
+    "Testing `!feof(f)` instead of the return value."
+   ],
+   "see": [
+    "t3-ref-scanf",
+    "t3-ref-fopen"
+   ]
+  },
+  {
+   "id": "t3-ref-getchar",
+   "title": "getchar",
+   "category": "Console I/O",
+   "summary": "Read one character from standard input.",
+   "aliases": [
+    "EOF"
+   ],
+   "syntax": "int getchar(void);",
+   "header": "<stdio.h>",
+   "description": "Returns the character as an `int` (0 to 255) or `EOF` (-1) at the end of the input or on error: store the result in an `int`, not a `char`.",
+   "example": "int c;\nwhile ((c = getchar()) != EOF)\n    putchar(c);",
+   "mistakes": [
+    "Storing the result in a `char`."
+   ],
+   "see": [
+    "t3-ref-putchar",
+    "t3-ref-fgetc"
+   ]
+  },
+  {
+   "id": "t3-ref-putchar",
+   "title": "putchar",
+   "category": "Console I/O",
+   "summary": "Write one character to standard output.",
+   "syntax": "int putchar(int c);",
+   "header": "<stdio.h>",
+   "description": "Writes `c` converted to an unsigned char. Returns the character written or `EOF` on error.",
+   "example": "putchar('A');\nputchar('\\n');",
+   "see": [
+    "t3-ref-getchar",
+    "t3-ref-puts"
+   ]
+  },
+  {
+   "id": "t3-ref-puts",
+   "title": "puts",
+   "category": "Console I/O",
+   "summary": "Write a string followed by a newline to standard output.",
+   "syntax": "int puts(const char *s);",
+   "header": "<stdio.h>",
+   "description": "Unlike `fputs`, it adds the newline. Returns a non-negative number on success or `EOF`.",
+   "example": "puts(\"Hello\");   /* Hello + newline */",
+   "see": [
+    "t3-ref-fputs",
+    "t3-ref-printf"
+   ]
+  },
+  {
+   "id": "t3-ref-gets",
+   "title": "gets",
+   "category": "Console I/O",
+   "summary": "Read a line into a buffer WITHOUT a size limit (removed in C11: never use it).",
+   "syntax": "char *gets(char *s);",
+   "header": "<stdio.h>",
+   "description": "It cannot know the buffer size, so any long line overflows it. Use `fgets`.",
+   "example": "/* do not use */",
+   "mistakes": [
+    "Any use of `gets`."
+   ],
+   "see": [
+    "t3-ref-fgets"
+   ]
+  },
+  {
+   "id": "t3-ref-fgets",
+   "title": "fgets",
+   "category": "Console I/O",
+   "summary": "Read a line, at most size - 1 characters.",
+   "syntax": "char *fgets(char *buf, int size, FILE *stream);",
+   "header": "<stdio.h>",
+   "description": "Reads up to `size - 1` characters, stopping after a newline, and always terminates the buffer with `'\\0'`. The newline, if read, stays in the buffer. Returns `buf`, or NULL at the end of the file or on error. A line longer than the buffer comes in several pieces: a piece that does not end in `'\\n'` (and is not the end of the file) is the start of a longer line.",
+   "example": "char line[1024];\nwhile (fgets(line, sizeof(line), stdin) != NULL) {\n    line[strcspn(line, \"\\n\")] = '\\0';   /* drop the newline */\n    puts(line);\n}",
+   "mistakes": [
+    "Counting a long line as several lines.",
+    "Forgetting that the newline is part of the data."
+   ],
+   "see": [
+    "t3-ref-scanf",
+    "t3-ref-fputs",
+    "t3-ref-strcspn"
+   ]
+  },
+  {
+   "id": "t3-ref-fputs",
+   "title": "fputs",
+   "category": "Console I/O",
+   "summary": "Write a string to a stream, without adding a newline.",
+   "syntax": "int fputs(const char *s, FILE *stream);",
+   "header": "<stdio.h>",
+   "description": "Returns a non-negative number on success or `EOF`. Use `fprintf` when you need formatting.",
+   "example": "fputs(line, stdout);\nfputs(\"error\\n\", stderr);",
+   "see": [
+    "t3-ref-puts",
+    "t3-ref-fgets"
+   ]
+  },
+  {
+   "id": "t3-ref-fgetc",
+   "title": "fgetc",
+   "category": "Files (stdio)",
+   "summary": "Read one character from a stream.",
+   "aliases": [
+    "getc"
+   ],
+   "syntax": "int fgetc(FILE *stream);\nint getc(FILE *stream);",
+   "header": "<stdio.h>",
+   "description": "Returns the character as an `int`, or `EOF` at the end of the file or on error. `getc` is the same call (it may be a macro).",
+   "example": "int c;\nwhile ((c = fgetc(f)) != EOF)\n    count++;",
+   "mistakes": [
+    "Storing the result in a `char`."
+   ],
+   "see": [
+    "t3-ref-fputc",
+    "t3-ref-getchar"
+   ]
+  },
+  {
+   "id": "t3-ref-fputc",
+   "title": "fputc",
+   "category": "Files (stdio)",
+   "summary": "Write one character to a stream.",
+   "aliases": [
+    "putc"
+   ],
+   "syntax": "int fputc(int c, FILE *stream);\nint putc(int c, FILE *stream);",
+   "header": "<stdio.h>",
+   "description": "Returns the character written or `EOF` on error. `putc` is the same call (it may be a macro).",
+   "example": "fputc('x', f);",
+   "see": [
+    "t3-ref-fgetc",
+    "t3-ref-putchar"
+   ]
+  },
+  {
+   "id": "t3-ref-perror",
+   "title": "perror",
+   "category": "Console I/O",
+   "summary": "Print your message followed by the text of the last error to stderr.",
+   "syntax": "void perror(const char *prefix);",
+   "header": "<stdio.h>",
+   "description": "Prints `prefix: message` and a newline, using the current value of `errno`. Call it right after the failing call.",
+   "example": "if ((f = fopen(path, \"r\")) == NULL) {\n    perror(path);   /* data.txt: No such file or directory */\n    return 1;\n}",
+   "mistakes": [
+    "Calling another function between the failure and `perror`."
+   ],
+   "see": [
+    "t3-ref-errno",
+    "t3-ref-strerror"
+   ]
+  },
+  {
+   "id": "t3-ref-stdin",
+   "title": "stdin",
+   "category": "Console I/O",
+   "summary": "The three standard streams: stdin (0), stdout (1) and stderr (2).",
+   "aliases": [
+    "stdout",
+    "stderr",
+    "STDIN_FILENO",
+    "STDOUT_FILENO",
+    "STDERR_FILENO"
+   ],
+   "syntax": "FILE *stdin, *stdout, *stderr;",
+   "header": "<stdio.h>",
+   "description": "Already open in every process. stdin reads the keyboard (or a pipe/file), stdout writes the normal output, stderr writes errors and is not buffered. The shell can redirect them: `prog > out.txt 2> err.txt < in.txt`. As file descriptors they are 0, 1 and 2.",
+   "example": "fprintf(stderr, \"usage: %s file\\n\", argv[0]);",
+   "see": [
+    "t3-ref-fprintf",
+    "t3-ref-fgets"
+   ]
+  }
+ ]
+}
