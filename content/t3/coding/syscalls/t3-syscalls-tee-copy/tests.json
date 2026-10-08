@@ -9,7 +9,8 @@
    "stdout": "hello\nworld\n---\nhello\nworld\n"
   },
   {
-   "cmd": "seq 1 5000 | \"$BIN\" out.txt | cmp - out.txt && echo same",
+   "name": "stdout and the file both get everything",
+   "cmd": "seq 1 5000 | \"$BIN\" out.txt > copy.txt; cmp copy.txt out.txt && seq 1 5000 | cmp - copy.txt && echo same",
    "stdout": "same\n"
   },
   {

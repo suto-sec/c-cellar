@@ -5,7 +5,7 @@
  "topic": "operators",
  "title": "Larger of two",
  "stars": 2,
- "order": 9,
+ "order": 6,
  "summary": "The conditional operator ?:.",
  "hints": [
   "`cond ? x : y` is `x` when `cond` is true and `y` otherwise; it is an expression, so you can pass it to printf.",

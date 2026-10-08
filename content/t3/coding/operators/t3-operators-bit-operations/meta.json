@@ -5,7 +5,7 @@
  "topic": "operators",
  "title": "Bit operations",
  "stars": 3,
- "order": 6,
+ "order": 7,
  "summary": "& | ^ << >>.",
  "hints": [
   "`&` keeps only the bits that are 1 in both operands, `|` sets bits, `^` flips bits.",

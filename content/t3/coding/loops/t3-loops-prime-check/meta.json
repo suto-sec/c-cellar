@@ -5,7 +5,7 @@
  "topic": "loops",
  "title": "Is it prime?",
  "stars": 3,
- "order": 7,
+ "order": 8,
  "summary": "A loop that can stop early.",
  "hints": [
   "Try the divisors from 2 upward: if one divides `n` it is not prime.",

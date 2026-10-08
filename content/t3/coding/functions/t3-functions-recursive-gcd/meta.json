@@ -5,7 +5,7 @@
  "topic": "functions",
  "title": "Recursive gcd",
  "stars": 3,
- "order": 9,
+ "order": 10,
  "summary": "Euclid with recursion.",
  "hints": [
   "`gcd(a, 0)` is `a`.",

@@ -5,7 +5,7 @@
  "topic": "pointers",
  "title": "A function as an argument",
  "stars": 5,
- "order": 10,
+ "order": 11,
  "summary": "Pointers to functions.",
  "hints": [
   "A parameter `int (*f)(int)` is a pointer to a function taking an `int` and returning an `int`; call it like a function: `f(x)`.",

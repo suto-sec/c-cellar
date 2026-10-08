@@ -5,7 +5,7 @@
  "topic": "structs",
  "title": "Inventory value",
  "stars": 3,
- "order": 6,
+ "order": 7,
  "summary": "An array of structs.",
  "hints": [
   "Declare `struct item v[50];` and fill each element with `scanf(\"%31s %d %lf\", v[i].name, &v[i].qty, &v[i].price)`.",

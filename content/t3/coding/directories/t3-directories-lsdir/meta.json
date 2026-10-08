@@ -5,7 +5,7 @@
  "topic": "directories",
  "title": "lsdir: sorted directory listing",
  "stars": 4,
- "order": 5,
+ "order": 8,
  "summary": "opendir/readdir, skip . and .., collect names and sort them.",
  "hints": [
   "`readdir` returns entries in no particular order, so collect the names (strdup!) and sort with `qsort` before printing.",

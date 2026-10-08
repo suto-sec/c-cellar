@@ -5,7 +5,7 @@
  "topic": "memory",
  "title": "Remember every word",
  "stars": 4,
- "order": 7,
+ "order": 8,
  "summary": "A growing array of strings.",
  "hints": [
   "Keep a `char **` array of word copies; make it bigger with `realloc` when it is full.",

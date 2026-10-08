@@ -5,7 +5,7 @@
  "topic": "conditions",
  "title": "Quadrant of a point",
  "stars": 2,
- "order": 8,
+ "order": 6,
  "summary": "Compound conditions.",
  "hints": [
   "Handle the special cases first (origin, then axes); the rest are the four quadrants.",

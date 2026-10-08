@@ -5,7 +5,7 @@
  "topic": "conditions",
  "title": "A small calculator",
  "stars": 3,
- "order": 6,
+ "order": 8,
  "summary": "switch on an operator.",
  "hints": [
   "`scanf(\"%d %c %d\", &a, &op, &b)` reads the number, the operator and the second number.",

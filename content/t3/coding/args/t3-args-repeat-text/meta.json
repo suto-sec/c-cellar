@@ -5,7 +5,7 @@
  "topic": "args",
  "title": "Repeat a text",
  "stars": 3,
- "order": 6,
+ "order": 7,
  "summary": "atoi, loops and a usage message.",
  "hints": [
   "Check `argc` first: you need exactly 3 (program name, N, TEXT).",

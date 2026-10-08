@@ -5,7 +5,7 @@
  "topic": "structs",
  "title": "Functions on a struct",
  "stars": 3,
- "order": 4,
+ "order": 5,
  "summary": "Passing a struct by value.",
  "hints": [
   "A function can receive a struct: `int area(struct rect r)` gets a copy and uses `r.w`, `r.h`.",

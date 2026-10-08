@@ -5,7 +5,7 @@
  "topic": "args",
  "title": "Read an environment variable",
  "stars": 2,
- "order": 8,
+ "order": 6,
  "summary": "getenv.",
  "hints": [
   "`getenv(\"NAME\")` (in `<stdlib.h>`) returns a pointer to the value, or `NULL` if the variable is not set.",

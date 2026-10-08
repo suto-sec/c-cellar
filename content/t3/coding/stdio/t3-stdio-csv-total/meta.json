@@ -5,7 +5,7 @@
  "topic": "stdio",
  "title": "Total of a CSV file",
  "stars": 4,
- "order": 10,
+ "order": 11,
  "summary": "fgets + sscanf with a character class.",
  "hints": [
   "`sscanf(line, \"%63[^,],%lf\", name, &price)`: `%[^,]` reads everything up to a comma; the `,` in the format matches the comma.",

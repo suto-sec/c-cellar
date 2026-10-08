@@ -5,7 +5,7 @@
  "topic": "functions",
  "title": "A prime test function",
  "stars": 3,
- "order": 6,
+ "order": 7,
  "summary": "Reusing a function.",
  "hints": [
   "Return 0 as soon as you find a divisor; return 1 if the loop finds none.",

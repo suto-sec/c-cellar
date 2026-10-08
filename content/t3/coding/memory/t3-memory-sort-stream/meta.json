@@ -4,7 +4,7 @@
  "track": "derusting",
  "topic": "memory",
  "title": "Sort a stream of numbers",
- "order": 6,
+ "order": 7,
  "summary": "Read an unknown amount of ints into a growing heap array, sort, print.",
  "hints": [
   "Start with a small capacity and double it with realloc when the array is full.",

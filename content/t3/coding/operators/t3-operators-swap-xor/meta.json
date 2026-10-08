@@ -5,7 +5,7 @@
  "topic": "operators",
  "title": "Swap without a temporary",
  "stars": 4,
- "order": 7,
+ "order": 10,
  "summary": "The XOR trick.",
  "hints": [
   "`x ^ x` is 0 and `x ^ 0` is x; XOR is its own inverse.",

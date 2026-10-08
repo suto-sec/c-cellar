@@ -4,7 +4,7 @@
  "track": "derusting",
  "topic": "pointers",
  "title": "Swap and output parameters",
- "order": 5,
+ "order": 7,
  "summary": "Pass-by-pointer: swap two ints and return min and max through pointers.",
  "hints": [
   "Inside swap, *a is the int that a points to. You need a temporary variable.",

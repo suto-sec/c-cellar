@@ -5,7 +5,7 @@
  "topic": "pointers",
  "title": "A pointer to a pointer",
  "stars": 4,
- "order": 9,
+ "order": 10,
  "summary": "Changing the caller's pointer.",
  "hints": [
   "`*p` is the caller's pointer and `**p` is the character it points to.",

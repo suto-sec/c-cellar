@@ -5,7 +5,7 @@
  "topic": "directories",
  "title": "Files with an extension",
  "stars": 3,
- "order": 8,
+ "order": 7,
  "summary": "String suffixes in a directory listing.",
  "hints": [
   "Compare the END of the name with the extension: `strcmp(name + strlen(name) - strlen(ext), ext) == 0` (only when the name is longer than the extension).",

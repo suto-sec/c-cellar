@@ -5,7 +5,7 @@
  "topic": "loops",
  "title": "Reverse a number",
  "stars": 3,
- "order": 8,
+ "order": 9,
  "summary": "Building a number digit by digit.",
  "hints": [
   "Take the last digit with `% 10`; append it to the result with `rev = rev * 10 + digit`.",

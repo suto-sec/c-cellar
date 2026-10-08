@@ -5,7 +5,7 @@
  "topic": "strings",
  "title": "Palindrome",
  "stars": 3,
- "order": 4,
+ "order": 5,
  "summary": "Comparing a string with itself.",
  "hints": [
   "Compare the first character with the last, the second with the second to last, and so on.",

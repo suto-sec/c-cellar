@@ -5,7 +5,7 @@
  "topic": "operators",
  "title": "Last digit and the rest",
  "stars": 3,
- "order": 10,
+ "order": 9,
  "summary": "Using / and % on integers.",
  "hints": [
   "`n % 10` is the last digit.",
