@@ -1,0 +1,121 @@
+{
+ "entries": [
+  {
+   "id": "t3-ref-gcc",
+   "category": "Building programs",
+   "title": "gcc",
+   "summary": "Compile and link.",
+   "syntax": "gcc [options] file.c … -o program",
+   "description": "Stages: preprocessing → compilation → assembly → linking. By default gcc does all of them.",
+   "details": [
+    {
+     "name": "-c",
+     "text": "compile to an object file (`a.c` → `a.o`), do not link"
+    },
+    {
+     "name": "-o name",
+     "text": "name of the output file"
+    },
+    {
+     "name": "-Wall -Wextra",
+     "text": "enable the useful warnings; fix them"
+    },
+    {
+     "name": "-Werror",
+     "text": "turn warnings into errors"
+    },
+    {
+     "name": "-std=c11",
+     "text": "select the language standard (c99, c11, …)"
+    },
+    {
+     "name": "-g",
+     "text": "debugging information (for gdb and valgrind)"
+    },
+    {
+     "name": "-O2",
+     "text": "optimise"
+    },
+    {
+     "name": "-I dir",
+     "text": "extra directory for `#include \"…\"` headers"
+    },
+    {
+     "name": "-L dir  -l name",
+     "text": "directory to search for libraries; link against `libname`"
+    },
+    {
+     "name": "-E",
+     "text": "stop after the preprocessor"
+    }
+   ],
+   "example": "gcc -Wall -Wextra -g main.c util.c -o prog\ngcc -c util.c -o util.o\ngcc main.o util.o -o prog",
+   "mistakes": [
+    "Ignoring warnings: most of them are real bugs."
+   ],
+   "see": [
+    "t3-ref-libs",
+    "t3-ref-make"
+   ]
+  },
+  {
+   "id": "t3-ref-libs",
+   "category": "Building programs",
+   "title": "Static and dynamic libraries",
+   "summary": "How to build and use .a and .so libraries.",
+   "syntax": "ar rcs libname.a a.o b.o\ngcc -shared -fPIC -o libname.so a.c b.c\ngcc main.c -L. -lname -o prog",
+   "description": "A static library (`libname.a`, an archive of object files) is copied into the executable at link time (only the needed parts). A dynamic library (`libname.so`) is not copied: the loader finds it when the program starts, so it must be on its search path. `-lname` refers to `libname.a`/`libname.so` (the `lib` prefix and extension are implied). With dependent libraries, list the one that uses another BEFORE it.",
+   "details": [
+    {
+     "name": "LD_LIBRARY_PATH",
+     "text": "environment variable with extra directories where the loader looks for `.so` files"
+    },
+    {
+     "name": "ldd prog",
+     "text": "lists the dynamic libraries a program needs"
+    }
+   ],
+   "example": "ar rcs libutil.a a.o b.o\ngcc main.c -L. -lutil -o prog              # static\nLD_LIBRARY_PATH=. ./prog                       # when libutil is a .so",
+   "mistakes": [
+    "Running a program linked against a `.so` that the loader cannot find."
+   ],
+   "see": [
+    "t3-ref-gcc",
+    "t3-ref-modules"
+   ]
+  },
+  {
+   "id": "t3-ref-modules",
+   "category": "Building programs",
+   "title": "Modules: headers and sources",
+   "summary": "Splitting a program into .h and .c files.",
+   "syntax": "util.h: types + prototypes (with include guard)\nutil.c: #include \"util.h\" + implementation",
+   "description": "The header is the interface: type definitions and function prototypes, protected against double inclusion. The source file implements it and includes its own header so the compiler checks that both agree. Functions and globals that are internal to the module are `static`. Each `.c` is compiled separately into a `.o` and the linker joins them.",
+   "example": "/* util.h */\n#pragma once\nint media(int a, int b);\n\n/* util.c */\n#include \"util.h\"\nint media(int a, int b) { return (a + b) / 2; }",
+   "mistakes": [
+    "Defining (not just declaring) variables or functions in a header included from several files."
+   ],
+   "see": [
+    "t3-ref-static",
+    "t3-ref-preprocessor"
+   ]
+  },
+  {
+   "id": "t3-ref-make",
+   "category": "Building programs",
+   "title": "make and Makefiles",
+   "summary": "Rebuild only what changed.",
+   "syntax": "target: dependencies\n<TAB>command",
+   "description": "`make target` runs the recipe of a rule when the target does not exist or any dependency is newer. Recipe lines MUST start with a TAB. Variables (`CC=gcc`, `CFLAGS=-Wall -g`) are used as `$(CC)`. A pattern rule such as `%.o: %.c` explains how to build any object file from its source; inside a recipe `$<` is the first dependency and `$@` the target. A target that is not a file (like `clean`) is declared with `.PHONY`.",
+   "example": "CC = gcc\nCFLAGS = -Wall -Wextra -g\n\nprog: main.o util.o\n\t$(CC) $(CFLAGS) $^ -o $@\n\n%.o: %.c\n\t$(CC) $(CFLAGS) -c $< -o $@\n\n.PHONY: clean\nclean:\n\trm -f *.o prog",
+   "mistakes": [
+    "Using spaces instead of a TAB in recipe lines.",
+    "Forgetting `-c` in a rule that builds an object file."
+   ],
+   "see": [
+    "t3-ref-gcc",
+    "t3-ref-libs"
+   ]
+  }
+ ]
+}

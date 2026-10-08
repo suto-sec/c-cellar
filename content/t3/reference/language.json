@@ -1,0 +1,176 @@
+{
+ "entries": [
+  {
+   "id": "t3-ref-types",
+   "category": "Language",
+   "title": "Types and conversions",
+   "summary": "Integer and floating types, how values are converted, integer division.",
+   "syntax": "int8_t … int64_t, uint8_t … uint64_t, size_t, float, double, char, void",
+   "header": "<stdint.h>, <stddef.h>",
+   "description": "Prefer the fixed-width types of <stdint.h> when the size matters. `char` is meant for text; for a raw byte use `uint8_t`. `size_t` is the unsigned type of `sizeof` results and of most sizes and counts in the library (print it with `%zu`).\nConversions: in an expression the narrower operand is promoted to the wider type; in an assignment the right-hand value is converted to the type of the variable (floating → integer truncates toward zero). A cast `(type) expr` forces a conversion.",
+   "details": [
+    {
+     "name": "Integer division",
+     "text": "`7 / 2` is 3 and `-7 / 2` is -3 (truncation toward zero). `%` gives the remainder: `7 % 2` is 1."
+    },
+    {
+     "name": "Mixed arithmetic",
+     "text": "`7 / 2.0` is 3.5 because one operand is double. `(double) a / b` converts before dividing; `(double)(a / b)` converts after."
+    },
+    {
+     "name": "Float literals",
+     "text": "`3.14` is a double; `3.14f` is a float."
+    }
+   ],
+   "example": "int a = 5;\na = a + 7.3;          /* 12.3 is truncated: a == 12 */\ndouble r = (double) 7 / 2;   /* 3.5 */",
+   "mistakes": [
+    "Dividing two ints and expecting a fraction.",
+    "Assuming `int` or `long` has a given size: use <stdint.h> types when it matters."
+   ],
+   "see": [
+    "t3-ref-printf",
+    "t3-ref-sizeof"
+   ]
+  },
+  {
+   "id": "t3-ref-operators",
+   "category": "Language",
+   "title": "Operators and precedence",
+   "summary": "All the operators of the course, from highest to lowest precedence.",
+   "description": "From highest to lowest: `()` `[]` `.` `->`; unary `! ~ ++ -- + - * & sizeof (cast)` (right to left); `* / %`; `+ -`; `<< >>`; `< <= > >=`; `== !=`; `&`; `^`; `|`; `&&`; `||`; `?:`; assignments `= += -= …` (right to left); `,`. When in doubt, add parentheses.",
+   "details": [
+    {
+     "name": "Logical",
+     "text": "`&&` `||` `!` yield 0 or 1. `&&` and `||` short-circuit: the right side is evaluated only if needed (`p != NULL && p->x > 0` is safe)."
+    },
+    {
+     "name": "Increment",
+     "text": "`i++` yields the old value then increments; `++i` increments then yields the new value."
+    },
+    {
+     "name": "Bitwise",
+     "text": "`& | ^ ~` act on each bit; `<< >>` shift. `x << n` multiplies by 2^n for small non-negative values."
+    },
+    {
+     "name": "Assignment",
+     "text": "`a += b` means `a = a + b`. `=` is assignment, `==` is comparison."
+    }
+   ],
+   "example": "if (x = 5) { }        /* BUG: assigns 5 (always true); you meant == */\nint a = 3, b = a++;   /* b == 3, a == 4 */",
+   "mistakes": [
+    "Writing `=` instead of `==` in a condition (compile with -Wall to be warned).",
+    "Modifying the same variable twice in one expression (`i = i++ + 1`): undefined."
+   ],
+   "see": [
+    "t3-ref-types"
+   ]
+  },
+  {
+   "id": "t3-ref-control",
+   "category": "Language",
+   "title": "Control flow",
+   "summary": "if/else, switch, while, do-while and for.",
+   "syntax": "if (c) {…} else {…}\nswitch (e) { case v: …; break; default: …; }\nwhile (c) {…}\ndo {…} while (c);\nfor (init; cond; update) {…}",
+   "description": "Conditions are integers: 0 is false, anything else true. `switch` works only on integer values; each `case` falls through to the next one unless it ends with `break`. `do … while` runs its body at least once. In `for`, the three parts are optional.",
+   "details": [
+    {
+     "name": "break / continue",
+     "text": "`break` leaves the innermost loop or switch; `continue` jumps to the next iteration."
+    },
+    {
+     "name": "switch fall-through",
+     "text": "Deliberate fall-through is legal but easy to get wrong; gcc -Wextra warns about it."
+    }
+   ],
+   "example": "for (int i = 0; i < argc; i++)\n    printf(\"%s\\n\", argv[i]);",
+   "mistakes": [
+    "Forgetting `break` in a switch.",
+    "A stray `;` after `if (…)` or `for (…)` makes the body empty."
+   ],
+   "see": [
+    "t3-ref-operators"
+   ]
+  },
+  {
+   "id": "t3-ref-static",
+   "category": "Language",
+   "title": "static",
+   "summary": "Static local variables keep their value; static globals and functions are private to the file.",
+   "syntax": "static type name = init;",
+   "description": "Inside a function, a `static` variable is created once, initialised once (with a constant) and keeps its value between calls. At file level, `static` limits the name's visibility to that source file (internal linkage), which is how modules hide helpers.",
+   "example": "int next(void)\n{\n    static int n = 0;\n    return ++n;   /* 1, 2, 3, ... on successive calls */\n}",
+   "mistakes": [
+    "Expecting a static local to be re-initialised on every call."
+   ],
+   "see": [
+    "t3-ref-modules"
+   ]
+  },
+  {
+   "id": "t3-ref-sizeof",
+   "category": "Language",
+   "title": "sizeof",
+   "summary": "Size in bytes of a type or an object, as a size_t.",
+   "syntax": "sizeof(type)  |  sizeof expr",
+   "description": "Computed at compile time. On an array variable it is the size of the whole array; on a pointer it is the size of an address (4 or 8 bytes), not of what it points to. When an array is passed to a function it becomes a pointer, so `sizeof` inside the function gives the pointer size.",
+   "example": "int a[10];\nint *p = a;\nsizeof(a)   /* 10 * sizeof(int) */\nsizeof(p)   /* 8 on a 64-bit system */\nsizeof(a) / sizeof(a[0])   /* number of elements: 10 */",
+   "mistakes": [
+    "Using sizeof on a pointer parameter to find the number of elements."
+   ],
+   "see": [
+    "t3-ref-pointers",
+    "t3-ref-malloc"
+   ]
+  },
+  {
+   "id": "t3-ref-preprocessor",
+   "category": "Language",
+   "title": "Preprocessor",
+   "summary": "#include, #define, conditional compilation and include guards.",
+   "syntax": "#include <file>\n#include \"file\"\n#define NAME text\n#define SQR(x) ((x) * (x))\n#ifdef NAME … #endif\n#pragma once",
+   "description": "The preprocessor works on text before the compiler. `<…>` searches the system directories, `\"…\"` searches the current directory first. Macros are plain text substitution: parenthesise the parameters and the whole expansion. A header should protect itself against double inclusion with `#pragma once` or an `#ifndef` guard.",
+   "example": "#define MAX_SIZE 64\n#define SQR(x) ((x) * (x))\nint v[MAX_SIZE];\nint s = SQR(2 + 1);   /* 9, because of the parentheses */",
+   "mistakes": [
+    "`#define SQR(x) x * x` makes `SQR(2 + 1)` expand to `2 + 1 * 2 + 1`.",
+    "A `;` at the end of a `#define` becomes part of every expansion."
+   ],
+   "see": [
+    "t3-ref-modules"
+   ]
+  },
+  {
+   "id": "t3-ref-functions",
+   "category": "Language",
+   "title": "Functions and arguments",
+   "summary": "Prototypes, pass by value, passing addresses, arrays as parameters.",
+   "syntax": "type name(type a, type b);   /* prototype */\ntype name(type a, type b) { … return value; }",
+   "description": "A function must be declared (at least by a prototype) before it is called. Arguments are always passed BY VALUE: the function works on copies. To let a function modify the caller's variable, pass its address and write through the pointer. An array argument is passed as a pointer to its first element, so the size must be passed separately.",
+   "example": "void swap(int *a, int *b)\n{\n    int t = *a;\n    *a = *b;\n    *b = t;\n}\n/* caller: */ swap(&x, &y);",
+   "mistakes": [
+    "Writing `swap(int a, int b)` and expecting the caller's variables to change.",
+    "Returning the address of a local variable: it no longer exists after the function returns."
+   ],
+   "see": [
+    "t3-ref-pointers",
+    "t3-ref-main"
+   ]
+  },
+  {
+   "id": "t3-ref-main",
+   "category": "Language",
+   "title": "main, argc, argv, envp",
+   "summary": "Command-line arguments and the environment.",
+   "syntax": "int main(int argc, char *argv[])\nint main(int argc, char *argv[], char *envp[])",
+   "description": "`argc` is the number of arguments including the program name; `argv[0]` is the program name, `argv[1]` … `argv[argc-1]` the arguments, and `argv[argc]` is NULL. Every argument is a string: use `atoi`/`strtol` to get numbers. `envp` (a common Unix extension) is a NULL-terminated array of `\"NAME=value\"` strings; `getenv` is the portable way to read one variable. The return value of `main` is the exit status (0 = success).",
+   "example": "/* ./prog a b c  →  argc == 4, argv[2] is \"b\" */\nfor (int i = 1; i < argc; i++)\n    printf(\"%s\\n\", argv[i]);",
+   "mistakes": [
+    "Starting the loop at 0 and treating the program name as an argument.",
+    "Reading argv[1] without checking argc."
+   ],
+   "see": [
+    "t3-ref-getenv",
+    "t3-ref-strtol"
+   ]
+  }
+ ]
+}

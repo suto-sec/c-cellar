@@ -1,0 +1,124 @@
+{
+ "entries": [
+  {
+   "id": "t3-ref-pointers",
+   "category": "Pointers and memory",
+   "title": "Pointers and arrays",
+   "summary": "Addresses, dereferencing, pointer arithmetic, how arrays relate to pointers.",
+   "syntax": "type *p;   p = &x;   *p = value;   p[i]  ≡  *(p + i)",
+   "description": "`&x` is the address of `x`; `*p` is the object `p` points to; `NULL` points to nothing and must not be dereferenced. Arithmetic is scaled by the pointed-to type: `p + 1` is `sizeof(*p)` bytes further. An array name converts to a pointer to its first element in most expressions, but it is not a variable: you cannot assign to it, and `sizeof` still sees the whole array. `void *` is a generic pointer that needs a cast (or an assignment in C) before use.",
+   "details": [
+    {
+     "name": "Equivalences",
+     "text": "`a[i]` ≡ `*(a + i)` ≡ `*(i + a)` ≡ `i[a]`; `&a[i]` ≡ `a + i`."
+    },
+    {
+     "name": "Uninitialised pointers",
+     "text": "A pointer declared without a value points nowhere valid. Initialise it with `NULL` or an address."
+    }
+   ],
+   "example": "int a = 3, *p = &a;\n*p = 7;               /* a == 7 */\nint v[] = {25, 1, 3};\n*(v + 2)             /* 3, same as v[2] */",
+   "mistakes": [
+    "Dereferencing NULL or an uninitialised pointer.",
+    "Using a pointer after the object it pointed to ended (dangling pointer)."
+   ],
+   "see": [
+    "t3-ref-sizeof",
+    "t3-ref-malloc"
+   ]
+  },
+  {
+   "id": "t3-ref-malloc",
+   "category": "Pointers and memory",
+   "title": "malloc, calloc, realloc, free",
+   "summary": "Allocate, resize and release heap memory.",
+   "syntax": "void *malloc(size_t size);\nvoid *calloc(size_t n, size_t size);\nvoid *realloc(void *ptr, size_t size);\nvoid free(void *ptr);",
+   "header": "<stdlib.h>",
+   "description": "`malloc` returns `size` uninitialised bytes; `calloc` returns `n*size` bytes set to zero; `realloc` changes the size of a block (it may move it, copying the content; on failure it returns NULL and the old block is still valid); `free` releases a block. All allocators return NULL on failure. Every block you allocate must be freed exactly once.",
+   "details": [
+    {
+     "name": "Safe realloc",
+     "text": "`tmp = realloc(p, n); if (tmp == NULL) { …handle…; } else p = tmp;` — writing `p = realloc(p, n)` leaks the old block when it fails."
+    },
+    {
+     "name": "free(NULL)",
+     "text": "Allowed and does nothing."
+    },
+    {
+     "name": "Casting",
+     "text": "In C the cast of the result is optional (`int *p = malloc(n * sizeof *p);`)."
+    }
+   ],
+   "example": "int *v = calloc(16, sizeof(int));\nif (v == NULL) return 1;\nint *tmp = realloc(v, 32 * sizeof(int));\nif (tmp != NULL) v = tmp;\nfree(v);",
+   "mistakes": [
+    "Forgetting the `+ 1` for the terminator when allocating a string.",
+    "Double free, use after free, and leaks (use `valgrind ./prog` to find them)."
+   ],
+   "see": [
+    "t3-ref-pointers",
+    "t3-ref-c-strings"
+   ]
+  },
+  {
+   "id": "t3-ref-structs",
+   "category": "Pointers and memory",
+   "title": "struct, typedef, enum",
+   "summary": "Records, new type names and named constants.",
+   "syntax": "struct tag { type a; type b; };\ntypedef struct tag Name;\nenum color { RED, GREEN = 5, BLUE };",
+   "description": "Members are accessed with `.` on a struct and `->` on a pointer to a struct (`p->x` ≡ `(*p).x`). Assigning a struct copies all its members, and a struct can be passed to and returned from functions by value. `typedef` gives a type another name; an `enum` gives names to small integer constants (the first is 0 unless set; the following increase by 1).",
+   "example": "typedef struct { float real, imag; } Complex;\nComplex c = {1.5f, -2.3f};\nComplex *pc = &c;\npc->real = 5.0f;   /* same as (*pc).real = 5.0f */",
+   "mistakes": [
+    "Writing `p.x` when `p` is a pointer.",
+    "Comparing two structs with `==` (not allowed): compare member by member."
+   ],
+   "see": [
+    "t3-ref-pointers",
+    "t3-ref-malloc"
+   ]
+  },
+  {
+   "id": "t3-ref-c-strings",
+   "category": "Strings",
+   "title": "C strings",
+   "summary": "A string is a char array ended by '\\0'.",
+   "syntax": "char s[] = \"Hola\";   /* 5 bytes: H o l a \\0 */\nchar *t = \"Hola\";    /* points to a read-only literal */",
+   "description": "There is no string type. A string is a sequence of chars ending with a zero byte, so a string of length n needs n + 1 bytes. A literal like `\"Hola\"` lives in read-only memory: do not modify it through a `char *`; use an array (`char s[] = \"…\"`) for a modifiable copy. Compare contents with `strcmp`, never with `==` (that compares addresses).",
+   "example": "char buf[6];\nstrcpy(buf, \"Hello\");        /* fits exactly: 5 + 1 */\nchar *copy = malloc(strlen(buf) + 1);",
+   "mistakes": [
+    "Allocating `strlen(s)` bytes instead of `strlen(s) + 1`.",
+    "`if (s == \"yes\")` compares pointers, not text."
+   ],
+   "see": [
+    "t3-ref-string-h",
+    "t3-ref-malloc"
+   ]
+  },
+  {
+   "id": "t3-ref-string-h",
+   "category": "Strings",
+   "title": "string.h functions",
+   "summary": "Length, copy, concatenate, compare, search, duplicate and split.",
+   "syntax": "size_t strlen(const char *s);\nchar *strcpy(char *dst, const char *src);\nchar *strncpy(char *dst, const char *src, size_t n);\nchar *strcat(char *dst, const char *src);\nint strcmp(const char *a, const char *b);\nchar *strchr(const char *s, int c);\nchar *strdup(const char *s);\nchar *strtok(char *s, const char *delims);\nsize_t strcspn(const char *s, const char *reject);",
+   "header": "<string.h>",
+   "description": "`strlen` does not count the terminator. `strcpy`/`strcat` do not check the destination size: it must be big enough. `strncpy` does not add a terminator if the source is `n` or more chars long. `strcmp` returns 0 when equal, negative if `a` < `b`, positive if `a` > `b`. `strchr` returns a pointer to the first match or NULL. `strdup` returns a `malloc`ed copy you must `free`. `strtok` splits in place (it writes `\\0` into the string, so use a copy) and remembers its position in hidden state; `strtok_r` is the re-entrant version.",
+   "details": [
+    {
+     "name": "Strip a newline",
+     "text": "`line[strcspn(line, \"\\n\")] = '\\0';`"
+    },
+    {
+     "name": "memcpy / memset",
+     "text": "Work on raw bytes with an explicit length: `memcpy(dst, src, n)`, `memset(p, 0, n)`."
+    }
+   ],
+   "example": "char path[64];\nstrcpy(path, \"/usr\");\nstrcat(path, \"/bin\");        /* \"/usr/bin\" */\nif (strcmp(argv[1], \"-h\") == 0) { /* equal */ }",
+   "mistakes": [
+    "Using `strcmp(a, b)` as if it returned 1 for equal.",
+    "Passing a string literal to `strtok` (it must be modifiable)."
+   ],
+   "see": [
+    "t3-ref-c-strings"
+   ]
+  }
+ ]
+}

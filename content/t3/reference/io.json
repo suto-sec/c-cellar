@@ -1,0 +1,185 @@
+{
+ "entries": [
+  {
+   "id": "t3-ref-printf",
+   "category": "Console I/O",
+   "title": "printf and format specifiers",
+   "summary": "Formatted output to stdout (fprintf: to a stream, snprintf: to a string).",
+   "syntax": "int printf(const char *format, …);\nint fprintf(FILE *stream, const char *format, …);\nint snprintf(char *buf, size_t n, const char *format, …);",
+   "header": "<stdio.h>",
+   "description": "A format is text plus conversions of the form `%[flags][width][.precision][length]conversion`. Arguments must match the conversions in number and type.",
+   "details": [
+    {
+     "name": "%d %i",
+     "text": "signed int (use `%ld` for long, `%lld` for long long)"
+    },
+    {
+     "name": "%u",
+     "text": "unsigned int"
+    },
+    {
+     "name": "%zu",
+     "text": "size_t"
+    },
+    {
+     "name": "%x %X %o",
+     "text": "unsigned in hexadecimal / octal"
+    },
+    {
+     "name": "%f",
+     "text": "double in decimal notation (`%.2f` = two decimals)"
+    },
+    {
+     "name": "%e %g",
+     "text": "exponent notation / shortest of %f and %e"
+    },
+    {
+     "name": "%c",
+     "text": "one character"
+    },
+    {
+     "name": "%s",
+     "text": "string (char *)"
+    },
+    {
+     "name": "%p",
+     "text": "pointer; cast to `(void *)`"
+    },
+    {
+     "name": "%%",
+     "text": "a literal percent sign"
+    },
+    {
+     "name": "flags",
+     "text": "`-` left-justify, `+` always show sign, `0` pad with zeros, space = space for positive numbers"
+    },
+    {
+     "name": "width / .precision",
+     "text": "`%5d` = at least 5 characters wide; `%5.2f` = width 5, 2 decimals; `%.3s` = at most 3 characters of a string; `%*d` takes the width from an argument"
+    }
+   ],
+   "example": "printf(\"%05d|%5.2f|%s|%c\\n\", 79, 3.14159, \"hi\", 'x');   /* 00079| 3.14|hi|x */\nprintf(\"%p\\n\", (void *) &x);",
+   "mistakes": [
+    "`%d` with a `size_t`, `long` or double argument (wrong size/type: undefined).",
+    "Passing user text as the format (`printf(s)`): use `printf(\"%s\", s)`."
+   ],
+   "see": [
+    "t3-ref-scanf",
+    "t3-ref-fgets"
+   ]
+  },
+  {
+   "id": "t3-ref-scanf",
+   "category": "Console I/O",
+   "title": "scanf",
+   "summary": "Formatted input; every argument is an address.",
+   "syntax": "int scanf(const char *format, …);\nint sscanf(const char *str, const char *format, …);\nint fscanf(FILE *stream, const char *format, …);",
+   "header": "<stdio.h>",
+   "description": "Returns the number of items successfully assigned, or `EOF` if the input ended before the first conversion: check it. Whitespace in the format (and before `%d`, `%f`, `%s`) skips any amount of whitespace; `%c` does not skip (write `\" %c\"` to skip). The same conversions as printf, with one difference: `%f` stores a `float`, `%lf` stores a `double`. `%s` stops at whitespace; always give a width (`%9s`) for a `char[10]`.",
+   "example": "int n;\nif (scanf(\"%d\", &n) != 1)\n    return 1;          /* not a number, or EOF */\ndouble r;\nscanf(\"%lf\", &r);",
+   "mistakes": [
+    "Forgetting the `&`: `scanf(\"%d\", n)` writes to a random address.",
+    "Using `%f` with a double variable."
+   ],
+   "see": [
+    "t3-ref-printf",
+    "t3-ref-fgets"
+   ]
+  },
+  {
+   "id": "t3-ref-fgets",
+   "category": "Console I/O",
+   "title": "fgets, puts, getchar",
+   "summary": "Read a whole line safely; print a string with a newline.",
+   "syntax": "char *fgets(char *buf, int size, FILE *stream);\nint puts(const char *s);\nint getchar(void);   int putchar(int c);",
+   "header": "<stdio.h>",
+   "description": "`fgets` reads at most `size - 1` characters, stopping after a newline, and always terminates the buffer with `\\0`. The newline, if read, stays in the buffer. It returns `buf`, or NULL at end of file or on error. A line longer than the buffer is delivered in several pieces: a piece that does not end in `\\n` (and is not the last of the file) is the start of a longer line. `puts(s)` prints `s` plus a newline; `gets` is dangerous and was removed in C11.",
+   "example": "char line[1024];\nwhile (fgets(line, sizeof(line), stdin) != NULL) {\n    line[strcspn(line, \"\\n\")] = '\\0';\n    puts(line);\n}",
+   "mistakes": [
+    "Counting a long line as several lines.",
+    "Forgetting that the newline is part of the data."
+   ],
+   "see": [
+    "t3-ref-scanf",
+    "t3-ref-stdio-files"
+   ]
+  },
+  {
+   "id": "t3-ref-fopen",
+   "category": "Files (library)",
+   "title": "fopen and fclose",
+   "summary": "Open and close a stream (FILE *).",
+   "syntax": "FILE *fopen(const char *path, const char *mode);\nint fclose(FILE *stream);",
+   "header": "<stdio.h>",
+   "description": "`fopen` returns NULL on failure (and sets errno). `fclose` flushes the stream's buffer and closes it; without it the last data may never reach the file. Streams are buffered (except stderr), so output written with `fprintf` may appear later than output from `write`.",
+   "details": [
+    {
+     "name": "\"r\"",
+     "text": "read; the file must exist"
+    },
+    {
+     "name": "\"w\"",
+     "text": "write; creates the file or empties it"
+    },
+    {
+     "name": "\"a\"",
+     "text": "append at the end; creates it if missing"
+    },
+    {
+     "name": "\"r+\"",
+     "text": "read and write; the file must exist; not truncated"
+    },
+    {
+     "name": "\"w+\"",
+     "text": "read and write; creates or empties"
+    },
+    {
+     "name": "\"a+\"",
+     "text": "read anywhere, write always at the end"
+    }
+   ],
+   "example": "FILE *f = fopen(\"out.txt\", \"w\");\nif (f == NULL) {\n    fprintf(stderr, \"out.txt: %s\\n\", strerror(errno));\n    return 1;\n}\nfprintf(f, \"hello\\n\");\nfclose(f);",
+   "mistakes": [
+    "Not checking for NULL.",
+    "Using \"w\" when you meant to keep the old contents."
+   ],
+   "see": [
+    "t3-ref-errno",
+    "t3-ref-stdio-files",
+    "t3-ref-open"
+   ]
+  },
+  {
+   "id": "t3-ref-stdio-files",
+   "category": "Files (library)",
+   "title": "Reading and writing streams",
+   "summary": "fgets/fputs, fprintf/fscanf, fgetc/fputc, fread/fwrite.",
+   "syntax": "char *fgets(char *buf, int n, FILE *f);   int fputs(const char *s, FILE *f);\nint fprintf(FILE *f, const char *fmt, …);  int fscanf(FILE *f, const char *fmt, …);\nint fgetc(FILE *f);   int fputc(int c, FILE *f);\nsize_t fread(void *ptr, size_t size, size_t n, FILE *f);\nsize_t fwrite(const void *ptr, size_t size, size_t n, FILE *f);",
+   "header": "<stdio.h>",
+   "description": "Text: line, character or formatted access. Binary: `fread`/`fwrite` move blocks of bytes exactly as they are in memory and return the number of ITEMS transferred; a short count means end of file or an error (tell them apart with `feof(f)` and `ferror(f)`). `fgetc` returns an `int` so it can return `EOF` (-1) distinct from any byte.",
+   "example": "size_t n;\nunsigned char buf[256];\nwhile ((n = fread(buf, 1, sizeof(buf), in)) > 0)\n    fwrite(buf, 1, n, out);",
+   "mistakes": [
+    "Storing `fgetc`'s result in a `char` (an `EOF` can be confused with a data byte).",
+    "Writing `fwrite(buf, 1, sizeof buf, out)` at the end of the file instead of the `n` bytes actually read."
+   ],
+   "see": [
+    "t3-ref-fopen",
+    "t3-ref-fseek"
+   ]
+  },
+  {
+   "id": "t3-ref-fseek",
+   "category": "Files (library)",
+   "title": "fseek, ftell, rewind, fdopen, fileno",
+   "summary": "Move the position in a stream; convert between descriptors and streams.",
+   "syntax": "int fseek(FILE *f, long offset, int whence);\nlong ftell(FILE *f);\nvoid rewind(FILE *f);\nFILE *fdopen(int fd, const char *mode);\nint fileno(FILE *f);",
+   "header": "<stdio.h>",
+   "description": "`whence` is `SEEK_SET` (from the start), `SEEK_CUR` (from the current position) or `SEEK_END` (from the end). `ftell` returns the current position; `rewind` goes back to the start. `fdopen` wraps an existing descriptor in a stream; `fileno` returns the descriptor of a stream (useful with `dup2`).",
+   "example": "fseek(f, 0, SEEK_END);\nlong size = ftell(f);   /* file size in bytes */\nrewind(f);",
+   "see": [
+    "t3-ref-lseek",
+    "t3-ref-fopen"
+   ]
+  }
+ ]
+}
