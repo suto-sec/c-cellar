@@ -2,10 +2,12 @@
 
 A self-hosted lab to practise C. It runs in a container and you use it in your browser:
 
-- **Coding exercises**: the statement on the left, VS Code on the right, and a **Check** button that compiles your program with `gcc -Wall -Wextra` and runs it against test cases, showing a diff when something is wrong. Two tracks: *C derusting* (you know C but have not used it for a while) and *C exercises* (exam-style programs of growing difficulty).
+- **Coding exercises**: the statement on the left, VS Code on the right and a **Check** button that compiles your program with `gcc -Wall -Wextra`, runs it against test cases and shows a diff when something is wrong. **Hint** gives clues one at a time, **Answer** shows the reference solution. Exercises start from a blank file: you write the whole program.
+  - 19 **chapters** in teaching order (output, variables, operators, input, conditions, loops, functions, arrays, strings, pointers, dynamic memory, structs, arguments, stdio files, system calls, directories, errors, modules/libraries/make, exam-style programs), each from 1 to 5 stars.
+  - A **suggested path** interleaves all the exercises so the difficulty climbs gradually; *Continue* takes you to the next one you have not passed.
+  - *C derusting* are the 18 topic chapters; *C exercises* are the exam-style programs.
 - **Theory**: questions in four formats (single choice, multiple choice, fill in the blank, drag to reorder) with an explanation after every answer.
-- **Reference**: a searchable C reference (syntax, options, examples, common mistakes).
-- **Readiness**: how prepared you are per topic, and which questions to review.
+- **Reference**: one entry per function, command and keyword, grouped by category, with a search that puts the entry called exactly what you typed first.
 
 Everything you do is stored in the `.progress/` folder (delete it to start over). Nothing leaves your computer.
 
@@ -45,27 +47,35 @@ app/server.py            backend: content loader, exercise checker, grading, pro
 app/static/              the web interface (plain JS, no build step)
 app/selftest.py          consistency checks used by `./lab selftest`
 content/<tag>/           everything you study, per topic tag
-  coding/<track>/<id>/   one folder per exercise
+  chapters.json, path.json   the chapters and the suggested path
+  coding/<chapter>/<id>/     one folder per exercise
   theory/<set>.json      question sets
   reference/<area>.json  reference entries
 .progress/               your progress, your answers, VS Code settings (git-ignored)
 ```
 
-Every content id starts with its tag (`t3-d01-hello-args`, `t3-ptr-04`, `t3-ref-malloc`) and lives under `content/<tag>/`; `selftest` enforces both.
+Every content id starts with its tag (`t3-loops-factorial`, `t3-ptr-04`, `t3-ref-malloc`) and lives under `content/<tag>/`; `selftest` enforces both.
 
-### An exercise (`content/t3/coding/<track>/<id>/`)
+### An exercise (`content/t3/coding/<chapter>/<id>/`)
 
 | file | |
 |---|---|
-| `meta.json` | `id`, `tag`, `track` (`derusting` or `exercises`), `topic`, `title`, `difficulty` 1-3, `order`, `summary`, optional `hints[]` and `info` |
+| `meta.json` | `id` (`t3-<chapter>-<slug>`), `tag`, `track` (`derusting` or `exercises`, the same as its chapter), `topic` (the chapter id), `title`, `stars` 1-5, `order` (inside the chapter), `summary`, `hints[]` (at least 2), optional `info` |
 | `statement.md` | what to write |
-| `starter.c` | the file the student starts from (copied to `.progress/workspace/<id>/answer.c`) |
-| `solution.c` | reference solution (shown by *Show solution*; `selftest` proves it passes) |
+| `solution.c` | reference solution (shown by *Answer*; `selftest` proves it passes) |
 | `tests.json` | `{"cases": [...]}`, see below |
 | `harness.c`, `*.h` | optional: a hidden `main` linked with the student's `answer.c`; headers are also copied next to `answer.c` |
 | `fixtures/` | optional files copied into every test's working directory |
 
-A test case: `name`, then either `args` (+ optional `stdin`) or a shell `cmd` (`$BIN` is the compiled program), optional `setup` (shell, run first), `stdout` (expected, compared with `match`: `exact` (default), `trim`, `sorted`, `regex`, `contains`), `exit` (`0` by default, or an integer, `"nonzero"`, `"any"`), `stderr_empty`, `timeout`, `hidden`.
+The student's file starts **blank** (`answer.c`). A multi-file exercise lists its files in `meta.json` (`"files": ["util.h", "util.c", "main.c"]`) and a build command (`"build": "gcc -o prog main.c util.c"` or `"make"`); its reference solution is the folder `solution/` and files the student is linked with go in `hidden/`. Every test then runs in a copy of the finished build directory.
+
+`content/<tag>/chapters.json` lists the chapters; `content/<tag>/path.json` is the suggested path (every exercise exactly once; `selftest` checks that the stars never jump).
+
+A test case: `name`, then either `args` (+ optional `stdin`) or a shell `cmd` (`$BIN` is the compiled program), optional `setup` (shell, run first), `stdout` (expected, compared with `match`: `exact` (default), `trim`, `sorted`, `regex`, `contains`), `exit` (`0` by default, or an integer, `"nonzero"`, `"any"`), `stderr_empty`, `timeout`, `hidden`. Expected outputs must come from the statement, never from running the solution.
+
+### Reference entries (`content/t3/reference/*.json`)
+
+`{"order": n, "entries": [...]}`; an entry has `id` (`t3-ref-<name>`), `title` (the name you would type), `category`, `summary`, and optionally `syntax`, `header`, `description`, `details[]` (`name`/`text`: options, flags, formats), `example`, `mistakes[]`, `see[]` and `aliases[]` (other names that lead here: `%zu`, `O_CREAT`, `else`). A name or alias belongs to one entry only. `selftest` fails if a library function used by a reference solution has no entry.
 
 ### Theory questions (`content/t3/theory/*.json`)
 
