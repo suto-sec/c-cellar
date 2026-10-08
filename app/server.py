@@ -578,6 +578,13 @@ def practice_for_entries():
     return out
 
 
+def recommended_commands(ex_id):
+    """Reference entries involved in an exercise (the inverse of an entry's practice list): they say what to look up, not how to use it."""
+    practice = practice_for_entries()
+    return [{"id": e["id"], "title": e["title"], "category": e["category"], "summary": e["summary"], "header": e.get("header", "")}
+            for e in load_reference() if ex_id in practice.get(e["id"], [])]
+
+
 def reference_with_links():
     entries = load_reference()
     practice = practice_for_entries()
@@ -728,7 +735,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, {
                 "id": ex["id"], "tag": ex["tag"], "title": ex["title"], "track": ex["track"], "topic": ex["topic"],
                 "stars": ex["stars"], "statement": (d / "statement.md").read_text(encoding="utf-8"),
-                "hints": ex.get("hints", []), "info": ex.get("info", ""), "files": workspace_files(ex),
+                "hints": ex.get("hints", []), "recommended": recommended_commands(ex["id"]), "files": workspace_files(ex),
                 "workspace": str(ws), "file": str(ws / workspace_files(ex)[0]), "progress": prog, "status": coding_status(prog),
                 "theory": chapter_theory(ex["tag"], ex["topic"])})
         if parts[0] == "theory" and len(parts) == 2:

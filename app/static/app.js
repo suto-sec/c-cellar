@@ -254,10 +254,17 @@ async function viewExercise(id) {
     if (hintsShown < d.hints.length) hintBox.append(h("div", { class: "hint" }, `Hint ${hintsShown + 1}/${d.hints.length}: `, d.hints[hintsShown++]));
     if (hintsShown >= d.hints.length) hintBtn.disabled = true;
   });
-  const infoBtn = h("button", { class: "btn" }, "Info");
+  const infoBtn = h("button", { class: "btn", title: "Reference entries involved in this exercise (which commands to look up, not how to use them)" }, "Recommended commands");
   infoBtn.addEventListener("click", () => {
     const old = $(".infobox", extras);
-    if (old) old.remove(); else extras.prepend(h("div", { class: "panel infobox", html: md(d.info || "No extra info.") }));
+    if (old) return old.remove();
+    extras.prepend(h("div", { class: "panel infobox" },
+      h("h3", {}, "Recommended commands"),
+      h("p", { class: "muted" }, "The commands and keywords involved in this exercise. They tell you what to look up, not how to use it."),
+      d.recommended.length ? h("ul", { class: "reclist" }, d.recommended.map((e) => h("li", {},
+        h("a", { href: "#/reference/" + e.id, target: "_blank", title: "Open in the Reference (new tab)" }, h("code", {}, e.title)),
+        e.header ? h("span", { class: "muted" }, " " + e.header) : null,
+        h("span", { class: "muted" }, " · " + e.category), h("div", { class: "sub", html: rmd(e.summary) })))) : h("p", { class: "muted" }, "Nothing to recommend for this one.")));
   });
   const solBtn = h("button", { class: "btn" }, "Answer");
   solBtn.addEventListener("click", async () => {

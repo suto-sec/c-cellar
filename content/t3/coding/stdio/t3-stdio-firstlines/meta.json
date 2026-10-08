@@ -10,6 +10,5 @@
   "fgets returns a piece of a line when the line is longer than the buffer: only count a line when the piece ends with '\\n'.",
   "Parse the option with atoi(argv[1] + 1) when argv[1][0] == '-'."
  ],
- "info": "fgets(buf, size, stdin) reads up to size-1 characters or up to and including a newline. If the line is longer, the rest comes in the next call.",
  "stars": 4
 }

@@ -11,6 +11,5 @@
   "Split on ':' and build \"dir/name\" with snprintf into a char buffer.",
   "access(path, X_OK) == 0 means the file exists and you may execute it."
  ],
- "info": "getenv(name) returns NULL if unset. strtok_r(s, \":\", &save) splits a modifiable string. access(path, X_OK) checks execute permission for the real user.",
  "stars": 4
 }

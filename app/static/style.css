@@ -244,3 +244,8 @@ pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } p
 .btn.step { flex-direction: column; align-items: flex-start; gap: 0; }
 .btn.step.next { align-items: flex-end; }
 .steplabel { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.infobox h3 { margin: 0 0 4px; font-size: 15px; }
+.reclist { list-style: none; margin: 8px 0 0; padding: 0; }
+.reclist li { padding: 6px 0; border-top: 1px solid var(--line); }
+.reclist li:first-child { border-top: 0; }
+.reclist .sub { font-size: 13px; color: var(--muted); margin-top: 2px; }

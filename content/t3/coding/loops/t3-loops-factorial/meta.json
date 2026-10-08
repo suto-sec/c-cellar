@@ -10,6 +10,5 @@
  "hints": [
   "`0! = 1`, so start the product at 1 and multiply it by 2, 3, ..., n.",
   "Use a `long` so that 12! fits."
- ],
- "info": "scanf(\"%d\", &n) reads an int from stdin and returns how many values it read. printf(\"%ld\", x) prints a long."
+ ]
 }

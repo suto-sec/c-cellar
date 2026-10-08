@@ -11,6 +11,5 @@
   "Every C program needs a `main` function; `printf` is declared in `<stdio.h>`.",
   "`\\n` at the end of the text starts a new line.",
   "The whole program: `#include <stdio.h>`, then `int main(void) { printf(\"...\\n\"); return 0; }`."
- ],
- "info": "`printf(\"text\\n\")` prints text. `\\n` is the newline character."
+ ]
 }

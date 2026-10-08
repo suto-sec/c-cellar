@@ -10,6 +10,5 @@
  "hints": [
   "`%d` prints an int, `%f` a floating-point number and `%c` one character; the values follow the format string, in order.",
   "`%.2f` prints exactly two decimals."
- ],
- "info": "`%d` int · `%f` double (`%.2f` = 2 decimals) · `%c` char · `%s` string"
+ ]
 }

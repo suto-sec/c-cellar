@@ -10,6 +10,5 @@
   "A struct is copied when passed or returned by value.",
   "With a pointer p to a struct, p->x is the same as (*p).x."
  ],
- "info": "struct point p; p.x is member access. struct point *q = &p; q->x is the same member through a pointer.",
  "stars": 3
 }
