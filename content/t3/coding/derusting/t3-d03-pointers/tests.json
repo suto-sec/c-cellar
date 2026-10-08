@@ -1,0 +1,6 @@
+{"cases":[
+ {"name":"mixed values","stdin":"4  7 -2 9 3\n","stdout":"min=-2 max=9\nswapped: 9 -2\n"},
+ {"name":"single element","stdin":"1 5\n","stdout":"min=5 max=5\nswapped: 5 5\n"},
+ {"name":"all equal","stdin":"3 2 2 2\n","stdout":"min=2 max=2\nswapped: 2 2\n"},
+ {"name":"descending","stdin":"5 50 40 30 20 10\n","stdout":"min=10 max=50\nswapped: 50 10\n"}
+]}

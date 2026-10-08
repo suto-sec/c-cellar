@@ -1,0 +1,7 @@
+{"cases":[
+ {"name":"Hello World","stdin":"Hello World\n","stdout":"length: 11\nvowels: 3\n"},
+ {"name":"empty line","stdin":"\n","stdout":"length: 0\nvowels: 0\n"},
+ {"name":"upper case vowels","stdin":"AEIOU xyz\n","stdout":"length: 9\nvowels: 5\n"},
+ {"name":"leading and trailing spaces count","stdin":"  a \n","stdout":"length: 4\nvowels: 1\n"},
+ {"name":"no final newline","stdin":"queue","stdout":"length: 5\nvowels: 4\n"}
+]}

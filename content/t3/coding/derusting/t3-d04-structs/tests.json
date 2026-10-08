@@ -1,0 +1,6 @@
+{"cases":[
+ {"name":"example","stdin":"1 2 3 -4 2\n","stdout":"sum=(8, -4) dist=8\n"},
+ {"name":"identity scale","stdin":"0 0 5 5 1\n","stdout":"sum=(5, 5) dist=10\n"},
+ {"name":"negative factor","stdin":"-1 -1 1 1 -3\n","stdout":"sum=(0, 0) dist=4\n"},
+ {"name":"same point","stdin":"7 7 7 7 0\n","stdout":"sum=(0, 0) dist=0\n"}
+]}
