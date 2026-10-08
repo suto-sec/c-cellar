@@ -279,3 +279,9 @@ pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } p
   .dpanel { position: relative !important; left: auto !important; top: auto !important; width: auto !important; height: 75vh !important; flex: none; }
   .dsplit { display: none; }
 }
+.pop-block { margin-top: 14px; }
+.accentrow { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+.accentpick { flex: none; width: 38px; height: 32px; padding: 2px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); cursor: pointer; }
+.accenttext { flex: 1; min-width: 0; padding: 6px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--text); font: inherit; font-size: 13px; }
+.accenttext:focus { outline: 2px solid var(--accent); border-color: transparent; }
+.accenttext.bad { border-color: var(--bad); background: var(--badbg); }

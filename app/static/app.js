@@ -1019,6 +1019,51 @@ function applyTheme(mode) {
   if (mode === "light" || mode === "dark") document.documentElement.dataset.theme = mode;
   else delete document.documentElement.dataset.theme;
 }
+/** The accent colour (buttons, links, highlights): any CSS colour. Unset = the built-in orange of the current theme. */
+const ACCENT_KEY = "cellar.accent";
+function parseColor(text) {   // any CSS colour string (#hex, rgb(), hsl(), a name, oklch()...) -> [r, g, b], or null when it is not a colour
+  const t = String(text).trim();
+  if (!t || !CSS.supports("color", t)) return null;
+  const ctx = document.createElement("canvas").getContext("2d", { willReadFrequently: true });
+  ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, 1, 1);
+  ctx.fillStyle = t; ctx.fillRect(0, 0, 1, 1);   // a translucent colour is shown over white
+  return [...ctx.getImageData(0, 0, 1, 1).data].slice(0, 3);
+}
+const toHex = (rgb) => "#" + rgb.map((v) => v.toString(16).padStart(2, "0")).join("");
+function applyAccent(rgb) {
+  const root = document.documentElement.style;
+  if (!rgb) { root.removeProperty("--accent"); root.removeProperty("--accent-ink"); return; }
+  const lum = (c) => { const [r, g, b] = c.map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+  const dark = [26, 15, 8], light = [255, 255, 255];
+  const contrast = (a, b) => (Math.max(lum(a), lum(b)) + 0.05) / (Math.min(lum(a), lum(b)) + 0.05);
+  root.setProperty("--accent", toHex(rgb));
+  root.setProperty("--accent-ink", toHex(contrast(rgb, light) >= contrast(rgb, dark) ? light : dark));   // readable text on top of the accent
+}
+function accentControls() {
+  let stored = null;
+  try { stored = localStorage.getItem(ACCENT_KEY); } catch (e) { /* private window */ }
+  const rgb0 = stored && parseColor(stored);
+  applyAccent(rgb0 || null);
+  const read = () => getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
+  const picker = h("input", { type: "color", class: "accentpick", "aria-label": "Pick the accent colour", title: "Pick a colour" });
+  const text = h("input", { type: "text", class: "accenttext", spellcheck: false, autocomplete: "off", "aria-label": "Accent colour as text", placeholder: "#b4542b, rgb(180 84 43), tomato…", title: "Any CSS colour: #hex, rgb(), hsl(), a colour name" });
+  const msg = h("div", { class: "pop-note", style: "color:var(--bad)", hidden: true }, "Not a colour CSS understands.");
+  const sync = () => { const c = read(); picker.value = /^#[0-9a-f]{6}$/i.test(c) ? c : toHex(parseColor(c) || [180, 84, 43]); };
+  const save = (v) => { try { v ? localStorage.setItem(ACCENT_KEY, v) : localStorage.removeItem(ACCENT_KEY); } catch (e) { /* not remembered */ } };
+  if (rgb0) text.value = stored;
+  sync();
+  picker.addEventListener("input", () => { applyAccent(parseColor(picker.value)); text.value = picker.value; text.classList.remove("bad"); msg.hidden = true; save(picker.value); });
+  text.addEventListener("input", () => {
+    const v = text.value.trim();
+    if (!v) { applyAccent(null); save(null); sync(); text.classList.remove("bad"); msg.hidden = true; return; }
+    const rgb = parseColor(v);
+    text.classList.toggle("bad", !rgb); msg.hidden = !!rgb;
+    if (!rgb) return;
+    applyAccent(rgb); save(v); picker.value = toHex(rgb);
+  });
+  const reset = h("button", { class: "linkbtn", type: "button", onclick: () => { text.value = ""; text.dispatchEvent(new Event("input")); } }, "Reset");
+  return h("div", { class: "pop-block" }, h("div", { class: "pop-row" }, h("span", { class: "muted" }, "Accent colour"), reset), h("div", { class: "accentrow" }, picker, text), msg);
+}
 function initSettings() {
   const btn = $("#settings"), pop = $("#settings-pop");
   let mode = localStorage.getItem("cellar.theme") || "system";
@@ -1027,7 +1072,9 @@ function initSettings() {
     const input = h("input", { type: "radio", name: "theme", value: m, checked: m === mode, onchange: () => { mode = m; localStorage.setItem("cellar.theme", m); applyTheme(m); } });
     return h("label", { class: "seg" }, input, h("span", {}, m[0].toUpperCase() + m.slice(1)));
   });
+  const accent = accentControls();
   pop.replaceChildren(h("div", { class: "pop-title" }, "Settings"), h("div", { class: "pop-row" }, h("span", { class: "muted" }, "Theme"), h("div", { class: "segs", role: "radiogroup", "aria-label": "Theme" }, radios)),
+    accent,
     h("div", { class: "pop-note muted" }, "The code editor follows your system theme."));
   const close = () => { pop.hidden = true; btn.setAttribute("aria-expanded", "false"); };
   btn.addEventListener("click", (e) => { e.stopPropagation(); pop.hidden = !pop.hidden; btn.setAttribute("aria-expanded", String(!pop.hidden)); });
