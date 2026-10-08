@@ -291,12 +291,11 @@ pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } p
 .dailymain { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .dailymain .main { flex: 1; min-width: 220px; }
 .dailymain .title { font-weight: 600; font-size: 16px; }
-.streakpill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--text); text-decoration: none; font-size: 14px; line-height: 1.2; }
-.streakpill[hidden] { display: none; }
-.streakpill:hover { background: var(--panel2); }
-.streakpill .flame { font-size: 16px; }
-.streakpill.on { border-color: var(--accent); color: var(--accent); }
-.streakpill.risk { border-style: dashed; border-color: var(--accent); }
-.streakpill.off .flame { filter: grayscale(1); opacity: .55; }
-.streakpill.off b { color: var(--muted); }
+.streakmini { display: inline-flex; align-items: center; gap: 3px; margin-left: 5px; }
+.streakmini .flame { font-size: 15px; }
+.streakmini.on { color: var(--accent); }
+.streakmini.risk b { color: var(--accent); }
+.streakmini.off .flame { filter: grayscale(1); opacity: .55; }
+.streakmini.off b { color: var(--muted); }
+#nav a.on .streakmini.off b, #nav a:hover .streakmini.off b { color: var(--muted); }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

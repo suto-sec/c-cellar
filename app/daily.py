@@ -185,3 +185,13 @@ def streak(days, today):
         best = max(best, run)
         prev = d
     return {"current": cur, "best": best, "today_done": t in have}
+
+
+def history(root, before):
+    """Metas of the daily exercises that exist for days before `before` (a date), newest first."""
+    out = []
+    for d in Path(root).glob("*-daily-*") if Path(root).is_dir() else []:
+        parsed = id_date(d.name)
+        if parsed and parsed[1] < before and (d / "meta.json").exists():
+            out.append(load(d))
+    return sorted(out, key=lambda m: m["date"], reverse=True)

@@ -769,6 +769,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, {"entries": reference_with_links(), "favorites": load_progress().get("favorites", [])})
         if route == "daily":
             return self._daily(dict(p.split("=", 1) for p in query.split("&") if "=" in p))
+        if route == "daily/history":
+            return self._daily_history(dict(p.split("=", 1) for p in query.split("&") if "=" in p))
         if route == "readiness":
             tag = dict(p.split("=", 1) for p in query.split("&") if "=" in p).get("tag", "t3")
             return self._send(200, readiness(tag))
@@ -791,6 +793,21 @@ class Handler(BaseHTTPRequestHandler):
         return self._send(200, {"id": ex["id"], "date": day.isoformat(), "title": ex["title"], "stars": ex["stars"], "tag": ex["tag"],
                                 "chapter": chapter["title"] if chapter else ex["topic"], "status": coding_status(coding.get(ex["id"])),
                                 "streak": daily.streak(days, day.isoformat())})
+
+    def _daily_history(self, q):
+        """The past daily challenges that exist (days on which the app generated one), newest first, with how each went."""
+        day = daily.valid_date(q.get("date"))
+        if not day or abs((day - datetime.now(timezone.utc).date()).days) > 1:
+            return self._send(400, {"error": "date must be today's date as YYYY-MM-DD"})
+        coding = load_progress()["coding"]
+        chapters = {(c["tag"], c["id"]): c["title"] for c in load_chapters()}
+        items = []
+        for m in daily.history(DAILY_DIR, day):
+            p = coding.get(m["id"], {})
+            items.append({"id": m["id"], "date": m["date"], "title": m["title"], "stars": m["stars"], "tag": m["tag"],
+                          "chapter": chapters.get((m["tag"], m["topic"]), m["topic"]), "status": coding_status(p),
+                          "on_time": p.get("streak_day") == m["date"]})
+        return self._send(200, {"items": items})
 
     # -- POST
     def api_post(self, route, body):

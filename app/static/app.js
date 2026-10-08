@@ -139,31 +139,46 @@ async function loadDaily() {
   setStreak(d.streak, d.id);
   return d;
 }
-/** The streak indicator in the top bar: a flame and the number of days; it opens today's exercise. */
+/** The streak next to "Daily challenge" in the top bar: a flame and the number of days. */
 function setStreak(st, id) {
-  const el = $("#streak");
+  const link = $("#navdaily"), el = $("#streak");
   if (id) state.dailyId = id;
   const n = st.current;
-  el.hidden = false;
-  el.href = state.dailyId ? "#/coding/" + state.dailyId : "#/coding";
-  el.className = "streakpill " + (st.today_done ? "on" : n ? "risk" : "off");
-  el.title = st.today_done ? `Streak: ${n} day${n === 1 ? "" : "s"}. Today's exercise is done; come back tomorrow.`
-    : n ? `Streak: ${n} day${n === 1 ? "" : "s"}. Pass today's exercise before midnight to keep it.` : "No streak yet. Pass today's exercise to start one.";
-  el.replaceChildren(h("span", { class: "flame", "aria-hidden": "true" }, "🔥"), h("b", {}, String(n)), h("span", { class: "sr" }, ` day streak`));
+  const plural = `${n} day${n === 1 ? "" : "s"}`;
+  link.hidden = false;
+  link.title = st.today_done ? `Streak: ${plural}. Today's challenge is done; come back tomorrow.`
+    : n ? `Streak: ${plural}. Pass today's challenge before midnight to keep it.` : "No streak yet. Pass today's challenge to start one.";
+  el.className = "streakmini " + (st.today_done ? "on" : n ? "risk" : "off");
+  el.replaceChildren(h("span", { class: "flame", "aria-hidden": "true" }, "🔥"), h("b", {}, String(n)), h("span", { class: "sr" }, " day streak"));
 }
-/** The daily exercise card (Home and Coding): today's generated exercise and the streak. Null when the app cannot build one. */
-async function dailyCard() {
-  let d;
-  try { d = await loadDaily(); } catch (e) { return null; }
+/** Today's challenge and the streak (the Daily challenge page). */
+function dailyCard(d) {
   const done = d.streak.today_done;
   const n = d.streak.current;
   return h("div", { class: "panel daily" },
-    h("div", { class: "dailytop" }, h("b", {}, "Daily exercise"), h("span", { class: "muted" }, " · a new one every day"), h("span", { class: "spacer" }),
-      h("span", { class: "streak" + (n ? " on" : ""), title: "Consecutive days on which you passed that day's exercise" }, `Streak: ${n} day${n === 1 ? "" : "s"}`), h("span", { class: "muted" }, ` · best ${d.streak.best}`)),
+    h("div", { class: "dailytop" }, h("b", {}, "Today"), h("span", { class: "muted" }, " · " + d.date), h("span", { class: "spacer" }),
+      h("span", { class: "streak" + (n ? " on" : ""), title: "Consecutive days on which you passed that day's challenge" }, `Streak: ${n} day${n === 1 ? "" : "s"}`), h("span", { class: "muted" }, ` · best ${d.streak.best}`)),
     h("div", { class: "dailymain" },
       h("div", { class: "main" }, h("a", { class: "title", href: "#/coding/" + d.id }, d.title), h("div", { class: "sub" }, d.chapter, " · ", stars(d.stars), " ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag))),
         h("div", { class: "muted" }, done ? "✔ Done today. Come back tomorrow to keep your streak going." : n ? `Pass it before midnight to keep your ${n}-day streak.` : "Pass it today to start a streak.")),
-      h("a", { class: "btn" + (done ? "" : " primary"), href: "#/coding/" + d.id }, done ? "Open again" : "Start today's exercise")));
+      h("a", { class: "btn" + (done ? "" : " primary"), href: "#/coding/" + d.id }, done ? "Open again" : "Start today's challenge")));
+}
+async function viewDaily() {
+  setNav("daily");
+  let today, past;
+  try { [today, past] = await Promise.all([loadDaily(), api("daily/history?date=" + localDate())]); } catch (e) {
+    mount(page(h("h1", {}, "Daily challenge"), h("p", { class: "muted" }, "There are no daily challenges available.")));
+    return;
+  }
+  const dateLabel = (iso) => { const [y, m, dd] = iso.split("-").map(Number); return new Date(y, m - 1, dd).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short", year: "numeric" }); };
+  mount(page(h("h1", {}, "Daily challenge"),
+    h("p", { class: "lead" }, "A new exercise every day, built for you from the course topics. Pass it on the same day to grow your streak. Past challenges can be retried at any time, but only today's counts for the streak."),
+    dailyCard(today),
+    h("h2", {}, "Past challenges"),
+    past.items.length ? h("div", { class: "list" }, past.items.map((x) => h("a", { class: "row", href: "#/coding/" + x.id },
+      h("div", { class: "main" }, h("div", { class: "title" }, x.title), h("div", { class: "sub" }, dateLabel(x.date), " · ", x.chapter, " · ", stars(x.stars), " ", h("span", { class: "tag", title: "Course topic " + T(x.tag) }, T(x.tag)))),
+      h("span", { class: "status-chip" }, h("span", { class: "st " + x.status }, STATUS[x.status][0]), STATUS[x.status][1] + (x.status === "passed" && x.on_time ? " on the day" : "")),
+      h("span", { class: "btn small" }, "Retry")))) : h("p", { class: "muted" }, "Nothing here yet: each day's challenge appears here after it, so you can try it again.")));
 }
 
 async function viewHome() {
@@ -171,11 +186,9 @@ async function viewHome() {
   const idx = await api("index");
   const m = codingModel(idx);
   const nq = idx.theory.reduce((a, t) => a + t.count, 0), okq = idx.theory.reduce((a, t) => a + t.correct, 0);
-  const daily = await dailyCard();
   mount(page(
     h("h1", {}, "c-cellar"),
     h("p", { class: "lead" }, "Practice C by writing it, and review the theory. Everything is checked locally."),
-    daily,
     h("div", { class: "list" },
       h("a", { class: "row", href: "#/coding" }, h("div", { class: "main" }, h("div", { class: "title" }, "Coding exercises"), h("div", { class: "sub" }, `${m.chapters.length} chapters from 1 to 5 stars, with an automatic checker`)), h("span", { class: "pct" }, `${m.passed}/${m.items.length}`)),
       h("a", { class: "row", href: "#/theory" }, h("div", { class: "main" }, h("div", { class: "title" }, "Theory questions"), h("div", { class: "sub" }, "Choose, type, predict the output, match, sort or put in order: with an explanation after every answer")), h("span", { class: "pct" }, `${okq}/${nq}`)),
@@ -193,7 +206,6 @@ async function viewCodingList() {
   const holder = h("div", {});
   const pathHolder = h("div", {});
   const openState = new Map();
-  const daily = await dailyCard();
   const wanted = state.query.get("chapter");   // a link from a theory set or question: show that chapter, whatever the filters were
   if (wanted) { localStorage.removeItem(FILTER_KEYS.coding); openState.set(wanted, true); }
   const bar = makeFilters(FILTER_KEYS.coding, { levels: uniqueSorted(idx.coding.map((c) => c.stars)), levelLabel: (n) => "★".repeat(n), levelTitle: (n) => n + (n === 1 ? " star" : " stars"), onChange: () => render() });
@@ -237,7 +249,7 @@ async function viewCodingList() {
   search.addEventListener("input", render);
   render();
   setTimeout(() => { const t = wanted && document.querySelector(`details.chapter[data-key="${wanted}"]`); if (t) t.scrollIntoView({ block: "start" }); }, 0);
-  mount(page(h("h1", {}, "Coding exercises"), h("p", { class: "lead" }, "Write your solution in VS Code (the terminal is next to it) beside the statement and press Check. Use Hint if you are stuck, and Answer as a last resort."), daily, pathHolder, bar.el, h("div", { class: "tools" }, search), holder));
+  mount(page(h("h1", {}, "Coding exercises"), h("p", { class: "lead" }, "Write your solution in VS Code (the terminal is next to it) beside the statement and press Check. Use Hint if you are stuck, and Answer as a last resort."), pathHolder, bar.el, h("div", { class: "tools" }, search), holder));
 }
 
 // ------------------------------------------------------------------ dock: statement, terminal and VS Code on the exercise screen
@@ -571,7 +583,7 @@ async function viewExercise(id) {
   const codeFrame = h("iframe", { src: frameUrl(state.cfg.vscode_port, `folder=${encodeURIComponent(d.workspace)}&payload=${payload}`), title: "VS Code", allow: "clipboard-read; clipboard-write" });
   const termFrame = h("iframe", { src: frameUrl(state.cfg.term_port, "arg=" + encodeURIComponent(d.file.replace(/\/[^/]*$/, ""))), title: "Terminal", allow: "clipboard-read; clipboard-write" });   // opens in the folder of answer.c
   const left = h("div", { class: "dbody statement" },
-    h("div", { class: "crumbs" }, h("a", { href: "#/coding" }, "Coding"), " › ", isDaily ? "Daily exercise (" + d.date + ")" : d.track === "derusting" ? "C derusting" : "C exercises", " › ", chapter ? chapter.title : d.topic, " · ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag)), " ", stars(d.stars)),
+    h("div", { class: "crumbs" }, h("a", { href: "#/coding" }, "Coding"), " › ", isDaily ? [h("a", { href: "#/daily" }, "Daily challenge"), " (" + d.date + ")"] : d.track === "derusting" ? "C derusting" : "C exercises", " › ", chapter ? chapter.title : d.topic, " · ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag)), " ", stars(d.stars)),
     h("div", { html: md(d.statement) }),
     d.theory ? h("div", { class: "qlinks" }, h("span", { class: "muted" }, "Theory: "), h("a", { href: "#/theory/" + d.theory.id, target: "_blank", rel: "noopener" }, `${d.theory.title} (${d.theory.count} questions)`)) : null,
     h("div", { class: "muted", style: "font-size:13px" }, "Write it in ", d.files.map((f, i) => [i ? ", " : "", h("code", {}, f)]), " in VS Code. It saves by itself."),
@@ -1055,6 +1067,7 @@ async function route() {
     else if (a === "coding") await (b ? viewExercise(b) : viewCodingList());
     else if (a === "theory") await (b ? viewTheorySet(b) : viewTheoryList());
     else if (a === "reference") await viewReference(b);
+    else if (a === "daily") await viewDaily();
     else if (a === "readiness") await viewReadiness();
     else await viewHome();
   } catch (e) {
