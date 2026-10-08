@@ -1,0 +1,118 @@
+{
+ "chapters": [
+  {
+   "id": "output",
+   "title": "Hello & output",
+   "track": "derusting",
+   "blurb": "printf, escape sequences and formats: the first programs."
+  },
+  {
+   "id": "variables",
+   "title": "Variables & types",
+   "track": "derusting",
+   "blurb": "Declaring, initialising and printing ints, floats, chars and sizes."
+  },
+  {
+   "id": "operators",
+   "title": "Operators",
+   "track": "derusting",
+   "blurb": "Arithmetic, relational, logical and bitwise operators; conversions."
+  },
+  {
+   "id": "input",
+   "title": "Input",
+   "track": "derusting",
+   "blurb": "Reading from the keyboard with scanf, fgets and getchar."
+  },
+  {
+   "id": "conditions",
+   "title": "Conditions",
+   "track": "derusting",
+   "blurb": "if, else, switch and logical expressions."
+  },
+  {
+   "id": "loops",
+   "title": "Loops",
+   "track": "derusting",
+   "blurb": "while, do-while and for: counting, accumulating, searching."
+  },
+  {
+   "id": "functions",
+   "title": "Functions",
+   "track": "derusting",
+   "blurb": "Prototypes, parameters, return values and recursion."
+  },
+  {
+   "id": "arrays",
+   "title": "Arrays",
+   "track": "derusting",
+   "blurb": "One- and two-dimensional arrays, searching and sorting."
+  },
+  {
+   "id": "strings",
+   "title": "Strings",
+   "track": "derusting",
+   "blurb": "Char arrays, '\\0', string.h and processing text."
+  },
+  {
+   "id": "pointers",
+   "title": "Pointers",
+   "track": "derusting",
+   "blurb": "Addresses, dereferencing, pointer arithmetic and passing by pointer."
+  },
+  {
+   "id": "memory",
+   "title": "Dynamic memory",
+   "track": "derusting",
+   "blurb": "malloc, calloc, realloc, free and growing data."
+  },
+  {
+   "id": "structs",
+   "title": "Structs & enums",
+   "track": "derusting",
+   "blurb": "Records, typedef, enums and arrays of structs."
+  },
+  {
+   "id": "args",
+   "title": "Arguments & environment",
+   "track": "derusting",
+   "blurb": "argc/argv, converting arguments, getenv."
+  },
+  {
+   "id": "stdio",
+   "title": "Files with stdio",
+   "track": "derusting",
+   "blurb": "fopen, fgets, fprintf, fread/fwrite and friends."
+  },
+  {
+   "id": "syscalls",
+   "title": "Files with system calls",
+   "track": "derusting",
+   "blurb": "open, read, write, lseek, close, dup and dup2."
+  },
+  {
+   "id": "directories",
+   "title": "Directories",
+   "track": "derusting",
+   "blurb": "mkdir, getcwd, chdir, opendir and readdir."
+  },
+  {
+   "id": "errors",
+   "title": "Errors & errno",
+   "track": "derusting",
+   "blurb": "Checking results, errno, strerror, perror and exit statuses."
+  },
+  {
+   "id": "build",
+   "title": "Modules, libraries & make",
+   "track": "derusting",
+   "blurb": "Headers and sources, static libraries and Makefiles."
+  },
+  {
+   "id": "programs",
+   "title": "Exam-style programs",
+   "track": "exercises",
+   "blurb": "Whole programs that combine several chapters, like the exam."
+  }
+ ]
+}

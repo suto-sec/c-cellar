@@ -1,4 +1,0 @@
-{"id":"t3-d03-pointers","tag":"t3","track":"derusting","topic":"pointers","title":"Swap and output parameters","difficulty":1,"order":3,
- "summary":"Pass-by-pointer: swap two ints and return min and max through pointers.",
- "hints":["Inside swap, *a is the int that a points to. You need a temporary variable.","In minmax, start from v[0] and walk the array; write results with *min = ... and *max = ..."],
- "info":"C passes arguments by value. To let a function change the caller's variable, pass its address (&x) and write through the pointer (*p = ...)."}

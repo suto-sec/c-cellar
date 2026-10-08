@@ -1,4 +1,0 @@
-{"id":"t3-d04-structs","tag":"t3","track":"derusting","topic":"structs","title":"Points with structs","difficulty":2,"order":4,
- "summary":"Return a struct by value; modify one through a pointer with ->.",
- "hints":["A struct is copied when passed or returned by value.","With a pointer p to a struct, p->x is the same as (*p).x."],
- "info":"struct point p; p.x is member access. struct point *q = &p; q->x is the same member through a pointer."}

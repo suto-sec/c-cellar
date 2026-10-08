@@ -43,7 +43,27 @@ def load_coding():
         d = meta.parent
         m = _read_json(meta)
         m["dir"] = str(d)
+        m.setdefault("stars", m.get("difficulty", 1))
         out[m["id"]] = m
+    return out
+
+
+def load_chapters():
+    """Chapters (topics) of every tag, in teaching order: content/<tag>/chapters.json."""
+    out = []
+    for f in sorted(CONTENT.glob("*/chapters.json")):
+        for i, c in enumerate(_read_json(f)["chapters"]):
+            c["tag"] = f.parent.name
+            c["order"] = i
+            out.append(c)
+    return out
+
+
+def load_paths():
+    """{tag: [exercise ids]}: the suggested path, content/<tag>/path.json."""
+    out = {}
+    for f in sorted(CONTENT.glob("*/path.json")):
+        out[f.parent.name] = _read_json(f)
     return out
 
 
@@ -109,13 +129,27 @@ def workspace_dir(ex_id):
     return WORKSPACE / ex_id
 
 
+def workspace_files(ex):
+    """Files the student edits: answer.c, or the named files of a multi-file exercise."""
+    return ex.get("files") or ["answer.c"]
+
+
 def ensure_workspace(ex):
     d = workspace_dir(ex["id"])
     d.mkdir(parents=True, exist_ok=True)
-    answer = d / "answer.c"
-    if not answer.exists():
-        shutil.copyfile(Path(ex["dir"]) / "starter.c", answer)
-    for h in Path(ex["dir"]).glob("*.h"):  # headers the statement refers to, visible in the editor
+    exd = Path(ex["dir"])
+    for name in workspace_files(ex):
+        f = d / name
+        if f.exists():
+            continue
+        src = exd / "starter" / name
+        if not src.exists() and name == "answer.c":
+            src = exd / "starter.c"
+        if src.exists():
+            shutil.copyfile(src, f)
+        else:
+            f.write_text("", encoding="utf-8")  # starters are blank: you write the whole program
+    for h in exd.glob("*.h"):  # headers the statement refers to, visible in the editor
         if not (d / h.name).exists():
             shutil.copyfile(h, d / h.name)
     return d
@@ -235,22 +269,32 @@ def compare(got, want, mode):
 def check_exercise(ex):
     d = Path(ex["dir"])
     ws = ensure_workspace(ex)
-    answer = ws / "answer.c"
     tests = _read_json(d / "tests.json")
+    names = workspace_files(ex)
+    empty = [n for n in names if not (ws / n).read_text(encoding="utf-8", errors="replace").strip()]
+    if empty and len(empty) == len(names):
+        return {"compiled": False, "log": f"{', '.join(empty)} is empty: write your program there first.", "cases": [], "passed": False}
     with tempfile.TemporaryDirectory(prefix="cellar-") as t:
         tmp = Path(t)
-        shutil.copyfile(answer, tmp / "answer.c")
+        for n in names:
+            shutil.copyfile(ws / n, tmp / n)
         for h in d.glob("*.h"):  # always the original header, whatever happened to the workspace copy
             shutil.copyfile(h, tmp / h.name)
-        sources = [tmp / "answer.c"]
-        if (d / "harness.c").exists():
-            shutil.copyfile(d / "harness.c", tmp / "harness.c")
-            sources.append(tmp / "harness.c")
         out = tmp / "prog"
         try:
-            ok, log = compile_c(sources, out, tmp)
+            if ex.get("build"):  # multi-file exercise: its own build command must produce ./prog
+                p = subprocess.run(["bash", "-c", ex["build"]], cwd=tmp, capture_output=True, text=True, timeout=60)
+                ok, log = p.returncode == 0 and out.exists(), _clean(p.stdout + p.stderr, tmp)
+                if p.returncode == 0 and not out.exists():
+                    log += "\nThe build finished but did not create ./prog."
+            else:
+                sources = [tmp / "answer.c"]
+                if (d / "harness.c").exists():
+                    shutil.copyfile(d / "harness.c", tmp / "harness.c")
+                    sources.append(tmp / "harness.c")
+                ok, log = compile_c(sources, out, tmp)
         except subprocess.TimeoutExpired:
-            return {"compiled": False, "log": "compiler timed out", "cases": [], "passed": False}
+            return {"compiled": False, "log": "the build timed out", "cases": [], "passed": False}
         if not ok:
             return {"compiled": False, "log": log, "cases": [], "passed": False}
         cases = []
@@ -261,6 +305,13 @@ def check_exercise(ex):
     return {"compiled": True, "log": log, "cases": cases, "passed": passed}
 
 
+def solution_text(ex):
+    d = Path(ex["dir"])
+    if ex.get("files"):
+        return "\n".join(f"/* ===== {n} ===== */\n" + (d / "solution" / n).read_text(encoding="utf-8") for n in ex["files"])
+    return (d / "solution.c").read_text(encoding="utf-8")
+
+
 def check_solution(ex):
     """Used by selftest: run the reference solution through the checker in a scratch workspace."""
     global WORKSPACE
@@ -269,7 +320,11 @@ def check_solution(ex):
         WORKSPACE = Path(w)
         d = workspace_dir(ex["id"])
         d.mkdir(parents=True)
-        shutil.copyfile(Path(ex["dir"]) / "solution.c", d / "answer.c")
+        if ex.get("files"):
+            for n in ex["files"]:
+                shutil.copyfile(Path(ex["dir"]) / "solution" / n, d / n)
+        else:
+            shutil.copyfile(Path(ex["dir"]) / "solution.c", d / "answer.c")
         try:
             return check_exercise(ex)
         finally:
@@ -456,7 +511,7 @@ class Handler(BaseHTTPRequestHandler):
         if route == "index":
             prog = load_progress()
             coding = [{"id": e["id"], "tag": e["tag"], "track": e["track"], "topic": e["topic"], "title": e["title"],
-                       "difficulty": e.get("difficulty", 1), "order": e.get("order", 0), "summary": e.get("summary", ""),
+                       "stars": e["stars"], "order": e.get("order", 0), "summary": e.get("summary", ""),
                        "status": coding_status(prog["coding"].get(e["id"]))} for e in load_coding().values()]
             theory = []
             for s in load_theory().values():
@@ -467,7 +522,8 @@ class Handler(BaseHTTPRequestHandler):
                                "correct": sum(1 for x in st if x and x.get("last_correct")),
                                "types": sorted({q["type"] for q in qs})})
             ref = load_reference()
-            return self._send(200, {"coding": coding, "theory": theory, "reference": len(ref)})
+            return self._send(200, {"coding": coding, "theory": theory, "reference": len(ref),
+                                    "chapters": load_chapters(), "paths": load_paths()})
         if parts[0] == "coding" and len(parts) == 2:
             ex = load_coding().get(parts[1])
             if not ex:
@@ -477,9 +533,9 @@ class Handler(BaseHTTPRequestHandler):
             prog = load_progress()["coding"].get(ex["id"], {})
             return self._send(200, {
                 "id": ex["id"], "tag": ex["tag"], "title": ex["title"], "track": ex["track"], "topic": ex["topic"],
-                "difficulty": ex.get("difficulty", 1), "statement": (d / "statement.md").read_text(encoding="utf-8"),
-                "hints": ex.get("hints", []), "info": ex.get("info", ""),
-                "workspace": str(ws), "file": str(ws / "answer.c"), "progress": prog, "status": coding_status(prog)})
+                "stars": ex["stars"], "statement": (d / "statement.md").read_text(encoding="utf-8"),
+                "hints": ex.get("hints", []), "info": ex.get("info", ""), "files": workspace_files(ex),
+                "workspace": str(ws), "file": str(ws / workspace_files(ex)[0]), "progress": prog, "status": coding_status(prog)})
         if parts[0] == "theory" and len(parts) == 2:
             s = load_theory().get(parts[1])
             if not s:
@@ -519,10 +575,13 @@ class Handler(BaseHTTPRequestHandler):
                 if action == "solution":
                     e["solution_viewed"] = True
                     save_progress(prog)
-                    sol = (Path(ex["dir"]) / "solution.c").read_text(encoding="utf-8")
-                    return self._send(200, {"solution": sol, "status": coding_status(e)})
+                    return self._send(200, {"solution": solution_text(ex), "status": coding_status(e)})
                 if action == "reset":
-                    shutil.copyfile(Path(ex["dir"]) / "starter.c", ensure_workspace(ex) / "answer.c")
+                    for n in workspace_files(ex):
+                        f = workspace_dir(ex["id"]) / n
+                        if f.exists():
+                            f.unlink()
+                    ensure_workspace(ex)
                     return self._send(200, {"ok": True})
         if parts[0] == "theory" and len(parts) == 3 and parts[2] == "answer":
             s = load_theory().get(parts[1])

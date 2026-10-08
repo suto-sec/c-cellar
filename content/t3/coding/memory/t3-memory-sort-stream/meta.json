@@ -1,0 +1,16 @@
+{
+ "id": "t3-memory-sort-stream",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "memory",
+ "title": "Sort a stream of numbers",
+ "order": 6,
+ "summary": "Read an unknown amount of ints into a growing heap array, sort, print.",
+ "hints": [
+  "Start with a small capacity and double it with realloc when the array is full.",
+  "Assign realloc's result to a temporary pointer first: if it fails you must not lose the old block.",
+  "qsort needs a comparison function; do not compute a-b (it can overflow), compare with (a>b)-(a<b)."
+ ],
+ "info": "malloc/realloc/free (<stdlib.h>) manage heap memory. realloc(p, n) may move the block; it returns NULL on failure. qsort(base, count, size, cmp) sorts in place.",
+ "stars": 4
+}

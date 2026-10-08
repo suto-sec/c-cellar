@@ -1,4 +1,0 @@
-{"id":"t3-d01-hello-args","tag":"t3","track":"derusting","topic":"args","title":"Hello, arguments","difficulty":1,"order":1,
- "summary":"main with argc/argv: one greeting per argument.",
- "hints":["argv[0] is the program name; the real arguments start at argv[1].","Loop from 1 while i < argc."],
- "info":"int main(int argc, char *argv[]): argc counts the arguments including the program name; argv[i] is a string (char *)."}
