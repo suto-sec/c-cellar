@@ -205,6 +205,30 @@
    ]
   },
   {
+   "id": "t3-q-arrays-x02",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Why does this fail to compile? `int a[3], b[3]; a = b;`",
+   "options": [
+    "An array name is not something you can assign to: it always stands for the same block of memory",
+    "Because `b` has not been initialised",
+    "Because `=` only works on `char` arrays",
+    "Because arrays of the same size cannot be copied in any way"
+   ],
+   "answer": 0,
+   "explain": "The course puts it as 'an array is a static pointer': it cannot be made to point somewhere else. To copy an array use a loop or `memcpy(a, b, sizeof a)`. A real pointer, in contrast, can be reassigned (`int *p = a; p = b;` is fine).",
+   "option_notes": [
+    "Right.",
+    "The values do not matter: it is a compile error, not a run-time problem.",
+    "Assignment between arrays is rejected for every element type.",
+    "You can copy them, just not with `=`: use a loop or `memcpy`."
+   ],
+   "ref": [
+    "arrays",
+    "pointers"
+   ]
+  },
+  {
    "id": "t3-q-arrays-11",
    "type": "match",
    "difficulty": 3,
@@ -231,6 +255,19 @@
      "m[0]",
      "the first row (an array of 4 ints)"
     ]
+   ]
+  },
+  {
+   "id": "t3-q-arrays-x01",
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (A `char` is 1 byte, an `int` 4 bytes.)",
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int n = 5;\n    int a[n];\n\n    printf(\"%zu\\n\", sizeof a);\n    return 0;\n}\n",
+   "answer": "20",
+   "explain": "Since C99 an array may have a size that is only known at run time (a variable-length array); it still lives on the stack and keeps its size, so `sizeof a` is `5 * sizeof(int)` = 20. It should be small: a large VLA overflows the stack. Use `malloc` for big or long-lived data.",
+   "ref": [
+    "arrays",
+    "sizeof"
    ]
   }
  ]

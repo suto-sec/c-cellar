@@ -419,6 +419,46 @@
    ]
   },
   {
+   "id": "t3-q-build-x01",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does `#pragma once` at the top of a header do?",
+   "options": [
+    "Makes the compiler process that header only once per translation unit, like an include guard",
+    "Compiles the header into a separate object file",
+    "Makes every function in the header `static`",
+    "Tells the linker to link the header only once"
+   ],
+   "answer": 0,
+   "explain": "`#pragma once` is a widely supported (not part of the C standard) alternative to the classic `#ifndef X_H` / `#define X_H` / `#endif` include guard: if the same header is included twice in one source file, the second inclusion is ignored, so types are not defined twice.",
+   "ref": [
+    "modules"
+   ]
+  },
+  {
+   "id": "t3-q-build-x02",
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "`gcc main.c -o app` fails with `fatal error: util.h: No such file or directory`, and `util.h` is in the folder `include/`. Which command fixes it?",
+   "options": [
+    "`gcc -Iinclude main.c -o app`",
+    "`gcc -Linclude main.c -o app`",
+    "`gcc -linclude main.c -o app`",
+    "`gcc -shared include main.c -o app`"
+   ],
+   "answer": 0,
+   "explain": "`-I<dir>` adds a folder where `#include` looks for headers. `-L<dir>` adds a folder for libraries to link, and `-l<name>` links the library `lib<name>`; neither helps find a header.",
+   "option_notes": [
+    "Right: `-I` is for include paths.",
+    "`-L` is the library search path, used at link time.",
+    "`-l` names a library to link (`libinclude`), it is not a folder.",
+    "`-shared` builds a shared library; it is not an include path."
+   ],
+   "ref": [
+    "gcc"
+   ]
+  },
+  {
    "id": "t3-q-build-15",
    "type": "sort",
    "difficulty": 3,
@@ -458,6 +498,26 @@
      "a segmentation fault",
      "Run time"
     ]
+   ]
+  },
+  {
+   "id": "t3-q-build-x03",
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "A module written in C is a header (`.h`) and a source file (`.c`). Which of these belong in the **header**, the public interface of the module?",
+   "options": [
+    "Prototypes of the functions that other files may call",
+    "Definitions of the types (`struct`, `enum`, `typedef`) other files need",
+    "The bodies of the functions",
+    "Declarations and bodies of helper functions that only the module uses"
+   ],
+   "answer": [
+    0,
+    1
+   ],
+   "explain": "The header describes what the module offers: type definitions and function prototypes. The `.c` file holds the implementation (function bodies and private helpers, usually `static`), which other files do not need to see. This split also lets you define a new data type together with its operations.",
+   "ref": [
+    "modules"
    ]
   }
  ]

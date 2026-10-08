@@ -466,6 +466,30 @@
      "sine of an angle in radians"
     ]
    ]
+  },
+  {
+   "id": "t3-q-operators-x05",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    printf(\"%d %d\\n\", 100 / 10 / 5, 2 * 3 % 4);\n    return 0;\n}\n",
+   "answer": "2 2",
+   "explain": "`/`, `*` and `%` have the same precedence and associate left to right: `100 / 10 / 5` is `(100 / 10) / 5` = 2 (not `100 / (10 / 5)` = 50), and `2 * 3 % 4` is `(2 * 3) % 4` = 2.",
+   "ref": [
+    "operators"
+   ]
+  },
+  {
+   "id": "t3-q-operators-x06",
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "code": "#include <stdio.h>\n\nint main(void)\n{\n    int a = 1, b = 2, c = 3;\n\n    a = b = c;\n    printf(\"%d %d %d\\n\", a, b, c);\n    return 0;\n}\n",
+   "answer": "3 3 3",
+   "explain": "Assignment associates from right to left: `a = b = c` is `a = (b = c)`. First `b` gets 3, and the value of that assignment (3) is stored in `a`.",
+   "ref": [
+    "operators"
+   ]
   }
  ]
 }

@@ -363,6 +363,32 @@
    ]
   },
   {
+   "id": "t3-q-output-x01",
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "To print the address stored in a pointer `p` with `printf` you use the conversion `%{{0}}`, and the argument should be cast to `({{1}})`.",
+   "blanks": [
+    {
+     "accept": [
+      "p"
+     ],
+     "case": true
+    },
+    {
+     "accept": [
+      "void *",
+      "void*"
+     ],
+     "ignore_space": true
+    }
+   ],
+   "explain": "`%p` prints a pointer value in hexadecimal. The standard expects a `void *` argument, so `printf(\"%p\\n\", (void *)p);` is the portable form (without the cast gcc may warn with `-Wformat`).",
+   "ref": [
+    "printf",
+    "pointers"
+   ]
+  },
+  {
    "id": "t3-q-output-16",
    "type": "order",
    "difficulty": 3,
