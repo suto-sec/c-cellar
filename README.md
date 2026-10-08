@@ -3,10 +3,11 @@
 A self-hosted lab to practise C. It runs in a container and you use it in your browser:
 
 - **Coding exercises**: the statement on the left, VS Code on the right and a **Check** button that compiles your program with `gcc -Wall -Wextra`, runs it against test cases and shows a diff when something is wrong. **Hint** gives clues one at a time, **Answer** shows the reference solution. Exercises start from a blank file: you write the whole program.
-  - 19 **chapters** in teaching order (output, variables, operators, input, conditions, loops, functions, arrays, strings, pointers, dynamic memory, structs, arguments, stdio files, system calls, directories, errors, modules/libraries/make, exam-style programs), each from 1 to 5 stars.
+  - 19 coding **chapters** in teaching order (output, variables, operators, input, conditions, loops, functions, arrays, strings, pointers, dynamic memory, structs, arguments, stdio files, system calls, directories, errors, modules/libraries/make, exam-style programs), each from 1 to 5 stars.
   - A **suggested path** interleaves all the exercises so the difficulty climbs gradually; *Continue* takes you to the next one you have not passed.
   - *C derusting* are the 18 topic chapters; *C exercises* are the exam-style programs.
-- **Theory**: questions in four formats (single choice, multiple choice, fill in the blank, drag to reorder) with an explanation after every answer.
+- **Theory**: 340+ questions in 20 sets that mirror the coding chapters (plus an introduction to the toolchain), easiest first. Seven formats: single choice, multiple choice, fill in the blank (also inside a code listing), drag to reorder, predict the output of a program, match pairs and sort into categories. Every answer comes with an explanation; where the C standard and what a course quiz usually expects differ, the explanation says so.
+- **Cross links**: a reference entry lists the theory questions about it and the exercises that use it; a question links to its reference entries and to the exercises of its chapter; an exercise links to the theory set of its chapter, and its answer to the reference entries of the functions it uses.
 - **Reference**: one entry per function, command and keyword, grouped by category, with a search that puts the entry called exactly what you typed first.
 
 Everything you do is stored in the `.progress/` folder (delete it to start over). Nothing leaves your computer.
@@ -49,7 +50,7 @@ app/selftest.py          consistency checks used by `./lab selftest`
 content/<tag>/           everything you study, per topic tag
   chapters.json, path.json   the chapters and the suggested path
   coding/<chapter>/<id>/     one folder per exercise
-  theory/<set>.json      question sets
+  theory/<chapter>.json  one question set per chapter
   reference/<area>.json  reference entries
 .progress/               your progress, your answers, VS Code settings (git-ignored)
 ```
@@ -79,11 +80,14 @@ A test case: `name`, then either `args` (+ optional `stdin`) or a shell `cmd` (`
 
 ### Theory questions (`content/t3/theory/*.json`)
 
-A set has `id`, `tag`, `title`, `topic`, `order`, `questions[]`. Each question has `id`, `type`, `prompt`, optional `code`, `explain`, `difficulty`, and by type:
+A set has `id` (`t3-th-<chapter>`), `tag`, `title`, `chapter` (the chapter it mirrors) and `questions[]`. Each question has `id`, `type`, `prompt`, `explain`, `difficulty` (1-5 stars), optional `ref[]` (reference names or ids it links to) and optional `code`, and by type:
 
 - `single`: `options[]`, `answer` (index), optional `option_notes[]`
 - `multiple`: `options[]`, `answer` (list of indices), optional `option_notes[]`
-- `fill`: `{{0}}`, `{{1}}`… markers in `prompt` and `blanks[]` (each a list of accepted answers, or `{"accept": [...], "ignore_space": true, "case": true}`; an answer starting with `re:` is a regular expression)
+- `fill`: `{{0}}`, `{{1}}`… markers in `prompt` and/or `code` (shown as inline boxes) and `blanks[]` (each a list of accepted answers, or `{"accept": [...], "ignore_space": true, "case": true}`; an answer starting with `re:` is a regular expression)
 - `order`: `items[]` in the CORRECT order (the interface shuffles them)
+- `predict`: `code` is a complete program, `answer` is exactly what it prints (a list of alternatives is allowed); trailing spaces and blank lines are ignored. `selftest` compiles and runs every one and compares
+- `match`: `pairs[]` of `[left, right]`, each right side used once
+- `sort`: `categories[]` and `items[]` of `[item, category]`
 
 A question whose answer depends on what a program prints can carry `verify: {"source": "<C program>", "stdout": "..."}`; `selftest` compiles and runs it, so the explanation cannot drift from the truth.

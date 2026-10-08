@@ -267,7 +267,8 @@ async function viewExercise(id) {
     setStatus(r.status);
     const old = $(".solbox", extras);
     if (old) old.remove();
-    extras.append(h("div", { class: "panel solbox" }, h("b", {}, "Answer (reference solution)"), h("pre", {}, h("code", {}, r.solution))));
+    extras.append(h("div", { class: "panel solbox" }, h("b", {}, "Answer (reference solution)"), h("pre", {}, h("code", {}, r.solution)),
+      r.refs.length ? h("div", { class: "qlinks" }, h("span", { class: "muted" }, "Reference: "), r.refs.map((x) => [h("a", { href: "#/reference/" + x.id, target: "_blank", rel: "noopener" }, h("code", {}, x.title)), " "])) : null));
   });
   const resetBtn = h("button", { class: "btn" }, "Reset file");
   resetBtn.addEventListener("click", async () => {
@@ -309,6 +310,7 @@ async function viewExercise(id) {
   const left = h("div", { class: "left statement" },
     h("div", { class: "crumbs" }, h("a", { href: "#/coding" }, "Coding"), " › ", d.track === "derusting" ? "C derusting" : "C exercises", " › ", chapter ? chapter.title : d.topic, " · ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag)), " ", stars(d.stars)),
     h("div", { html: md(d.statement) }),
+    d.theory ? h("div", { class: "qlinks" }, h("span", { class: "muted" }, "Theory: "), h("a", { href: "#/theory/" + d.theory.id, target: "_blank", rel: "noopener" }, `${d.theory.title} (${d.theory.count} questions)`)) : null,
     h("div", { class: "muted", style: "font-size:13px" }, "Write it in ", d.files.map((f, i) => [i ? ", " : "", h("code", {}, f)]), " in the editor on the right. It saves by itself."),
     h("div", { class: "actions" }, checkBtn, hintBtn, infoBtn, solBtn, resetBtn, h("span", { class: "spacer" }), chip),
     hintBox, results, extras,
@@ -574,7 +576,7 @@ async function viewTheorySet(id) {
       mount(page(h("div", { class: "center" },
         h("div", { class: "big" }, `${right}/${queue.length}`),
         h("p", { class: "lead" }, right === queue.length ? "Perfect round." : "Review what you missed, then try again."),
-        missedNow.length ? h("div", { class: "list", style: "text-align:left;margin:16px 0" }, missedNow.map((q) => h("div", { class: "row" }, h("div", { class: "main" }, h("div", { class: "title" }, q.prompt.replace(/\{\{\d+\}\}/g, "____")), h("div", { class: "sub" }, TYPE_LABEL[q.type]))))) : null,
+        missedNow.length ? h("div", { class: "list", style: "text-align:left;margin:16px 0" }, missedNow.map((q) => h("div", { class: "row" }, h("div", { class: "main" }, h("div", { class: "title" }, q.prompt.replace(/\{\{\d+\}\}/g, "____").replace(/`/g, "")), h("div", { class: "sub" }, TYPE_LABEL[q.type]))))) : null,
         h("p", {}, missedNow.length ? h("button", { class: "btn primary", onclick: () => run(missedNow.slice()) }, "Retry the missed ones") : null, " ",
           h("a", { class: "btn", href: "#/theory" }, "Back to theory"), " ", h("button", { class: "btn", onclick: () => viewTheorySet(id) }, "Restart")))));
     };
@@ -642,7 +644,7 @@ function entryCard(e, byId) {
     e.details ? h("dl", {}, e.details.flatMap((d) => [h("dt", {}, d.name), h("dd", { html: rmd(d.text) })])) : null,
     e.example ? [h("h5", {}, "Example"), h("pre", {}, h("code", {}, e.example))] : null,
     e.mistakes ? [h("h5", {}, "Common mistakes"), h("ul", {}, e.mistakes.map((m) => h("li", { html: rmd(m) })))] : null,
-    moreList("Theory questions", e.questions, (q) => h("li", {}, h("a", { href: "#/theory/" + q.set }, q.prompt.replace(/\{\{\d+\}\}/g, "____")))),
+    moreList("Theory questions", e.questions, (q) => h("li", {}, h("a", { href: "#/theory/" + q.set }, q.prompt.replace(/\{\{\d+\}\}/g, "____").replace(/`/g, "")))),
     moreList(e.practice && e.practice.count ? `Practice (${e.practice.count} exercise${e.practice.count === 1 ? "" : "s"} use it)` : "", e.practice && { count: e.practice.count, items: e.practice.exercises }, (x) => h("li", {}, h("a", { href: "#/coding/" + x.id }, x.title), " ", stars(x.stars))),
     e.see ? h("div", { class: "muted", style: "margin-top:10px" }, "See also: ", e.see.map((s) => { const t = byId.get(s); return t ? [h("a", { href: "#/reference/" + s }, h("code", {}, t.title)), " "] : null; })) : null);
 }

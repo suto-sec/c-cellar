@@ -510,6 +510,19 @@ def chapter_practice(tag, chapter):
     return {"chapter": chapter, "tag": tag, "title": ch["title"], "count": len(coding)}
 
 
+def chapter_theory(tag, chapter):
+    """The theory set that mirrors a coding chapter (None if there is none)."""
+    s = next((t for t in load_theory().values() if t["tag"] == tag and t["chapter"] == chapter), None)
+    return {"id": s["id"], "title": s["title"], "count": len(s["questions"])} if s else None
+
+
+def exercise_refs(ex):
+    """Reference entries of the library functions that the reference solution calls (shown with the answer)."""
+    d = Path(ex["dir"])
+    files = [d / "solution" / n for n in ex["files"] if n.endswith((".c", ".h"))] if ex.get("files") else [d / "solution.c"]
+    return resolve_refs(sorted(called_library_functions([f.read_text(encoding="utf-8") for f in files if f.exists()])))
+
+
 def practice_for_entries():
     """{reference id: [exercise ids that call it]}, in suggested-path order."""
     look = reference_lookup()
@@ -683,7 +696,8 @@ class Handler(BaseHTTPRequestHandler):
                 "id": ex["id"], "tag": ex["tag"], "title": ex["title"], "track": ex["track"], "topic": ex["topic"],
                 "stars": ex["stars"], "statement": (d / "statement.md").read_text(encoding="utf-8"),
                 "hints": ex.get("hints", []), "info": ex.get("info", ""), "files": workspace_files(ex),
-                "workspace": str(ws), "file": str(ws / workspace_files(ex)[0]), "progress": prog, "status": coding_status(prog)})
+                "workspace": str(ws), "file": str(ws / workspace_files(ex)[0]), "progress": prog, "status": coding_status(prog),
+                "theory": chapter_theory(ex["tag"], ex["topic"])})
         if parts[0] == "theory" and len(parts) == 2:
             s = load_theory().get(parts[1])
             if not s:
@@ -724,7 +738,7 @@ class Handler(BaseHTTPRequestHandler):
                 if action == "solution":
                     e["solution_viewed"] = True
                     save_progress(prog)
-                    return self._send(200, {"solution": solution_text(ex), "status": coding_status(e)})
+                    return self._send(200, {"solution": solution_text(ex), "status": coding_status(e), "refs": exercise_refs(ex)})
                 if action == "reset":
                     for n in workspace_files(ex):
                         f = workspace_dir(ex["id"]) / n
