@@ -44,7 +44,10 @@ code-server --bind-addr 0.0.0.0:8081 --auth none --disable-telemetry --disable-u
   /lab/.progress/workspace >/lab/.progress/code-server.log 2>&1 &
 
 # One bash per open terminal pane, started in the exercise folder it asks for (see term.sh). --check-origin keeps other websites out.
-ttyd --port 8082 --interface 0.0.0.0 --writable --url-arg --check-origin -t fontSize=15 -t cursorBlink=true \
+# (the terminal page is ttyd's own plus a script that hands the c-cellar shortcuts to the page; without it the terminal still works)
+INDEX=()
+if python3 /lab/container/ttyd-index.py /lab/.progress/ttyd-index.html 2>/lab/.progress/ttyd-index.log; then INDEX=(--index /lab/.progress/ttyd-index.html); fi
+ttyd --port 8082 --interface 0.0.0.0 --writable --url-arg --check-origin -t fontSize=15 -t cursorBlink=true ${INDEX[@]+"${INDEX[@]}"} \
   /lab/container/term.sh >/lab/.progress/ttyd.log 2>&1 &
 
 exec python3 /lab/app/server.py

@@ -29,8 +29,8 @@ else USEROPT=(--user "$(id -u):$(id -g)"); MOUNT="$PWD:/lab"; fi
 mkdir -p .progress/home .progress/workspace
 
 have_image() { "$ENGINE" image inspect "$IMAGE" >/dev/null 2>&1; }
-# The image is labelled with a checksum of the Containerfile, so `web` can tell when it is older than the project (for example after `git pull`).
-sig() { cksum < container/Containerfile | cut -d' ' -f1; }
+# The image is labelled with a checksum of the Containerfile and the files it copies, so `web` can tell when it is older than the project (for example after `git pull`).
+sig() { cat container/Containerfile container/frame-keys.js container/patch-workbench.py | cksum | cut -d' ' -f1; }
 image_sig() { "$ENGINE" image inspect -f '{{index .Config.Labels "c-cellar.containerfile"}}' "$IMAGE" 2>/dev/null || true; }
 build() { "$ENGINE" build --label "c-cellar.containerfile=$(sig)" -t "$IMAGE" -f container/Containerfile .; }
 stop() { "$ENGINE" rm -f "$NAME" >/dev/null 2>&1 || true; }

@@ -13,7 +13,7 @@ const state = { cfg: null, cleanup: null, query: new URLSearchParams() };
 const T = (tag) => String(tag).toUpperCase();   // "t3" is shown as "T3" (the course topic, "tema")
 const FILTER_KEYS = { coding: "cellar.filters.coding", theory: "cellar.filters.theory", reference: "cellar.filters.reference" };
 function readFilters(key) {
-  try { const f = JSON.parse(localStorage.getItem(key)); return { tags: f.tags || [], levels: f.levels || [] }; } catch (e) { return { tags: [], levels: [] }; }
+  try { const f = JSON.parse(localStorage.getItem(key)); return { tags: f.tags || [], levels: f.levels || [], hideDone: !!f.hideDone }; } catch (e) { return { tags: [], levels: [], hideDone: false }; }
 }
 
 // ------------------------------------------------------------------ helpers
@@ -38,6 +38,7 @@ async function api(path, body) {
   const opt = body === undefined ? {} : { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) };
   const r = await fetch("/api/" + path, opt);
   const j = await r.json();
+  if (r.status === 404 && j.error === "not found") throw new Error("the server is older than this page: restart the lab with ./lab web");
   if (!r.ok) throw new Error(j.error || r.statusText);
   return j;
 }
@@ -94,9 +95,10 @@ function mount(...nodes) {
 const page = (...kids) => h("div", { class: "page" }, ...kids);
 
 
-/** The filter bar every page uses: Topic chips (the course topic T3, T4...) and, when the page has difficulty levels, Difficulty chips.
- *  Several chips of a group can be on at once; none on means "all". The choice is remembered per page. */
-function makeFilters(key, { levels = [], levelLabel = (n) => String(n), levelTitle = (n) => "Level " + n, onChange }) {
+/** The filter bar every page uses: Topic chips (the course topic T3, T4...), when the page has difficulty levels, Difficulty chips and,
+ *  when the page has things to complete (`done`), a "Hide completed" switch. Several chips of a group can be on at once; none on means
+ *  "all". The choice is remembered per page. */
+function makeFilters(key, { levels = [], levelLabel = (n) => String(n), levelTitle = (n) => "Level " + n, done = false, onChange }) {
   const f = readFilters(key);
   const el = h("div", { class: "filters" });
   const save = () => localStorage.setItem(key, JSON.stringify(f));
@@ -106,7 +108,8 @@ function makeFilters(key, { levels = [], levelLabel = (n) => String(n), levelTit
     el.replaceChildren(
       h("div", { class: "fgroup" }, h("span", { class: "flabel" }, "Topic"), state.cfg.tags.map((t) => chip(T(t), f.tags.includes(t), () => toggle(f.tags, t), "Show only topic " + T(t)))),
       levels.length ? h("div", { class: "fgroup" }, h("span", { class: "flabel" }, "Difficulty"), levels.map((n) => chip(levelLabel(n), f.levels.includes(n), () => toggle(f.levels, n), levelTitle(n)))) : null,
-      f.tags.length || f.levels.length ? h("button", { class: "btn small", onclick: () => { f.tags = []; f.levels = []; save(); draw(); onChange(); } }, "Clear filters") : null);
+      done ? h("div", { class: "fgroup" }, h("span", { class: "flabel" }, "Progress"), chip("Hide completed", f.hideDone, () => { f.hideDone = !f.hideDone; save(); draw(); onChange(); }, "Hide what you have already completed")) : null,
+      f.tags.length || f.levels.length || (done && f.hideDone) ? h("button", { class: "btn small", onclick: () => { f.tags = []; f.levels = []; f.hideDone = false; save(); draw(); onChange(); } }, "Clear filters") : null);
   };
   draw();
   return { f, el };
@@ -218,14 +221,14 @@ async function viewCodingList() {
   const openState = new Map();
   const wanted = state.query.get("chapter");   // a link from a theory set or question: show that chapter, whatever the filters were
   if (wanted) { localStorage.removeItem(FILTER_KEYS.coding); openState.set(wanted, true); }
-  const bar = makeFilters(FILTER_KEYS.coding, { levels: uniqueSorted(idx.coding.map((c) => c.stars)), levelLabel: (n) => "★".repeat(n), levelTitle: (n) => n + (n === 1 ? " star" : " stars"), onChange: () => render() });
+  const bar = makeFilters(FILTER_KEYS.coding, { levels: uniqueSorted(idx.coding.map((c) => c.stars)), levelLabel: (n) => "★".repeat(n), levelTitle: (n) => n + (n === 1 ? " star" : " stars"), done: true, onChange: () => render() });
   const filters = bar.f;
 
   const render = () => {
     const m = codingModel(idx, filters.tags);
     const q = search.value.toLowerCase();
-    const narrowed = q || filters.levels.length;
-    const keep = (c, i) => (!filters.levels.length || filters.levels.includes(i.stars)) && (!q || (i.title + " " + c.title + " " + i.summary).toLowerCase().includes(q));
+    const narrowed = q || filters.levels.length || filters.hideDone;
+    const keep = (c, i) => (!filters.levels.length || filters.levels.includes(i.stars)) && !(filters.hideDone && i.status === "passed") && (!q || (i.title + " " + c.title + " " + i.summary).toLowerCase().includes(q));
     let shown = 0;
     holder.replaceChildren(...TRACKS.map(([key, title, blurb]) => {
       const chs = m.chapters.filter((c) => c.track === key);
@@ -250,7 +253,7 @@ async function viewCodingList() {
       return h("section", {}, h("h2", {}, title, " ", h("span", { class: "muted" }, `${inTrack.filter((i) => i.status === "passed").length}/${inTrack.length}`)),
         h("p", { class: "muted", style: "margin:-6px 0 10px" }, blurb), sections);
     }));
-    if (!shown) holder.append(h("p", { class: "muted" }, "No exercise matches these filters."));
+    if (!shown) holder.append(h("p", { class: "muted" }, filters.hideDone ? "No exercise matches these filters (the completed ones are hidden)." : "No exercise matches these filters."));
     pathHolder.replaceChildren(m.order.length ? h("div", { class: "panel", style: "display:flex;gap:14px;align-items:center;flex-wrap:wrap" },
       h("div", { style: "flex:1;min-width:220px" }, h("b", {}, "Suggested path"), h("div", { class: "muted", style: "font-size:13px" }, `${m.passed} of ${m.items.length} passed. The path mixes the chapters so the difficulty climbs gradually.`),
         h("div", { class: "bar", style: "margin-top:6px" }, h("span", { style: `width:${(m.passed / m.items.length) * 100}%` }))),
@@ -507,6 +510,13 @@ function renderCase(c) {
   return h("details", { class: "case " + (c.ok ? "ok" : "fail"), open: !c.ok }, h("summary", {}, h("span", { class: "mark" }, c.ok ? "✔" : "✘"), c.name), h("div", { class: "body" }, kids));
 }
 
+/** The two keyboard shortcuts that also work from inside VS Code and the terminal: "run" (Alt+Enter) and "release" (Alt+X), or null.
+ *  Alt alone (no Ctrl/Meta/Shift/AltGr, so a Spanish AltGr never triggers them), by physical key, and none of the keys Chrome keeps. */
+function frameShortcut(ev) {
+  if (!ev.altKey || ev.ctrlKey || ev.metaKey || ev.shiftKey || (ev.getModifierState && ev.getModifierState("AltGraph"))) return null;
+  return ev.code === "Enter" || ev.code === "NumpadEnter" ? "run" : ev.code === "KeyX" ? "release" : null;
+}
+
 async function viewExercise(id) {
   setNav("coding");
   const [d, idx] = await Promise.all([api("coding/" + id), api("index")]);
@@ -560,24 +570,40 @@ async function viewExercise(id) {
   });
   let busy = false;
   const compileBtn = h("button", { class: "btn", title: "Only compile: no tests are run. A program that builds is left as ./prog, next to your code, so you can run it in the terminal." }, "Compile");
-  compileBtn.addEventListener("click", async () => {
+  const runBtn = h("button", { class: "btn", title: "Compile and run once, then show what it printed (nothing is graded). Alt+Enter, also from VS Code and the terminal." }, "Compile & run ", h("kbd", {}, "Alt+Enter"));
+  const argsBox = h("input", { type: "text", class: "runargs", spellcheck: false, autocomplete: "off", placeholder: "arguments, e.g. hello \"two words\"", "aria-label": "Arguments for Compile & run" });
+  const stdinBox = h("textarea", { class: "runstdin", rows: 3, spellcheck: false, placeholder: "what the program reads from the keyboard (standard input)", "aria-label": "Input for Compile & run" });
+  const runOpts = h("details", { class: "runopts" }, h("summary", {}, "Arguments and input for Compile & run"), argsBox, stdinBox);
+  const compileLog = (r) => r.log.trim() ? h("details", { class: "case", open: true }, h("summary", {}, h("span", { class: "mark", style: "color:var(--warn)" }, "!"), "Compiler warnings (fix them)"), h("div", { class: "body" }, h("pre", { class: "compile-log" }, r.log))) : null;
+  const streamBlock = (label, text) => h("div", {}, h("h4", { class: "muted", style: "margin:8px 0 2px;font-size:12px" }, label), h("pre", {}, text));
+  const renderBuild = (r) => {
+    if (!r.compiled) return h("div", { class: "panel bad" }, h("b", {}, "✘ It does not compile"), h("pre", { class: "compile-log" }, r.log));
+    if (!r.ran) return h("div", { class: "panel ok" }, h("b", {}, "✔ It compiles"), " — run it in the terminal with ", h("code", {}, "./prog"), ". Compile does not run the tests: press Check for that.", compileLog(r));
+    const how = r.timeout ? "timed out after 5 seconds (infinite loop, or waiting for input that never comes?)"
+      : r.error ? r.error : r.signal ? `killed by ${r.signal}${r.signal === "SIGSEGV" ? " (invalid memory access)" : ""}` : `exit status ${r.exit}`;
+    return h("div", { class: "panel " + (r.timeout || r.signal || r.error ? "bad" : "ok") },
+      h("b", {}, r.timeout || r.signal || r.error ? "✘ " : "✔ ", "Ran ", h("code", {}, r.cmd.replace(/\s+< \(stdin below\)$/, "")), " — ", how),
+      r.stdout ? streamBlock("OUTPUT", r.stdout) : h("div", { class: "muted", style: "margin-top:6px" }, "It printed nothing."),
+      r.stderr ? streamBlock("STDERR", r.stderr) : null,
+      r.cut ? h("div", { class: "muted" }, "(long output: only the start is shown)") : null,
+      compileLog(r));
+  };
+  const build = async (kind) => {   // "compile" or "run"
     if (busy) return;
-    busy = true; checkBtn.disabled = compileBtn.disabled = true;
-    results.replaceChildren(h("div", { class: "muted" }, "Compiling…"));
+    busy = true; checkBtn.disabled = compileBtn.disabled = runBtn.disabled = true;
+    results.replaceChildren(h("div", { class: "muted" }, kind === "run" ? "Compiling and running…" : "Compiling…"));
     try {
-      const r = await api("coding/" + id + "/compile", {});
-      results.replaceChildren(r.compiled
-        ? h("div", { class: "panel ok" }, h("b", {}, "✔ It compiles"), " — run it in the terminal with ", h("code", {}, "./prog"), ". Compile does not run the tests: press Check for that.",
-            r.log.trim() ? h("details", { class: "case", open: true }, h("summary", {}, h("span", { class: "mark", style: "color:var(--warn)" }, "!"), "Compiler warnings (fix them)"), h("div", { class: "body" }, h("pre", { class: "compile-log" }, r.log))) : null)
-        : h("div", { class: "panel bad" }, h("b", {}, "✘ It does not compile"), h("pre", { class: "compile-log" }, r.log)));
+      results.replaceChildren(renderBuild(await api("coding/" + id + "/" + kind, kind === "run" ? { args: argsBox.value, stdin: stdinBox.value } : {})));
     } catch (e) {
       results.replaceChildren(h("div", { class: "panel bad" }, "Error: " + e.message));
     }
-    busy = false; checkBtn.disabled = compileBtn.disabled = false;
-  });
+    busy = false; checkBtn.disabled = compileBtn.disabled = runBtn.disabled = false;
+  };
+  compileBtn.addEventListener("click", () => build("compile"));
+  runBtn.addEventListener("click", () => build("run"));
   const check = async () => {
     if (busy) return;
-    busy = true; checkBtn.disabled = compileBtn.disabled = true;
+    busy = true; checkBtn.disabled = compileBtn.disabled = runBtn.disabled = true;
     results.replaceChildren(h("div", { class: "muted" }, "Compiling and running…"));
     try {
       const r = await api("coding/" + id + "/check", { date: localDate() });
@@ -598,51 +624,75 @@ async function viewExercise(id) {
     } catch (e) {
       results.replaceChildren(h("div", { class: "panel bad" }, "Error: " + e.message));
     }
-    busy = false; checkBtn.disabled = compileBtn.disabled = false;
+    busy = false; checkBtn.disabled = compileBtn.disabled = runBtn.disabled = false;
   };
   checkBtn.addEventListener("click", check);
-  const onKey = (e) => { if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); check(); } };
+  // Keys. VS Code and the terminal are other origins, so a key pressed inside them never reaches this page: a small script inside each
+  // (container/frame-keys.js) sends the two shortcuts here as messages.
+  const release = () => {   // give the keyboard back to the page: whatever has the focus (VS Code, the terminal, a button, a box) lets go
+    const take = () => {
+      const a = document.activeElement;
+      if (a && a !== document.body) a.blur();
+      left.focus({ preventScroll: true });
+    };
+    take();
+    setTimeout(take, 50);   // (VS Code takes the focus back once, right after letting go of it: the page takes it again)
+    setTimeout(take, 250);
+    toast("The page has the keyboard: Ctrl+Enter checks, Alt+Enter compiles and runs");
+  };
+  const act = (name) => { if (name === "run") runBtn.click(); else if (name === "release") release(); };
+  const onKey = (e) => {
+    if ((e.ctrlKey || e.metaKey) && !e.altKey && e.key === "Enter") { e.preventDefault(); check(); return; }
+    const s = frameShortcut(e);
+    if (s) { e.preventDefault(); act(s); }
+  };
+  const onMsg = (ev) => {
+    if (ev.source !== codeFrame.contentWindow && ev.source !== termFrame.contentWindow) return;   // only our own two frames
+    if (ev.data && ev.data.cellar === "key" && (ev.data.action === "run" || ev.data.action === "release")) act(ev.data.action);
+  };
+  window.addEventListener("message", onMsg);
   document.addEventListener("keydown", onKey);
 
   const frameUrl = (port, query) => `${location.protocol}//${location.hostname}:${port}/?${query}`;
   const payload = encodeURIComponent(JSON.stringify([["openFile", "vscode-remote://" + d.file]]));
   const codeFrame = h("iframe", { src: frameUrl(state.cfg.vscode_port, `folder=${encodeURIComponent(d.workspace)}&payload=${payload}`), title: "VS Code", allow: "clipboard-read; clipboard-write" });
   const termFrame = h("iframe", { src: frameUrl(state.cfg.term_port, "arg=" + encodeURIComponent(d.file.replace(/\/[^/]*$/, ""))), title: "Terminal", allow: "clipboard-read; clipboard-write" });   // opens in the folder of answer.c
-  const left = h("div", { class: "dbody statement" },
+  const left = h("div", { class: "dbody statement", tabindex: "-1" },
     h("div", { class: "crumbs" }, h("a", { href: "#/coding" }, "Coding"), " › ", isDaily ? [h("a", { href: "#/daily" }, "Daily challenge"), " (" + d.date + ")"] : d.track === "derusting" ? "C derusting" : "C exercises", " › ", chapter ? chapter.title : d.topic, " · ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag)), " ", stars(d.stars)),
     h("div", { html: md(d.statement) }),
     d.theory ? h("div", { class: "qlinks" }, h("span", { class: "muted" }, "Theory: "), h("a", { href: "#/theory/" + d.theory.id, target: "_blank", rel: "noopener" }, `${d.theory.title} (${d.theory.count} questions)`)) : null,
-    h("div", { class: "muted", style: "font-size:13px" }, "Write it in ", d.files.map((f, i) => [i ? ", " : "", h("code", {}, f)]), " in VS Code. It saves by itself."),
-    h("div", { class: "actions" }, checkBtn, compileBtn, hintBtn, infoBtn, solBtn, resetBtn, h("span", { class: "spacer" }), chip),
-    hintBox, results, extras,
+    h("div", { class: "muted", style: "font-size:13px" }, "Write it in ", d.files.map((f, i) => [i ? ", " : "", h("code", {}, f)]), " in VS Code. It saves by itself. ", h("kbd", {}, "Alt+X"), " takes the keyboard out of VS Code and the terminal."),
+    h("div", { class: "actions" }, checkBtn, compileBtn, runBtn, hintBtn, infoBtn, solBtn, resetBtn, h("span", { class: "spacer" }), chip),
+    runOpts, hintBox, results, extras,
     h("div", { class: "qnav" }, prev ? h("a", { class: "btn small step prev", href: "#/coding/" + prev.id }, h("span", { class: "steplabel" }, "Previous"), "← " + prev.title) : null, h("span", { class: "spacer" }), next ? h("a", { class: "btn small step next", href: "#/coding/" + next.id }, h("span", { class: "steplabel" }, "Next"), next.title + " →") : null));
   const dock = mountDock({ instr: left, term: termFrame, code: codeFrame });
   mount(dock.el);
-  state.cleanup = () => { document.removeEventListener("keydown", onKey); dock.destroy(); };
+  state.cleanup = () => { document.removeEventListener("keydown", onKey); window.removeEventListener("message", onMsg); dock.destroy(); };
 }
 // ------------------------------------------------------------------ theory
 async function viewTheoryList() {
   setNav("theory");
   const idx = await api("index");
   const holder = h("div", {});
-  const bar = makeFilters(FILTER_KEYS.theory, { levels: uniqueSorted(idx.theory.flatMap((t) => t.qs.map((q) => q.d))), levelLabel: (n) => "★".repeat(n), levelTitle: (n) => n + (n === 1 ? " star" : " stars"), onChange: () => render() });
+  const bar = makeFilters(FILTER_KEYS.theory, { levels: uniqueSorted(idx.theory.flatMap((t) => t.qs.map((q) => q.d))), levelLabel: (n) => "★".repeat(n), levelTitle: (n) => n + (n === 1 ? " star" : " stars"), done: true, onChange: () => render() });
   let render = () => {
     const f = bar.f;
     // a set shows only the questions that match the difficulty filter, with progress counted on those
     const sets = idx.theory.filter((t) => !f.tags.length || f.tags.includes(t.tag)).map((t) => {
       const qs = t.qs.filter((q) => !f.levels.length || f.levels.includes(q.d));
       return { ...t, count: qs.length, answered: qs.filter((q) => q.a).length, correct: qs.filter((q) => q.c).length };
-    }).filter((t) => t.count);
+    }).filter((t) => t.count && !(f.hideDone && t.correct === t.count));   // (a set you have answered correctly all through counts as completed)
     const total = idx.theory.filter((t) => !f.tags.length || f.tags.includes(t.tag)).reduce((a, t) => a + t.count, 0);
     const shown = sets.reduce((a, t) => a + t.count, 0);
     holder.replaceChildren(
       f.levels.length ? h("p", { class: "muted", style: "margin:0 0 10px" }, `Showing ${shown} of ${total} questions.`) : null,
+      f.hideDone ? h("p", { class: "muted", style: "margin:0 0 10px" }, "The sets you have completed (every question answered correctly) are hidden.") : null,
       sets.length ? h("div", { class: "list" }, sets.map((s) => {
         const p = s.count ? s.correct / s.count : 0;
         return h("a", { class: "row", href: "#/theory/" + s.id },
           h("div", { class: "main" }, h("div", { class: "title" }, s.title, " ", h("span", { class: "tag", title: "Course topic " + T(s.tag) }, T(s.tag))), h("div", { class: "sub" }, `${s.count} questions · ${s.types.join(", ")} · ${s.answered} answered`)),
           h("div", { class: "bar", style: "width:120px" }, h("span", { style: `width:${pct(p)}%` })), h("span", { class: "pct" }, pct(p) + "%"));
-      })) : h("p", { class: "muted" }, "No question matches these filters."));
+      })) : h("p", { class: "muted" }, f.hideDone ? "No set matches these filters (the completed ones are hidden)." : "No question matches these filters."));
   };
   const pathBox = h("div", {});
   const drawPath = () => {
@@ -784,9 +834,9 @@ function buildQuestion(q, onChange) {
 async function viewTheorySet(id) {
   setNav("theory");
   const set = await api("theory/" + id);
-  const levels = readFilters(FILTER_KEYS.theory).levels;   // the difficulty chips of the Theory page also choose the questions here
+  const { levels, hideDone } = readFilters(FILTER_KEYS.theory);   // the chips of the Theory page also choose the questions here
   const all = set.questions;
-  set.questions = all.filter((q) => !levels.length || levels.includes(q.difficulty || 1));
+  set.questions = all.filter((q) => (!levels.length || levels.includes(q.difficulty || 1)) && !(hideDone && q.progress && q.progress.last_correct));
   const answered = set.questions.filter((q) => q.progress).length;
   const notCorrect = set.questions.filter((q) => !q.progress || !q.progress.last_correct);
   const missed = set.questions.filter((q) => q.progress && !q.progress.last_correct);
@@ -799,12 +849,12 @@ async function viewTheorySet(id) {
     mount(page(
       h("div", { class: "crumbs" }, h("a", { href: "#/theory" }, "Theory"), " › ", set.title),
       h("h1", {}, set.title, " ", h("span", { class: "tag", title: "Course topic " + T(set.tag) }, T(set.tag))),
-      h("p", { class: "lead" }, `${set.questions.length} questions · ${answered} answered before`, levels.length ? ` · difficulty ${levels.map((n) => "★".repeat(n)).join(" ")} only (${all.length} in the set; change it on the Theory page)` : ""),
+      h("p", { class: "lead" }, `${set.questions.length} questions · ${answered} answered before`, levels.length ? ` · difficulty ${levels.map((n) => "★".repeat(n)).join(" ")} only` : "", hideDone ? " · completed questions hidden" : "", levels.length || hideDone ? ` (${all.length} in the set; change it on the Theory page)` : ""),
       set.practice ? h("p", {}, h("a", { href: `#/coding?chapter=${set.practice.tag}/${set.practice.chapter}` }, `Practise this chapter: ${set.practice.count} coding exercises →`)) : null,
-      set.questions.length ? null : h("div", { class: "panel" }, "No question of this set matches the difficulty filter."),
+      set.questions.length ? null : h("div", { class: "panel" }, "No question of this set matches the filters of the Theory page" + (hideDone ? " (you have completed the rest)." : ".")),
       h("div", { class: "panel" }, h("label", {}, shuffle, " Shuffle the order")),
       h("p", {},
-        h("button", { class: "btn primary", onclick: () => start(set.questions, shuffle.checked) }, "Start all"), " ",
+        h("button", { class: "btn primary", disabled: !set.questions.length, onclick: () => start(set.questions, shuffle.checked) }, "Start all"), " ",
         h("button", { class: "btn", disabled: !notCorrect.length || notCorrect.length === set.questions.length, onclick: () => start(notCorrect, shuffle.checked) }, `Only not yet correct (${notCorrect.length})`), " ",
         h("button", { class: "btn", disabled: !missed.length, onclick: () => start(missed, shuffle.checked) }, `Only last missed (${missed.length})`))));
   };

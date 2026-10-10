@@ -18,6 +18,11 @@ RUN arch="$(dpkg --print-architecture)" \
  && curl -fsSL "https://github.com/coder/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server-${CODE_SERVER_VERSION}-linux-${arch}.tar.gz" | tar -xz -C /opt \
  && ln -s "/opt/code-server-${CODE_SERVER_VERSION}-linux-${arch}/bin/code-server" /usr/local/bin/code-server
 
+# VS Code hands the c-cellar shortcuts (Alt+Enter, Alt+X) to the page around it: container/frame-keys.js goes into code-server's page.
+# (The terminal's page is made when the lab starts, see entrypoint.sh.)
+COPY container/frame-keys.js container/patch-workbench.py /opt/cellar/
+RUN python3 /opt/cellar/patch-workbench.py /opt/code-server-*/lib/vscode/out/vs/code/browser/workbench/workbench.html
+
 # The app, the content and the entrypoint live in the project folder, which `./lab` mounts at /lab:
 # editing them needs no image rebuild.
 WORKDIR /lab

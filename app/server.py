@@ -314,6 +314,45 @@ def _empty_answer(ex, ws):
     return f"{', '.join(empty)} is empty: write your program there first." if empty and len(empty) == len(names) else None
 
 
+def _fixtures(ex, tmp):
+    """The folder every test starts from: the exercise's fixtures or, after a multi-file build, a copy of the finished build directory."""
+    if ex.get("build"):  # (timestamps kept)
+        built = tmp / "_build"
+        built.mkdir()
+        for f in tmp.iterdir():
+            if f.is_file():
+                shutil.copy2(f, built / f.name)
+        return built
+    return Path(ex["dir"]) / "fixtures"
+
+
+def run_exercise(ex, args, stdin):
+    """Compile & run: build the answer like Check does, leave ./prog in the exercise's folder, then run it once with the given
+    arguments and input. Nothing is graded and no attempt is recorded."""
+    ws = ensure_workspace(ex)
+    msg = _empty_answer(ex, ws)
+    if msg:
+        return {"compiled": False, "log": msg}
+    with tempfile.TemporaryDirectory(prefix="cellar-") as t:
+        tmp = Path(t)
+        try:
+            ok, log = _build(ex, ws, tmp)
+        except subprocess.TimeoutExpired:
+            return {"compiled": False, "log": "the build timed out"}
+        if not ok:
+            if (ws / "prog").exists() and "prog" not in workspace_files(ex):
+                (ws / "prog").unlink()
+            return {"compiled": False, "log": log}
+        shutil.copy2(tmp / "prog", ws / "prog")
+        case = {"args": args, "timeout": 5, "exit": "any", **({"stdin": stdin} if stdin else {})}
+        r = run_case(case, tmp / "prog", _fixtures(ex, tmp), tmp, 0)
+        code = r.get("exit")
+        return {"compiled": True, "log": log, "ran": True, "cmd": r["cmd"], "stdout": r.get("got", ""), "stderr": r.get("stderr", ""),
+                "exit": code, "signal": signal.Signals(-code).name if isinstance(code, int) and code < 0 else None,
+                "timeout": bool(r.get("timeout")), "cut": len(r.get("got", "")) >= 4000 or len(r.get("stderr", "")) >= 1000,
+                "error": next(iter(r.get("hints", [])), None) if "exit" not in r and not r.get("timeout") else None}
+
+
 def compile_exercise(ex):
     """The Compile button: build the answer exactly as Check does, without running the tests. On success ./prog is left in the exercise's
     folder, so the student can run it from the terminal."""
@@ -351,14 +390,7 @@ def check_exercise(ex):
         if not ok:
             return {"compiled": False, "log": log, "cases": [], "passed": False}
         cases = []
-        fixtures = d / "fixtures"
-        if ex.get("build"):  # every case starts from a copy of the finished build directory (timestamps kept)
-            built = tmp / "_build"
-            built.mkdir()
-            for f in tmp.iterdir():
-                if f.is_file():
-                    shutil.copy2(f, built / f.name)
-            fixtures = built
+        fixtures = _fixtures(ex, tmp)
         for i, c in enumerate(tests["cases"]):
             cases.append(run_case(c, out, fixtures, tmp, i))
     passed = all(c["ok"] for c in cases)
@@ -850,6 +882,16 @@ class Handler(BaseHTTPRequestHandler):
             if not ex:
                 return self._send(404, {"error": "unknown exercise"})
             action = parts[2]
+            if action == "compile":   # (no progress involved, and a program that runs for seconds must not hold the lock)
+                return self._send(200, compile_exercise(ex))
+            if action == "run":
+                args = body.get("args", "")
+                try:
+                    argv = shlex.split(args) if isinstance(args, str) else []
+                except ValueError as e:
+                    return self._send(400, {"error": f"arguments: {e}"})
+                stdin = body.get("stdin", "")
+                return self._send(200, run_exercise(ex, argv, stdin if isinstance(stdin, str) else ""))
             with LOCK:
                 prog = load_progress()
                 e = prog["coding"].setdefault(ex["id"], {})
@@ -870,8 +912,6 @@ class Handler(BaseHTTPRequestHandler):
                         days = {v["streak_day"] for v in prog["coding"].values() if v.get("streak_day")}
                         result["streak"] = daily.streak(days, (daily.valid_date(body.get("date")) or datetime.now(timezone.utc).date()).isoformat())
                     return self._send(200, result)
-                if action == "compile":
-                    return self._send(200, compile_exercise(ex))
                 if action == "solution":
                     e["solution_viewed"] = True
                     save_progress(prog)
