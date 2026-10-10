@@ -569,41 +569,20 @@ async function viewExercise(id) {
     toast("answer.c restored");
   });
   let busy = false;
-  const compileBtn = h("button", { class: "btn", title: "Only compile: no tests are run. A program that builds is left as ./prog, next to your code, so you can run it in the terminal." }, "Compile");
-  const runBtn = h("button", { class: "btn", title: "Compile and run once, then show what it printed (nothing is graded). Alt+Enter, also from VS Code and the terminal." }, "Compile & run ", h("kbd", {}, "Alt+Enter"));
-  const argsBox = h("input", { type: "text", class: "runargs", spellcheck: false, autocomplete: "off", placeholder: "arguments, e.g. hello \"two words\"", "aria-label": "Arguments for Compile & run" });
-  const stdinBox = h("textarea", { class: "runstdin", rows: 3, spellcheck: false, placeholder: "what the program reads from the keyboard (standard input)", "aria-label": "Input for Compile & run" });
-  const runOpts = h("details", { class: "runopts" }, h("summary", {}, "Arguments and input for Compile & run"), argsBox, stdinBox);
-  const compileLog = (r) => r.log.trim() ? h("details", { class: "case", open: true }, h("summary", {}, h("span", { class: "mark", style: "color:var(--warn)" }, "!"), "Compiler warnings (fix them)"), h("div", { class: "body" }, h("pre", { class: "compile-log" }, r.log))) : null;
-  const streamBlock = (label, text) => h("div", {}, h("h4", { class: "muted", style: "margin:8px 0 2px;font-size:12px" }, label), h("pre", {}, text));
-  const renderBuild = (r) => {
-    if (!r.compiled) return h("div", { class: "panel bad" }, h("b", {}, "✘ It does not compile"), h("pre", { class: "compile-log" }, r.log));
-    if (!r.ran) return h("div", { class: "panel ok" }, h("b", {}, "✔ It compiles"), " — run it in the terminal with ", h("code", {}, "./prog"), ". Compile does not run the tests: press Check for that.", compileLog(r));
-    const how = r.timeout ? "timed out after 5 seconds (infinite loop, or waiting for input that never comes?)"
-      : r.error ? r.error : r.signal ? `killed by ${r.signal}${r.signal === "SIGSEGV" ? " (invalid memory access)" : ""}` : `exit status ${r.exit}`;
-    return h("div", { class: "panel " + (r.timeout || r.signal || r.error ? "bad" : "ok") },
-      h("b", {}, r.timeout || r.signal || r.error ? "✘ " : "✔ ", "Ran ", h("code", {}, r.cmd.replace(/\s+< \(stdin below\)$/, "")), " — ", how),
-      r.stdout ? streamBlock("OUTPUT", r.stdout) : h("div", { class: "muted", style: "margin-top:6px" }, "It printed nothing."),
-      r.stderr ? streamBlock("STDERR", r.stderr) : null,
-      r.cut ? h("div", { class: "muted" }, "(long output: only the start is shown)") : null,
-      compileLog(r));
+  // Compile and Compile & run type their command in the terminal pane, so the compiler's messages and the program itself live there.
+  const termOrigin = `${location.protocol}//${location.hostname}:${state.cfg.term_port}`;
+  const inTerminal = (more) => {
+    if (!d.compile_cmd) return toast("The server is older than this page: restart the lab with ./lab web");
+    termFrame.contentWindow.postMessage({ cellar: "type", text: `cd "$CELLAR_EX" && ${d.compile_cmd}${more}` }, termOrigin);
+    termFrame.focus();
   };
-  const build = async (kind) => {   // "compile" or "run"
-    if (busy) return;
-    busy = true; checkBtn.disabled = compileBtn.disabled = runBtn.disabled = true;
-    results.replaceChildren(h("div", { class: "muted" }, kind === "run" ? "Compiling and running…" : "Compiling…"));
-    try {
-      results.replaceChildren(renderBuild(await api("coding/" + id + "/" + kind, kind === "run" ? { args: argsBox.value, stdin: stdinBox.value } : {})));
-    } catch (e) {
-      results.replaceChildren(h("div", { class: "panel bad" }, "Error: " + e.message));
-    }
-    busy = false; checkBtn.disabled = compileBtn.disabled = runBtn.disabled = false;
-  };
-  compileBtn.addEventListener("click", () => build("compile"));
-  runBtn.addEventListener("click", () => build("run"));
+  const compileBtn = h("button", { class: "btn", title: "Compile your code into ./prog: the command is typed in the terminal for you" }, "Compile");
+  const runBtn = h("button", { class: "btn", title: "Compile into ./prog and run it in the terminal. Alt+Enter, also from VS Code and the terminal." }, "Compile & run ", h("kbd", {}, "Alt+Enter"));
+  compileBtn.addEventListener("click", () => inTerminal(""));
+  runBtn.addEventListener("click", () => inTerminal(" && ./prog"));
   const check = async () => {
     if (busy) return;
-    busy = true; checkBtn.disabled = compileBtn.disabled = runBtn.disabled = true;
+    busy = true; checkBtn.disabled = true;
     results.replaceChildren(h("div", { class: "muted" }, "Compiling and running…"));
     try {
       const r = await api("coding/" + id + "/check", { date: localDate() });
@@ -624,7 +603,7 @@ async function viewExercise(id) {
     } catch (e) {
       results.replaceChildren(h("div", { class: "panel bad" }, "Error: " + e.message));
     }
-    busy = false; checkBtn.disabled = compileBtn.disabled = runBtn.disabled = false;
+    busy = false; checkBtn.disabled = false;
   };
   checkBtn.addEventListener("click", check);
   // Keys. VS Code and the terminal are other origins, so a key pressed inside them never reaches this page: a small script inside each
@@ -663,7 +642,7 @@ async function viewExercise(id) {
     d.theory ? h("div", { class: "qlinks" }, h("span", { class: "muted" }, "Theory: "), h("a", { href: "#/theory/" + d.theory.id, target: "_blank", rel: "noopener" }, `${d.theory.title} (${d.theory.count} questions)`)) : null,
     h("div", { class: "muted", style: "font-size:13px" }, "Write it in ", d.files.map((f, i) => [i ? ", " : "", h("code", {}, f)]), " in VS Code. It saves by itself. ", h("kbd", {}, "Alt+X"), " takes the keyboard out of VS Code and the terminal."),
     h("div", { class: "actions" }, checkBtn, compileBtn, runBtn, hintBtn, infoBtn, solBtn, resetBtn, h("span", { class: "spacer" }), chip),
-    runOpts, hintBox, results, extras,
+    hintBox, results, extras,
     h("div", { class: "qnav" }, prev ? h("a", { class: "btn small step prev", href: "#/coding/" + prev.id }, h("span", { class: "steplabel" }, "Previous"), "← " + prev.title) : null, h("span", { class: "spacer" }), next ? h("a", { class: "btn small step next", href: "#/coding/" + next.id }, h("span", { class: "steplabel" }, "Next"), next.title + " →") : null));
   const dock = mountDock({ instr: left, term: termFrame, code: codeFrame });
   mount(dock.el);

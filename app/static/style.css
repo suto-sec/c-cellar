@@ -313,9 +313,5 @@ pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } p
 .streakmini b, .streakmini .flame { position: relative; top: -1px; }   /* optical centring with the text beside them */
 :root[data-streakbar="off"] #streak { display: none; }   /* setting: hide the flame and counter in the top bar */
 
-/* Compile & run: arguments and input */
+/* the statement pane takes the keyboard back (Alt+X) */
 .statement:focus { outline: none; }
-.runopts { margin: 8px 0; font-size: 13px; }
-.runopts summary { cursor: pointer; color: var(--muted); }
-.runopts input, .runopts textarea { display: block; width: 100%; box-sizing: border-box; margin-top: 6px; padding: 6px 8px; font: 13px var(--mono); color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
-.runopts textarea { resize: vertical; }

@@ -4,4 +4,5 @@ dir="$(realpath -m -- "${1:-/lab/.progress/workspace}")"
 case "$dir" in /lab/.progress/workspace|/lab/.progress/workspace/*) ;; *) dir=/lab/.progress/workspace ;; esac
 [ -d "$dir" ] || dir=/lab/.progress/workspace
 cd "$dir" || exit 1
+export CELLAR_EX="$dir"   # (the Compile buttons type: cd "$CELLAR_EX" && gcc ...)
 exec bash --rcfile /lab/container/term.rc -i
