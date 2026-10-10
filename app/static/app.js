@@ -552,6 +552,7 @@ async function viewExercise(id) {
   const setStatus = (s) => { chip.replaceChildren(h("span", { class: "st " + s }, STATUS[s][0]), STATUS[s][1]); };
   setStatus(d.status);
   const results = h("div", {});
+  const notice = h("div", {});
   const extras = h("div", {});
   const checkBtn = h("button", { class: "btn primary", title: "Ctrl+Enter" }, "Check ", h("kbd", {}, "Ctrl+Enter"));
   let hintsShown = 0;
@@ -649,6 +650,7 @@ async function viewExercise(id) {
     setTimeout(give, 250);
   };
   const act = (name) => {
+    if (name === "release") name = "instructions";   // (the name an older frame script uses for Alt+X)
     if (name === "run") runBtn.click();
     else if (name === "instructions") toInstructions();
     else if (name === "terminal") toFrame(termFrame, termOrigin);
@@ -659,10 +661,21 @@ async function viewExercise(id) {
     const s = frameShortcut(e);
     if (s) { e.preventDefault(); act(s); }
   };
+  const hello = { code: false, term: false };
   const onMsg = (ev) => {
-    if (ev.source !== codeFrame.contentWindow && ev.source !== termFrame.contentWindow) return;   // only our own two frames
-    if (ev.data && ev.data.cellar === "key" && Object.values(FRAME_KEYS).includes(ev.data.action)) act(ev.data.action);
+    const from = ev.source === codeFrame.contentWindow ? "code" : ev.source === termFrame.contentWindow ? "term" : null;
+    if (!from || !ev.data) return;   // only our own two frames
+    if (ev.data.cellar === "hello" && ev.data.version >= 2) hello[from] = true;
+    else if (ev.data.cellar === "key" && (Object.values(FRAME_KEYS).includes(ev.data.action) || ev.data.action === "release")) act(ev.data.action);
   };
+  // VS Code and the terminal are pages of the lab image / the lab's start-up: if they are older than this page (the lab was not restarted after an
+  // update) they cannot take part in the shortcuts or the Compile buttons, and the page says so instead of failing silently.
+  const staleTimer = setTimeout(() => {
+    if (hello.code && hello.term) return;
+    notice.replaceChildren(h("div", { class: "panel bad" }, h("b", {}, "The lab is older than this page. "),
+      "The keyboard shortcuts between panels and the Compile buttons need the newer " + [!hello.code ? "VS Code" : null, !hello.term ? "terminal" : null].filter(Boolean).join(" and ") + " page. Stop and start the lab with ",
+      h("code", {}, "./lab web"), " (it rebuilds what is out of date), then reload this page."));
+  }, 10000);
   window.addEventListener("message", onMsg);
   document.addEventListener("keydown", onKey);
 
@@ -676,11 +689,11 @@ async function viewExercise(id) {
     d.theory ? h("div", { class: "qlinks" }, h("span", { class: "muted" }, "Theory: "), h("a", { href: "#/theory/" + d.theory.id, target: "_blank", rel: "noopener" }, `${d.theory.title} (${d.theory.count} questions)`)) : null,
     h("div", { class: "muted", style: "font-size:13px" }, "Write it in ", d.files.map((f, i) => [i ? ", " : "", h("code", {}, f)]), " in VS Code. It saves by itself. ", h("kbd", {}, "Alt+X"), " ", h("kbd", {}, "Alt+T"), " ", h("kbd", {}, "Alt+V"), " move the keyboard between this panel, the terminal and VS Code."),
     h("div", { class: "actions" }, checkBtn, compileBtn, runBtn, hintBtn, infoBtn, solBtn, resetBtn, h("span", { class: "spacer" }), chip),
-    hintBox, results, extras,
+    notice, hintBox, results, extras,
     h("div", { class: "qnav" }, prev ? h("a", { class: "btn small step prev", href: "#/coding/" + prev.id }, h("span", { class: "steplabel" }, "Previous"), "← " + prev.title) : null, h("span", { class: "spacer" }), next ? h("a", { class: "btn small step next", href: "#/coding/" + next.id }, h("span", { class: "steplabel" }, "Next"), next.title + " →") : null));
   const dock = mountDock({ instr: left, term: termFrame, code: codeFrame });
   mount(dock.el);
-  state.cleanup = () => { document.removeEventListener("keydown", onKey); window.removeEventListener("message", onMsg); dock.destroy(); };
+  state.cleanup = () => { clearTimeout(staleTimer); document.removeEventListener("keydown", onKey); window.removeEventListener("message", onMsg); dock.destroy(); };
 }
 // ------------------------------------------------------------------ theory
 async function viewTheoryList() {

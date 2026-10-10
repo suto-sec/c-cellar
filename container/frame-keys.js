@@ -4,6 +4,10 @@
 // Keep the matching rule identical to frameShortcut() in app/static/app.js.
 (function () {
   if (window.parent === window) return;
+  // The page checks that the frames run a script it understands (version 2 or newer): an old terminal page or VS Code image is reported.
+  function hello() { parent.postMessage({ cellar: "hello", version: 2 }, "*"); }
+  hello();
+  addEventListener("load", hello);
   var KEYS = { Enter: "run", NumpadEnter: "run", KeyX: "instructions", KeyT: "terminal", KeyV: "code" };
   addEventListener("keydown", function (ev) {
     if (!ev.altKey || ev.ctrlKey || ev.metaKey || ev.shiftKey || (ev.getModifierState && ev.getModifierState("AltGraph"))) return;
