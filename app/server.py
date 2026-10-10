@@ -284,35 +284,68 @@ def compare(got, want, mode):
     return got == want, hints
 
 
+def _build(ex, ws, tmp):
+    """Copy the student's files (and what the exercise adds) into tmp and build ./prog there. Returns (ok, log); a timeout propagates."""
+    d = Path(ex["dir"])
+    for n in workspace_files(ex):
+        shutil.copyfile(ws / n, tmp / n)
+    for h in d.glob("*.h"):  # always the original header, whatever happened to the workspace copy
+        shutil.copyfile(h, tmp / h.name)
+    for hidden in (d / "hidden").glob("*") if (d / "hidden").is_dir() else []:  # files the student is linked with (e.g. a main.c)
+        shutil.copyfile(hidden, tmp / hidden.name)
+    out = tmp / "prog"
+    if ex.get("build"):  # multi-file exercise: its own build command must produce ./prog
+        p = subprocess.run(["bash", "-c", ex["build"]], cwd=tmp, capture_output=True, text=True, timeout=60)
+        ok, log = p.returncode == 0 and out.exists(), _clean(p.stdout + p.stderr, tmp)
+        if p.returncode == 0 and not out.exists():
+            log += "\nThe build finished but did not create ./prog."
+        return ok, log
+    sources = [tmp / "answer.c"]
+    if (d / "harness.c").exists():
+        shutil.copyfile(d / "harness.c", tmp / "harness.c")
+        sources.append(tmp / "harness.c")
+    return compile_c(sources, out, tmp)
+
+
+def _empty_answer(ex, ws):
+    """The message for an answer with nothing in it yet, else None."""
+    names = workspace_files(ex)
+    empty = [n for n in names if not (ws / n).read_text(encoding="utf-8", errors="replace").strip()]
+    return f"{', '.join(empty)} is empty: write your program there first." if empty and len(empty) == len(names) else None
+
+
+def compile_exercise(ex):
+    """The Compile button: build the answer exactly as Check does, without running the tests. On success ./prog is left in the exercise's
+    folder, so the student can run it from the terminal."""
+    ws = ensure_workspace(ex)
+    msg = _empty_answer(ex, ws)
+    if msg:
+        return {"compiled": False, "log": msg}
+    with tempfile.TemporaryDirectory(prefix="cellar-") as t:
+        tmp = Path(t)
+        try:
+            ok, log = _build(ex, ws, tmp)
+        except subprocess.TimeoutExpired:
+            return {"compiled": False, "log": "the build timed out"}
+        if ok:
+            shutil.copy2(tmp / "prog", ws / "prog")
+        elif (ws / "prog").exists() and "prog" not in workspace_files(ex):
+            (ws / "prog").unlink()   # a program that no longer compiles must not leave a stale one behind
+        return {"compiled": ok, "log": log}
+
+
 def check_exercise(ex):
     d = Path(ex["dir"])
     ws = ensure_workspace(ex)
     tests = _read_json(d / "tests.json")
-    names = workspace_files(ex)
-    empty = [n for n in names if not (ws / n).read_text(encoding="utf-8", errors="replace").strip()]
-    if empty and len(empty) == len(names):
-        return {"compiled": False, "log": f"{', '.join(empty)} is empty: write your program there first.", "cases": [], "passed": False}
+    msg = _empty_answer(ex, ws)
+    if msg:
+        return {"compiled": False, "log": msg, "cases": [], "passed": False}
     with tempfile.TemporaryDirectory(prefix="cellar-") as t:
         tmp = Path(t)
-        for n in names:
-            shutil.copyfile(ws / n, tmp / n)
-        for h in d.glob("*.h"):  # always the original header, whatever happened to the workspace copy
-            shutil.copyfile(h, tmp / h.name)
-        for hidden in (d / "hidden").glob("*") if (d / "hidden").is_dir() else []:  # files the student is linked with (e.g. a main.c)
-            shutil.copyfile(hidden, tmp / hidden.name)
         out = tmp / "prog"
         try:
-            if ex.get("build"):  # multi-file exercise: its own build command must produce ./prog
-                p = subprocess.run(["bash", "-c", ex["build"]], cwd=tmp, capture_output=True, text=True, timeout=60)
-                ok, log = p.returncode == 0 and out.exists(), _clean(p.stdout + p.stderr, tmp)
-                if p.returncode == 0 and not out.exists():
-                    log += "\nThe build finished but did not create ./prog."
-            else:
-                sources = [tmp / "answer.c"]
-                if (d / "harness.c").exists():
-                    shutil.copyfile(d / "harness.c", tmp / "harness.c")
-                    sources.append(tmp / "harness.c")
-                ok, log = compile_c(sources, out, tmp)
+            ok, log = _build(ex, ws, tmp)
         except subprocess.TimeoutExpired:
             return {"compiled": False, "log": "the build timed out", "cases": [], "passed": False}
         if not ok:
@@ -837,6 +870,8 @@ class Handler(BaseHTTPRequestHandler):
                         days = {v["streak_day"] for v in prog["coding"].values() if v.get("streak_day")}
                         result["streak"] = daily.streak(days, (daily.valid_date(body.get("date")) or datetime.now(timezone.utc).date()).isoformat())
                     return self._send(200, result)
+                if action == "compile":
+                    return self._send(200, compile_exercise(ex))
                 if action == "solution":
                     e["solution_viewed"] = True
                     save_progress(prog)

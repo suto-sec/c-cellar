@@ -559,9 +559,25 @@ async function viewExercise(id) {
     toast("answer.c restored");
   });
   let busy = false;
+  const compileBtn = h("button", { class: "btn", title: "Only compile: no tests are run. A program that builds is left as ./prog, next to your code, so you can run it in the terminal." }, "Compile");
+  compileBtn.addEventListener("click", async () => {
+    if (busy) return;
+    busy = true; checkBtn.disabled = compileBtn.disabled = true;
+    results.replaceChildren(h("div", { class: "muted" }, "Compiling…"));
+    try {
+      const r = await api("coding/" + id + "/compile", {});
+      results.replaceChildren(r.compiled
+        ? h("div", { class: "panel ok" }, h("b", {}, "✔ It compiles"), " — run it in the terminal with ", h("code", {}, "./prog"), ". Compile does not run the tests: press Check for that.",
+            r.log.trim() ? h("details", { class: "case", open: true }, h("summary", {}, h("span", { class: "mark", style: "color:var(--warn)" }, "!"), "Compiler warnings (fix them)"), h("div", { class: "body" }, h("pre", { class: "compile-log" }, r.log))) : null)
+        : h("div", { class: "panel bad" }, h("b", {}, "✘ It does not compile"), h("pre", { class: "compile-log" }, r.log)));
+    } catch (e) {
+      results.replaceChildren(h("div", { class: "panel bad" }, "Error: " + e.message));
+    }
+    busy = false; checkBtn.disabled = compileBtn.disabled = false;
+  });
   const check = async () => {
     if (busy) return;
-    busy = true; checkBtn.disabled = true;
+    busy = true; checkBtn.disabled = compileBtn.disabled = true;
     results.replaceChildren(h("div", { class: "muted" }, "Compiling and running…"));
     try {
       const r = await api("coding/" + id + "/check", { date: localDate() });
@@ -582,7 +598,7 @@ async function viewExercise(id) {
     } catch (e) {
       results.replaceChildren(h("div", { class: "panel bad" }, "Error: " + e.message));
     }
-    busy = false; checkBtn.disabled = false;
+    busy = false; checkBtn.disabled = compileBtn.disabled = false;
   };
   checkBtn.addEventListener("click", check);
   const onKey = (e) => { if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); check(); } };
@@ -597,7 +613,7 @@ async function viewExercise(id) {
     h("div", { html: md(d.statement) }),
     d.theory ? h("div", { class: "qlinks" }, h("span", { class: "muted" }, "Theory: "), h("a", { href: "#/theory/" + d.theory.id, target: "_blank", rel: "noopener" }, `${d.theory.title} (${d.theory.count} questions)`)) : null,
     h("div", { class: "muted", style: "font-size:13px" }, "Write it in ", d.files.map((f, i) => [i ? ", " : "", h("code", {}, f)]), " in VS Code. It saves by itself."),
-    h("div", { class: "actions" }, checkBtn, hintBtn, infoBtn, solBtn, resetBtn, h("span", { class: "spacer" }), chip),
+    h("div", { class: "actions" }, checkBtn, compileBtn, hintBtn, infoBtn, solBtn, resetBtn, h("span", { class: "spacer" }), chip),
     hintBox, results, extras,
     h("div", { class: "qnav" }, prev ? h("a", { class: "btn small step prev", href: "#/coding/" + prev.id }, h("span", { class: "steplabel" }, "Previous"), "← " + prev.title) : null, h("span", { class: "spacer" }), next ? h("a", { class: "btn small step next", href: "#/coding/" + next.id }, h("span", { class: "steplabel" }, "Next"), next.title + " →") : null));
   const dock = mountDock({ instr: left, term: termFrame, code: codeFrame });
