@@ -817,14 +817,25 @@ class Handler(BaseHTTPRequestHandler):
         tags = sorted({t["tag"] for t in templates})
         if not tags:
             return self._send(404, {"error": "no daily exercises"})
+        levels = daily.parse_levels(q.get("levels"))
         with LOCK:
-            ex = daily.for_date(DAILY_DIR, templates, tags[0], day)
+            ex = daily.find(DAILY_DIR, daily.daily_id(tags[0], day))
+            if ex and levels and ex["stars"] not in levels and not load_progress()["coding"].get(ex["id"], {}).get("passed"):
+                # the levels were changed after today's exercise was built and it is not passed: build another one if there is one to build
+                template, _ = daily.choose(DAILY_DIR, templates, tags[0], day, levels)
+                if template["id"] != ex.get("template"):
+                    shutil.rmtree(ex["dir"], ignore_errors=True)
+                    shutil.rmtree(workspace_dir(ex["id"]), ignore_errors=True)   # (its answer.c belongs to the exercise that is gone)
+                    prog = load_progress()
+                    prog["coding"].pop(ex["id"], None)
+                    save_progress(prog)
+            ex = daily.for_date(DAILY_DIR, templates, tags[0], day, levels)
         coding = load_progress()["coding"]
         chapter = next((c for c in load_chapters() if c["tag"] == ex["tag"] and c["id"] == ex["topic"]), None)
         days = {v["streak_day"] for v in coding.values() if v.get("streak_day")}
         return self._send(200, {"id": ex["id"], "date": day.isoformat(), "title": ex["title"], "stars": ex["stars"], "tag": ex["tag"],
                                 "chapter": chapter["title"] if chapter else ex["topic"], "status": coding_status(coding.get(ex["id"])),
-                                "streak": daily.streak(days, day.isoformat())})
+                                "streak": daily.streak(days, day.isoformat()), "levels_available": daily.available_stars(templates, ex["tag"])})
 
     def _daily_history(self, q):
         """The past daily challenges that exist (days on which the app generated one), newest first, with how each went."""

@@ -315,3 +315,14 @@ pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } p
 
 /* the statement pane takes the keyboard back (Alt+X) */
 .statement:focus { outline: none; }
+
+/* keyboard shortcuts window */
+.keys-overlay { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.35); padding: 16px; }
+.keys-box { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,.3); max-width: 640px; width: 100%; max-height: calc(100vh - 32px); overflow: auto; padding: 14px 20px 16px; }
+.keys-head { display: flex; align-items: center; gap: 10px; }
+.keys-head h2 { margin: 0; font-size: 18px; }
+.keys-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+.keys-table th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); padding: 12px 0 4px; border-bottom: 1px solid var(--line); }
+.keys-table td { padding: 6px 12px 6px 0; vertical-align: top; font-size: 14px; }
+.keys-table td:first-child { white-space: nowrap; width: 1%; }
+.keys-note { font-size: 13px; margin: 12px 0 0; }

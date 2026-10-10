@@ -85,6 +85,23 @@ def check_daily(ref_names):
                     if fn.lower() not in ref_names:
                         err(f"{where}: library function '{fn}' has no reference entry")
         print(f"  ok   {label}: {len(DAILY_SEEDS)} seeds, {len(titles)} different titles")
+    # the difficulty choice: every level the templates can produce can be asked for, and the day's exercise is the same however often it is asked
+    from datetime import date as _date
+    tag = templates[0]["tag"] if templates else None
+    with tempfile.TemporaryDirectory() as root:
+        avail = D.available_stars(templates, tag) if tag else []
+        if not avail:
+            err("daily: no star levels available")
+        for n in avail:
+            for k in range(8):
+                day = _date(2026, 3, 1 + k)
+                tpl, spec = D.choose(root, templates, tag, day, {n})
+                if spec["stars"] != n:
+                    err(f"daily: levels={{{n}}} on {day} gave a {spec['stars']}-star exercise ({tpl['id']})")
+                if D.choose(root, templates, tag, day, {n})[0]["id"] != tpl["id"]:
+                    err(f"daily: levels={{{n}}} on {day} is not repeatable")
+        if D.parse_levels("2, 3,x,9") != {2, 3} or D.parse_levels("") is not None or D.parse_levels("0,6") is not None:
+            err("daily: parse_levels")
     # the streak
     day = D.date
     ds = lambda *xs: {x for x in xs}  # noqa: E731

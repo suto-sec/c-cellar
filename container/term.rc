@@ -1,2 +1,4 @@
 # Prompt of the terminal pane: the current folder only.
 PS1='\[\e[1;32m\]\W\[\e[0m\] \$ '
+# The Compile buttons of the page paste a command followed by Enter: that Enter must run it, not be pasted as text.
+bind 'set enable-bracketed-paste off'

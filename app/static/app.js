@@ -135,9 +135,14 @@ function localDate() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 /** Today's daily exercise and the streak, from the server. Also keeps the streak indicator of the top bar up to date. */
+const DAILY_LEVELS_KEY = "cellar.daily.levels";   // the star levels the daily challenge may have (none = any)
+function dailyLevels() {
+  try { const l = JSON.parse(localStorage.getItem(DAILY_LEVELS_KEY)); return Array.isArray(l) ? l.filter(Number.isInteger) : []; } catch (e) { return []; }
+}
 async function loadDaily() {
   const date = localDate();
-  const d = await api("daily?date=" + date);
+  const levels = dailyLevels();
+  const d = await api("daily?date=" + date + (levels.length ? "&levels=" + levels.join(",") : ""));
   state.dailyDate = date;
   setStreak(d.streak, d.id);
   return d;
@@ -176,6 +181,22 @@ function dailyCard(d) {
         h("div", { class: "sub" }, d.chapter, " · ", stars(d.stars), " ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag)))),
       h("a", { class: "btn" + (done ? "" : " primary"), href: "#/coding/" + d.id }, done ? "Open again" : d.status === "todo" ? "Start today's challenge" : "Continue today's challenge")));
 }
+/** Which difficulties (stars) the daily challenge may have: several can be on, none on means any. Changing it rebuilds today's challenge if it is not passed. */
+function dailyLevelsBox(available) {
+  const on = dailyLevels();
+  const toggle = (n) => {
+    const next = on.includes(n) ? on.filter((x) => x !== n) : [...on, n].sort();
+    localStorage.setItem(DAILY_LEVELS_KEY, JSON.stringify(next));
+    viewDaily();
+  };
+  return h("div", { class: "panel dailylevels" },
+    h("div", { class: "fgroup" }, h("span", { class: "flabel" }, "Difficulty"),
+      available.map((n) => h("button", { class: "chip" + (on.includes(n) ? " on" : ""), "aria-pressed": String(on.includes(n)), title: n + (n === 1 ? " star" : " stars"), onclick: () => toggle(n) }, "★".repeat(n))),
+      on.length ? h("button", { class: "btn small", onclick: () => { localStorage.removeItem(DAILY_LEVELS_KEY); viewDaily(); } }, "Any difficulty") : null),
+    h("div", { class: "muted", style: "font-size:13px;margin-top:6px" }, on.length
+      ? "The daily challenge will have one of these difficulties. Today's challenge changes to match if you have not passed it yet."
+      : "Any difficulty. Choose one or more to limit the daily challenge to them; today's challenge changes to match if you have not passed it yet."));
+}
 async function viewDaily() {
   setNav("daily");
   let today, past;
@@ -187,6 +208,7 @@ async function viewDaily() {
   mount(page(h("h1", {}, "Daily challenge"),
     h("p", { class: "lead" }, "A new exercise every day, built for you from the course topics. Pass it on the same day to grow your streak. Past challenges can be retried at any time, but only today's counts for the streak."),
     dailyCard(today),
+    dailyLevelsBox(today.levels_available || []),
     h("h2", {}, "Past challenges"),
     past.items.length ? h("div", { class: "list" }, past.items.map((x) => h("a", { class: "row", href: "#/coding/" + x.id },
       h("div", { class: "main" }, h("div", { class: "title" }, x.title), h("div", { class: "sub" }, dateLabel(x.date), " · ", x.chapter, " · ", stars(x.stars), " ", h("span", { class: "tag", title: "Course topic " + T(x.tag) }, T(x.tag)))),
@@ -510,11 +532,12 @@ function renderCase(c) {
   return h("details", { class: "case " + (c.ok ? "ok" : "fail"), open: !c.ok }, h("summary", {}, h("span", { class: "mark" }, c.ok ? "✔" : "✘"), c.name), h("div", { class: "body" }, kids));
 }
 
-/** The two keyboard shortcuts that also work from inside VS Code and the terminal: "run" (Alt+Enter) and "release" (Alt+X), or null.
- *  Alt alone (no Ctrl/Meta/Shift/AltGr, so a Spanish AltGr never triggers them), by physical key, and none of the keys Chrome keeps. */
+/** The keyboard shortcuts of the exercise page that also work from inside VS Code and the terminal: "run" (Alt+Enter), "instructions" (Alt+X),
+ *  "terminal" (Alt+T) and "code" (Alt+V), or null. Alt alone (no Ctrl/Meta/Shift/AltGr, so a Spanish AltGr never triggers them), by physical key. */
+const FRAME_KEYS = { Enter: "run", NumpadEnter: "run", KeyX: "instructions", KeyT: "terminal", KeyV: "code" };
 function frameShortcut(ev) {
   if (!ev.altKey || ev.ctrlKey || ev.metaKey || ev.shiftKey || (ev.getModifierState && ev.getModifierState("AltGraph"))) return null;
-  return ev.code === "Enter" || ev.code === "NumpadEnter" ? "run" : ev.code === "KeyX" ? "release" : null;
+  return FRAME_KEYS[ev.code] || null;
 }
 
 async function viewExercise(id) {
@@ -571,6 +594,7 @@ async function viewExercise(id) {
   let busy = false;
   // Compile and Compile & run type their command in the terminal pane, so the compiler's messages and the program itself live there.
   const termOrigin = `${location.protocol}//${location.hostname}:${state.cfg.term_port}`;
+  const codeOrigin = `${location.protocol}//${location.hostname}:${state.cfg.vscode_port}`;
   const inTerminal = (more) => {
     if (!d.compile_cmd) return toast("The server is older than this page: restart the lab with ./lab web");
     termFrame.contentWindow.postMessage({ cellar: "type", text: `cd "$CELLAR_EX" && ${d.compile_cmd}${more}` }, termOrigin);
@@ -608,7 +632,7 @@ async function viewExercise(id) {
   checkBtn.addEventListener("click", check);
   // Keys. VS Code and the terminal are other origins, so a key pressed inside them never reaches this page: a small script inside each
   // (container/frame-keys.js) sends the two shortcuts here as messages.
-  const release = () => {   // give the keyboard back to the page: whatever has the focus (VS Code, the terminal, a button, a box) lets go
+  const toInstructions = () => {   // give the keyboard back to the page: whatever has the focus (VS Code, the terminal, a button, a box) lets go
     const take = () => {
       const a = document.activeElement;
       if (a && a !== document.body) a.blur();
@@ -617,9 +641,19 @@ async function viewExercise(id) {
     take();
     setTimeout(take, 50);   // (VS Code takes the focus back once, right after letting go of it: the page takes it again)
     setTimeout(take, 250);
-    toast("The page has the keyboard: Ctrl+Enter checks, Alt+Enter compiles and runs");
   };
-  const act = (name) => { if (name === "run") runBtn.click(); else if (name === "release") release(); };
+  const toFrame = (frame, origin) => {   // the keyboard goes into the terminal or into VS Code
+    const give = () => { frame.focus(); frame.contentWindow.postMessage({ cellar: "focus" }, origin); };
+    give();
+    setTimeout(give, 60);
+    setTimeout(give, 250);
+  };
+  const act = (name) => {
+    if (name === "run") runBtn.click();
+    else if (name === "instructions") toInstructions();
+    else if (name === "terminal") toFrame(termFrame, termOrigin);
+    else if (name === "code") toFrame(codeFrame, codeOrigin);
+  };
   const onKey = (e) => {
     if ((e.ctrlKey || e.metaKey) && !e.altKey && e.key === "Enter") { e.preventDefault(); check(); return; }
     const s = frameShortcut(e);
@@ -627,7 +661,7 @@ async function viewExercise(id) {
   };
   const onMsg = (ev) => {
     if (ev.source !== codeFrame.contentWindow && ev.source !== termFrame.contentWindow) return;   // only our own two frames
-    if (ev.data && ev.data.cellar === "key" && (ev.data.action === "run" || ev.data.action === "release")) act(ev.data.action);
+    if (ev.data && ev.data.cellar === "key" && Object.values(FRAME_KEYS).includes(ev.data.action)) act(ev.data.action);
   };
   window.addEventListener("message", onMsg);
   document.addEventListener("keydown", onKey);
@@ -640,7 +674,7 @@ async function viewExercise(id) {
     h("div", { class: "crumbs" }, h("a", { href: "#/coding" }, "Coding"), " › ", isDaily ? [h("a", { href: "#/daily" }, "Daily challenge"), " (" + d.date + ")"] : d.track === "derusting" ? "C derusting" : "C exercises", " › ", chapter ? chapter.title : d.topic, " · ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag)), " ", stars(d.stars)),
     h("div", { html: md(d.statement) }),
     d.theory ? h("div", { class: "qlinks" }, h("span", { class: "muted" }, "Theory: "), h("a", { href: "#/theory/" + d.theory.id, target: "_blank", rel: "noopener" }, `${d.theory.title} (${d.theory.count} questions)`)) : null,
-    h("div", { class: "muted", style: "font-size:13px" }, "Write it in ", d.files.map((f, i) => [i ? ", " : "", h("code", {}, f)]), " in VS Code. It saves by itself. ", h("kbd", {}, "Alt+X"), " takes the keyboard out of VS Code and the terminal."),
+    h("div", { class: "muted", style: "font-size:13px" }, "Write it in ", d.files.map((f, i) => [i ? ", " : "", h("code", {}, f)]), " in VS Code. It saves by itself. ", h("kbd", {}, "Alt+X"), " ", h("kbd", {}, "Alt+T"), " ", h("kbd", {}, "Alt+V"), " move the keyboard between this panel, the terminal and VS Code."),
     h("div", { class: "actions" }, checkBtn, compileBtn, runBtn, hintBtn, infoBtn, solBtn, resetBtn, h("span", { class: "spacer" }), chip),
     hintBox, results, extras,
     h("div", { class: "qnav" }, prev ? h("a", { class: "btn small step prev", href: "#/coding/" + prev.id }, h("span", { class: "steplabel" }, "Previous"), "← " + prev.title) : null, h("span", { class: "spacer" }), next ? h("a", { class: "btn small step next", href: "#/coding/" + next.id }, h("span", { class: "steplabel" }, "Next"), next.title + " →") : null));
@@ -1215,8 +1249,45 @@ function initSettings() {
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !pop.hidden) { close(); btn.focus(); } });
 }
 
+// ------------------------------------------------------------------ keyboard shortcuts window (the keyboard button of the top bar)
+const SHORTCUTS = [
+  ["Exercise page", [
+    [["Ctrl", "Enter"], "Check: compile, run the tests and grade (not while the cursor is in VS Code: press Alt+X first)"],
+    [["Alt", "Enter"], "Compile & run in the terminal"],
+    [["Alt", "X"], "Instructions panel: the keyboard goes back to this page (from VS Code, the terminal or a button)"],
+    [["Alt", "T"], "Terminal"],
+    [["Alt", "V"], "VS Code"]]],
+  ["Theory questions", [
+    [["Enter"], "Check the answer, then go to the next question"],
+    [["Ctrl", "Enter"], "The same inside the “predict the output” box (Enter is a new line there)"]]],
+  ["Anywhere", [
+    [["Esc"], "Close this window or an open menu"]]],
+];
+function initShortcuts() {
+  const btn = $("#shortcuts");
+  const close = () => { overlay.remove(); document.removeEventListener("keydown", onEsc, true); btn.focus(); };
+  const onEsc = (e) => { if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); close(); } };
+  let overlay;
+  const open = () => {
+    if (overlay && overlay.isConnected) return close();
+    const closeBtn = h("button", { class: "btn small", onclick: close }, "Close");
+    overlay = h("div", { class: "keys-overlay", onmousedown: (e) => { if (e.target === overlay) close(); } },
+      h("div", { class: "keys-box", role: "dialog", "aria-modal": "true", "aria-label": "Keyboard shortcuts" },
+        h("div", { class: "keys-head" }, h("h2", {}, "Keyboard shortcuts"), h("span", { class: "spacer" }), closeBtn),
+        h("table", { class: "keys-table" }, SHORTCUTS.map(([title, rows]) => [
+          h("tr", {}, h("th", { colspan: "2" }, title)),
+          rows.map(([keys, what]) => h("tr", {}, h("td", {}, keys.map((k, i) => [i ? " " : "", h("kbd", {}, k)])), h("td", {}, what)))])),
+        h("p", { class: "muted keys-note" }, "The Alt shortcuts also work while the cursor is inside VS Code or the terminal, which otherwise keep every key to themselves. On a Mac, Alt is the Option key.")));
+    document.body.append(overlay);
+    document.addEventListener("keydown", onEsc, true);
+    closeBtn.focus();
+  };
+  btn.addEventListener("click", open);
+}
+
 async function init() {
   initSettings();
+  initShortcuts();
   state.cfg = await api("config");
   window.addEventListener("hashchange", route);
   loadDaily().catch(() => {});   // no daily exercise (or the server is old): the indicator stays hidden

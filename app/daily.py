@@ -127,19 +127,50 @@ def recent_templates(root, day, tag):
     return seen
 
 
-def for_date(root, templates, tag, day):
+def parse_levels(text):
+    """The star levels of a comma separated list ("2,3") as a set of ints from 1 to 5; empty means all levels (None)."""
+    levels = {int(x) for x in str(text or "").split(",") if x.strip().isdigit() and 1 <= int(x) <= 5}
+    return levels or None
+
+
+def available_stars(templates, tag):
+    """The star levels the templates of a topic can produce (a few specs of each are built to see)."""
+    return sorted({generate(t, f"stars-{k}")["stars"] for t in templates if t["tag"] == tag for k in range(6)})
+
+
+def choose(root, templates, tag, day, levels=None):
+    """(template, spec) of a day. The template comes from the date, never one of the last RECENT days; with `levels` the first one
+    (in that same date-seeded order) whose exercise has one of those star levels, else the closest level."""
+    mine = [t for t in templates if t["tag"] == tag]
+    recent = recent_templates(root, day, tag)
+    pool = [t for t in mine if t["id"] not in recent] or mine
+    rng = random.Random("pick-" + day.isoformat())
+    first = rng.choice(pool)
+    others = [t for t in pool if t is not first]
+    rng.shuffle(others)
+    outside = [t for t in mine if t not in pool]
+    rng.shuffle(outside)
+    seed = "spec-" + day.isoformat()
+    best = None
+    for template in [first] + others + outside:
+        spec = generate(template, seed)
+        if not levels or spec["stars"] in levels:
+            return template, spec
+        gap = min(abs(spec["stars"] - n) for n in levels)
+        if best is None or gap < best[0]:
+            best = (gap, template, spec)
+    return best[1], best[2]
+
+
+def for_date(root, templates, tag, day, levels=None):
     """The exercise of a day, generated and written the first time it is asked for. `root` is the folder of daily exercises."""
     ex_id = daily_id(tag, day)
     d = Path(root) / ex_id
     if (d / "meta.json").exists():
         return load(d)
-    mine = [t for t in templates if t["tag"] == tag]
-    if not mine:
+    if not any(t["tag"] == tag for t in templates):
         return None
-    recent = recent_templates(root, day, tag)
-    pool = [t for t in mine if t["id"] not in recent] or mine
-    template = random.Random("pick-" + day.isoformat()).choice(pool)
-    spec = generate(template, "spec-" + day.isoformat())
+    template, spec = choose(root, templates, tag, day, levels)
     Path(root).mkdir(parents=True, exist_ok=True)
     tmp = Path(tempfile.mkdtemp(prefix=ex_id + ".", dir=root))
     try:
