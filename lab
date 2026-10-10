@@ -29,13 +29,17 @@ else USEROPT=(--user "$(id -u):$(id -g)"); MOUNT="$PWD:/lab"; fi
 mkdir -p .progress/home .progress/workspace
 
 have_image() { "$ENGINE" image inspect "$IMAGE" >/dev/null 2>&1; }
-build() { "$ENGINE" build -t "$IMAGE" -f container/Containerfile .; }
+# The image is labelled with a checksum of the Containerfile, so `web` can tell when it is older than the project (for example after `git pull`).
+sig() { cksum < container/Containerfile | cut -d' ' -f1; }
+image_sig() { "$ENGINE" image inspect -f '{{index .Config.Labels "c-cellar.containerfile"}}' "$IMAGE" 2>/dev/null || true; }
+build() { "$ENGINE" build --label "c-cellar.containerfile=$(sig)" -t "$IMAGE" -f container/Containerfile .; }
 stop() { "$ENGINE" rm -f "$NAME" >/dev/null 2>&1 || true; }
 
 case "${1:-help}" in
   build) build ;;
   web)
     have_image || build
+    if [ "$(image_sig)" != "$(sig)" ]; then echo "The lab image is older than this version of c-cellar: rebuilding it (a few minutes)."; build; fi
     stop
     "$ENGINE" run -d --name "$NAME" "${USEROPT[@]}" \
       -p "127.0.0.1:$PORT:8080" -p "127.0.0.1:$VPORT:8081" -p "127.0.0.1:$TPORT:8082" \
