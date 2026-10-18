@@ -1,0 +1,62 @@
+{
+ "cases": [
+  {
+   "stdin": "one two\nthree\n",
+   "stdout": "2 3 14\n"
+  },
+  {
+   "name": "-w",
+   "args": [
+    "-w"
+   ],
+   "stdin": "one two\nthree\n",
+   "stdout": "3\n"
+  },
+  {
+   "name": "-l",
+   "args": [
+    "-l"
+   ],
+   "stdin": "one two\nthree\n",
+   "stdout": "2\n"
+  },
+  {
+   "name": "-c",
+   "args": [
+    "-c"
+   ],
+   "stdin": "one two\nthree\n",
+   "stdout": "14\n"
+  },
+  {
+   "name": "empty input",
+   "stdin": "",
+   "stdout": "0 0 0\n"
+  },
+  {
+   "name": "no final newline",
+   "stdin": "a b c",
+   "stdout": "0 3 5\n"
+  },
+  {
+   "name": "blank lines and extra spaces",
+   "stdin": "  hello   world  \n\n\t tab\tseparated \n\n",
+   "stdout": "4 4 37\n"
+  },
+  {
+   "name": "only spaces",
+   "stdin": "   \n  \n",
+   "stdout": "2 0 7\n"
+  },
+  {
+   "name": "a bigger text",
+   "cmd": "seq 1 5000 | \"$BIN\"",
+   "stdout": "5000 5000 23893\n"
+  },
+  {
+   "name": "bad option",
+   "cmd": "\"$BIN\" -x </dev/null 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: mywc [-l|-w|-c]\nrc=2\n"
+  }
+ ]
+}

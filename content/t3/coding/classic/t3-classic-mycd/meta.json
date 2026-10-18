@@ -1,0 +1,14 @@
+{
+ "id": "t3-classic-mycd",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "classic",
+ "title": "mycd",
+ "stars": 3,
+ "order": 3,
+ "summary": "Change directory (absolute, relative or HOME) and print where you are.",
+ "hints": [
+  "`chdir(path)` returns -1 on failure; `getenv(\"HOME\")` returns NULL if the variable is not set.",
+  "Print the new directory with `getcwd(buf, sizeof(buf))`: it is the absolute path, even when you were given a relative one."
+ ]
+}

@@ -1,0 +1,94 @@
+{
+ "cases": [
+  {
+   "args": [
+    "-d:",
+    "-f2"
+   ],
+   "stdin": "ann:30:Madrid\nbob::Leon\n",
+   "stdout": "30\n\n"
+  },
+  {
+   "name": "first field",
+   "args": [
+    "-d,",
+    "-f1"
+   ],
+   "stdin": "a,b,c\n1,2,3\n",
+   "stdout": "a\n1\n"
+  },
+  {
+   "name": "last field",
+   "args": [
+    "-d,",
+    "-f3"
+   ],
+   "stdin": "a,b,c\n1,2,3\n",
+   "stdout": "c\n3\n"
+  },
+  {
+   "name": "options in the other order",
+   "args": [
+    "-f2",
+    "-d;"
+   ],
+   "stdin": "x;y;z\n",
+   "stdout": "y\n"
+  },
+  {
+   "name": "empty fields count",
+   "args": [
+    "-d,",
+    "-f3"
+   ],
+   "stdin": "a,,c\n,,\nx,y,\n",
+   "stdout": "c\n\n\n"
+  },
+  {
+   "name": "not enough fields",
+   "args": [
+    "-d,",
+    "-f4"
+   ],
+   "stdin": "a,b\nc,d,e,f\n",
+   "stdout": "\nf\n"
+  },
+  {
+   "name": "no delimiter: the whole line",
+   "args": [
+    "-d,",
+    "-f2"
+   ],
+   "stdin": "nothing here\na,b\n",
+   "stdout": "nothing here\nb\n"
+  },
+  {
+   "name": "space as delimiter",
+   "args": [
+    "-d ",
+    "-f2"
+   ],
+   "stdin": "one two three\n",
+   "stdout": "two\n"
+  },
+  {
+   "name": "passwd-like",
+   "args": [
+    "-d:",
+    "-f1"
+   ],
+   "stdin": "root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1::/:/usr/sbin/nologin\n",
+   "stdout": "root\ndaemon\n"
+  },
+  {
+   "name": "missing -f",
+   "cmd": "\"$BIN\" -d, </dev/null 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: mycut -dC -fN\nrc=2\n"
+  },
+  {
+   "name": "bad field number",
+   "cmd": "\"$BIN\" -d, -f0 </dev/null 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: mycut -dC -fN\nrc=2\n"
+  }
+ ]
+}

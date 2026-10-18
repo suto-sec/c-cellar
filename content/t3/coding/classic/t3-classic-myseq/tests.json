@@ -1,0 +1,82 @@
+{
+ "cases": [
+  {
+   "args": [
+    "3"
+   ],
+   "stdout": "1\n2\n3\n"
+  },
+  {
+   "args": [
+    "2",
+    "5"
+   ],
+   "stdout": "2\n3\n4\n5\n"
+  },
+  {
+   "args": [
+    "3",
+    "4",
+    "12"
+   ],
+   "stdout": "3\n7\n11\n"
+  },
+  {
+   "args": [
+    "5",
+    "-2",
+    "1"
+   ],
+   "stdout": "5\n3\n1\n"
+  },
+  {
+   "name": "negative numbers",
+   "args": [
+    "-3",
+    "2"
+   ],
+   "stdout": "-3\n-2\n-1\n0\n1\n2\n"
+  },
+  {
+   "name": "empty sequence",
+   "args": [
+    "5",
+    "1"
+   ],
+   "stdout": ""
+  },
+  {
+   "name": "wrong direction",
+   "args": [
+    "1",
+    "-1",
+    "5"
+   ],
+   "stdout": ""
+  },
+  {
+   "name": "a longer sequence",
+   "args": [
+    "1",
+    "7",
+    "1000"
+   ],
+   "stdout": "1\n8\n15\n22\n29\n36\n43\n50\n57\n64\n71\n78\n85\n92\n99\n106\n113\n120\n127\n134\n141\n148\n155\n162\n169\n176\n183\n190\n197\n204\n211\n218\n225\n232\n239\n246\n253\n260\n267\n274\n281\n288\n295\n302\n309\n316\n323\n330\n337\n344\n351\n358\n365\n372\n379\n386\n393\n400\n407\n414\n421\n428\n435\n442\n449\n456\n463\n470\n477\n484\n491\n498\n505\n512\n519\n526\n533\n540\n547\n554\n561\n568\n575\n582\n589\n596\n603\n610\n617\n624\n631\n638\n645\n652\n659\n666\n673\n680\n687\n694\n701\n708\n715\n722\n729\n736\n743\n750\n757\n764\n771\n778\n785\n792\n799\n806\n813\n820\n827\n834\n841\n848\n855\n862\n869\n876\n883\n890\n897\n904\n911\n918\n925\n932\n939\n946\n953\n960\n967\n974\n981\n988\n995\n"
+  },
+  {
+   "name": "increment 0",
+   "cmd": "\"$BIN\" 1 0 5 2>&1; echo \"rc=$?\"",
+   "stdout": "myseq: the increment cannot be 0\nrc=1\n"
+  },
+  {
+   "name": "no arguments",
+   "cmd": "\"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: myseq [FIRST [INCREMENT]] LAST\nrc=2\n"
+  },
+  {
+   "name": "four arguments",
+   "cmd": "\"$BIN\" 1 2 3 4 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: myseq [FIRST [INCREMENT]] LAST\nrc=2\n"
+  }
+ ]
+}

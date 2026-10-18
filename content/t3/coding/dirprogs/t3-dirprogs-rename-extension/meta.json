@@ -1,0 +1,14 @@
+{
+ "id": "t3-dirprogs-rename-extension",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "dirprogs",
+ "title": "Change the extension of many files",
+ "stars": 4,
+ "order": 6,
+ "summary": "rename every FILE.old of a directory to FILE.new, without destroying anything that is already there.",
+ "hints": [
+  "Collect the names to change first (a growing array) and rename afterwards: renaming while you are reading the directory can make `readdir` show you a file twice.",
+  "`access(newpath, F_OK) == 0` tells you that the target already exists: skip that file, report it, and finish with status 1."
+ ]
+}

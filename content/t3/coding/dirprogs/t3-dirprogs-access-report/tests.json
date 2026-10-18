@@ -1,0 +1,59 @@
+{
+ "cases": [
+  {
+   "args": [
+    "script.sh",
+    "notes.txt",
+    "nothing"
+   ],
+   "setup": "printf '#!/bin/sh\\n' > script.sh; chmod 755 script.sh; printf x > notes.txt; chmod 444 notes.txt",
+   "stdout": "script.sh: r w x\nnotes.txt: r - -\nnothing: missing\n"
+  },
+  {
+   "name": "a normal file",
+   "args": [
+    "f"
+   ],
+   "setup": "printf x > f; chmod 644 f",
+   "stdout": "f: r w -\n"
+  },
+  {
+   "name": "no permissions at all",
+   "args": [
+    "f"
+   ],
+   "setup": "printf x > f; chmod 000 f",
+   "stdout": "f: - - -\n"
+  },
+  {
+   "name": "write only",
+   "args": [
+    "f"
+   ],
+   "setup": "printf x > f; chmod 200 f",
+   "stdout": "f: - w -\n"
+  },
+  {
+   "name": "a directory",
+   "args": [
+    ".",
+    "d"
+   ],
+   "setup": "mkdir d; chmod 500 d",
+   "stdout": ".: r w x\nd: r - x\n"
+  },
+  {
+   "name": "missing paths",
+   "args": [
+    "a",
+    "b/c"
+   ],
+   "stdout": "a: missing\nb/c: missing\n"
+  },
+  {
+   "name": "no arguments",
+   "cmd": "\"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: perms PATH...\nrc=2\n"
+  }
+ ]
+}

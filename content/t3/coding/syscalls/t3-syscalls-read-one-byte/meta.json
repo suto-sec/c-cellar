@@ -1,0 +1,14 @@
+{
+ "id": "t3-syscalls-read-one-byte",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "syscalls",
+ "title": "Read one byte with read",
+ "stars": 2,
+ "order": 4,
+ "summary": "The system call read: one byte from a descriptor into a variable.",
+ "hints": [
+  "`read(fd, &c, 1)` returns 1 if it read a byte, 0 at the end of the file and -1 on error.",
+  "To print the byte use `printf(\"%c\", c)`."
+ ]
+}

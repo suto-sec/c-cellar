@@ -1,0 +1,14 @@
+{
+ "id": "t3-directories-print-names",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "directories",
+ "title": "Read the entries of a directory",
+ "stars": 2,
+ "order": 5,
+ "summary": "readdir in a loop: every call gives the next entry, NULL means no more.",
+ "hints": [
+  "`while ((e = readdir(d)) != NULL)` visits every entry once.",
+  "The name of the entry is `e->d_name`; print it with `puts` or `printf(\"%s\\n\", ...)`."
+ ]
+}

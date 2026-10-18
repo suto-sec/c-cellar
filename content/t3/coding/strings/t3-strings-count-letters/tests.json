@@ -1,0 +1,33 @@
+{
+ "cases": [
+  {
+   "stdin": "Hello, World 2024!\n",
+   "stdout": "letters: 10\n"
+  },
+  {
+   "name": "only digits",
+   "stdin": "12345\n",
+   "stdout": "letters: 0\n"
+  },
+  {
+   "name": "only letters",
+   "stdin": "abcXYZ\n",
+   "stdout": "letters: 6\n"
+  },
+  {
+   "name": "spaces and symbols",
+   "stdin": "a b-c_d.e\n",
+   "stdout": "letters: 5\n"
+  },
+  {
+   "name": "no final newline",
+   "stdin": "abc",
+   "stdout": "letters: 3\n"
+  },
+  {
+   "name": "empty input",
+   "stdin": "",
+   "stdout": "letters: 0\n"
+  }
+ ]
+}

@@ -114,6 +114,12 @@ function makeFilters(key, { levels = [], levelLabel = (n) => String(n), levelTit
   draw();
   return { f, el };
 }
+/** "Collapse all" / "Expand all" buttons for a page whose sections open and close (the coding chapters, the reference categories). */
+function bulkButtons(collapseAll, expandAll) {
+  return h("div", { class: "bulk" },
+    h("button", { class: "btn small", title: "Close every section", onclick: collapseAll }, "Collapse all"),
+    h("button", { class: "btn small", title: "Open every section", onclick: expandAll }, "Expand all"));
+}
 const uniqueSorted = (list) => [...new Set(list)].sort((a, b) => a - b);
 
 // ------------------------------------------------------------------ home
@@ -241,17 +247,46 @@ async function viewCodingList() {
   const holder = h("div", {});
   const pathHolder = h("div", {});
   const openState = new Map();
+  // quick navigation: the chapters on the page now (after the filters), each with its link in the sidebar
+  const side = h("nav", { class: "refnav chapnav", "aria-label": "Chapters" });
+  let listed = [];   // { key, det, link } in page order
+  const markActive = (key) => {
+    for (const c of listed) c.link.classList.toggle("on", c.key === key);
+    const on = listed.find((c) => c.key === key);
+    if (!on) return;
+    const top = on.link.offsetTop, bottom = top + on.link.offsetHeight;   // keep the active link inside the sidebar's own scroll
+    if (top < side.scrollTop) side.scrollTop = top - 30; else if (bottom > side.scrollTop + side.clientHeight) side.scrollTop = bottom - side.clientHeight + 10;
+  };
+  let holdSpy = 0;   // a click on a link: the scrolling it causes must not move the highlight to a neighbour (the last chapters cannot reach the top)
+  const goTo = (c) => { openState.set(c.key, true); c.det.open = true; holdSpy = Date.now() + 900; c.det.scrollIntoView({ block: "start", behavior: "smooth" }); markActive(c.key); };
+  const setAll = (open) => listed.forEach((c) => { openState.set(c.key, open); c.det.open = open; });
+  const bulk = bulkButtons(() => setAll(false), () => setAll(true));
+  let spy = 0;
+  const onScroll = () => {   // the active chapter is the last one whose top has passed the top of the page
+    cancelAnimationFrame(spy);
+    spy = requestAnimationFrame(() => {
+      if (!listed.length || Date.now() < holdSpy) return;
+      const limit = app.getBoundingClientRect().top + 90;
+      let cur = listed[0];
+      for (const c of listed) if (c.det.getBoundingClientRect().top <= limit) cur = c;
+      markActive(cur.key);
+    });
+  };
   const wanted = state.query.get("chapter");   // a link from a theory set or question: show that chapter, whatever the filters were
   if (wanted) { localStorage.removeItem(FILTER_KEYS.coding); openState.set(wanted, true); }
-  const bar = makeFilters(FILTER_KEYS.coding, { levels: uniqueSorted(idx.coding.map((c) => c.stars)), levelLabel: (n) => "★".repeat(n), levelTitle: (n) => n + (n === 1 ? " star" : " stars"), done: true, onChange: () => render() });
+  const bar = makeFilters(FILTER_KEYS.coding, { levels: uniqueSorted(idx.coding.map((c) => c.stars)), levelLabel: (n) => "★".repeat(n), levelTitle: (n) => n + (n === 1 ? " star" : " stars"), done: true, onChange: () => changed() });
   const filters = bar.f;
+  const isNarrowed = () => search.value || filters.levels.length || filters.hideDone;
+  const changed = () => { if (isNarrowed()) openState.clear(); render(); };   // a search or filter starts with its chapters open
 
   const render = () => {
     const m = codingModel(idx, filters.tags);
     const q = search.value.toLowerCase();
-    const narrowed = q || filters.levels.length || filters.hideDone;
+    const narrowed = isNarrowed();
+    listed = [];
     const keep = (c, i) => (!filters.levels.length || filters.levels.includes(i.stars)) && !(filters.hideDone && i.status === "passed") && (!q || (i.title + " " + c.title + " " + i.summary).toLowerCase().includes(q));
     let shown = 0;
+    const navGroups = [];
     holder.replaceChildren(...TRACKS.map(([key, title, blurb]) => {
       const chs = m.chapters.filter((c) => c.track === key);
       if (!chs.length) return null;
@@ -261,30 +296,42 @@ async function viewCodingList() {
         shown += rows.length;
         const done = c.items.filter((i) => i.status === "passed").length;
         const isNext = m.next && c.items.includes(m.next);
-        const det = h("details", { class: "chapter", "data-key": c.key, open: narrowed ? true : openState.has(c.key) ? openState.get(c.key) : isNext || done === 0 && c === chs[0] },
+        const det = h("details", { class: "chapter", "data-key": c.key, open: openState.has(c.key) ? openState.get(c.key) : narrowed ? true : isNext || done === 0 && c === chs[0] },
           h("summary", {}, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted csub" }, c.blurb), narrowed ? h("span", { class: "muted", style: "font-size:13px" }, `${rows.length} shown`) : null, h("span", { class: "cprog" }, `${done}/${c.items.length}`),
             h("span", { class: "bar", style: "width:70px" }, h("span", { style: `width:${(done / c.items.length) * 100}%` }))),
           h("div", { class: "list" }, rows.map((i) => h("a", { class: "row", href: "#/coding/" + i.id },
             h("span", { class: "st " + i.status, title: STATUS[i.status][1] }, STATUS[i.status][0]),
             h("div", { class: "main" }, h("div", { class: "title" }, i.title), h("div", { class: "sub" }, i.summary)), h("span", { class: "tag", title: "Course topic " + T(i.tag) }, T(i.tag)), stars(i.stars)))));
         det.addEventListener("toggle", () => openState.set(c.key, det.open));
+        const link = h("button", { class: "reflink chaplink", title: c.title + ": " + c.blurb, onclick: () => goTo(entry) }, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted" }, `${done}/${c.items.length}`));
+        const entry = { key: c.key, det, link };
+        listed.push(entry);
         return det;
       });
       if (!sections.some(Boolean)) return null;   // nothing of this track matches the filters
+      navGroups.push(h("h4", {}, title), ...listed.filter((e) => chs.some((c) => c.key === e.key)).map((e) => e.link));
       const inTrack = chs.flatMap((c) => c.items);
       return h("section", {}, h("h2", {}, title, " ", h("span", { class: "muted" }, `${inTrack.filter((i) => i.status === "passed").length}/${inTrack.length}`)),
         h("p", { class: "muted", style: "margin:-6px 0 10px" }, blurb), sections);
     }));
     if (!shown) holder.append(h("p", { class: "muted" }, filters.hideDone ? "No exercise matches these filters (the completed ones are hidden)." : "No exercise matches these filters."));
+    side.replaceChildren(...navGroups);
+    bulk.hidden = !listed.length;
+    side.hidden = !listed.length;
+    if (listed.length) markActive(listed[0].key);
+    onScroll();
     pathHolder.replaceChildren(m.order.length ? h("div", { class: "panel", style: "display:flex;gap:14px;align-items:center;flex-wrap:wrap" },
       h("div", { style: "flex:1;min-width:220px" }, h("b", {}, "Suggested path"), h("div", { class: "muted", style: "font-size:13px" }, `${m.passed} of ${m.items.length} passed. The path mixes the chapters so the difficulty climbs gradually.`),
         h("div", { class: "bar", style: "margin-top:6px" }, h("span", { style: `width:${(m.passed / m.items.length) * 100}%` }))),
       m.next ? h("a", { class: "btn primary", href: "#/coding/" + m.next.id }, (m.passed ? "Continue: " : "Start: ") + m.next.title) : h("b", {}, "Everything passed ✔")) : null);
   };
-  search.addEventListener("input", render);
+  search.addEventListener("input", changed);
   render();
   setTimeout(() => { const t = wanted && document.querySelector(`details.chapter[data-key="${wanted}"]`); if (t) t.scrollIntoView({ block: "start" }); }, 0);
-  mount(page(h("h1", {}, "Coding exercises"), h("p", { class: "lead" }, "Write your solution in VS Code (the terminal is next to it) beside the statement and press Check. Use Hint if you are stuck, and Answer as a last resort."), pathHolder, bar.el, h("div", { class: "tools" }, search), holder));
+  mount(h("div", { class: "refwrap codewrap" }, h("aside", { class: "refside" }, bulk, side),
+    h("div", { class: "refpane codemain" }, h("h1", {}, "Coding exercises"), h("p", { class: "lead" }, "Write your solution in VS Code (the terminal is next to it) beside the statement and press Check. Use Hint if you are stuck, and Answer as a last resort."), pathHolder, bar.el, h("div", { class: "tools" }, search), holder)));
+  app.addEventListener("scroll", onScroll, { passive: true });   // (after mount, which runs the previous page's cleanup)
+  state.cleanup = () => { app.removeEventListener("scroll", onScroll); cancelAnimationFrame(spy); };
 }
 
 // ------------------------------------------------------------------ dock: statement, terminal and VS Code on the exercise screen
@@ -1051,6 +1098,7 @@ async function viewReference(focusId) {
   recompute();
   const search = h("input", { type: "search", placeholder: "Search a function or command: printf, open, dup2…", autofocus: true, autocomplete: "off", spellcheck: false });
   const nav = h("nav", { class: "refnav" });
+  const bulk = bulkButtons(() => { cats.forEach((c) => collapsed.add(c)); saveCollapsed(); drawNav(); }, () => { collapsed.clear(); saveCollapsed(); drawNav(); });
   const pane = h("div", { class: "refpane" });
   let current = null, results = [], query = "";
 
@@ -1083,6 +1131,7 @@ async function viewReference(focusId) {
     return sec;
   };
   const drawNav = () => {
+    bulk.hidden = !!query || !!category;   // search results and a single category have no sections to close
     if (query) nav.replaceChildren(...(results.length ? results.map((e) => link(e, true)) : [h("p", { class: "muted", style: "padding:6px 10px" }, "No entry matches.")]));
     else nav.replaceChildren(...(category ? [h("button", { class: "linkbtn back", onclick: () => setCategory(null) }, "← All categories")] : []), ...cats.filter((c) => !category || c === category).map((c) => catSection(c, all.filter((e) => e.category === c).sort(byTitle))));
   };
@@ -1133,7 +1182,7 @@ async function viewReference(focusId) {
   };
   current = focusId && byId.has(focusId) ? focusId : null;
   drawNav();
-  mount(h("div", { class: "refwrap" }, h("aside", { class: "refside" }, bar.el, search, nav), pane));
+  mount(h("div", { class: "refwrap" }, h("aside", { class: "refside" }, bar.el, search, bulk, nav), pane));
   state.cleanup = () => { state.refSelect = null; };
   show();
   search.focus();

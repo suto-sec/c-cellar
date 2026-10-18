@@ -1,0 +1,85 @@
+{
+ "cases": [
+  {
+   "args": [
+    "lo",
+    "01"
+   ],
+   "stdin": "hello world\n",
+   "stdout": "he001 w1r0d\n"
+  },
+  {
+   "name": "-d",
+   "args": [
+    "-d",
+    "lo"
+   ],
+   "stdin": "hello world\n",
+   "stdout": "he wrd\n"
+  },
+  {
+   "name": "swap two letters",
+   "args": [
+    "ab",
+    "ba"
+   ],
+   "stdin": "abracadabra\n",
+   "stdout": "barbcbdbarb\n"
+  },
+  {
+   "name": "spaces",
+   "args": [
+    " ",
+    "_"
+   ],
+   "stdin": "a b  c d\n",
+   "stdout": "a_b__c_d\n"
+  },
+  {
+   "name": "a character that is not in FROM stays",
+   "args": [
+    "xyz",
+    "XYZ"
+   ],
+   "stdin": "no change here\n",
+   "stdout": "no change here\n"
+  },
+  {
+   "name": "newlines can be deleted",
+   "args": [
+    "-d",
+    "\n"
+   ],
+   "stdin": "a\nb\nc\n",
+   "stdout": "abc"
+  },
+  {
+   "name": "several lines",
+   "args": [
+    "aeiou",
+    "AEIOU"
+   ],
+   "stdin": "the quick\nbrown fox\n",
+   "stdout": "thE qUIck\nbrOwn fOx\n"
+  },
+  {
+   "name": "-d with nothing to delete",
+   "args": [
+    "-d",
+    "q"
+   ],
+   "stdin": "abc\n",
+   "stdout": "abc\n"
+  },
+  {
+   "name": "different lengths",
+   "cmd": "\"$BIN\" abc de </dev/null 2>&1; echo \"rc=$?\"",
+   "stdout": "mytr: FROM and TO must have the same length\nrc=2\n"
+  },
+  {
+   "name": "wrong usage",
+   "cmd": "\"$BIN\" abc </dev/null 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: mytr FROM TO | mytr -d SET\nrc=2\n"
+  }
+ ]
+}

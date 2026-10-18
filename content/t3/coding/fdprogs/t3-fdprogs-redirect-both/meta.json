@@ -1,0 +1,14 @@
+{
+ "id": "t3-fdprogs-redirect-both",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "fdprogs",
+ "title": "Redirect stdout and stderr",
+ "stars": 4,
+ "order": 6,
+ "summary": "dup2 inside the program: the equivalent of `> FILE 2>&1`, and the buffering trap that comes with it.",
+ "hints": [
+  "Order matters: print the first line and `fflush(stdout)` **before** `dup2`, otherwise the buffered text is written later, into the file.",
+  "Make the redirection with one `open(FILE, O_WRONLY | O_CREAT | O_TRUNC, 0644)` and two `dup2` calls (onto 1 and onto 2), then `close` the extra descriptor. After redirecting, `fflush(stdout)` after each `printf` keeps the lines in the order you printed them (`stderr` is not buffered)."
+ ]
+}

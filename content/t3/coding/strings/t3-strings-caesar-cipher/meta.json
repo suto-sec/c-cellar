@@ -5,7 +5,7 @@
  "topic": "strings",
  "title": "Caesar cipher",
  "stars": 3,
- "order": 9,
+ "order": 13,
  "summary": "Arithmetic on characters.",
  "hints": [
   "For a lower-case letter, `(c - 'a' + k) % 26` is its new position in the alphabet; add `'a'` back.",

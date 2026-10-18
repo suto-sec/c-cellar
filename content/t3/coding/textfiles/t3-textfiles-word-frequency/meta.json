@@ -1,0 +1,14 @@
+{
+ "id": "t3-textfiles-word-frequency",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "textfiles",
+ "title": "How many times each word",
+ "stars": 4,
+ "order": 6,
+ "summary": "Count each distinct word, listing them in the order they first appear.",
+ "hints": [
+  "Keep an array of `struct { char word[64]; int count; }` that grows with `realloc`; for each word read, search the array linearly with `strcmp`.",
+  "If it is found add 1, otherwise append a new entry with count 1. Printing in array order is the order of first appearance."
+ ]
+}

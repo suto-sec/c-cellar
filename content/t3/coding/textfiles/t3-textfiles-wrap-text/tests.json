@@ -1,0 +1,94 @@
+{
+ "cases": [
+  {
+   "name": "the example",
+   "args": [
+    "15"
+   ],
+   "stdin": "the quick brown fox jumps over the lazy dog\n",
+   "stdout": "the quick brown\nfox jumps over\nthe lazy dog\n"
+  },
+  {
+   "name": "width 10",
+   "args": [
+    "10"
+   ],
+   "stdin": "the quick brown fox jumps over the lazy dog\n",
+   "stdout": "the quick\nbrown fox\njumps over\nthe lazy\ndog\n"
+  },
+  {
+   "name": "a word exactly as long as the width",
+   "args": [
+    "4"
+   ],
+   "stdin": "ab cdef ghij kl\n",
+   "stdout": "ab\ncdef\nghij\nkl\n"
+  },
+  {
+   "name": "a word longer than the width",
+   "args": [
+    "5"
+   ],
+   "stdin": "a verylongword b c\n",
+   "stdout": "a\nverylongword\nb c\n"
+  },
+  {
+   "name": "the input line breaks do not matter",
+   "args": [
+    "12"
+   ],
+   "stdin": "one\ntwo\n\n\nthree four\n  five\n",
+   "stdout": "one two\nthree four\nfive\n"
+  },
+  {
+   "name": "width 1",
+   "args": [
+    "1"
+   ],
+   "stdin": "a b c\n",
+   "stdout": "a\nb\nc\n"
+  },
+  {
+   "name": "a huge width",
+   "args": [
+    "1000"
+   ],
+   "stdin": "a b c d e f g\n",
+   "stdout": "a b c d e f g\n"
+  },
+  {
+   "name": "empty input",
+   "args": [
+    "20"
+   ],
+   "stdin": "",
+   "stdout": ""
+  },
+  {
+   "name": "only blanks",
+   "args": [
+    "20"
+   ],
+   "stdin": "   \n\n",
+   "stdout": ""
+  },
+  {
+   "name": "a long text",
+   "args": [
+    "30"
+   ],
+   "cmd": "seq 1 300 | \"$BIN\" 30 | awk '{ if (length($0) > 30) bad++; n++ } END { print n, bad + 0 }'",
+   "stdout": "39 0\n"
+  },
+  {
+   "name": "bad width",
+   "cmd": "\"$BIN\" 0 </dev/null 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: wrap WIDTH\nrc=2\n"
+  },
+  {
+   "name": "no arguments",
+   "cmd": "\"$BIN\" </dev/null 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: wrap WIDTH\nrc=2\n"
+  }
+ ]
+}

@@ -1,0 +1,84 @@
+{
+ "cases": [
+  {
+   "args": [
+    "a",
+    "b"
+   ],
+   "exit": 1,
+   "setup": "printf 'abc\\ndef\\n' > a; printf 'abc\\ndxf\\n' > b",
+   "stdout": "a b differ: byte 6, line 2\n"
+  },
+  {
+   "name": "identical files",
+   "cmd": "\"$BIN\" a b; echo \"rc=$?\"",
+   "setup": "printf 'same\\ntext\\n' > a; cp a b",
+   "stdout": "rc=0\n"
+  },
+  {
+   "name": "two empty files",
+   "cmd": "\"$BIN\" a b; echo \"rc=$?\"",
+   "setup": ": > a; : > b",
+   "stdout": "rc=0\n"
+  },
+  {
+   "name": "differ at the first byte",
+   "cmd": "\"$BIN\" a b; echo \"rc=$?\"",
+   "setup": "printf 'x' > a; printf 'y' > b",
+   "stdout": "a b differ: byte 1, line 1\nrc=1\n"
+  },
+  {
+   "name": "differ in the newline",
+   "cmd": "\"$BIN\" a b; echo \"rc=$?\"",
+   "setup": "printf 'ab\\ncd\\n' > a; printf 'ab cd\\n' > b",
+   "stdout": "a b differ: byte 3, line 1\nrc=1\n"
+  },
+  {
+   "name": "the first file is a prefix",
+   "cmd": "\"$BIN\" a b 2>&1; echo \"rc=$?\"",
+   "setup": "printf 'one\\ntw' > a; printf 'one\\ntwo\\n' > b",
+   "stdout": "mycmp: EOF on a after byte 6, line 2\nrc=1\n"
+  },
+  {
+   "name": "the second file is a prefix",
+   "cmd": "\"$BIN\" a b 2>&1; echo \"rc=$?\"",
+   "setup": "printf 'one\\n' > a; printf 'one\\ntwo\\n' > b",
+   "stdout": "mycmp: EOF on a after byte 4, line 2\nrc=1\n"
+  },
+  {
+   "name": "one of them empty",
+   "cmd": "\"$BIN\" a b 2>&1; echo \"rc=$?\"",
+   "setup": ": > a; printf 'x' > b",
+   "stdout": "mycmp: EOF on a after byte 0, line 1\nrc=1\n"
+  },
+  {
+   "name": "bytes that are 0 or above 127",
+   "cmd": "\"$BIN\" a b; echo \"rc=$?\"",
+   "setup": "printf 'a\\0b\\377' > a; printf 'a\\0c\\377' > b",
+   "stdout": "a b differ: byte 3, line 1\nrc=1\n"
+  },
+  {
+   "name": "a 0 byte is not the end",
+   "cmd": "\"$BIN\" a b; echo \"rc=$?\"",
+   "setup": "printf '\\0\\0\\0x' > a; printf '\\0\\0\\0y' > b",
+   "stdout": "a b differ: byte 4, line 1\nrc=1\n"
+  },
+  {
+   "name": "a long file",
+   "cmd": "\"$BIN\" a b; echo \"rc=$?\"",
+   "setup": "seq 1 20000 > a; seq 1 20001 > b; sed -i 's/^15000$/15O00/' b",
+   "stdout": "a b differ: byte 78891, line 15000\nrc=1\n"
+  },
+  {
+   "name": "missing file",
+   "cmd": "\"$BIN\" a nope 2>&1; echo \"rc=$?\"",
+   "setup": "printf 'x' > a",
+   "stdout": "mycmp: nope: No such file or directory\nrc=2\n"
+  },
+  {
+   "name": "one argument",
+   "cmd": "\"$BIN\" a 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: mycmp FILE1 FILE2\nrc=2\n"
+  }
+ ]
+}

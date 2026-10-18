@@ -1,0 +1,14 @@
+{
+ "id": "t3-fdprogs-lowest-descriptor",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "fdprogs",
+ "title": "Which descriptor?",
+ "stars": 3,
+ "order": 1,
+ "summary": "open, close, dup and dup2: always the lowest free number, or the one you ask for.",
+ "hints": [
+  "Descriptors 0, 1 and 2 are already taken, so the first `open` returns 3. After `close(a)` that number is free again and the next call that needs a descriptor gets it.",
+  "`dup2(b, 10)` returns `10` (the one you asked for); the following `open` then takes the lowest free number, which is still below 10."
+ ]
+}

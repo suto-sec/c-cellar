@@ -5,7 +5,7 @@
  "topic": "stdio",
  "title": "Count the lines of a file",
  "stars": 2,
- "order": 3,
+ "order": 5,
  "summary": "fgetc until EOF.",
  "hints": [
   "`fgetc(f)` returns one character at a time, or `EOF` at the end; keep it in an `int`.",

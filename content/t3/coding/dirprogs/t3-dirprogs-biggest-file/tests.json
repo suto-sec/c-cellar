@@ -1,0 +1,67 @@
+{
+ "cases": [
+  {
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir -p d/sub/deep d/empty d/.hid d/sub/more/inner; printf hello > d/a.txt; printf x > d/sub/b.txt; head -c 1000 /dev/zero > d/sub/deep/big.bin; : > d/.hid/note; printf 'twelve bytes' > d/sub/more/a.txt; : > d/zero",
+   "stdout": "d/sub/deep/big.bin 1000\n"
+  },
+  {
+   "name": "a tie: the smaller path wins",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir -p d/b d/a; printf 12345 > d/b/x; printf 12345 > d/a/z; printf 1 > d/c",
+   "stdout": "d/a/z 5\n"
+  },
+  {
+   "name": "in the top directory",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir -p d/s; printf 123456789 > d/top; printf 12 > d/s/f",
+   "stdout": "d/top 9\n"
+  },
+  {
+   "name": "a hidden file",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d; printf 123 > d/.big; printf 1 > d/small",
+   "stdout": "d/.big 3\n"
+  },
+  {
+   "name": "only empty files",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d; : > d/b; : > d/a",
+   "stdout": "d/a 0\n"
+  },
+  {
+   "name": "a big file",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir -p d/x; head -c 5000000 /dev/zero > d/x/big; head -c 4999999 /dev/zero > d/other",
+   "stdout": "d/x/big 5000000\n"
+  },
+  {
+   "name": "directories alone: no files",
+   "cmd": "\"$BIN\" d 2>&1; echo \"rc=$?\"",
+   "setup": "mkdir -p d/a/b d/c",
+   "stdout": "biggest: no files in d\nrc=1\n"
+  },
+  {
+   "name": "missing directory",
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "biggest: nope: No such file or directory\nrc=1\n"
+  },
+  {
+   "name": "no arguments",
+   "cmd": "\"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: biggest DIR\nrc=2\n"
+  }
+ ]
+}

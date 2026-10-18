@@ -1,0 +1,14 @@
+{
+ "id": "t3-fdprogs-last-bytes",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "fdprogs",
+ "title": "The last bytes of a file",
+ "stars": 3,
+ "order": 2,
+ "summary": "tail -c with lseek: jump near the end and copy from there with read and write.",
+ "hints": [
+  "`lseek(fd, 0, SEEK_END)` returns the size of the file. The place to start is `size - n`, or 0 if the file is smaller than `n`.",
+  "Then `lseek(fd, start, SEEK_SET)` and a `read`/`write` loop with a buffer, until `read` returns 0. The file may contain 0 bytes: never use `printf` or string functions."
+ ]
+}

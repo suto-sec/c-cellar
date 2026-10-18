@@ -5,7 +5,7 @@
  "topic": "stdio",
  "title": "A tiny rm",
  "stars": 2,
- "order": 6,
+ "order": 10,
  "summary": "remove().",
  "hints": [
   "`remove(path)` deletes a file (and also an empty folder); it returns 0 on success.",

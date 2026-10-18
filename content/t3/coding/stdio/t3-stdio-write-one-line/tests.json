@@ -1,0 +1,25 @@
+{
+ "cases": [
+  {
+   "name": "the file has the line",
+   "cmd": "\"$BIN\"; cat hello.txt",
+   "stdout": "Hello, file!\n"
+  },
+  {
+   "name": "nothing is printed on the screen",
+   "cmd": "\"$BIN\"",
+   "stdout": ""
+  },
+  {
+   "name": "an old file is replaced",
+   "cmd": "\"$BIN\"; cat hello.txt",
+   "setup": "printf 'old old old old old old old\\nsecond old line\\n' > hello.txt",
+   "stdout": "Hello, file!\n"
+  },
+  {
+   "name": "exactly one line",
+   "cmd": "\"$BIN\"; wc -l < hello.txt",
+   "stdout": "1\n"
+  }
+ ]
+}

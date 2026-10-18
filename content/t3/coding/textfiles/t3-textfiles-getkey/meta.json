@@ -1,0 +1,14 @@
+{
+ "id": "t3-textfiles-getkey",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "textfiles",
+ "title": "Read a setting",
+ "stars": 3,
+ "order": 1,
+ "summary": "A KEY=VALUE configuration file: print the value of one key.",
+ "hints": [
+  "Read the file with `fgets`, drop the `'\\n'`, and for each line compare the start with `strncmp(line, key, klen)`; then `line[klen]` must be `'='`.",
+  "The value is everything after the first `=`, so `line + klen + 1` (it can contain more `=` signs or be empty)."
+ ]
+}

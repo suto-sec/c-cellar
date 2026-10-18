@@ -5,7 +5,7 @@
  "topic": "stdio",
  "title": "A counter in a text file",
  "stars": 3,
- "order": 12,
+ "order": 19,
  "summary": "fopen mode \"r+\": read and write the same file.",
  "hints": [
   "`fopen(name, \"r+\")` opens an existing file for reading and writing; it fails if the file does not exist.",

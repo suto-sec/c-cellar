@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-first-line-length",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Where am I in the file?",
+ "stars": 2,
+ "order": 13,
+ "summary": "Read a line character by character and ask the stream how far it has read with ftell.",
+ "hints": [
+  "Loop with `fgetc` until you read `'\\n'` (or `EOF`), then call `ftell(f)`.",
+  "`ftell` counts the bytes from the start of the file, including the newline you just read."
+ ]
+}

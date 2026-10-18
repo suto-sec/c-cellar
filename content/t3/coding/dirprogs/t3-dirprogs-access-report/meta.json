@@ -1,0 +1,14 @@
+{
+ "id": "t3-dirprogs-access-report",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "dirprogs",
+ "title": "Permission report",
+ "stars": 3,
+ "order": 1,
+ "summary": "access(2) with R_OK, W_OK and X_OK: what can I do with each path?",
+ "hints": [
+  "`access(path, F_OK)` tells whether the path exists at all; then ask `R_OK`, `W_OK` and `X_OK` separately: each returns 0 when allowed.",
+  "Print one letter or a dash for each, with single spaces between them."
+ ]
+}

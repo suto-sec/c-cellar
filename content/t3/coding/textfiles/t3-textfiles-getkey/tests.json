@@ -1,0 +1,74 @@
+{
+ "cases": [
+  {
+   "name": "key port",
+   "cmd": "\"$BIN\" conf.txt port 2>&1; echo \"rc=$?\"",
+   "setup": "printf %s '# server settings\nhost=localhost\nport=8080\n\nname = spaced\npath=/usr/bin:/bin\nformula=a=b+c\nhost=second\nempty=\n#commented=no\n' > conf.txt",
+   "stdout": "8080\nrc=0\n"
+  },
+  {
+   "name": "key host",
+   "cmd": "\"$BIN\" conf.txt host 2>&1; echo \"rc=$?\"",
+   "setup": "printf %s '# server settings\nhost=localhost\nport=8080\n\nname = spaced\npath=/usr/bin:/bin\nformula=a=b+c\nhost=second\nempty=\n#commented=no\n' > conf.txt",
+   "stdout": "localhost\nrc=0\n"
+  },
+  {
+   "name": "key path",
+   "cmd": "\"$BIN\" conf.txt path 2>&1; echo \"rc=$?\"",
+   "setup": "printf %s '# server settings\nhost=localhost\nport=8080\n\nname = spaced\npath=/usr/bin:/bin\nformula=a=b+c\nhost=second\nempty=\n#commented=no\n' > conf.txt",
+   "stdout": "/usr/bin:/bin\nrc=0\n"
+  },
+  {
+   "name": "key formula",
+   "cmd": "\"$BIN\" conf.txt formula 2>&1; echo \"rc=$?\"",
+   "setup": "printf %s '# server settings\nhost=localhost\nport=8080\n\nname = spaced\npath=/usr/bin:/bin\nformula=a=b+c\nhost=second\nempty=\n#commented=no\n' > conf.txt",
+   "stdout": "a=b+c\nrc=0\n"
+  },
+  {
+   "name": "key empty",
+   "cmd": "\"$BIN\" conf.txt empty 2>&1; echo \"rc=$?\"",
+   "setup": "printf %s '# server settings\nhost=localhost\nport=8080\n\nname = spaced\npath=/usr/bin:/bin\nformula=a=b+c\nhost=second\nempty=\n#commented=no\n' > conf.txt",
+   "stdout": "\nrc=0\n"
+  },
+  {
+   "name": "key missing",
+   "cmd": "\"$BIN\" conf.txt missing 2>&1; echo \"rc=$?\"",
+   "setup": "printf %s '# server settings\nhost=localhost\nport=8080\n\nname = spaced\npath=/usr/bin:/bin\nformula=a=b+c\nhost=second\nempty=\n#commented=no\n' > conf.txt",
+   "stdout": "getkey: missing: not found\nrc=1\n"
+  },
+  {
+   "name": "key hos",
+   "cmd": "\"$BIN\" conf.txt hos 2>&1; echo \"rc=$?\"",
+   "setup": "printf %s '# server settings\nhost=localhost\nport=8080\n\nname = spaced\npath=/usr/bin:/bin\nformula=a=b+c\nhost=second\nempty=\n#commented=no\n' > conf.txt",
+   "stdout": "getkey: hos: not found\nrc=1\n"
+  },
+  {
+   "name": "key commented",
+   "cmd": "\"$BIN\" conf.txt commented 2>&1; echo \"rc=$?\"",
+   "setup": "printf %s '# server settings\nhost=localhost\nport=8080\n\nname = spaced\npath=/usr/bin:/bin\nformula=a=b+c\nhost=second\nempty=\n#commented=no\n' > conf.txt",
+   "stdout": "getkey: commented: not found\nrc=1\n"
+  },
+  {
+   "name": "key name",
+   "cmd": "\"$BIN\" conf.txt name 2>&1; echo \"rc=$?\"",
+   "setup": "printf %s '# server settings\nhost=localhost\nport=8080\n\nname = spaced\npath=/usr/bin:/bin\nformula=a=b+c\nhost=second\nempty=\n#commented=no\n' > conf.txt",
+   "stdout": "getkey: name: not found\nrc=1\n"
+  },
+  {
+   "name": "the key with a space",
+   "cmd": "\"$BIN\" conf.txt 'name ' 2>&1; echo \"rc=$?\"",
+   "setup": "printf %s '# server settings\nhost=localhost\nport=8080\n\nname = spaced\npath=/usr/bin:/bin\nformula=a=b+c\nhost=second\nempty=\n#commented=no\n' > conf.txt",
+   "stdout": " spaced\nrc=0\n"
+  },
+  {
+   "name": "no such file",
+   "cmd": "\"$BIN\" nope.txt x 2>&1; echo \"rc=$?\"",
+   "stdout": "getkey: nope.txt: No such file or directory\nrc=2\n"
+  },
+  {
+   "name": "one argument",
+   "cmd": "\"$BIN\" conf.txt 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: getkey FILE KEY\nrc=2\n"
+  }
+ ]
+}

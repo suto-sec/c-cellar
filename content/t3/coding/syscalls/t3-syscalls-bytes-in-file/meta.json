@@ -5,7 +5,7 @@
  "topic": "syscalls",
  "title": "Size with lseek",
  "stars": 2,
- "order": 2,
+ "order": 3,
  "summary": "open, lseek, close.",
  "hints": [
   "`lseek(fd, 0, SEEK_END)` returns the new position, which is the size of the file.",

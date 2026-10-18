@@ -1,0 +1,78 @@
+{
+ "cases": [
+  {
+   "name": "the example",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf %s 'hELLO wORLD, it'\"'\"'s me\n' > f.txt",
+   "stdout": "Hello World, It'S Me\n"
+  },
+  {
+   "name": "already capitalized",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf %s 'Hello World\n' > f.txt",
+   "stdout": "Hello World\n"
+  },
+  {
+   "name": "several lines and blank lines",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf %s 'one two\n\nTHREE four\n' > f.txt",
+   "stdout": "One Two\n\nThree Four\n"
+  },
+  {
+   "name": "digits end a word",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf %s 'a1b c2d 3e\n' > f.txt",
+   "stdout": "A1B C2D 3E\n"
+  },
+  {
+   "name": "no final newline",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf %s 'last line' > f.txt",
+   "stdout": "Last Line"
+  },
+  {
+   "name": "empty file",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf %s '' > f.txt",
+   "stdout": ""
+  },
+  {
+   "name": "punctuation",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf %s '...hello,world;foo-bar!\n' > f.txt",
+   "stdout": "...Hello,World;Foo-Bar!\n"
+  },
+  {
+   "name": "tabs and spaces are kept",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf %s 'a\tb  c\n' > f.txt",
+   "stdout": "A\tB  C\n"
+  },
+  {
+   "name": "missing file",
+   "cmd": "\"$BIN\" nope.txt 2>&1; echo \"rc=$?\"",
+   "stdout": "capitalize: nope.txt: No such file or directory\nrc=1\n"
+  },
+  {
+   "name": "no arguments",
+   "cmd": "\"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: capitalize FILE\nrc=2\n"
+  }
+ ]
+}

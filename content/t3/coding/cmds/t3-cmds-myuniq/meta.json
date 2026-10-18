@@ -1,0 +1,14 @@
+{
+ "id": "t3-cmds-myuniq",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "cmds",
+ "title": "myuniq",
+ "stars": 4,
+ "order": 7,
+ "summary": "uniq(1): collapse adjacent equal lines, optionally with the number of repetitions (-c).",
+ "hints": [
+  "You only need the **previous line**: compare each new line with it using `strcmp`, and print the previous one (with its count) when a different line arrives.",
+  "Do not forget the last group after the loop. `printf(\"%7d %s\", count, line)` gives the `-c` format."
+ ]
+}

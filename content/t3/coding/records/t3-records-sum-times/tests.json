@@ -1,0 +1,54 @@
+{
+ "cases": [
+  {
+   "name": "the example",
+   "stdin": "1:30:45\n0:45:30\n",
+   "stdout": "2:16:15\n"
+  },
+  {
+   "name": "seconds carry into minutes",
+   "stdin": "0:0:45\n0:0:45\n0:0:45\n",
+   "stdout": "0:02:15\n"
+  },
+  {
+   "name": "minutes carry into hours",
+   "stdin": "0:50:0\n0:50:0\n",
+   "stdout": "1:40:00\n"
+  },
+  {
+   "name": "fields larger than 59",
+   "stdin": "0:90:120\n1:0:0\n",
+   "stdout": "2:32:00\n"
+  },
+  {
+   "name": "one time",
+   "stdin": "12:34:56\n",
+   "stdout": "12:34:56\n"
+  },
+  {
+   "name": "many hours",
+   "stdin": "100:0:0\n200:59:59\n0:0:1\n",
+   "stdout": "301:00:00\n"
+  },
+  {
+   "name": "blank lines are ignored",
+   "stdin": "\n1:0:0\n\n\n0:30:0\n",
+   "stdout": "1:30:00\n"
+  },
+  {
+   "name": "empty input",
+   "stdin": "",
+   "stdout": "0:00:00\n"
+  },
+  {
+   "name": "a bad line",
+   "cmd": "printf '1:0:0\\nabc\\n2:0:0\\n' | \"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "sumtimes: line 2: not a time\nrc=1\n"
+  },
+  {
+   "name": "an incomplete time",
+   "cmd": "printf '1:30\\n' | \"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "sumtimes: line 1: not a time\nrc=1\n"
+  }
+ ]
+}

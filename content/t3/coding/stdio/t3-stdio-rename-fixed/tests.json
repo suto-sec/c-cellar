@@ -1,0 +1,21 @@
+{
+ "cases": [
+  {
+   "name": "it works",
+   "cmd": "\"$BIN\"; ls | tr '\\n' ' '",
+   "setup": "echo data > old.txt",
+   "stdout": "renamed\nnew.txt "
+  },
+  {
+   "name": "the content moves with the name",
+   "cmd": "\"$BIN\" >/dev/null; cat new.txt",
+   "setup": "echo data > old.txt",
+   "stdout": "data\n"
+  },
+  {
+   "name": "there is no old.txt",
+   "cmd": "\"$BIN\"; echo \"rc=$?\"",
+   "stdout": "cannot rename\nrc=1\n"
+  }
+ ]
+}

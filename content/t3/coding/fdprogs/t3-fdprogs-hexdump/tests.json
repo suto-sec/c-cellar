@@ -1,0 +1,68 @@
+{
+ "cases": [
+  {
+   "name": "the example",
+   "args": [
+    "f.bin"
+   ],
+   "setup": "printf 'Hello, world! 0123456789' > f.bin",
+   "stdout": "00000000: 48 65 6c 6c 6f 2c 20 77 6f 72 6c 64 21 20 30 31\n00000010: 32 33 34 35 36 37 38 39\n"
+  },
+  {
+   "name": "exactly 16 bytes",
+   "args": [
+    "f.bin"
+   ],
+   "setup": "printf 0123456789abcdef > f.bin",
+   "stdout": "00000000: 30 31 32 33 34 35 36 37 38 39 61 62 63 64 65 66\n"
+  },
+  {
+   "name": "one byte",
+   "args": [
+    "f.bin"
+   ],
+   "setup": "printf A > f.bin",
+   "stdout": "00000000: 41\n"
+  },
+  {
+   "name": "bytes above 127 and 0",
+   "args": [
+    "f.bin"
+   ],
+   "setup": "printf '\\0\\377\\200\\1 ~' > f.bin",
+   "stdout": "00000000: 00 ff 80 01 20 7e\n"
+  },
+  {
+   "name": "a newline is just a byte",
+   "args": [
+    "f.bin"
+   ],
+   "setup": "printf 'a\\nb\\n' > f.bin",
+   "stdout": "00000000: 61 0a 62 0a\n"
+  },
+  {
+   "name": "empty file",
+   "args": [
+    "f.bin"
+   ],
+   "setup": ": > f.bin",
+   "stdout": ""
+  },
+  {
+   "name": "many lines: offsets in hexadecimal",
+   "cmd": "\"$BIN\" f.bin | tail -n 2",
+   "setup": "head -c 4128 /dev/zero | tr '\\0' 'x' > f.bin",
+   "stdout": "00001000: 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78\n00001010: 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78 78\n"
+  },
+  {
+   "name": "missing file",
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "hexd: nope: No such file or directory\nrc=1\n"
+  },
+  {
+   "name": "no arguments",
+   "cmd": "\"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: hexd FILE\nrc=2\n"
+  }
+ ]
+}

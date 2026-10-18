@@ -5,7 +5,7 @@
  "topic": "stdio",
  "title": "Which descriptor?",
  "stars": 3,
- "order": 14,
+ "order": 22,
  "summary": "fileno(): the descriptor behind a FILE *.",
  "hints": [
   "The first free descriptor is 3 (0, 1 and 2 are standard input, output and error): `fileno(f)` tells you which one `fopen` got.",

@@ -5,7 +5,7 @@
  "topic": "memory",
  "title": "A line of any length",
  "stars": 3,
- "order": 5,
+ "order": 6,
  "summary": "Growing a buffer with realloc.",
  "hints": [
   "Start with a small buffer and double its size with `realloc` whenever it is full.",

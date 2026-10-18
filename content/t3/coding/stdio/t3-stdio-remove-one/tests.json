@@ -1,0 +1,21 @@
+{
+ "cases": [
+  {
+   "name": "it works",
+   "cmd": "\"$BIN\"; ls | wc -l",
+   "setup": "echo x > junk.txt",
+   "stdout": "removed\n0\n"
+  },
+  {
+   "name": "other files stay",
+   "cmd": "\"$BIN\" >/dev/null; ls",
+   "setup": "echo x > junk.txt; echo y > keep.txt",
+   "stdout": "keep.txt\n"
+  },
+  {
+   "name": "there is no junk.txt",
+   "cmd": "\"$BIN\"; echo \"rc=$?\"",
+   "stdout": "nothing to remove\nrc=1\n"
+  }
+ ]
+}

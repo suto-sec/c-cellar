@@ -1,0 +1,43 @@
+{
+ "cases": [
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf abcdefghi > f.txt",
+   "stdout": "dup: abc def\nopen: abc abc\n"
+  },
+  {
+   "name": "exactly 6 bytes",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 123456 > f.txt",
+   "stdout": "dup: 123 456\nopen: 123 123\n"
+  },
+  {
+   "name": "text with spaces",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'one two three' > f.txt",
+   "stdout": "dup: one  tw\nopen: one one\n"
+  },
+  {
+   "name": "too short",
+   "cmd": "\"$BIN\" f.txt 2>&1; echo \"rc=$?\"",
+   "setup": "printf abc > f.txt",
+   "stdout": "sharedoffset: f.txt: too short\nrc=1\n"
+  },
+  {
+   "name": "missing file",
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "sharedoffset: nope: No such file or directory\nrc=1\n"
+  },
+  {
+   "name": "no arguments",
+   "cmd": "\"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: sharedoffset FILE\nrc=2\n"
+  }
+ ]
+}

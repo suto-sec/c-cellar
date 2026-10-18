@@ -1,0 +1,56 @@
+{
+ "cases": [
+  {
+   "args": [
+    "/usr"
+   ],
+   "stdout": "/usr\n"
+  },
+  {
+   "name": "a relative path",
+   "cmd": "cd /usr && \"$BIN\" bin",
+   "stdout": "/usr/bin\n"
+  },
+  {
+   "name": "..",
+   "cmd": "cd /usr/bin && \"$BIN\" ..",
+   "stdout": "/usr\n"
+  },
+  {
+   "name": "no argument: HOME",
+   "cmd": "\"$BIN\"",
+   "env": {
+    "HOME": "/usr/bin"
+   },
+   "stdout": "/usr/bin\n"
+  },
+  {
+   "name": "HOME is a different directory",
+   "cmd": "\"$BIN\"",
+   "env": {
+    "HOME": "/usr"
+   },
+   "stdout": "/usr\n"
+  },
+  {
+   "name": "no argument and no HOME",
+   "cmd": "env -u HOME \"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "mycd: HOME not set\nrc=1\n"
+  },
+  {
+   "name": "a directory that does not exist",
+   "cmd": "\"$BIN\" /no/such/dir 2>&1; echo \"rc=$?\"",
+   "stdout": "/no/such/dir: No such file or directory\nrc=1\n"
+  },
+  {
+   "name": "a file is not a directory",
+   "cmd": "\"$BIN\" /etc/passwd 2>&1; echo \"rc=$?\"",
+   "stdout": "/etc/passwd: Not a directory\nrc=1\n"
+  },
+  {
+   "name": "two arguments",
+   "cmd": "\"$BIN\" /usr /tmp 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: mycd [DIR]\nrc=2\n"
+  }
+ ]
+}

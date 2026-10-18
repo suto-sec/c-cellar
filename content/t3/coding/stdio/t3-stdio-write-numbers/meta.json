@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-write-numbers",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Numbers in a file",
+ "stars": 2,
+ "order": 2,
+ "summary": "The same three calls, now with fprintf to write numbers.",
+ "hints": [
+  "`fprintf(f, \"%d\\n\", i)` is `printf(\"%d\\n\", i)` with the file first.",
+  "Open once before the loop and close once after it."
+ ]
+}

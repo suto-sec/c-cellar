@@ -1,0 +1,14 @@
+{
+ "id": "t3-cmds-mysort",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "cmds",
+ "title": "mysort with options",
+ "stars": 4,
+ "order": 8,
+ "summary": "sort(1) on standard input: -r reverse, -n numeric, -u unique, alone or clustered (-rn).",
+ "hints": [
+  "Keep every line in a growing array of `char *` and sort it with `qsort`. The options are global variables read by the comparison function.",
+  "Numeric order: compare `strtol(a, NULL, 10)` of both lines, and if equal compare the lines with `strcmp`. `-r` negates the final result. For each argument loop over its letters after the `-`."
+ ]
+}

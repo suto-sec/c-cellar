@@ -1,0 +1,56 @@
+{
+ "cases": [
+  {
+   "name": "the example",
+   "cmd": "\"$BIN\" f.txt 2>&1; echo \"rc=$?\"",
+   "setup": "printf %s 'a tiny sentence with words\n' > f.txt",
+   "stdout": "longest: sentence\nshortest: a\nrc=0\n"
+  },
+  {
+   "name": "ties: the first wins",
+   "cmd": "\"$BIN\" f.txt 2>&1; echo \"rc=$?\"",
+   "setup": "printf %s 'bb aa cccc dddd e f\n' > f.txt",
+   "stdout": "longest: cccc\nshortest: e\nrc=0\n"
+  },
+  {
+   "name": "one word",
+   "cmd": "\"$BIN\" f.txt 2>&1; echo \"rc=$?\"",
+   "setup": "printf %s 'word\n' > f.txt",
+   "stdout": "longest: word\nshortest: word\nrc=0\n"
+  },
+  {
+   "name": "several lines",
+   "cmd": "\"$BIN\" f.txt 2>&1; echo \"rc=$?\"",
+   "setup": "printf %s 'one\ntwo three\n\nfour five six seven\n' > f.txt",
+   "stdout": "longest: three\nshortest: one\nrc=0\n"
+  },
+  {
+   "name": "empty file",
+   "cmd": "\"$BIN\" f.txt 2>&1; echo \"rc=$?\"",
+   "setup": "printf %s '' > f.txt",
+   "stdout": "extremes: no words\nrc=1\n"
+  },
+  {
+   "name": "only blanks",
+   "cmd": "\"$BIN\" f.txt 2>&1; echo \"rc=$?\"",
+   "setup": "printf %s '  \n\t\n' > f.txt",
+   "stdout": "extremes: no words\nrc=1\n"
+  },
+  {
+   "name": "a very long word",
+   "cmd": "\"$BIN\" f.txt 2>&1; echo \"rc=$?\"",
+   "setup": "printf %s 'x yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy zz\n' > f.txt",
+   "stdout": "longest: yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\nshortest: x\nrc=0\n"
+  },
+  {
+   "name": "missing file",
+   "cmd": "\"$BIN\" nope.txt 2>&1; echo \"rc=$?\"",
+   "stdout": "extremes: nope.txt: No such file or directory\nrc=2\n"
+  },
+  {
+   "name": "no arguments",
+   "cmd": "\"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: extremes FILE\nrc=2\n"
+  }
+ ]
+}

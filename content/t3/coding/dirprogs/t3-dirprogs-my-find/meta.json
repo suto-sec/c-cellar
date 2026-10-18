@@ -1,0 +1,14 @@
+{
+ "id": "t3-dirprogs-my-find",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "dirprogs",
+ "title": "myfind",
+ "stars": 5,
+ "order": 7,
+ "summary": "find DIR -name NAME: every entry with that exact name, in a tree of any depth.",
+ "hints": [
+  "A helper `walk(const char *dir)` calls itself for each subdirectory. Build the child path with `snprintf(path, sizeof(path), \"%s/%s\", dir, name)`, and **skip `.` and `..`**: without that the recursion never ends.",
+  "Compare `e->d_name` with the name you look for (`strcmp`) for every entry, directory or not, and also descend into it if it is a directory. An entry is a directory if `opendir(path)` succeeds (close it again with `closedir`); otherwise treat it as a file."
+ ]
+}

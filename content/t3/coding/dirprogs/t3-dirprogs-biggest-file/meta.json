@@ -1,0 +1,14 @@
+{
+ "id": "t3-dirprogs-biggest-file",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "dirprogs",
+ "title": "The biggest file",
+ "stars": 5,
+ "order": 9,
+ "summary": "Walk a tree remembering the largest file seen so far: its path and its size.",
+ "hints": [
+  "A helper `walk(const char *dir)` calls itself for each subdirectory. Build the child path with `snprintf(path, sizeof(path), \"%s/%s\", dir, name)`, and **skip `.` and `..`**: without that the recursion never ends.",
+  "Keep the best path in a `char best[4096]` and its size in a `long`; replace them when a file is larger, or the same size with a path that is smaller for `strcmp`. Size: `open`, `lseek(fd, 0, SEEK_END)`, `close`."
+ ]
+}

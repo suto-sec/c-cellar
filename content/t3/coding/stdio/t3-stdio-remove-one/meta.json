@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-remove-one",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Delete one file",
+ "stars": 1,
+ "order": 9,
+ "summary": "remove(name) with a fixed name, and what it returns.",
+ "hints": [
+  "`remove` returns 0 on success and -1 on failure, like `rename`.",
+  "Test the returned value with an `if`, print the matching message, and return the right status from `main`."
+ ]
+}

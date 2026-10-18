@@ -5,7 +5,7 @@
  "topic": "memory",
  "title": "Join two strings",
  "stars": 3,
- "order": 4,
+ "order": 5,
  "summary": "Computing the size to allocate.",
  "hints": [
   "The result needs `strlen(a) + 1 + strlen(b) + 1` bytes (the separator and the terminator).",

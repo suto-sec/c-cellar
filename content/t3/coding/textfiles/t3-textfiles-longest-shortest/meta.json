@@ -1,0 +1,14 @@
+{
+ "id": "t3-textfiles-longest-shortest",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "textfiles",
+ "title": "Longest and shortest word",
+ "stars": 3,
+ "order": 3,
+ "summary": "Compare the length of every word of a file; the first one wins a tie.",
+ "hints": [
+  "Read with `fscanf(f, \"%1000s\", w)` and keep two buffers, `longest` and `shortest`, copying with `strcpy` when a word is strictly longer or shorter.",
+  "The first word initialises both; later words of the same length do not replace them."
+ ]
+}

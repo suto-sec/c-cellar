@@ -1,0 +1,14 @@
+{
+ "id": "t3-cmds-mybasename",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "cmds",
+ "title": "mybasename",
+ "stars": 3,
+ "order": 1,
+ "summary": "basename(1): the last component of a path, with an optional suffix removed.",
+ "hints": [
+  "Copy the argument to a buffer (never write into `argv`), cut the trailing `/` characters off (but keep a path that is only `/`) and take what follows `strrchr(path, '/')`.",
+  "Remove the suffix only if it is shorter than the name and `strcmp(name + strlen(name) - strlen(suffix), suffix) == 0`."
+ ]
+}

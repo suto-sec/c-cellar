@@ -1,0 +1,95 @@
+{
+ "cases": [
+  {
+   "args": [
+    "f.txt",
+    "at",
+    "og"
+   ],
+   "setup": "printf %s 'the cat sat on the mat\n' > f.txt",
+   "stdout": "the cog sog on the mog\n"
+  },
+  {
+   "name": "overlapping candidates",
+   "args": [
+    "f.txt",
+    "aa",
+    "b"
+   ],
+   "setup": "printf %s 'aaaaa aaa a\n' > f.txt",
+   "stdout": "bba ba a\n"
+  },
+  {
+   "name": "a longer replacement",
+   "args": [
+    "f.txt",
+    "x",
+    "[ex]"
+   ],
+   "setup": "printf %s 'x+x=2x\n' > f.txt",
+   "stdout": "[ex]+[ex]=2[ex]\n"
+  },
+  {
+   "name": "an empty replacement deletes",
+   "args": [
+    "f.txt",
+    "-",
+    ""
+   ],
+   "setup": "printf %s 'a-b-c\n--\n' > f.txt",
+   "stdout": "abc\n\n"
+  },
+  {
+   "name": "no occurrences",
+   "args": [
+    "f.txt",
+    "zzz",
+    "y"
+   ],
+   "setup": "printf %s 'nothing here\n' > f.txt",
+   "stdout": "nothing here\n"
+  },
+  {
+   "name": "several lines, no final newline",
+   "args": [
+    "f.txt",
+    "ab",
+    "AB"
+   ],
+   "setup": "printf %s 'ab\ncab\nabab' > f.txt",
+   "stdout": "AB\ncAB\nABAB"
+  },
+  {
+   "name": "the text can contain spaces",
+   "args": [
+    "f.txt",
+    "a b",
+    "_"
+   ],
+   "setup": "printf %s 'a b c a b\n' > f.txt",
+   "stdout": "_ c _\n"
+  },
+  {
+   "name": "result longer than the line buffer",
+   "cmd": "\"$BIN\" f.txt a abcdefghij | wc -c",
+   "setup": "printf 'a%.0s' $(seq 1 900) > f.txt; echo >> f.txt",
+   "stdout": "9001\n"
+  },
+  {
+   "name": "empty OLD",
+   "cmd": "\"$BIN\" f.txt '' x 2>&1; echo \"rc=$?\"",
+   "setup": "printf %s 'abc\n' > f.txt",
+   "stdout": "usage: replace FILE OLD NEW\nrc=2\n"
+  },
+  {
+   "name": "missing file",
+   "cmd": "\"$BIN\" nope.txt a b 2>&1; echo \"rc=$?\"",
+   "stdout": "replace: nope.txt: No such file or directory\nrc=1\n"
+  },
+  {
+   "name": "wrong arguments",
+   "cmd": "\"$BIN\" f.txt a 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: replace FILE OLD NEW\nrc=2\n"
+  }
+ ]
+}

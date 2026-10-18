@@ -1,0 +1,14 @@
+{
+ "id": "t3-menus-function-table-menu",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "menus",
+ "title": "A table of functions",
+ "stars": 4,
+ "order": 5,
+ "summary": "Select an operation through an array of pointers to functions instead of a long switch.",
+ "hints": [
+  "Declare `double (*op[4])(double, double) = { add, sub, mul, divide };` and call `op[option - 1](a, b)`.",
+  "Division needs a check before the call: `if (b == 0) ...` (an array of pointers cannot know about this by itself)."
+ ]
+}

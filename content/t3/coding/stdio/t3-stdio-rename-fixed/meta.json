@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-rename-fixed",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Rename one file",
+ "stars": 1,
+ "order": 7,
+ "summary": "rename(old, new) with fixed names, and what it returns.",
+ "hints": [
+  "`rename` returns 0 when it worked and -1 when it did not.",
+  "Use an `if` on the returned value and print the right message."
+ ]
+}

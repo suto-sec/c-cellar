@@ -1,0 +1,39 @@
+{
+ "cases": [
+  {
+   "name": "the example",
+   "stdin": "1 2 3\n4 7 2\n4 1 0\n0\n",
+   "stdout": "5.00\n3.50\ndivision by zero\n"
+  },
+  {
+   "name": "the four operations",
+   "stdin": "1 1.5 2.25\n2 1.5 2.25\n3 1.5 2.25\n4 9 4\n0\n",
+   "stdout": "3.75\n-0.75\n3.38\n2.25\n"
+  },
+  {
+   "name": "negative numbers",
+   "stdin": "3 -4 5\n2 -4 -6\n4 -9 3\n0\n",
+   "stdout": "-20.00\n2.00\n-3.00\n"
+  },
+  {
+   "name": "invalid options still read their numbers",
+   "stdin": "7 1 2\n1 1 1\n-3 4 4\n5 0 0\n0\n",
+   "stdout": "invalid option\n2.00\ninvalid option\ninvalid option\n"
+  },
+  {
+   "name": "stops at 0",
+   "stdin": "1 1 1\n0\n1 2 2\n",
+   "stdout": "2.00\n"
+  },
+  {
+   "name": "the input ends",
+   "stdin": "2 10 4\n3 6 7\n",
+   "stdout": "6.00\n42.00\n"
+  },
+  {
+   "name": "division by zero in the middle",
+   "stdin": "4 5 0\n4 0 5\n0\n",
+   "stdout": "division by zero\n0.00\n"
+  }
+ ]
+}

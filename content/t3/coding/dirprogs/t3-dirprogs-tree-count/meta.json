@@ -1,0 +1,14 @@
+{
+ "id": "t3-dirprogs-tree-count",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "dirprogs",
+ "title": "Count a tree",
+ "stars": 4,
+ "order": 4,
+ "summary": "How many files and how many directories are inside a directory, at any depth.",
+ "hints": [
+  "A helper `walk(const char *dir)` calls itself for each subdirectory. Build the child path with `snprintf(path, sizeof(path), \"%s/%s\", dir, name)`, and **skip `.` and `..`**: without that the recursion never ends.",
+  "An entry is a directory if `opendir(path)` succeeds (close it again with `closedir`); otherwise treat it as a file."
+ ]
+}

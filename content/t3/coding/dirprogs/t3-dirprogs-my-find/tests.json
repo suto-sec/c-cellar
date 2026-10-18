@@ -1,0 +1,86 @@
+{
+ "cases": [
+  {
+   "args": [
+    "d",
+    "a.txt"
+   ],
+   "setup": "mkdir -p d/sub/deep d/empty d/.hid d/sub/more/inner; printf hello > d/a.txt; printf x > d/sub/b.txt; head -c 1000 /dev/zero > d/sub/deep/big.bin; : > d/.hid/note; printf 'twelve bytes' > d/sub/more/a.txt; : > d/zero",
+   "match": "sorted",
+   "stdout": "d/a.txt\nd/sub/more/a.txt\n"
+  },
+  {
+   "name": "a directory name",
+   "args": [
+    "d",
+    "inner"
+   ],
+   "setup": "mkdir -p d/sub/deep d/empty d/.hid d/sub/more/inner; printf hello > d/a.txt; printf x > d/sub/b.txt; head -c 1000 /dev/zero > d/sub/deep/big.bin; : > d/.hid/note; printf 'twelve bytes' > d/sub/more/a.txt; : > d/zero",
+   "match": "sorted",
+   "stdout": "d/sub/more/inner\n"
+  },
+  {
+   "name": "a hidden name",
+   "args": [
+    "d",
+    "note"
+   ],
+   "setup": "mkdir -p d/sub/deep d/empty d/.hid d/sub/more/inner; printf hello > d/a.txt; printf x > d/sub/b.txt; head -c 1000 /dev/zero > d/sub/deep/big.bin; : > d/.hid/note; printf 'twelve bytes' > d/sub/more/a.txt; : > d/zero",
+   "match": "sorted",
+   "stdout": "d/.hid/note\n"
+  },
+  {
+   "name": "the name must be exact",
+   "args": [
+    "d",
+    "a"
+   ],
+   "setup": "mkdir -p d/sub/deep d/empty d/.hid d/sub/more/inner; printf hello > d/a.txt; printf x > d/sub/b.txt; head -c 1000 /dev/zero > d/sub/deep/big.bin; : > d/.hid/note; printf 'twelve bytes' > d/sub/more/a.txt; : > d/zero",
+   "stdout": ""
+  },
+  {
+   "name": "not found",
+   "args": [
+    "d",
+    "nothing"
+   ],
+   "setup": "mkdir -p d/sub/deep d/empty d/.hid d/sub/more/inner; printf hello > d/a.txt; printf x > d/sub/b.txt; head -c 1000 /dev/zero > d/sub/deep/big.bin; : > d/.hid/note; printf 'twelve bytes' > d/sub/more/a.txt; : > d/zero",
+   "stdout": ""
+  },
+  {
+   "name": "DIR itself is not examined",
+   "args": [
+    "d",
+    "d"
+   ],
+   "setup": "mkdir d; : > d/x",
+   "stdout": ""
+  },
+  {
+   "name": "the same name at several depths",
+   "args": [
+    "t",
+    "x"
+   ],
+   "setup": "mkdir -p t/x/x t/y; : > t/y/x; : > t/x/x/x",
+   "match": "sorted",
+   "stdout": "t/x\nt/x/x\nt/x/x/x\nt/y/x\n"
+  },
+  {
+   "name": "the path is built from DIR as given",
+   "cmd": "cd d && \"$BIN\" ./sub b.txt",
+   "setup": "mkdir -p d/sub/deep d/empty d/.hid d/sub/more/inner; printf hello > d/a.txt; printf x > d/sub/b.txt; head -c 1000 /dev/zero > d/sub/deep/big.bin; : > d/.hid/note; printf 'twelve bytes' > d/sub/more/a.txt; : > d/zero",
+   "stdout": "./sub/b.txt\n"
+  },
+  {
+   "name": "missing directory",
+   "cmd": "\"$BIN\" nope x 2>&1; echo \"rc=$?\"",
+   "stdout": "myfind: nope: No such file or directory\nrc=1\n"
+  },
+  {
+   "name": "wrong arguments",
+   "cmd": "\"$BIN\" d 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: myfind DIR NAME\nrc=2\n"
+  }
+ ]
+}

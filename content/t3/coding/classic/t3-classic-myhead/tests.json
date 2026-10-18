@@ -1,0 +1,48 @@
+{
+ "cases": [
+  {
+   "name": "ten by default",
+   "cmd": "seq 1 100 | \"$BIN\"",
+   "stdout": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n"
+  },
+  {
+   "cmd": "seq 1 100 | \"$BIN\" -3",
+   "stdout": "1\n2\n3\n"
+  },
+  {
+   "name": "fewer lines than asked",
+   "cmd": "seq 1 4 | \"$BIN\" -7",
+   "stdout": "1\n2\n3\n4\n"
+  },
+  {
+   "name": "fewer than ten lines",
+   "cmd": "seq 1 4 | \"$BIN\"",
+   "stdout": "1\n2\n3\n4\n"
+  },
+  {
+   "name": "-0",
+   "cmd": "seq 1 4 | \"$BIN\" -0",
+   "stdout": ""
+  },
+  {
+   "name": "no final newline is kept as it is",
+   "cmd": "printf 'a\\nb\\nc' | \"$BIN\" -5",
+   "stdout": "a\nb\nc"
+  },
+  {
+   "name": "empty input",
+   "cmd": "\"$BIN\" -3 < /dev/null",
+   "stdout": ""
+  },
+  {
+   "name": "text lines",
+   "cmd": "printf 'one two\\n\\nthree\\nfour\\n' | \"$BIN\" -3",
+   "stdout": "one two\n\nthree\n"
+  },
+  {
+   "name": "bad usage",
+   "cmd": "\"$BIN\" 1 2 </dev/null 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: myhead [-N]\nrc=2\n"
+  }
+ ]
+}

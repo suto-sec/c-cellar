@@ -1,0 +1,48 @@
+{
+ "cases": [
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf '1 2 3\\n4\\n' > f.txt",
+   "stdout": "10\n"
+  },
+  {
+   "name": "negative numbers",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf -- '-5 5 -7\\n' > f.txt",
+   "stdout": "-7\n"
+  },
+  {
+   "name": "empty file",
+   "args": [
+    "f.txt"
+   ],
+   "setup": ": > f.txt",
+   "stdout": "0\n"
+  },
+  {
+   "name": "one number per line",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "seq 1 100 > f.txt",
+   "stdout": "5050\n"
+  },
+  {
+   "name": "bigger than an int",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf '2000000000 2000000000\\n' > f.txt",
+   "stdout": "4000000000\n"
+  },
+  {
+   "name": "missing file",
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "cannot open nope\nrc=1\n"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-fdprogs-swap-fds",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "fdprogs",
+ "title": "Swap stdout and stderr",
+ "stars": 5,
+ "order": 7,
+ "summary": "Exchange descriptors 1 and 2 with dup and dup2, the way you swap two variables.",
+ "hints": [
+  "Swapping two integers needs a temporary: `tmp = dup(1)` saves the original standard output under a new number.",
+  "Then `dup2(2, 1)` makes 1 refer to the old stderr, `dup2(tmp, 2)` makes 2 refer to the old stdout, and `close(tmp)` removes the helper. Write with `write(1, ...)` and `write(2, ...)`: no buffering to think about."
+ ]
+}

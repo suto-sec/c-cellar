@@ -5,7 +5,7 @@
  "topic": "memory",
  "title": "Histogram of digits",
  "stars": 3,
- "order": 2,
+ "order": 3,
  "summary": "calloc gives zeroed memory.",
  "hints": [
   "`calloc(10, sizeof(int))` returns 10 ints that are all zero: ideal for counters.",

@@ -1,0 +1,14 @@
+{
+ "id": "t3-dirprogs-empty-dirs",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "dirprogs",
+ "title": "Find the empty directories",
+ "stars": 4,
+ "order": 3,
+ "summary": "Walk a tree and list the directories that have nothing inside.",
+ "hints": [
+  "A helper `walk(const char *dir)` calls itself for each subdirectory. Build the child path with `snprintf(path, sizeof(path), \"%s/%s\", dir, name)`, and **skip `.` and `..`**: without that the recursion never ends.",
+  "Count the entries of each directory while you read it (not counting `.` and `..`); when the loop ends, a count of 0 means it is empty."
+ ]
+}

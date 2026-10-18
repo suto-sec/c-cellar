@@ -1,0 +1,79 @@
+{
+ "cases": [
+  {
+   "args": [
+    "f.txt",
+    "3"
+   ],
+   "setup": "printf abcdefgh > f.txt",
+   "stdout": "fgh"
+  },
+  {
+   "name": "N larger than the file",
+   "args": [
+    "f.txt",
+    "100"
+   ],
+   "setup": "printf 'short\\n' > f.txt",
+   "stdout": "short\n"
+  },
+  {
+   "name": "N equal to the size",
+   "args": [
+    "f.txt",
+    "4"
+   ],
+   "setup": "printf 'abcd' > f.txt",
+   "stdout": "abcd"
+  },
+  {
+   "name": "N is 0",
+   "args": [
+    "f.txt",
+    "0"
+   ],
+   "setup": "printf 'abcd' > f.txt",
+   "stdout": ""
+  },
+  {
+   "name": "empty file",
+   "args": [
+    "f.txt",
+    "5"
+   ],
+   "setup": ": > f.txt",
+   "stdout": ""
+  },
+  {
+   "name": "the last line of a text",
+   "args": [
+    "f.txt",
+    "6"
+   ],
+   "setup": "printf 'first\\nsecond\\nthird\\n' > f.txt",
+   "stdout": "third\n"
+  },
+  {
+   "name": "bigger than the buffer",
+   "cmd": "\"$BIN\" f.txt 10000 | wc -c; \"$BIN\" f.txt 6 | tr '\\n' ,; echo",
+   "setup": "seq 1 50000 > f.txt",
+   "stdout": "10000\n50000,\n"
+  },
+  {
+   "name": "bytes that are 0",
+   "cmd": "\"$BIN\" f.txt 4 | od -An -tx1 | tr -d ' '",
+   "setup": "printf 'ab\\0c\\0\\0d' > f.txt",
+   "stdout": "63000064\n"
+  },
+  {
+   "name": "missing file",
+   "cmd": "\"$BIN\" nope 3 2>&1; echo \"rc=$?\"",
+   "stdout": "lastbytes: nope: No such file or directory\nrc=1\n"
+  },
+  {
+   "name": "negative N",
+   "cmd": "\"$BIN\" f.txt -3 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: lastbytes FILE N\nrc=2\n"
+  }
+ ]
+}

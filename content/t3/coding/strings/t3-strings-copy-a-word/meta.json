@@ -1,0 +1,14 @@
+{
+ "id": "t3-strings-copy-a-word",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "strings",
+ "title": "Copy a string",
+ "stars": 2,
+ "order": 6,
+ "summary": "strcpy: a string cannot be copied with =; copy it into your own array.",
+ "hints": [
+  "Declare `char copy[100];` and call `strcpy(copy, argv[1])`.",
+  "After copying, changing `copy[0]` must not change `argv[1]`."
+ ]
+}

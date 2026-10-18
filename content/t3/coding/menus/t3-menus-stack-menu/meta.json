@@ -1,0 +1,14 @@
+{
+ "id": "t3-menus-stack-menu",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "menus",
+ "title": "A stack with a menu",
+ "stars": 3,
+ "order": 2,
+ "summary": "Push, pop, top and size on a stack of at most 5 values kept in an array.",
+ "hints": [
+  "Keep `int stack[5]` and `int count` (or pass them to the functions by pointer). `push` and `pop` can return 0 or -1 to say whether they worked.",
+  "`while (scanf(\"%d\", &option) == 1 && option != 0)` repeats until `0`; read the value of option 1 inside the loop."
+ ]
+}

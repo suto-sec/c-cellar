@@ -1,0 +1,112 @@
+{
+ "cases": [
+  {
+   "name": "the example",
+   "args": [
+    "-nu"
+   ],
+   "stdin": "10\n9\n100\n9\n",
+   "stdout": "9\n10\n100\n"
+  },
+  {
+   "name": "alphabetical",
+   "args": [],
+   "stdin": "pear\napple\nfig\nbanana\n",
+   "stdout": "apple\nbanana\nfig\npear\n"
+  },
+  {
+   "name": "-r",
+   "args": [
+    "-r"
+   ],
+   "stdin": "pear\napple\nfig\nbanana\n",
+   "stdout": "pear\nfig\nbanana\napple\n"
+  },
+  {
+   "name": "-n",
+   "args": [
+    "-n"
+   ],
+   "stdin": "10\n9\n100\n-5\n0\n",
+   "stdout": "-5\n0\n9\n10\n100\n"
+  },
+  {
+   "name": "without -n numbers are text",
+   "args": [],
+   "stdin": "10\n9\n100\n-5\n0\n",
+   "stdout": "-5\n0\n10\n100\n9\n"
+  },
+  {
+   "name": "-rn together",
+   "args": [
+    "-rn"
+   ],
+   "stdin": "3\n12\n7\n12\n",
+   "stdout": "12\n12\n7\n3\n"
+  },
+  {
+   "name": "-r -n separately",
+   "args": [
+    "-r",
+    "-n"
+   ],
+   "stdin": "3\n12\n7\n12\n",
+   "stdout": "12\n12\n7\n3\n"
+  },
+  {
+   "name": "-u",
+   "args": [
+    "-u"
+   ],
+   "stdin": "b\na\nb\nc\na\n",
+   "stdout": "a\nb\nc\n"
+  },
+  {
+   "name": "-u with -r",
+   "args": [
+    "-ru"
+   ],
+   "stdin": "b\na\nb\nc\na\n",
+   "stdout": "c\nb\na\n"
+  },
+  {
+   "name": "numeric ties are ordered as text",
+   "args": [
+    "-n"
+   ],
+   "stdin": "2b\n2a\n10\n2\n",
+   "stdout": "2\n2a\n2b\n10\n"
+  },
+  {
+   "name": "lines that are not numbers count as 0",
+   "args": [
+    "-n"
+   ],
+   "stdin": "x\n-1\n5\nabc\n",
+   "stdout": "-1\nabc\nx\n5\n"
+  },
+  {
+   "name": "empty input",
+   "args": [
+    "-n"
+   ],
+   "stdin": "",
+   "stdout": ""
+  },
+  {
+   "name": "many lines",
+   "cmd": "seq 1 20000 | \"$BIN\" -rn | head -n 2",
+   "stdout": "20000\n19999\n"
+  },
+  {
+   "name": "unknown option",
+   "cmd": "\"$BIN\" -rx </dev/null 2>&1; echo \"rc=$?\"",
+   "stdout": "mysort: invalid option -- 'x'\nrc=2\n"
+  },
+  {
+   "name": "not an option",
+   "cmd": "\"$BIN\" file.txt </dev/null 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: mysort [-r] [-n] [-u]\nrc=2\n"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-classic-myhead",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "classic",
+ "title": "myhead",
+ "stars": 3,
+ "order": 2,
+ "summary": "head(1) on standard input: 10 lines or the first N (-N), read with fgets.",
+ "hints": [
+  "Declare `char buf[1024];` and loop `while (count < n && fgets(buf, 1024, stdin) != NULL)`, printing each line with `fputs(buf, stdout)`.",
+  "The option is `argv[1]` = `-N`: `atoi(argv[1] + 1)` skips the dash."
+ ]
+}

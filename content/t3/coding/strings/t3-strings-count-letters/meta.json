@@ -1,0 +1,14 @@
+{
+ "id": "t3-strings-count-letters",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "strings",
+ "title": "Count the letters",
+ "stars": 2,
+ "order": 10,
+ "summary": "isalpha from <ctype.h>: is this character a letter?",
+ "hints": [
+  "Read the text with `fgets` into a `char line[1000]` and loop `for (i = 0; line[i] != '\\0'; i++)`.",
+  "`isalpha(line[i])` is true (non-zero) for letters, false for digits, spaces and punctuation."
+ ]
+}

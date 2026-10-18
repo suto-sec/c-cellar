@@ -1,0 +1,78 @@
+{
+ "cases": [
+  {
+   "name": "the example",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf %s 'a level of noon is rare\n' > f.txt",
+   "stdout": "level\nnoon\ntotal: 2\n"
+  },
+  {
+   "name": "none",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf %s 'this has no such word\n' > f.txt",
+   "stdout": "total: 0\n"
+  },
+  {
+   "name": "repeated palindromes are printed again",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf %s 'abba abba x abba\n' > f.txt",
+   "stdout": "abba\nabba\nabba\ntotal: 3\n"
+  },
+  {
+   "name": "case matters",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf %s 'Level level Anna anna\n' > f.txt",
+   "stdout": "level\nanna\ntotal: 2\n"
+  },
+  {
+   "name": "odd and even lengths",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf %s 'aa aba abba abcba abcd\n' > f.txt",
+   "stdout": "aa\naba\nabba\nabcba\ntotal: 4\n"
+  },
+  {
+   "name": "empty file",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf %s '' > f.txt",
+   "stdout": "total: 0\n"
+  },
+  {
+   "name": "several lines",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf %s 'racecar\nnot one\n\nradar kayak\n' > f.txt",
+   "stdout": "racecar\nradar\nkayak\ntotal: 3\n"
+  },
+  {
+   "name": "with digits and symbols",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf %s '12321 1221 12 a-a a-b\n' > f.txt",
+   "stdout": "12321\n1221\na-a\ntotal: 3\n"
+  },
+  {
+   "name": "missing file",
+   "cmd": "\"$BIN\" nope.txt 2>&1; echo \"rc=$?\"",
+   "stdout": "palwords: nope.txt: No such file or directory\nrc=1\n"
+  },
+  {
+   "name": "no arguments",
+   "cmd": "\"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: palwords FILE\nrc=2\n"
+  }
+ ]
+}

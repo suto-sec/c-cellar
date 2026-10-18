@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-read-first-bytes",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Read a block with fread",
+ "stars": 2,
+ "order": 11,
+ "summary": "fread: ask for some bytes and look at how many you really got.",
+ "hints": [
+  "`fread(buf, 1, 8, f)` returns how many bytes it read: less than 8 if the file is shorter.",
+  "`fread` does not add a `'\\0'`: put it yourself at `buf[n]` before printing with `%s`."
+ ]
+}

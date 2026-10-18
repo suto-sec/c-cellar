@@ -1,0 +1,14 @@
+{
+ "id": "t3-records-fractions",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "records",
+ "title": "Fraction calculator",
+ "stars": 4,
+ "order": 4,
+ "summary": "A struct for a fraction, functions that operate on structs, and a greatest common divisor to keep results reduced.",
+ "hints": [
+  "`struct fraction { long num, den; };` and one function per operation that returns a `struct fraction`. A function `reduce` divides both fields by their `gcd` and moves the sign to the numerator.",
+  "Parse each line with `sscanf(line, \"%ld/%ld %c %ld/%ld\", ...)`: it returns 5 when the line has the right shape. For division, `a/b / c/d = (a*d)/(b*c)`: it fails when `c` is 0."
+ ]
+}

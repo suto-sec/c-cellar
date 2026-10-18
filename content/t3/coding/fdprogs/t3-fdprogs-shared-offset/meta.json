@@ -1,0 +1,14 @@
+{
+ "id": "t3-fdprogs-shared-offset",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "fdprogs",
+ "title": "dup shares the position, open does not",
+ "stars": 3,
+ "order": 3,
+ "summary": "Two descriptors made with dup share one file position; two made with open each have their own.",
+ "hints": [
+  "After `fd2 = dup(fd1)` both numbers refer to the same open file, so a `read` on one moves the position seen by the other.",
+  "Each `open` of the same path creates a new open file with its own position, starting at 0. `read` does not add a `'\\0'`: do it yourself before printing."
+ ]
+}

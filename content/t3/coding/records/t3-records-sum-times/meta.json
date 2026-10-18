@@ -1,0 +1,14 @@
+{
+ "id": "t3-records-sum-times",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "records",
+ "title": "Adding times",
+ "stars": 3,
+ "order": 1,
+ "summary": "A struct with hours, minutes and seconds, a function that adds two of them, and the carry between fields.",
+ "hints": [
+  "Use `struct time { int h, m, s; };` and a function `struct time add(struct time a, struct time b)` that adds field by field and then carries: `s >= 60` moves to `m`, `m >= 60` moves to `h`.",
+  "Read the lines with `fgets` and `sscanf(line, \"%d:%d:%d\", &t.h, &t.m, &t.s)`; it returns 3 when the line has the right shape. Print with `%d:%02d:%02d`."
+ ]
+}

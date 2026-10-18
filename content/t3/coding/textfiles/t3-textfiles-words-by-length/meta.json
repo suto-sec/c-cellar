@@ -1,0 +1,14 @@
+{
+ "id": "t3-textfiles-words-by-length",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "textfiles",
+ "title": "Words grouped by length",
+ "stars": 4,
+ "order": 7,
+ "summary": "For each word length that appears, list the words of that length in file order.",
+ "hints": [
+  "Load all the words into a growing `char **` array and find the longest length first; then one pass per length from 1 to that maximum.",
+  "In each pass print `N:` only when you find the first word of that length (a flag), then ` word` for each one, and the newline at the end of the pass if you printed something."
+ ]
+}

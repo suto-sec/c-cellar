@@ -1,0 +1,14 @@
+{
+ "id": "t3-strings-count-uppercase",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "strings",
+ "title": "Count the capital letters",
+ "stars": 2,
+ "order": 12,
+ "summary": "isupper: the same loop as counting letters, with a different question for each character.",
+ "hints": [
+  "Same loop as `count-letters`: `for (i = 0; line[i] != '\\0'; i++)` and `if (isupper(line[i]))`.",
+  "`isupper` is true only for `A`-`Z`: lower case letters, digits and symbols give 0."
+ ]
+}

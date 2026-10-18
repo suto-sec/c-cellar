@@ -1,0 +1,64 @@
+{
+ "cases": [
+  {
+   "args": [
+    "-c"
+   ],
+   "stdin": "a\na\nb\na\n",
+   "stdout": "      2 a\n      1 b\n      1 a\n"
+  },
+  {
+   "stdin": "a\na\nb\na\n",
+   "stdout": "a\nb\na\n"
+  },
+  {
+   "name": "all equal",
+   "stdin": "x\nx\nx\nx\n",
+   "stdout": "x\n"
+  },
+  {
+   "name": "all different",
+   "args": [
+    "-c"
+   ],
+   "stdin": "a\nb\nc\n",
+   "stdout": "      1 a\n      1 b\n      1 c\n"
+  },
+  {
+   "name": "empty input",
+   "args": [
+    "-c"
+   ],
+   "stdin": "",
+   "stdout": ""
+  },
+  {
+   "name": "blank lines",
+   "args": [
+    "-c"
+   ],
+   "stdin": "\n\n\nx\n\n",
+   "stdout": "      3 \n      1 x\n      1 \n"
+  },
+  {
+   "name": "similar lines are different",
+   "stdin": "abc\nabc \nABC\nabc\n",
+   "stdout": "abc\nabc \nABC\nabc\n"
+  },
+  {
+   "name": "a long run",
+   "cmd": "seq 1 3 | sed 's/.*/x/' | \"$BIN\" -c",
+   "stdout": "      3 x\n"
+  },
+  {
+   "name": "counts of ten or more",
+   "cmd": "yes line | head -n 12 | \"$BIN\" -c",
+   "stdout": "     12 line\n"
+  },
+  {
+   "name": "bad option",
+   "cmd": "\"$BIN\" -z </dev/null 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: myuniq [-c]\nrc=2\n"
+  }
+ ]
+}

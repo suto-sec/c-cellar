@@ -1,0 +1,14 @@
+{
+ "id": "t3-cmds-mycat-n",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "cmds",
+ "title": "mycat with -n",
+ "stars": 4,
+ "order": 4,
+ "summary": "cat(1) with -n: files or standard input, numbered lines, and errors that do not stop the rest.",
+ "hints": [
+  "Read each stream with `fgetc` and keep a flag `at_start`: a number is printed before the first character of a line, so an empty last line does not get one.",
+  "A file that cannot be opened is reported with `perror`-like text on stderr, the other files are still shown, and the final status is 1."
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-cmds-mytr",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "cmds",
+ "title": "mytr",
+ "stars": 4,
+ "order": 5,
+ "summary": "tr(1): translate characters of standard input by position, or delete them with -d.",
+ "hints": [
+  "For the translation, `strchr(from, c)` gives the position `p` of `c` in `from`; the replacement is `to[p - from]`.",
+  "Compare `strlen(from)` and `strlen(to)` before reading anything. Careful: `strchr(s, 0)` finds the terminator, so test `c != 0`."
+ ]
+}

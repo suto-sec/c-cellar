@@ -5,7 +5,7 @@
  "topic": "stdio",
  "title": "A tiny mv",
  "stars": 2,
- "order": 5,
+ "order": 8,
  "summary": "rename().",
  "hints": [
   "`rename(old, new)` returns 0 on success and -1 on error (and sets `errno`).",

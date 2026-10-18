@@ -1,0 +1,93 @@
+{
+ "cases": [
+  {
+   "name": "w truncates",
+   "cmd": "\"$BIN\" w f.txt new 2>&1; echo \"rc=$?\"; if [ -f f.txt ]; then printf '[%s]' \"$(cat f.txt)\"; else printf '[no file]'; fi",
+   "setup": "printf %s 'old content\n' > f.txt",
+   "stdout": "rc=0\n[new]"
+  },
+  {
+   "name": "w creates",
+   "cmd": "\"$BIN\" w f.txt fresh 2>&1; echo \"rc=$?\"; if [ -f f.txt ]; then printf '[%s]' \"$(cat f.txt)\"; else printf '[no file]'; fi",
+   "setup": ":",
+   "stdout": "rc=0\n[fresh]"
+  },
+  {
+   "name": "a appends",
+   "cmd": "\"$BIN\" a f.txt XY 2>&1; echo \"rc=$?\"; if [ -f f.txt ]; then printf '[%s]' \"$(cat f.txt)\"; else printf '[no file]'; fi",
+   "setup": "printf %s abc > f.txt",
+   "stdout": "rc=0\n[abcXY]"
+  },
+  {
+   "name": "a creates",
+   "cmd": "\"$BIN\" a f.txt first 2>&1; echo \"rc=$?\"; if [ -f f.txt ]; then printf '[%s]' \"$(cat f.txt)\"; else printf '[no file]'; fi",
+   "setup": ":",
+   "stdout": "rc=0\n[first]"
+  },
+  {
+   "name": "r+ overwrites from the start",
+   "cmd": "\"$BIN\" r+ f.txt XY 2>&1; echo \"rc=$?\"; if [ -f f.txt ]; then printf '[%s]' \"$(cat f.txt)\"; else printf '[no file]'; fi",
+   "setup": "printf %s abcdef > f.txt",
+   "stdout": "rc=0\n[XYcdef]"
+  },
+  {
+   "name": "r+ does not truncate and does not grow what it does not write",
+   "cmd": "\"$BIN\" r+ f.txt Z 2>&1; echo \"rc=$?\"; if [ -f f.txt ]; then printf '[%s]' \"$(cat f.txt)\"; else printf '[no file]'; fi",
+   "setup": "printf %s abc > f.txt",
+   "stdout": "rc=0\n[Zbc]"
+  },
+  {
+   "name": "r+ needs the file",
+   "cmd": "\"$BIN\" r+ f.txt XY 2>&1; echo \"rc=$?\"; if [ -f f.txt ]; then printf '[%s]' \"$(cat f.txt)\"; else printf '[no file]'; fi",
+   "setup": ":",
+   "stdout": "fmode: f.txt: No such file or directory\nrc=1\n[no file]"
+  },
+  {
+   "name": "w+ truncates",
+   "cmd": "\"$BIN\" w+ f.txt ab 2>&1; echo \"rc=$?\"; if [ -f f.txt ]; then printf '[%s]' \"$(cat f.txt)\"; else printf '[no file]'; fi",
+   "setup": "printf %s 'long old text' > f.txt",
+   "stdout": "rc=0\n[ab]"
+  },
+  {
+   "name": "w+ creates",
+   "cmd": "\"$BIN\" w+ f.txt ab 2>&1; echo \"rc=$?\"; if [ -f f.txt ]; then printf '[%s]' \"$(cat f.txt)\"; else printf '[no file]'; fi",
+   "setup": ":",
+   "stdout": "rc=0\n[ab]"
+  },
+  {
+   "name": "a+ appends",
+   "cmd": "\"$BIN\" a+ f.txt XY 2>&1; echo \"rc=$?\"; if [ -f f.txt ]; then printf '[%s]' \"$(cat f.txt)\"; else printf '[no file]'; fi",
+   "setup": "printf %s abc > f.txt",
+   "stdout": "rc=0\n[abcXY]"
+  },
+  {
+   "name": "a+ creates",
+   "cmd": "\"$BIN\" a+ f.txt XY 2>&1; echo \"rc=$?\"; if [ -f f.txt ]; then printf '[%s]' \"$(cat f.txt)\"; else printf '[no file]'; fi",
+   "setup": ":",
+   "stdout": "rc=0\n[XY]"
+  },
+  {
+   "name": "r cannot write",
+   "cmd": "\"$BIN\" r f.txt XY 2>&1; echo \"rc=$?\"; if [ -f f.txt ]; then printf '[%s]' \"$(cat f.txt)\"; else printf '[no file]'; fi",
+   "setup": "printf %s abc > f.txt",
+   "stdout": "fmode: write: Bad file descriptor\nrc=1\n[abc]"
+  },
+  {
+   "name": "r needs the file",
+   "cmd": "\"$BIN\" r f.txt XY 2>&1; echo \"rc=$?\"; if [ -f f.txt ]; then printf '[%s]' \"$(cat f.txt)\"; else printf '[no file]'; fi",
+   "setup": ":",
+   "stdout": "fmode: f.txt: No such file or directory\nrc=1\n[no file]"
+  },
+  {
+   "name": "unknown mode",
+   "cmd": "\"$BIN\" x f.txt XY 2>&1; echo \"rc=$?\"; if [ -f f.txt ]; then printf '[%s]' \"$(cat f.txt)\"; else printf '[no file]'; fi",
+   "setup": "printf %s abc > f.txt",
+   "stdout": "usage: fmode MODE FILE TEXT\nrc=2\n[abc]"
+  },
+  {
+   "name": "wrong number of arguments",
+   "cmd": "\"$BIN\" w f.txt 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: fmode MODE FILE TEXT\nrc=2\n"
+  }
+ ]
+}

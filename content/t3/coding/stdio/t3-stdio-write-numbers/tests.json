@@ -1,0 +1,25 @@
+{
+ "cases": [
+  {
+   "name": "the file",
+   "cmd": "\"$BIN\"; cat numbers.txt",
+   "stdout": "1\n2\n3\n4\n5\n"
+  },
+  {
+   "name": "nothing on the screen",
+   "cmd": "\"$BIN\"",
+   "stdout": ""
+  },
+  {
+   "name": "an old file is replaced",
+   "cmd": "\"$BIN\"; cat numbers.txt",
+   "setup": "seq 1 100 > numbers.txt",
+   "stdout": "1\n2\n3\n4\n5\n"
+  },
+  {
+   "name": "five lines",
+   "cmd": "\"$BIN\"; wc -l < numbers.txt",
+   "stdout": "5\n"
+  }
+ ]
+}

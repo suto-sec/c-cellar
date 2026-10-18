@@ -1,0 +1,81 @@
+{
+ "cases": [
+  {
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir -p d/sub/deep d/empty d/.hid d/sub/more/inner; printf hello > d/a.txt; printf x > d/sub/b.txt; head -c 1000 /dev/zero > d/sub/deep/big.bin; : > d/.hid/note; printf 'twelve bytes' > d/sub/more/a.txt; : > d/zero",
+   "stdout": "files: 6\ndirectories: 6\n"
+  },
+  {
+   "name": "an empty directory",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d",
+   "stdout": "files: 0\ndirectories: 0\n"
+  },
+  {
+   "name": "only files",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d; : > d/a; : > d/.b; : > d/c",
+   "stdout": "files: 3\ndirectories: 0\n"
+  },
+  {
+   "name": "only directories",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir -p d/a/b d/c",
+   "stdout": "files: 0\ndirectories: 3\n"
+  },
+  {
+   "name": "a deep chain",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir -p d/1/2/3/4/5/6/7/8; : > d/1/2/3/4/5/6/7/8/f",
+   "stdout": "files: 1\ndirectories: 8\n"
+  },
+  {
+   "name": "hidden entries count",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir -p d/.h/.i; : > d/.h/.i/.f",
+   "stdout": "files: 1\ndirectories: 2\n"
+  },
+  {
+   "name": "many entries",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir -p d/a d/b; for i in $(seq 1 300); do : > d/a/f$i; : > d/b/g$i; done",
+   "stdout": "files: 600\ndirectories: 2\n"
+  },
+  {
+   "name": "a relative path with dots",
+   "cmd": "cd d/a && \"$BIN\" ../b",
+   "setup": "mkdir -p d/a d/b/x; : > d/b/f",
+   "stdout": "files: 1\ndirectories: 1\n"
+  },
+  {
+   "name": "a file is not a directory",
+   "cmd": "\"$BIN\" f 2>&1; echo \"rc=$?\"",
+   "setup": ": > f",
+   "stdout": "treecount: f: Not a directory\nrc=1\n"
+  },
+  {
+   "name": "missing directory",
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "treecount: nope: No such file or directory\nrc=1\n"
+  },
+  {
+   "name": "no arguments",
+   "cmd": "\"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: treecount DIR\nrc=2\n"
+  }
+ ]
+}

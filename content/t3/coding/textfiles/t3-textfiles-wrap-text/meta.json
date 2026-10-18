@@ -1,0 +1,14 @@
+{
+ "id": "t3-textfiles-wrap-text",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "textfiles",
+ "title": "Wrap text to a width",
+ "stars": 5,
+ "order": 10,
+ "summary": "Re-flow the words of standard input into lines of at most WIDTH characters.",
+ "hints": [
+  "Keep the current column `col` (the length of the line you are building). A word fits if `col + 1 + strlen(word) <= width`; if so print a space and the word.",
+  "Otherwise print a newline and start the next line with the word (a word longer than the width gets its own line). Print a final newline only if something was written."
+ ]
+}

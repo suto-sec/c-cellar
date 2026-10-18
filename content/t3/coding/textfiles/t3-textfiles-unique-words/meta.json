@@ -1,0 +1,14 @@
+{
+ "id": "t3-textfiles-unique-words",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "textfiles",
+ "title": "Unique words, sorted",
+ "stars": 3,
+ "order": 2,
+ "summary": "Every different word of a file, once, in alphabetical order, for a file of any size.",
+ "hints": [
+  "Read words with `fscanf(f, \"%63s\", w)` into a `char **` that grows with `realloc` (copy each with `strdup`), sort with `qsort` and `strcmp`.",
+  "After sorting, a word is a repeat if it equals the previous one: print only when it differs."
+ ]
+}

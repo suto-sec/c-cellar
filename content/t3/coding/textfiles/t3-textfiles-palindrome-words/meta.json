@@ -1,0 +1,14 @@
+{
+ "id": "t3-textfiles-palindrome-words",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "textfiles",
+ "title": "Palindrome words",
+ "stars": 3,
+ "order": 4,
+ "summary": "Find the words of a file that read the same backwards.",
+ "hints": [
+  "Write a function `int is_palindrome(const char *s)` with two indexes, `i` from the start and `j` from the end, moving towards the middle.",
+  "A word has to be at least 2 characters long. Count the ones you print for the last line."
+ ]
+}

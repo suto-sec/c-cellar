@@ -1,0 +1,43 @@
+{
+ "cases": [
+  {
+   "stdin": "one\ntwo\nthree\n",
+   "stdout": "three\ntwo\none\n"
+  },
+  {
+   "name": "one line",
+   "stdin": "alone\n",
+   "stdout": "alone\n"
+  },
+  {
+   "name": "empty input",
+   "stdin": "",
+   "stdout": ""
+  },
+  {
+   "name": "blank lines are lines",
+   "stdin": "a\n\n\nb\n",
+   "stdout": "b\n\n\na\n"
+  },
+  {
+   "name": "no final newline",
+   "stdin": "a\nb\nc",
+   "stdout": "c\nb\na\n"
+  },
+  {
+   "name": "spaces are kept",
+   "stdin": "  indented\ntrailing  \n",
+   "stdout": "trailing  \n  indented\n"
+  },
+  {
+   "name": "many lines",
+   "cmd": "seq 1 100000 | \"$BIN\" | head -n 3",
+   "stdout": "100000\n99999\n99998\n"
+  },
+  {
+   "name": "many lines: the last of the output",
+   "cmd": "seq 1 100000 | \"$BIN\" | tail -n 2",
+   "stdout": "2\n1\n"
+  }
+ ]
+}

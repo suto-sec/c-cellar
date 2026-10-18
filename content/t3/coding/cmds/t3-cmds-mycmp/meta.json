@@ -1,0 +1,14 @@
+{
+ "id": "t3-cmds-mycmp",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "cmds",
+ "title": "mycmp",
+ "stars": 4,
+ "order": 9,
+ "summary": "cmp(1): the first byte where two files differ, or which one ends first.",
+ "hints": [
+  "Read both files with `fgetc` at the same time and count the bytes and the `'\\n'` seen so far in the first file. Stop at the first difference.",
+  "Exit status: 0 identical, 1 different, 2 for trouble (usage, a file that cannot be opened). Use `fopen(name, \"rb\")` (binary-safe, `fgetc` returns `int` so a 0 byte is not the end)."
+ ]
+}

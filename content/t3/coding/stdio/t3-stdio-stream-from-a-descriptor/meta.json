@@ -5,7 +5,7 @@
  "topic": "stdio",
  "title": "From a descriptor to a stream",
  "stars": 4,
- "order": 20,
+ "order": 28,
  "summary": "fdopen(): a FILE * on top of an open descriptor.",
  "hints": [
   "Open the file with `open(name, O_RDONLY)`, then `fdopen(fd, \"r\")` gives a `FILE *` that uses that descriptor.",

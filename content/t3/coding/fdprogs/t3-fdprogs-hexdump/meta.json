@@ -1,0 +1,14 @@
+{
+ "id": "t3-fdprogs-hexdump",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "fdprogs",
+ "title": "A small hex dump",
+ "stars": 4,
+ "order": 4,
+ "summary": "Show a file as hexadecimal bytes, 16 per line, reading it with read in blocks.",
+ "hints": [
+  "Read into an `unsigned char buf[16]` with a loop that keeps calling `read(fd, buf + n, 16 - n)` until the block is full or `read` returns 0 (a read can return fewer bytes than asked).",
+  "`printf(\"%08lx:\", offset)` for the line start and `printf(\" %02x\", buf[i])` for each byte (it is `unsigned`, so it never prints `ffffff..`)."
+ ]
+}

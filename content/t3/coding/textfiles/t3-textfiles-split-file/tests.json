@@ -1,0 +1,63 @@
+{
+ "cases": [
+  {
+   "name": "the example",
+   "cmd": "\"$BIN\" f.txt 3; for k in 1 2 3 4 5 6; do if [ -f f.txt.part$k ]; then echo \"== f.txt.part$k\"; cat f.txt.part$k; fi; done; echo \"$(ls | wc -l) files\"",
+   "setup": "printf %s '1\n2\n3\n4\n5\n6\n7\n' > f.txt",
+   "stdout": "f.txt.part1: 3 lines\nf.txt.part2: 3 lines\nf.txt.part3: 1 lines\n== f.txt.part1\n1\n2\n3\n== f.txt.part2\n4\n5\n6\n== f.txt.part3\n7\n4 files\n"
+  },
+  {
+   "name": "exact multiple",
+   "cmd": "\"$BIN\" f.txt 2; for k in 1 2 3 4 5 6; do if [ -f f.txt.part$k ]; then echo \"== f.txt.part$k\"; cat f.txt.part$k; fi; done; echo \"$(ls | wc -l) files\"",
+   "setup": "printf %s 'a\nb\nc\nd\n' > f.txt",
+   "stdout": "f.txt.part1: 2 lines\nf.txt.part2: 2 lines\n== f.txt.part1\na\nb\n== f.txt.part2\nc\nd\n3 files\n"
+  },
+  {
+   "name": "one piece",
+   "cmd": "\"$BIN\" f.txt 5; for k in 1 2 3 4 5 6; do if [ -f f.txt.part$k ]; then echo \"== f.txt.part$k\"; cat f.txt.part$k; fi; done; echo \"$(ls | wc -l) files\"",
+   "setup": "printf %s 'x\ny\n' > f.txt",
+   "stdout": "f.txt.part1: 2 lines\n== f.txt.part1\nx\ny\n2 files\n"
+  },
+  {
+   "name": "one line per piece",
+   "cmd": "\"$BIN\" f.txt 1; for k in 1 2 3 4 5 6; do if [ -f f.txt.part$k ]; then echo \"== f.txt.part$k\"; cat f.txt.part$k; fi; done; echo \"$(ls | wc -l) files\"",
+   "setup": "printf %s 'p\nq\nr\n' > f.txt",
+   "stdout": "f.txt.part1: 1 lines\nf.txt.part2: 1 lines\nf.txt.part3: 1 lines\n== f.txt.part1\np\n== f.txt.part2\nq\n== f.txt.part3\nr\n4 files\n"
+  },
+  {
+   "name": "empty lines are lines",
+   "cmd": "\"$BIN\" f.txt 3; for k in 1 2 3 4 5 6; do if [ -f f.txt.part$k ]; then echo \"== f.txt.part$k\"; cat f.txt.part$k; fi; done; echo \"$(ls | wc -l) files\"",
+   "setup": "printf %s '\na\n\n\n' > f.txt",
+   "stdout": "f.txt.part1: 3 lines\nf.txt.part2: 1 lines\n== f.txt.part1\n\na\n\n== f.txt.part2\n\n3 files\n"
+  },
+  {
+   "name": "empty file",
+   "cmd": "\"$BIN\" f.txt 3; ls | wc -l",
+   "setup": ": > f.txt",
+   "stdout": "1\n"
+  },
+  {
+   "name": "the original is not modified",
+   "cmd": "\"$BIN\" f.txt 2 >/dev/null; cat f.txt",
+   "setup": "seq 1 5 > f.txt",
+   "stdout": "1\n2\n3\n4\n5\n"
+  },
+  {
+   "name": "many pieces",
+   "cmd": "\"$BIN\" f.txt 100 | tail -n 1; ls | wc -l",
+   "setup": "seq 1 1050 > f.txt",
+   "stdout": "f.txt.part11: 50 lines\n12\n"
+  },
+  {
+   "name": "bad N",
+   "cmd": "\"$BIN\" f.txt 0 2>&1; echo \"rc=$?\"",
+   "setup": "seq 1 3 > f.txt",
+   "stdout": "usage: splitfile FILE N\nrc=2\n"
+  },
+  {
+   "name": "missing file",
+   "cmd": "\"$BIN\" nope.txt 2 2>&1; echo \"rc=$?\"",
+   "stdout": "splitfile: nope.txt: No such file or directory\nrc=1\n"
+  }
+ ]
+}

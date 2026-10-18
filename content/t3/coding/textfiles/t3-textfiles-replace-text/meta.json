@@ -1,0 +1,14 @@
+{
+ "id": "t3-textfiles-replace-text",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "textfiles",
+ "title": "Replace text",
+ "stars": 4,
+ "order": 8,
+ "summary": "A search and replace over a file, with strstr, printing the pieces as you go.",
+ "hints": [
+  "`strstr(p, old)` finds the next occurrence at or after `p`. Print what is before it with `fwrite(p, 1, hit - p, stdout)`, then `new`, and continue from `hit + strlen(old)`.",
+  "When there are no more occurrences in the line print the rest with `fputs(p, stdout)`: you never need a buffer for the result."
+ ]
+}

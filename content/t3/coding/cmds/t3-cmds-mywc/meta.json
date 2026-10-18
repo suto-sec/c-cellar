@@ -1,0 +1,14 @@
+{
+ "id": "t3-cmds-mywc",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "cmds",
+ "title": "mywc",
+ "stars": 3,
+ "order": 2,
+ "summary": "wc(1) on standard input: lines, words and bytes, or just one of them.",
+ "hints": [
+  "Read with `getchar()` until `EOF`. A word starts when a non-space character follows a space (`isspace`): keep an `inword` flag.",
+  "Bytes are all the characters read, lines are the `'\\n'` characters."
+ ]
+}

@@ -1,0 +1,65 @@
+{
+ "cases": [
+  {
+   "name": "four numbers",
+   "stdin": "5 1 4 2\n",
+   "stdout": "count: 4\nmin: 1\nmax: 5\nmedian: 3.0\n"
+  },
+  {
+   "name": "an odd count",
+   "stdin": "9 3 7\n",
+   "stdout": "count: 3\nmin: 3\nmax: 9\nmedian: 7.0\n"
+  },
+  {
+   "name": "one number",
+   "stdin": "42\n",
+   "stdout": "count: 1\nmin: 42\nmax: 42\nmedian: 42.0\n"
+  },
+  {
+   "name": "negative numbers",
+   "stdin": "-5 -1 -10 4 0\n",
+   "stdout": "count: 5\nmin: -10\nmax: 4\nmedian: -1.0\n"
+  },
+  {
+   "name": "equal numbers",
+   "stdin": "7 7 7 7\n",
+   "stdout": "count: 4\nmin: 7\nmax: 7\nmedian: 7.0\n"
+  },
+  {
+   "name": "the two middle values add up to an odd number",
+   "stdin": "1 2\n",
+   "stdout": "count: 2\nmin: 1\nmax: 2\nmedian: 1.5\n"
+  },
+  {
+   "name": "several lines and blanks",
+   "stdin": "3\n\n  1 2\n\n5   4\n",
+   "stdout": "count: 5\nmin: 1\nmax: 5\nmedian: 3.0\n"
+  },
+  {
+   "name": "a lot of numbers",
+   "cmd": "seq 100000 -1 1 | \"$BIN\"",
+   "stdout": "count: 100000\nmin: 1\nmax: 100000\nmedian: 50000.5\n"
+  },
+  {
+   "name": "millions of numbers",
+   "cmd": "seq 1 2000000 | \"$BIN\"",
+   "timeout": 10,
+   "stdout": "count: 2000000\nmin: 1\nmax: 2000000\nmedian: 1000000.5\n"
+  },
+  {
+   "name": "no numbers",
+   "cmd": "\"$BIN\" </dev/null 2>&1; echo \"rc=$?\"",
+   "stdout": "numstats: no numbers\nrc=1\n"
+  },
+  {
+   "name": "only blanks",
+   "cmd": "echo '  ' | \"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "numstats: no numbers\nrc=1\n"
+  },
+  {
+   "name": "a word in the middle",
+   "cmd": "echo '1 2 x 4' | \"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "numstats: bad input\nrc=1\n"
+  }
+ ]
+}

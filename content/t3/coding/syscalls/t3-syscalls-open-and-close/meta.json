@@ -1,0 +1,14 @@
+{
+ "id": "t3-syscalls-open-and-close",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "syscalls",
+ "title": "Open a file with open",
+ "stars": 1,
+ "order": 2,
+ "summary": "The first system call on a file: open returns a number (a descriptor), and close gives it back.",
+ "hints": [
+  "`open` returns -1 when it fails, otherwise a small number: the descriptor.",
+  "Descriptors 0, 1 and 2 are the keyboard, the screen and the error output, so your first file gets 3."
+ ]
+}

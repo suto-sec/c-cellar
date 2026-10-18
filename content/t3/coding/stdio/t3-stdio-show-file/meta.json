@@ -5,7 +5,7 @@
  "topic": "stdio",
  "title": "Show a file",
  "stars": 2,
- "order": 2,
+ "order": 4,
  "summary": "fopen, fgets and fputs.",
  "hints": [
   "Open with `fopen(name, \"r\")` and check for `NULL`; read with `fgets` until it returns `NULL`.",

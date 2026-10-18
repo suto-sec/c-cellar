@@ -5,7 +5,7 @@
  "topic": "syscalls",
  "title": "copyfile with system calls",
  "stars": 3,
- "order": 4,
+ "order": 6,
  "summary": "open/read/write/close; errors with errno.",
  "hints": [
   "Read in a loop until `read` returns 0; write exactly as many bytes as `read` returned.",

@@ -1,0 +1,39 @@
+{
+ "cases": [
+  {
+   "name": "the example",
+   "stdin": "1 3 4 5\n",
+   "stdout": "1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nBase:\nHeight:\nArea = 6.00\n1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nBye\n"
+  },
+  {
+   "name": "rectangle and square",
+   "stdin": "2 2.5 4 3 1.5 5\n",
+   "stdout": "1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nWidth:\nHeight:\nArea = 10.00\n1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nSide:\nArea = 2.25\n1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nBye\n"
+  },
+  {
+   "name": "circle",
+   "stdin": "4 2 4 1.5 4 10 5\n",
+   "stdout": "1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nRadius:\nArea = 12.57\n1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nRadius:\nArea = 7.07\n1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nRadius:\nArea = 314.16\n1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nBye\n"
+  },
+  {
+   "name": "every option",
+   "stdin": "1 5 7 2 3 8 3 9 4 3 5\n",
+   "stdout": "1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nBase:\nHeight:\nArea = 17.50\n1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nWidth:\nHeight:\nArea = 24.00\n1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nSide:\nArea = 81.00\n1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nRadius:\nArea = 28.27\n1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nBye\n"
+  },
+  {
+   "name": "invalid options",
+   "stdin": "0 6 -1 5\n",
+   "stdout": "1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nInvalid option\n1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nInvalid option\n1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nInvalid option\n1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nBye\n"
+  },
+  {
+   "name": "the input ends without 5",
+   "stdin": "3 4 1 2\n",
+   "stdout": "1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nSide:\nArea = 16.00\n1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\nBase:\nHeight:\n"
+  },
+  {
+   "name": "empty input",
+   "stdin": "",
+   "stdout": "1. Triangle area\n2. Rectangle area\n3. Square area\n4. Circle area\n5. Exit\nOption:\n"
+  }
+ ]
+}

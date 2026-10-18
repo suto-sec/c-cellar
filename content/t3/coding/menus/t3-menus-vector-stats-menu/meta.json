@@ -1,0 +1,14 @@
+{
+ "id": "t3-menus-vector-stats-menu",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "menus",
+ "title": "Statistics of a vector",
+ "stars": 3,
+ "order": 4,
+ "summary": "Read N numbers into an array, then answer menu options with functions that receive the array.",
+ "hints": [
+  "Pass the array and its length to every function: `int sum(const int *v, int n)`. Allocate the array with `malloc(n * sizeof(int))`.",
+  "For option 5 sort a **copy**, or a bubble sort in place if you do not need the original order afterwards."
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-textfiles-split-file",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "textfiles",
+ "title": "Split a file in pieces",
+ "stars": 4,
+ "order": 9,
+ "summary": "Write a file as several smaller files of N lines each, named FILE.part1, FILE.part2...",
+ "hints": [
+  "Keep the output `FILE *` and a line counter: open a new piece (`snprintf(name, sizeof(name), \"%s.part%d\", ...)`) only when you have a line to write and no piece is open.",
+  "After writing N lines close the piece and print its summary. When the input ends, close the last piece if there is one open."
+ ]
+}

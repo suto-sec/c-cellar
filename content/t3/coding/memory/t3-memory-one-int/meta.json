@@ -1,0 +1,14 @@
+{
+ "id": "t3-memory-one-int",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "memory",
+ "title": "Your first malloc",
+ "stars": 2,
+ "order": 1,
+ "summary": "Ask the system for the memory of ONE int, use it through a pointer, and give it back.",
+ "hints": [
+  "`malloc(sizeof(int))` returns a pointer to space for one `int`: store the result in an `int *`.",
+  "Use it with `*p`, and call `free(p)` when you are done."
+ ]
+}

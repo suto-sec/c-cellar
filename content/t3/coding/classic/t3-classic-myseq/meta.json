@@ -1,0 +1,14 @@
+{
+ "id": "t3-classic-myseq",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "classic",
+ "title": "myseq",
+ "stars": 3,
+ "order": 1,
+ "summary": "seq(1) without options: LAST, FIRST LAST or FIRST INCREMENT LAST.",
+ "hints": [
+  "`argc` tells you which of the three forms you got: 2, 3 or 4 means `LAST`, `FIRST LAST`, `FIRST INCREMENT LAST`.",
+  "Convert with `atoi`. With a positive increment loop while `i <= last`; with a negative one loop while `i >= last`."
+ ]
+}

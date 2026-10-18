@@ -1,0 +1,54 @@
+{
+ "cases": [
+  {
+   "name": "the example",
+   "stdin": "add ana 111\nadd bob 222\nfind bob\ndel ana\nlist\nquit\n",
+   "stdout": "added\nadded\nbob: 222\ndeleted\nbob 222\n"
+  },
+  {
+   "name": "an empty book",
+   "stdin": "list\ncount\nfind x\ndel x\nquit\n",
+   "stdout": "(empty)\ncount: 0\nnot found\nnot found\n"
+  },
+  {
+   "name": "repeated names",
+   "stdin": "add ana 1\nadd ana 2\nfind ana\ncount\nquit\n",
+   "stdout": "added\nexists\nana: 1\ncount: 1\n"
+  },
+  {
+   "name": "delete in the middle keeps the order",
+   "stdin": "add a 1\nadd b 2\nadd c 3\nadd d 4\ndel b\nlist\ncount\nquit\n",
+   "stdout": "added\nadded\nadded\nadded\ndeleted\na 1\nc 3\nd 4\ncount: 3\n"
+  },
+  {
+   "name": "delete the first and the last",
+   "stdin": "add a 1\nadd b 2\nadd c 3\ndel a\ndel c\nlist\nquit\n",
+   "stdout": "added\nadded\nadded\ndeleted\ndeleted\nb 2\n"
+  },
+  {
+   "name": "delete everything and add again",
+   "stdin": "add a 1\ndel a\nlist\nadd b 2\nlist\nquit\n",
+   "stdout": "added\ndeleted\n(empty)\nadded\nb 2\n"
+  },
+  {
+   "name": "unknown commands",
+   "stdin": "hello\nadd x 9\nremove\ncount\nquit\n",
+   "stdout": "unknown command\nadded\nunknown command\ncount: 1\n"
+  },
+  {
+   "name": "stops at quit",
+   "stdin": "add a 1\nquit\nadd b 2\nlist\n",
+   "stdout": "added\n"
+  },
+  {
+   "name": "the input ends without quit",
+   "stdin": "add a 1\nlist\n",
+   "stdout": "added\na 1\n"
+  },
+  {
+   "name": "a long list (more than a fixed array)",
+   "stdin": "add n1 1001\nadd n2 1002\nadd n3 1003\nadd n4 1004\nadd n5 1005\nadd n6 1006\nadd n7 1007\nadd n8 1008\nadd n9 1009\nadd n10 1010\nadd n11 1011\nadd n12 1012\nadd n13 1013\nadd n14 1014\nadd n15 1015\nadd n16 1016\nadd n17 1017\nadd n18 1018\nadd n19 1019\nadd n20 1020\nadd n21 1021\nadd n22 1022\nadd n23 1023\nadd n24 1024\nadd n25 1025\nadd n26 1026\nadd n27 1027\nadd n28 1028\nadd n29 1029\nadd n30 1030\nadd n31 1031\nadd n32 1032\nadd n33 1033\nadd n34 1034\nadd n35 1035\nadd n36 1036\nadd n37 1037\nadd n38 1038\nadd n39 1039\nadd n40 1040\nadd n41 1041\nadd n42 1042\nadd n43 1043\nadd n44 1044\nadd n45 1045\nadd n46 1046\nadd n47 1047\nadd n48 1048\nadd n49 1049\nadd n50 1050\nadd n51 1051\nadd n52 1052\nadd n53 1053\nadd n54 1054\nadd n55 1055\nadd n56 1056\nadd n57 1057\nadd n58 1058\nadd n59 1059\nadd n60 1060\nadd n61 1061\nadd n62 1062\nadd n63 1063\nadd n64 1064\nadd n65 1065\nadd n66 1066\nadd n67 1067\nadd n68 1068\nadd n69 1069\nadd n70 1070\nadd n71 1071\nadd n72 1072\nadd n73 1073\nadd n74 1074\nadd n75 1075\nadd n76 1076\nadd n77 1077\nadd n78 1078\nadd n79 1079\nadd n80 1080\nadd n81 1081\nadd n82 1082\nadd n83 1083\nadd n84 1084\nadd n85 1085\nadd n86 1086\nadd n87 1087\nadd n88 1088\nadd n89 1089\nadd n90 1090\nadd n91 1091\nadd n92 1092\nadd n93 1093\nadd n94 1094\nadd n95 1095\nadd n96 1096\nadd n97 1097\nadd n98 1098\nadd n99 1099\nadd n100 1100\nadd n101 1101\nadd n102 1102\nadd n103 1103\nadd n104 1104\nadd n105 1105\nadd n106 1106\nadd n107 1107\nadd n108 1108\nadd n109 1109\nadd n110 1110\nadd n111 1111\nadd n112 1112\nadd n113 1113\nadd n114 1114\nadd n115 1115\nadd n116 1116\nadd n117 1117\nadd n118 1118\nadd n119 1119\nadd n120 1120\nadd n121 1121\nadd n122 1122\nadd n123 1123\nadd n124 1124\nadd n125 1125\nadd n126 1126\nadd n127 1127\nadd n128 1128\nadd n129 1129\nadd n130 1130\nadd n131 1131\nadd n132 1132\nadd n133 1133\nadd n134 1134\nadd n135 1135\nadd n136 1136\nadd n137 1137\nadd n138 1138\nadd n139 1139\nadd n140 1140\nadd n141 1141\nadd n142 1142\nadd n143 1143\nadd n144 1144\nadd n145 1145\nadd n146 1146\nadd n147 1147\nadd n148 1148\nadd n149 1149\nadd n150 1150\nadd n151 1151\nadd n152 1152\nadd n153 1153\nadd n154 1154\nadd n155 1155\nadd n156 1156\nadd n157 1157\nadd n158 1158\nadd n159 1159\nadd n160 1160\nadd n161 1161\nadd n162 1162\nadd n163 1163\nadd n164 1164\nadd n165 1165\nadd n166 1166\nadd n167 1167\nadd n168 1168\nadd n169 1169\nadd n170 1170\nadd n171 1171\nadd n172 1172\nadd n173 1173\nadd n174 1174\nadd n175 1175\nadd n176 1176\nadd n177 1177\nadd n178 1178\nadd n179 1179\nadd n180 1180\nadd n181 1181\nadd n182 1182\nadd n183 1183\nadd n184 1184\nadd n185 1185\nadd n186 1186\nadd n187 1187\nadd n188 1188\nadd n189 1189\nadd n190 1190\nadd n191 1191\nadd n192 1192\nadd n193 1193\nadd n194 1194\nadd n195 1195\nadd n196 1196\nadd n197 1197\nadd n198 1198\nadd n199 1199\nadd n200 1200\nadd n201 1201\nadd n202 1202\nadd n203 1203\nadd n204 1204\nadd n205 1205\nadd n206 1206\nadd n207 1207\nadd n208 1208\nadd n209 1209\nadd n210 1210\nadd n211 1211\nadd n212 1212\nadd n213 1213\nadd n214 1214\nadd n215 1215\nadd n216 1216\nadd n217 1217\nadd n218 1218\nadd n219 1219\nadd n220 1220\nadd n221 1221\nadd n222 1222\nadd n223 1223\nadd n224 1224\nadd n225 1225\nadd n226 1226\nadd n227 1227\nadd n228 1228\nadd n229 1229\nadd n230 1230\nadd n231 1231\nadd n232 1232\nadd n233 1233\nadd n234 1234\nadd n235 1235\nadd n236 1236\nadd n237 1237\nadd n238 1238\nadd n239 1239\nadd n240 1240\nadd n241 1241\nadd n242 1242\nadd n243 1243\nadd n244 1244\nadd n245 1245\nadd n246 1246\nadd n247 1247\nadd n248 1248\nadd n249 1249\nadd n250 1250\nadd n251 1251\nadd n252 1252\nadd n253 1253\nadd n254 1254\nadd n255 1255\nadd n256 1256\nadd n257 1257\nadd n258 1258\nadd n259 1259\nadd n260 1260\nadd n261 1261\nadd n262 1262\nadd n263 1263\nadd n264 1264\nadd n265 1265\nadd n266 1266\nadd n267 1267\nadd n268 1268\nadd n269 1269\nadd n270 1270\nadd n271 1271\nadd n272 1272\nadd n273 1273\nadd n274 1274\nadd n275 1275\nadd n276 1276\nadd n277 1277\nadd n278 1278\nadd n279 1279\nadd n280 1280\nadd n281 1281\nadd n282 1282\nadd n283 1283\nadd n284 1284\nadd n285 1285\nadd n286 1286\nadd n287 1287\nadd n288 1288\nadd n289 1289\nadd n290 1290\nadd n291 1291\nadd n292 1292\nadd n293 1293\nadd n294 1294\nadd n295 1295\nadd n296 1296\nadd n297 1297\nadd n298 1298\nadd n299 1299\nadd n300 1300\ncount\nfind n300\ndel n1\nfind n1\ncount\nquit\n",
+   "stdout": "added\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\nadded\ncount: 300\nn300: 1300\ndeleted\nnot found\ncount: 299\n"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-menus-areas-menu",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "menus",
+ "title": "Areas menu",
+ "stars": 3,
+ "order": 3,
+ "summary": "The classic menu: triangle, rectangle, square and circle, each area in its own function.",
+ "hints": [
+  "One function per area, taking its parameters, e.g. `float area_triangle(float, float)`; `main` only shows the menu and calls them.",
+  "Read the numbers with `%f`. Use `3.14159265` for pi, and print the area with `%.2f`."
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-classic-sortwords",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "classic",
+ "title": "Sort the words of a file",
+ "stars": 4,
+ "order": 4,
+ "summary": "A .txt file and its number of words: check the arguments, load the words, bubble-sort them.",
+ "hints": [
+  "Check things in this order: argument count, the `.txt` ending (`strrchr(name, '.')`), the number, then `fopen`. Each failure has its own message and status.",
+  "Load the words with `fscanf(f, \"%31s\", words[i])` into a block of `n * 32` bytes from `calloc`, and sort with two nested loops, swapping with `strcpy` when `strcmp(a, b) > 0`."
+ ]
+}

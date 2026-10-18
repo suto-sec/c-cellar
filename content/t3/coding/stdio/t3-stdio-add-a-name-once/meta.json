@@ -5,7 +5,7 @@
  "topic": "stdio",
  "title": "Add a name once",
  "stars": 4,
- "order": 19,
+ "order": 27,
  "summary": "fopen mode \"a+\": read everything, append at the end.",
  "hints": [
   "`\"a+\"` creates the file if needed, lets you read it, and every write goes to the end.",

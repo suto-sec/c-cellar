@@ -1,0 +1,14 @@
+{
+ "id": "t3-records-number-stats",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "records",
+ "title": "Statistics of any amount of numbers",
+ "stars": 4,
+ "order": 5,
+ "summary": "Read integers until the input ends, growing the array as needed, then report count, minimum, maximum and median.",
+ "hints": [
+  "Start with a small array from `malloc` and double its size with `realloc` whenever it is full: you cannot know how many numbers will come.",
+  "For the median sort the array with `qsort`: the middle element if the count is odd, the mean of the two middle ones if it is even (print with `%.1f`, computing in `double`)."
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-cmds-mytac",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "cmds",
+ "title": "mytac",
+ "stars": 3,
+ "order": 3,
+ "summary": "tac(1): the lines of standard input in reverse order, with as many lines as the input has.",
+ "hints": [
+  "Keep the lines in an array of `char *` that grows with `realloc` (double the capacity when it is full) and copy each line with `strdup`.",
+  "Read with `fgets(buf, 1024, stdin)`. A last line without `\\n` still has to be printed on a line of its own."
+ ]
+}

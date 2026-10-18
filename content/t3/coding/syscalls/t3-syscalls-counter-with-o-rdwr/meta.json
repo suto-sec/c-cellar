@@ -5,7 +5,7 @@
  "topic": "syscalls",
  "title": "A counter with O_RDWR",
  "stars": 3,
- "order": 8,
+ "order": 10,
  "summary": "One descriptor for reading and writing.",
  "hints": [
   "`open(name, O_RDWR)` gives a descriptor you can both `read` and `write`; both move the same file position.",

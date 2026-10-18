@@ -1,0 +1,14 @@
+{
+ "id": "t3-directories-can-open",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "directories",
+ "title": "Open a directory",
+ "stars": 1,
+ "order": 4,
+ "summary": "opendir and closedir: ask the system for a directory and see if it worked.",
+ "hints": [
+  "`opendir` returns `NULL` when it fails, like `fopen`.",
+  "If it worked, give the directory back with `closedir`."
+ ]
+}

@@ -5,7 +5,7 @@
  "topic": "strings",
  "title": "Length and vowels",
  "stars": 2,
- "order": 3,
+ "order": 4,
  "summary": "Read a line with fgets; walk a string up to its '\\0'.",
  "hints": [
   "`fgets` keeps the trailing `'\\n'` in the buffer: do not count it (strip it with `line[strcspn(line, \"\\n\")] = '\\0';`).",

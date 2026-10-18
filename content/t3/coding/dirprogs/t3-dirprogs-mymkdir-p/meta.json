@@ -1,0 +1,14 @@
+{
+ "id": "t3-dirprogs-mymkdir-p",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "dirprogs",
+ "title": "mymkdir -p",
+ "stars": 4,
+ "order": 5,
+ "summary": "Create every missing directory of a path: mkdir for each prefix, and what to do when one already exists.",
+ "hints": [
+  "Go through the path and, at every `/` (after the first character), cut the string there temporarily (`path[i] = '\\0'`), call `mkdir` on that prefix and restore the `/`. Then create the whole path.",
+  "`mkdir` fails with `EEXIST` for something that already exists: that is fine for a directory (test with `opendir`) but an error for a file; in that case report `ENOTDIR`."
+ ]
+}

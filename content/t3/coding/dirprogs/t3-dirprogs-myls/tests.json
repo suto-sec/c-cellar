@@ -1,0 +1,86 @@
+{
+ "cases": [
+  {
+   "args": [
+    "proj"
+   ],
+   "setup": "mkdir -p proj/src proj/.git; : > proj/Makefile; : > proj/README; : > proj/.hidden",
+   "stdout": "Makefile\nREADME\nsrc/\n"
+  },
+  {
+   "name": "with -a",
+   "args": [
+    "-a",
+    "proj"
+   ],
+   "setup": "mkdir -p proj/src proj/.git; : > proj/Makefile; : > proj/README; : > proj/.hidden",
+   "stdout": ".git/\n.hidden\nMakefile\nREADME\nsrc/\n"
+  },
+  {
+   "name": "-a after the directory",
+   "args": [
+    "proj",
+    "-a"
+   ],
+   "setup": "mkdir -p proj/src proj/.git; : > proj/Makefile; : > proj/.hidden",
+   "stdout": ".git/\n.hidden\nMakefile\nsrc/\n"
+  },
+  {
+   "name": "the current directory",
+   "args": [],
+   "setup": "mkdir sub; : > b; : > a; : > .c",
+   "stdout": "a\nb\nsub/\n"
+  },
+  {
+   "name": "the current directory with -a",
+   "args": [
+    "-a"
+   ],
+   "setup": "mkdir sub; : > b; : > a; : > .c",
+   "stdout": ".c\na\nb\nsub/\n"
+  },
+  {
+   "name": "capitals before lowercase, as in strcmp",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d; : > d/b; : > d/B; : > d/a; : > d/A; mkdir d/_z",
+   "stdout": "A\nB\n_z/\na\nb\n"
+  },
+  {
+   "name": "an empty directory",
+   "args": [
+    "e"
+   ],
+   "setup": "mkdir e",
+   "stdout": ""
+  },
+  {
+   "name": "many entries",
+   "cmd": "\"$BIN\" many | head -n 3; \"$BIN\" many | wc -l",
+   "setup": "mkdir many; for i in $(seq 1 500); do : > many/f$i; done",
+   "stdout": "f1\nf10\nf100\n500\n"
+  },
+  {
+   "name": "a directory that does not exist",
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "myls: nope: No such file or directory\nrc=1\n"
+  },
+  {
+   "name": "a file is not a directory",
+   "cmd": "\"$BIN\" f 2>&1; echo \"rc=$?\"",
+   "setup": ": > f",
+   "stdout": "myls: f: Not a directory\nrc=1\n"
+  },
+  {
+   "name": "bad option",
+   "cmd": "\"$BIN\" -l 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: myls [-a] [DIR]\nrc=2\n"
+  },
+  {
+   "name": "two directories",
+   "cmd": "\"$BIN\" a b 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: myls [-a] [DIR]\nrc=2\n"
+  }
+ ]
+}

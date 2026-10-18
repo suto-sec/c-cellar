@@ -1,0 +1,72 @@
+{
+ "cases": [
+  {
+   "args": [
+    "d",
+    "txt",
+    "bak"
+   ],
+   "setup": "mkdir d; : > d/a.txt; : > d/b.txt; : > d/notes.md",
+   "cmd": "\"$BIN\" d txt bak | sort; ls d | tr '\\n' ' '",
+   "stdout": "a.txt -> a.bak\nb.txt -> b.bak\na.bak b.bak notes.md "
+  },
+  {
+   "name": "the content moves with the name",
+   "cmd": "\"$BIN\" d c o; cat d/f.o",
+   "setup": "mkdir d; echo data > d/f.c",
+   "stdout": "f.c -> f.o\ndata\n"
+  },
+  {
+   "name": "only the last extension",
+   "cmd": "\"$BIN\" d gz zip | sort; ls d | tr '\\n' ' '",
+   "setup": "mkdir d; : > d/a.tar.gz; : > d/gz; : > d/b.gz.old",
+   "stdout": "a.tar.gz -> a.tar.zip\na.tar.zip b.gz.old gz "
+  },
+  {
+   "name": "a name that is only the extension",
+   "cmd": "\"$BIN\" d txt bak; echo \"rc=$?\"; ls -A d | tr '\\n' ' '",
+   "setup": "mkdir d; : > d/.txt; : > d/x.txt",
+   "stdout": "x.txt -> x.bak\nrc=0\n.txt x.bak "
+  },
+  {
+   "name": "hidden files count",
+   "cmd": "\"$BIN\" d a b; ls -A d | tr '\\n' ' '",
+   "setup": "mkdir d; : > d/.h.a",
+   "stdout": ".h.a -> .h.b\n.h.b "
+  },
+  {
+   "name": "the new name ends with the old extension",
+   "cmd": "\"$BIN\" d c x.c | sort; ls d | tr '\\n' ' '",
+   "setup": "mkdir d; : > d/a.c; : > d/b.c; : > d/c.c",
+   "stdout": "a.c -> a.x.c\nb.c -> b.x.c\nc.c -> c.x.c\na.x.c b.x.c c.x.c "
+  },
+  {
+   "name": "an existing target is not overwritten",
+   "cmd": "\"$BIN\" d txt bak >o.txt 2>&1; echo \"rc=$?\"; sort o.txt; cat d/a.bak; ls d | tr '\\n' ' '",
+   "setup": "mkdir d; echo keep > d/a.bak; echo new > d/a.txt; echo b > d/b.txt",
+   "stdout": "rc=1\nb.txt -> b.bak\nrenameext: a.txt: target exists\nkeep\na.bak a.txt b.bak "
+  },
+  {
+   "name": "exit status when something is skipped",
+   "cmd": "\"$BIN\" d txt bak >/dev/null 2>&1; echo \"rc=$?\"",
+   "setup": "mkdir d; : > d/a.bak; : > d/a.txt",
+   "stdout": "rc=1\n"
+  },
+  {
+   "name": "nothing to rename",
+   "cmd": "\"$BIN\" d xyz abc; echo \"rc=$?\"",
+   "setup": "mkdir d; : > d/a.txt",
+   "stdout": "rc=0\n"
+  },
+  {
+   "name": "missing directory",
+   "cmd": "\"$BIN\" nope a b 2>&1; echo \"rc=$?\"",
+   "stdout": "renameext: nope: No such file or directory\nrc=1\n"
+  },
+  {
+   "name": "wrong arguments",
+   "cmd": "\"$BIN\" d a 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: renameext DIR OLD NEW\nrc=2\n"
+  }
+ ]
+}

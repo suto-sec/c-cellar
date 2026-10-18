@@ -1,0 +1,14 @@
+{
+ "id": "t3-records-ranking",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "records",
+ "title": "Class ranking",
+ "stars": 4,
+ "order": 2,
+ "summary": "Load NAME GRADE records into an array of structs, sort them with qsort and print a numbered list and the average.",
+ "hints": [
+  "`struct student { char name[32]; double grade; };` in an array that grows with `realloc`. Read each line with `fgets` and `sscanf(line, \"%31s %lf\", s.name, &s.grade)`.",
+  "The comparison function for `qsort` returns the order by grade (bigger first) and, if equal, `strcmp` of the names. The average needs all the grades, so add them while loading."
+ ]
+}

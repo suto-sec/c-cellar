@@ -1,0 +1,14 @@
+{
+ "id": "t3-records-matrix-product",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "records",
+ "title": "Multiply two matrices",
+ "stars": 5,
+ "order": 6,
+ "summary": "A struct that owns a dynamically allocated block of numbers, functions that create and free it, and the triple loop.",
+ "hints": [
+  "`struct matrix { int rows, cols; long *data; };` with the element `(i, j)` at `data[i * cols + j]`. Write `create(rows, cols)` (with `calloc`), `release(m)` and `multiply(a, b)`.",
+  "`c(i, j) = sum over k of a(i, k) * b(k, j)`. Check `a.cols == b.rows` before multiplying. Free everything you allocated."
+ ]
+}

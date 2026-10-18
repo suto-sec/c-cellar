@@ -5,7 +5,7 @@
  "topic": "stdio",
  "title": "Two passes over a file",
  "stars": 3,
- "order": 11,
+ "order": 18,
  "summary": "rewind() goes back to the start of a stream.",
  "hints": [
   "Read the numbers once to get the sum and the count, call `rewind(f)`, and read them again.",

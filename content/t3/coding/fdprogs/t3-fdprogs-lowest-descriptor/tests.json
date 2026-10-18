@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "echo hello > f.txt",
+   "stdout": "a=3\nb=4\nc=3\nd=5\ne=10\nf=6\n"
+  },
+  {
+   "name": "any file",
+   "args": [
+    "/etc/passwd"
+   ],
+   "stdout": "a=3\nb=4\nc=3\nd=5\ne=10\nf=6\n"
+  },
+  {
+   "name": "missing file",
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "fdnums: nope: No such file or directory\nrc=1\n"
+  },
+  {
+   "name": "no arguments",
+   "cmd": "\"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: fdnums FILE\nrc=2\n"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-fdprogs-open-modes",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "fdprogs",
+ "title": "fopen modes with open",
+ "stars": 4,
+ "order": 5,
+ "summary": "What r, w, a, r+, w+ and a+ mean as flags of open: create, truncate, append and the access mode.",
+ "hints": [
+  "`r` is `O_RDONLY`, `w` is `O_WRONLY | O_CREAT | O_TRUNC`, `a` is `O_WRONLY | O_CREAT | O_APPEND`. The `+` modes use `O_RDWR` instead (`r+` has no `O_CREAT`).",
+  "The permission argument (`0644`) is only used when the file is created. Check both the result of `open` and the result of `write`."
+ ]
+}

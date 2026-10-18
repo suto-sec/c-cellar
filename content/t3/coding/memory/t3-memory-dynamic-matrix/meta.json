@@ -5,7 +5,7 @@
  "topic": "memory",
  "title": "A matrix on the heap",
  "stars": 4,
- "order": 6,
+ "order": 7,
  "summary": "An array of pointers to rows.",
  "hints": [
   "First allocate an array of `r` pointers (`int **m`), then allocate each row with `malloc`.",

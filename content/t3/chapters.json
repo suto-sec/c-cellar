@@ -119,6 +119,48 @@
    "title": "Exam-style programs",
    "track": "exercises",
    "blurb": "Whole programs that combine several chapters, like the exam."
+  },
+  {
+   "id": "classic",
+   "title": "Class exercises",
+   "track": "exercises",
+   "blurb": "The programs of the class list (myseq, myhead, mycd, sorting the words of a file), written the way the exam asks."
+  },
+  {
+   "id": "menus",
+   "title": "Menus & functions",
+   "track": "exercises",
+   "blurb": "Programs that repeat a numbered menu until Exit, with one function per option."
+  },
+  {
+   "id": "cmds",
+   "title": "Commands from scratch",
+   "track": "exercises",
+   "blurb": "Your own wc, cat -n, tac, uniq, cut, tr, basename and sort: arguments, options and standard input."
+  },
+  {
+   "id": "textfiles",
+   "title": "Text files & words",
+   "track": "exercises",
+   "blurb": "Read a text file and work with its lines and words: sorting, counting, wrapping, splitting."
+  },
+  {
+   "id": "fdprogs",
+   "title": "Descriptors & system calls",
+   "track": "exercises",
+   "blurb": "open flags, dup, dup2, read, write and lseek in small programs."
+  },
+  {
+   "id": "dirprogs",
+   "title": "Directories & the file system",
+   "track": "exercises",
+   "blurb": "opendir/readdir, access, mkdir, rename and remove: walk a tree and report or change it."
+  },
+  {
+   "id": "records",
+   "title": "Records & dynamic data",
+   "track": "exercises",
+   "blurb": "Structs, arrays that grow with realloc, and programs that keep a collection in memory."
   }
  ]
 }

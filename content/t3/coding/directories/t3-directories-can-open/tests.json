@@ -1,0 +1,36 @@
+{
+ "cases": [
+  {
+   "args": [
+    "."
+   ],
+   "stdout": ". is a directory\n"
+  },
+  {
+   "name": "another directory",
+   "args": [
+    "/usr"
+   ],
+   "stdout": "/usr is a directory\n"
+  },
+  {
+   "name": "a relative one",
+   "args": [
+    "sub"
+   ],
+   "setup": "mkdir sub",
+   "stdout": "sub is a directory\n"
+  },
+  {
+   "name": "a file is not a directory",
+   "cmd": "\"$BIN\" f; echo \"rc=$?\"",
+   "setup": ": > f",
+   "stdout": "cannot open f\nrc=1\n"
+  },
+  {
+   "name": "does not exist",
+   "cmd": "\"$BIN\" nope; echo \"rc=$?\"",
+   "stdout": "cannot open nope\nrc=1\n"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-dirprogs-disk-usage",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "dirprogs",
+ "title": "Bytes in a tree",
+ "stars": 5,
+ "order": 8,
+ "summary": "The total size of all the files under a directory, measuring each one with lseek.",
+ "hints": [
+  "A helper `walk(const char *dir)` calls itself for each subdirectory. Build the child path with `snprintf(path, sizeof(path), \"%s/%s\", dir, name)`, and **skip `.` and `..`**: without that the recursion never ends.",
+  "The size of a file: `open` it, `lseek(fd, 0, SEEK_END)` returns its length, then `close`. An entry is a directory if `opendir(path)` succeeds (close it again with `closedir`); otherwise treat it as a file."
+ ]
+}

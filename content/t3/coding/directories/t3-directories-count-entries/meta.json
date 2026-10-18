@@ -5,7 +5,7 @@
  "topic": "directories",
  "title": "Count the entries",
  "stars": 2,
- "order": 4,
+ "order": 6,
  "summary": "opendir and readdir.",
  "hints": [
   "`opendir` returns a `DIR *` (or NULL); `readdir` returns a `struct dirent *` for each entry and NULL at the end; the name is `e->d_name`.",

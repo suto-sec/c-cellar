@@ -1,0 +1,87 @@
+{
+ "cases": [
+  {
+   "args": [
+    "/usr/bin/gcc"
+   ],
+   "stdout": "gcc\n"
+  },
+  {
+   "args": [
+    "src/main.c",
+    ".c"
+   ],
+   "stdout": "main\n"
+  },
+  {
+   "name": "no directory",
+   "args": [
+    "notes.txt"
+   ],
+   "stdout": "notes.txt\n"
+  },
+  {
+   "name": "trailing slashes",
+   "args": [
+    "a/b//"
+   ],
+   "stdout": "b\n"
+  },
+  {
+   "name": "only slashes",
+   "args": [
+    "//"
+   ],
+   "stdout": "/\n"
+  },
+  {
+   "name": "the root",
+   "args": [
+    "/"
+   ],
+   "stdout": "/\n"
+  },
+  {
+   "name": "the suffix is the whole name",
+   "args": [
+    ".c",
+    ".c"
+   ],
+   "stdout": ".c\n"
+  },
+  {
+   "name": "the suffix does not match",
+   "args": [
+    "main.c",
+    ".h"
+   ],
+   "stdout": "main.c\n"
+  },
+  {
+   "name": "suffix in the middle",
+   "args": [
+    "a.c.old",
+    ".c"
+   ],
+   "stdout": "a.c.old\n"
+  },
+  {
+   "name": "many slashes",
+   "args": [
+    "///a//b///c.tar.gz",
+    ".gz"
+   ],
+   "stdout": "c.tar\n"
+  },
+  {
+   "name": "no arguments",
+   "cmd": "\"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: mybasename PATH [SUFFIX]\nrc=2\n"
+  },
+  {
+   "name": "too many arguments",
+   "cmd": "\"$BIN\" a b c 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: mybasename PATH [SUFFIX]\nrc=2\n"
+  }
+ ]
+}

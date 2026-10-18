@@ -1,0 +1,69 @@
+{
+ "cases": [
+  {
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir -p d/sub/deep d/empty d/.hid d/sub/more/inner; printf hello > d/a.txt; printf x > d/sub/b.txt; head -c 1000 /dev/zero > d/sub/deep/big.bin; : > d/.hid/note; printf 'twelve bytes' > d/sub/more/a.txt; : > d/zero",
+   "stdout": "1018\n"
+  },
+  {
+   "name": "an empty directory",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d",
+   "stdout": "0\n"
+  },
+  {
+   "name": "one file",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d; printf 'abcde' > d/f",
+   "stdout": "5\n"
+  },
+  {
+   "name": "hidden files and deep files",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir -p d/.a/b; printf 123 > d/.a/b/c; printf 45 > d/.x",
+   "stdout": "5\n"
+  },
+  {
+   "name": "empty files",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir -p d/e; : > d/e/f; : > d/g",
+   "stdout": "0\n"
+  },
+  {
+   "name": "a big file (more than 2 MB)",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d; head -c 3000000 /dev/zero > d/big; printf x > d/small",
+   "stdout": "3000001\n"
+  },
+  {
+   "name": "many files",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d; for i in $(seq 1 200); do printf 1234567890 > d/f$i; done",
+   "stdout": "2000\n"
+  },
+  {
+   "name": "missing directory",
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "dusum: nope: No such file or directory\nrc=1\n"
+  },
+  {
+   "name": "no arguments",
+   "cmd": "\"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: dusum DIR\nrc=2\n"
+  }
+ ]
+}

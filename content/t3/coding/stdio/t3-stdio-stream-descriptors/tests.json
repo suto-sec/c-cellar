@@ -1,0 +1,17 @@
+{
+ "cases": [
+  {
+   "stdout": "stdin = 0\nstdout = 1\nstderr = 2\n"
+  },
+  {
+   "name": "it does not read its input",
+   "stdin": "ignored\n",
+   "stdout": "stdin = 0\nstdout = 1\nstderr = 2\n"
+  },
+  {
+   "name": "when the output goes to a file",
+   "cmd": "\"$BIN\" > out.txt; cat out.txt",
+   "stdout": "stdin = 0\nstdout = 1\nstderr = 2\n"
+  }
+ ]
+}

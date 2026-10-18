@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" 2>/dev/null",
+   "stdout": "to descriptor 2\n"
+  },
+  {
+   "name": "the other one",
+   "cmd": "\"$BIN\" 2>&1 >/dev/null",
+   "stdout": "to descriptor 1\n"
+  },
+  {
+   "name": "to files",
+   "cmd": "\"$BIN\" >out.txt 2>err.txt; echo \"out: $(cat out.txt)\"; echo \"err: $(cat err.txt)\"",
+   "stdout": "out: to descriptor 2\nerr: to descriptor 1\n"
+  },
+  {
+   "name": "both end in the same place",
+   "cmd": "\"$BIN\" 2>&1 | cat",
+   "stdout": "to descriptor 1\nto descriptor 2\n"
+  },
+  {
+   "name": "an argument",
+   "cmd": "\"$BIN\" x 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: swapfds\nrc=2\n"
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "t3-dirprogs-myls",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "dirprogs",
+ "title": "myls",
+ "stars": 4,
+ "order": 2,
+ "summary": "ls -1 with -a and directories marked with a slash, sorted by name.",
+ "hints": [
+  "Read the names with `readdir` into a growing array, skipping `.` and `..` (and the names that start with `.` unless `-a`), sort with `qsort` and `strcmp`.",
+  "A name is a directory if `opendir(\"DIR/name\")` works: build the path with `snprintf` and close it again with `closedir`."
+ ]
+}

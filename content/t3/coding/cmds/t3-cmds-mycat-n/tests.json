@@ -1,0 +1,70 @@
+{
+ "cases": [
+  {
+   "args": [
+    "-n",
+    "x.txt",
+    "x.txt"
+   ],
+   "setup": "printf 'a\\nb\\n' > x.txt",
+   "stdout": "     1\ta\n     2\tb\n     3\ta\n     4\tb\n"
+  },
+  {
+   "name": "without -n",
+   "args": [
+    "x.txt",
+    "y.txt"
+   ],
+   "setup": "printf 'a\\nb\\n' > x.txt; printf 'c\\n' > y.txt",
+   "stdout": "a\nb\nc\n"
+  },
+  {
+   "name": "standard input",
+   "args": [
+    "-n"
+   ],
+   "stdin": "first\nsecond\n\nfourth\n",
+   "stdout": "     1\tfirst\n     2\tsecond\n     3\t\n     4\tfourth\n"
+  },
+  {
+   "name": "standard input without options",
+   "stdin": "just\ncopy\n",
+   "stdout": "just\ncopy\n"
+  },
+  {
+   "name": "blank lines are numbered",
+   "args": [
+    "-n",
+    "b.txt"
+   ],
+   "setup": "printf '\\n\\nx\\n\\n' > b.txt",
+   "stdout": "     1\t\n     2\t\n     3\tx\n     4\t\n"
+  },
+  {
+   "name": "no final newline",
+   "args": [
+    "-n",
+    "n.txt"
+   ],
+   "setup": "printf 'one\\ntwo' > n.txt",
+   "stdout": "     1\tone\n     2\ttwo"
+  },
+  {
+   "name": "a file and then standard input (-)",
+   "cmd": "printf 'from stdin\\n' | \"$BIN\" -n x.txt -",
+   "setup": "printf 'a\\n' > x.txt",
+   "stdout": "     1\ta\n     2\tfrom stdin\n"
+  },
+  {
+   "name": "long numbers",
+   "cmd": "seq 1 1200 | \"$BIN\" -n | tail -n 2",
+   "stdout": "  1199\t1199\n  1200\t1200\n"
+  },
+  {
+   "name": "a missing file is skipped",
+   "cmd": "\"$BIN\" -n nope.txt x.txt 2>&1; echo \"rc=$?\"",
+   "setup": "printf 'a\\n' > x.txt",
+   "stdout": "mycat: nope.txt: No such file or directory\n     1\ta\nrc=1\n"
+  }
+ ]
+}

@@ -1,0 +1,41 @@
+{
+ "cases": [
+  {
+   "args": [
+    "log.txt"
+   ],
+   "stdout": "starting\n"
+  },
+  {
+   "name": "what is in the file",
+   "cmd": "\"$BIN\" log.txt >/dev/null; cat log.txt",
+   "stdout": "out line\nerr line\n"
+  },
+  {
+   "name": "nothing left on stderr",
+   "cmd": "\"$BIN\" log.txt 2>err.txt >/dev/null; wc -c < err.txt",
+   "stdout": "0\n"
+  },
+  {
+   "name": "stdout and stderr are both in the file",
+   "cmd": "\"$BIN\" log.txt >o.txt 2>e.txt; cat o.txt; echo --; cat e.txt; echo --; cat log.txt",
+   "stdout": "starting\n--\n--\nout line\nerr line\n"
+  },
+  {
+   "name": "an existing file is truncated",
+   "cmd": "\"$BIN\" log.txt >/dev/null; cat log.txt",
+   "setup": "printf 'old old old old old old old old old\\n' > log.txt",
+   "stdout": "out line\nerr line\n"
+  },
+  {
+   "name": "a file that cannot be created",
+   "cmd": "\"$BIN\" no/dir/log.txt 2>&1; echo \"rc=$?\"",
+   "stdout": "starting\nlogboth: no/dir/log.txt: No such file or directory\nrc=1\n"
+  },
+  {
+   "name": "no arguments",
+   "cmd": "\"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: logboth FILE\nrc=2\n"
+  }
+ ]
+}

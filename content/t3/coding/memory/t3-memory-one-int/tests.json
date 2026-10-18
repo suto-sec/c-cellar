@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "21\n",
+   "stdout": "double: 42\n"
+  },
+  {
+   "name": "negative",
+   "stdin": "-8\n",
+   "stdout": "double: -16\n"
+  },
+  {
+   "name": "zero",
+   "stdin": "0\n",
+   "stdout": "double: 0\n"
+  },
+  {
+   "name": "not a number",
+   "cmd": "echo abc | \"$BIN\"; echo \"rc=$?\"",
+   "stdout": "bad input\nrc=1\n"
+  },
+  {
+   "name": "empty input",
+   "cmd": "\"$BIN\" </dev/null; echo \"rc=$?\"",
+   "stdout": "bad input\nrc=1\n"
+  }
+ ]
+}

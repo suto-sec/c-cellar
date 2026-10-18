@@ -1,0 +1,66 @@
+{
+ "cases": [
+  {
+   "args": [
+    "a/b/c"
+   ],
+   "cmd": "\"$BIN\" a/b/c; find a | sort",
+   "stdout": "a\na/b\na/b/c\n"
+  },
+  {
+   "name": "one level",
+   "cmd": "\"$BIN\" one; ls -d one",
+   "stdout": "one\n"
+  },
+  {
+   "name": "part of it exists",
+   "cmd": "\"$BIN\" a/b/c/d; find a | sort",
+   "setup": "mkdir -p a/b; : > a/b/keep",
+   "stdout": "a\na/b\na/b/c\na/b/c/d\na/b/keep\n"
+  },
+  {
+   "name": "everything exists",
+   "cmd": "\"$BIN\" a/b; echo \"rc=$?\"; ls a",
+   "setup": "mkdir -p a/b",
+   "stdout": "rc=0\nb\n"
+  },
+  {
+   "name": "trailing slash and double slashes",
+   "cmd": "\"$BIN\" x//y/z/; find x | sort",
+   "stdout": "x\nx/y\nx/y/z\n"
+  },
+  {
+   "name": "absolute path",
+   "cmd": "\"$BIN\" \"$PWD/abs/p\"; find abs | sort",
+   "stdout": "abs\nabs/p\n"
+  },
+  {
+   "name": "mode 0755",
+   "cmd": "\"$BIN\" m/n; ls -ld m m/n | cut -c1-10",
+   "stdout": "drwxr-xr-x\ndrwxr-xr-x\n"
+  },
+  {
+   "name": "a file in the way",
+   "cmd": "\"$BIN\" f/x/y 2>&1; echo \"rc=$?\"",
+   "setup": ": > f",
+   "stdout": "mymkdirp: f/x/y: Not a directory\nrc=1\n"
+  },
+  {
+   "name": "the path itself is a file",
+   "cmd": "\"$BIN\" f 2>&1; echo \"rc=$?\"",
+   "setup": ": > f",
+   "stdout": "mymkdirp: f: Not a directory\nrc=1\n"
+  },
+  {
+   "name": "no permission",
+   "cmd": "\"$BIN\" ro/x/y 2>&1; echo \"rc=$?\"; chmod 755 ro",
+   "setup": "mkdir ro; chmod 555 ro",
+   "stdout": "mymkdirp: ro/x/y: Permission denied\nrc=1\n"
+  },
+  {
+   "name": "no arguments",
+   "cmd": "\"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: mymkdirp PATH\nrc=2\n"
+  }
+ ]
+}

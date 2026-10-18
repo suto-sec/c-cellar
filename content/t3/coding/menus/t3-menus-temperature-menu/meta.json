@@ -1,0 +1,14 @@
+{
+ "id": "t3-menus-temperature-menu",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "menus",
+ "title": "Temperature menu",
+ "stars": 2,
+ "order": 1,
+ "summary": "A numbered menu that repeats until Exit, with one function per conversion.",
+ "hints": [
+  "Write `float c_to_f(float)` and `float f_to_c(float)`, and keep the loop in `main`: `while (scanf(\"%d\", &option) == 1 && option != 0)`.",
+  "Read the temperature with `%f` and print with `%.1f`."
+ ]
+}

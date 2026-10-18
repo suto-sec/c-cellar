@@ -5,7 +5,7 @@
  "topic": "syscalls",
  "title": "cat with open, read and write",
  "stars": 3,
- "order": 3,
+ "order": 5,
  "summary": "The classic copy loop.",
  "hints": [
   "Loop while `read` returns more than 0; write exactly the number of bytes it returned.",

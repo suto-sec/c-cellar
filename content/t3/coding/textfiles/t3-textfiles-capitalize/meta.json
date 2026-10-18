@@ -1,0 +1,14 @@
+{
+ "id": "t3-textfiles-capitalize",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "textfiles",
+ "title": "Capitalize every word",
+ "stars": 3,
+ "order": 5,
+ "summary": "Copy a file changing each word to Capitalized form, character by character.",
+ "hints": [
+  "Read with `fgetc`. A word is a maximal run of letters (`isalpha`): keep a flag that says whether the previous character was a letter.",
+  "The first letter of a run goes through `toupper`, the rest through `tolower`; every other character is copied unchanged."
+ ]
+}

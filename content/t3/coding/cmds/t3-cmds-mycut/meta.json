@@ -1,0 +1,14 @@
+{
+ "id": "t3-cmds-mycut",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "cmds",
+ "title": "mycut",
+ "stars": 4,
+ "order": 6,
+ "summary": "cut(1) by delimiter and field: -dC -fN, empty fields included.",
+ "hints": [
+  "Walk the line with `strchr(p, delim)`: each call finds the end of the current field. Do not use `strtok_r`, it skips empty fields.",
+  "A line without the delimiter is printed whole, as `cut` does. A line with fewer fields gives an empty line."
+ ]
+}

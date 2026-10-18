@@ -5,7 +5,7 @@
  "topic": "stdio",
  "title": "Number the lines",
  "stars": 3,
- "order": 10,
+ "order": 16,
  "summary": "Formatted output of file content.",
  "hints": [
   "Read with `fgets` and keep a counter.",

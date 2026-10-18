@@ -1,0 +1,41 @@
+{
+ "cases": [
+  {
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d; : > d/apple; : > d/banana; mkdir d/cherry",
+   "match": "sorted",
+   "stdout": ".\n..\napple\nbanana\ncherry\n"
+  },
+  {
+   "name": "an empty directory still has . and ..",
+   "args": [
+    "e"
+   ],
+   "setup": "mkdir e",
+   "match": "sorted",
+   "stdout": ".\n..\n"
+  },
+  {
+   "name": "hidden files",
+   "args": [
+    "h"
+   ],
+   "setup": "mkdir h; : > h/.secret; : > h/open",
+   "match": "sorted",
+   "stdout": ".\n..\n.secret\nopen\n"
+  },
+  {
+   "name": "many entries",
+   "cmd": "\"$BIN\" many | wc -l",
+   "setup": "mkdir many; for i in $(seq 1 300); do : > many/f$i; done",
+   "stdout": "302\n"
+  },
+  {
+   "name": "missing directory",
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "cannot open nope\nrc=1\n"
+  }
+ ]
+}

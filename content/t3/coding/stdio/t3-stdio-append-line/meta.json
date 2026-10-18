@@ -5,7 +5,7 @@
  "topic": "stdio",
  "title": "Append a line",
  "stars": 2,
- "order": 4,
+ "order": 6,
  "summary": "The \"a\" mode.",
  "hints": [
   "`fopen(name, \"a\")` opens for appending and creates the file if needed; writes always go to the end.",

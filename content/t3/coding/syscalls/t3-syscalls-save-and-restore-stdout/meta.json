@@ -5,7 +5,7 @@
  "topic": "syscalls",
  "title": "Save and restore stdout",
  "stars": 4,
- "order": 12,
+ "order": 14,
  "summary": "dup() and dup2() together.",
  "hints": [
   "`int saved = dup(1);` keeps a copy of the real standard output before you replace it.",

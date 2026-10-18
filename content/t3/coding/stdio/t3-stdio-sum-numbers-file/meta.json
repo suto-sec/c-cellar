@@ -1,0 +1,14 @@
+{
+ "id": "t3-stdio-sum-numbers-file",
+ "tag": "t3",
+ "track": "derusting",
+ "topic": "stdio",
+ "title": "Sum the numbers of a file",
+ "stars": 2,
+ "order": 17,
+ "summary": "fscanf is scanf for a file: read integers until it stops returning 1.",
+ "hints": [
+  "`while (fscanf(f, \"%d\", &x) == 1)` repeats while a number could be read.",
+  "Use a `long` for the sum."
+ ]
+}

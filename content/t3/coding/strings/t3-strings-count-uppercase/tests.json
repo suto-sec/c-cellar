@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "Hello, World 2024!\n",
+   "stdout": "capitals: 2\n"
+  },
+  {
+   "name": "all capitals",
+   "stdin": "ABC xyz DEF\n",
+   "stdout": "capitals: 6\n"
+  },
+  {
+   "name": "none",
+   "stdin": "all lower case 123\n",
+   "stdout": "capitals: 0\n"
+  },
+  {
+   "name": "no final newline",
+   "stdin": "aBc",
+   "stdout": "capitals: 1\n"
+  },
+  {
+   "name": "empty input",
+   "stdin": "",
+   "stdout": "capitals: 0\n"
+  }
+ ]
+}

@@ -5,7 +5,7 @@
  "topic": "stdio",
  "title": "Write, then read back",
  "stars": 3,
- "order": 13,
+ "order": 20,
  "summary": "fopen mode \"w+\".",
  "hints": [
   "`\"w+\"` creates (or empties) the file and lets you read and write it.",

@@ -1,0 +1,40 @@
+{
+ "cases": [
+  {
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'abcdefghijkl' > f.txt",
+   "stdout": "read 8 bytes: abcdefgh\n"
+  },
+  {
+   "name": "a short file",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf 'abc' > f.txt",
+   "stdout": "read 3 bytes: abc\n"
+  },
+  {
+   "name": "exactly 8",
+   "args": [
+    "f.txt"
+   ],
+   "setup": "printf '12345678' > f.txt",
+   "stdout": "read 8 bytes: 12345678\n"
+  },
+  {
+   "name": "an empty file",
+   "args": [
+    "f.txt"
+   ],
+   "setup": ": > f.txt",
+   "stdout": "read 0 bytes: \n"
+  },
+  {
+   "name": "missing file",
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "cannot open nope\nrc=1\n"
+  }
+ ]
+}

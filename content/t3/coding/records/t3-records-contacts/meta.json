@@ -1,0 +1,14 @@
+{
+ "id": "t3-records-contacts",
+ "tag": "t3",
+ "track": "exercises",
+ "topic": "records",
+ "title": "A contact book",
+ "stars": 4,
+ "order": 3,
+ "summary": "Commands that add, find and delete records kept in a growing array of structs.",
+ "hints": [
+  "`struct contact { char name[32]; char phone[32]; };` in an array that grows with `realloc`. Read the command word with `scanf(\"%31s\", cmd)` and then, depending on it, its arguments.",
+  "To delete entry `i` shift the following ones one position down with `memmove` (or a loop) and decrease the count: the order of the rest must not change."
+ ]
+}

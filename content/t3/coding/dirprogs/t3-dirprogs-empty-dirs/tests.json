@@ -1,0 +1,69 @@
+{
+ "cases": [
+  {
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir -p d/sub/deep d/empty d/.hid d/sub/more/inner; printf hello > d/a.txt; printf x > d/sub/b.txt; head -c 1000 /dev/zero > d/sub/deep/big.bin; : > d/.hid/note; printf 'twelve bytes' > d/sub/more/a.txt; : > d/zero",
+   "match": "sorted",
+   "stdout": "d/empty\nd/sub/more/inner\n"
+  },
+  {
+   "name": "nothing is empty",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir -p d/a/b; : > d/a/b/f",
+   "stdout": ""
+  },
+  {
+   "name": "the directory itself",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d",
+   "stdout": "d\n"
+  },
+  {
+   "name": "a hidden file makes it non-empty",
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir -p d/x d/y; : > d/x/.keep",
+   "stdout": "d/y\n"
+  },
+  {
+   "name": "deep",
+   "args": [
+    "top"
+   ],
+   "setup": "mkdir -p top/a/b/c/d/e top/f",
+   "match": "sorted",
+   "stdout": "top/a/b/c/d/e\ntop/f\n"
+  },
+  {
+   "name": "a path with a trailing component",
+   "args": [
+    "a/b"
+   ],
+   "setup": "mkdir -p a/b/c a/b/d; : > a/b/d/x",
+   "stdout": "a/b/c\n"
+  },
+  {
+   "name": "many empty directories",
+   "cmd": "\"$BIN\" t | wc -l",
+   "setup": "mkdir t; for i in $(seq 1 120); do mkdir t/e$i; done",
+   "stdout": "120\n"
+  },
+  {
+   "name": "missing directory",
+   "cmd": "\"$BIN\" nope 2>&1; echo \"rc=$?\"",
+   "stdout": "emptydirs: nope: No such file or directory\nrc=1\n"
+  },
+  {
+   "name": "no arguments",
+   "cmd": "\"$BIN\" 2>&1; echo \"rc=$?\"",
+   "stdout": "usage: emptydirs DIR\nrc=2\n"
+  }
+ ]
+}
