@@ -123,6 +123,29 @@ def check_daily(ref_names):
     del day
 
 
+def check_skipped(coding):
+    """A skipped exercise counts nowhere: the readiness totals behave as if it did not exist (the pages do the same with the `skipped` flag)."""
+    if not (S.is_skipped({"skipped": True}) and not S.is_skipped({}) and not S.is_skipped(None)):
+        err("is_skipped")
+    saved = S.PROGRESS_DIR
+    with tempfile.TemporaryDirectory() as w:
+        S.PROGRESS_DIR = Path(w)
+        try:
+            ex = next(iter(coding.values()))
+            total = lambda: {b["topic"]: b["coding_total"] for b in S.readiness(ex["tag"])["topics"]}   # noqa: E731
+            before = total()
+            S.save_progress({"coding": {ex["id"]: {"skipped": True, "passed": True}}, "theory": {}})
+            after = total()
+            if after.get(ex["topic"], 0) != before[ex["topic"]] - 1:
+                err(f"skipped exercise {ex['id']} still counts in the readiness totals")
+            S.save_progress({"coding": {}, "theory": {}})
+            if total() != before:
+                err("unskipping does not bring the exercise back into the totals")
+        finally:
+            S.PROGRESS_DIR = saved
+    print("  ok   skipped exercises count nowhere")
+
+
 def main():
     chapters = S.load_chapters()
     chap = {(c["tag"], c["id"]): c for c in chapters}
@@ -351,6 +374,7 @@ def main():
                 err(f"reference {e['id']}: see-also {s} does not exist")
     bare = [e["title"] for e in S.reference_with_links() if not e["practice"]["count"]]
     print(f"  note: {len(bare)} of {len(ref)} reference entries are used by no exercise yet")
+    check_skipped(coding)
     if errors:
         print(f"\n{len(errors)} problem(s)")
         return 1

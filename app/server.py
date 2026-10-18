@@ -147,6 +147,11 @@ def save_progress(p):
     os.replace(tmp, _progress_file())
 
 
+def is_skipped(entry):
+    """The student marked the exercise as skipped: it counts nowhere (totals, progress, readiness), as if it did not exist."""
+    return bool(entry and entry.get("skipped"))
+
+
 def coding_status(entry):
     if not entry:
         return "todo"
@@ -691,9 +696,11 @@ def readiness(tag):
     for ex in coding.values():
         if ex["tag"] != tag:
             continue
+        e = prog["coding"].get(ex["id"])
+        if is_skipped(e):
+            continue
         b = bucket(ex["topic"])
         b["coding_total"] += 1
-        e = prog["coding"].get(ex["id"])
         if e and e.get("passed"):
             b["coding_score"] += 0.5 if e.get("solution_viewed") else 1.0
     missed = []
@@ -784,7 +791,7 @@ class Handler(BaseHTTPRequestHandler):
             prog = load_progress()
             coding = [{"id": e["id"], "tag": e["tag"], "track": e["track"], "topic": e["topic"], "title": e["title"],
                        "stars": e["stars"], "order": e.get("order", 0), "summary": e.get("summary", ""),
-                       "status": coding_status(prog["coding"].get(e["id"]))} for e in load_coding().values()]
+                       "status": coding_status(prog["coding"].get(e["id"])), "skipped": is_skipped(prog["coding"].get(e["id"]))} for e in load_coding().values()]
             theory = []
             for s in load_theory().values():
                 qs = s["questions"]
@@ -808,7 +815,7 @@ class Handler(BaseHTTPRequestHandler):
                 "id": ex["id"], "tag": ex["tag"], "title": ex["title"], "track": ex["track"], "topic": ex["topic"],
                 "stars": ex["stars"], "statement": (d / "statement.md").read_text(encoding="utf-8"),
                 "hints": ex.get("hints", []), "recommended": recommended_commands(ex), "date": ex.get("date"), "files": workspace_files(ex),
-                "workspace": str(ws), "compile_cmd": build_command(ex), "file": str(ws / workspace_files(ex)[0]), "progress": prog, "status": coding_status(prog),
+                "workspace": str(ws), "compile_cmd": build_command(ex), "file": str(ws / workspace_files(ex)[0]), "progress": prog, "status": coding_status(prog), "skipped": is_skipped(prog),
                 "theory": chapter_theory(ex["tag"], ex["topic"])})
         if parts[0] == "theory" and len(parts) == 2:
             s = load_theory().get(parts[1])
@@ -905,6 +912,17 @@ class Handler(BaseHTTPRequestHandler):
                     e["solution_viewed"] = True
                     save_progress(prog)
                     return self._send(200, {"solution": solution_text(ex), "status": coding_status(e), "refs": exercise_refs(ex)})
+                if action == "skip":   # mark / unmark the exercise as skipped (a daily exercise cannot be skipped: it belongs to the streak)
+                    if daily.id_date(ex["id"]):
+                        return self._send(400, {"error": "a daily exercise cannot be skipped"})
+                    if body.get("on"):
+                        e["skipped"] = True
+                    else:
+                        e.pop("skipped", None)
+                    if not e:
+                        prog["coding"].pop(ex["id"], None)
+                    save_progress(prog)
+                    return self._send(200, {"skipped": bool(body.get("on"))})
                 if action == "reset":
                     for n in workspace_files(ex):
                         f = workspace_dir(ex["id"]) / n

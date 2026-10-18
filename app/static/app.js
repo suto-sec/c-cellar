@@ -134,8 +134,13 @@ const writePathId = (id) => { try { localStorage.setItem(PATH_KEY, id); } catch 
 /** Coding data for the given tags (none = all): chapters with their exercises, the learning paths, the chosen one and the next exercise to do in it. */
 function codingModel(idx, tags = []) {
   const want = (t) => !tags.length || tags.includes(t);
+  const hideSkipped = readHideSkipped();
   const items = idx.coding.filter((c) => want(c.tag));
-  const chapters = idx.chapters.filter((c) => want(c.tag)).map((c) => ({ ...c, key: c.tag + "/" + c.id, items: items.filter((i) => i.tag === c.tag && i.topic === c.id).sort(byOrder) })).filter((c) => c.items.length);
+  // a chapter lists its exercises (the skipped ones too, unless they are hidden); `live` are the ones that count
+  const chapters = idx.chapters.filter((c) => want(c.tag)).map((c) => {
+    const mine = items.filter((i) => i.tag === c.tag && i.topic === c.id).sort(byOrder).filter((i) => !(hideSkipped && i.skipped));
+    return { ...c, key: c.tag + "/" + c.id, items: mine, live: mine.filter(live) };
+  }).filter((c) => c.items.length);
   // (a server older than this page only knows the one suggested path)
   const raw = idx.learning_paths || Object.fromEntries(Object.entries(idx.paths).map(([t, ids]) => [t, [{ id: "course", title: "The whole course", blurb: "All the exercises in one order that climbs gradually.", chapters: null, items: ids }]]));
   const joined = new Map();   // a path of several topics joins their exercises
@@ -146,20 +151,28 @@ function codingModel(idx, tags = []) {
     joined.set(p.id, e);
   }
   const byId = new Map(items.map((i) => [i.id, i]));
-  let paths = [...joined.values()].map((p) => ({ ...p, items: p.ids.map((id) => byId.get(id)).filter(Boolean) })).filter((p) => p.items.length);
-  const course = paths.find((p) => p.id === "course") || { id: "course", title: "The whole course", blurb: "", chapterKeys: null, items: chapters.flatMap((c) => c.items) };
+  let paths = [...joined.values()].map((p) => { const its = p.ids.map((id) => byId.get(id)).filter(Boolean); return { ...p, items: its, live: its.filter(live) }; }).filter((p) => p.items.length);
+  const course = paths.find((p) => p.id === "course") || (() => { const its = chapters.flatMap((c) => c.items); return { id: "course", title: "The whole course", blurb: "", chapterKeys: null, items: its, live: its.filter(live) }; })();
   if (!paths.length) paths = [course];
   const path = paths.find((p) => p.id === readPathId()) || course;
-  const next = path.items.find((i) => i.status !== "passed");
-  return { items, chapters, paths, path, course, order: path.items, courseOrder: course.items, next, passed: items.filter((i) => i.status === "passed").length, pathPassed: path.items.filter((i) => i.status === "passed").length };
+  const next = path.live.find((i) => i.status !== "passed");
+  const counted = items.filter(live);
+  return { items, chapters, paths, path, course, order: path.items, courseOrder: course.items, next,
+    total: counted.length, passed: counted.filter((i) => i.status === "passed").length, pathTotal: path.live.length, pathPassed: path.live.filter((i) => i.status === "passed").length };
 }
+
+/** Skipped exercises: the student marks an exercise to leave it out. It counts nowhere (totals, bars, Continue, next/previous), as if it did not exist.
+ *  A setting decides whether the lists still show it (dimmed, to unskip it there) or hide it (it is then restored from Settings). */
+const SKIPSHOW_KEY = "cellar.skipshow";
+const readHideSkipped = () => { try { return localStorage.getItem(SKIPSHOW_KEY) === "hide"; } catch (e) { return false; } };
+const live = (i) => !i.skipped;   // an exercise that counts
 
 /** Whether the next/previous buttons of an exercise skip the exercises already passed (a setting; skipped by default). */
 const STEPDONE_KEY = "cellar.stepdone";
 const readSkipDone = () => { try { return localStorage.getItem(STEPDONE_KEY) !== "include"; } catch (e) { return true; } };
 /** The exercise `dir` (1 = next, -1 = previous) steps away from position `pos` of `list`, passing over the completed ones when `skipDone`. */
 function stepTarget(list, pos, dir, skipDone) {
-  for (let k = pos + dir; k >= 0 && k < list.length; k += dir) if (!skipDone || list[k].status !== "passed") return list[k];
+  for (let k = pos + dir; k >= 0 && k < list.length; k += dir) if (!list[k].skipped && (!skipDone || list[k].status !== "passed")) return list[k];
   return null;
 }
 
@@ -274,7 +287,7 @@ async function viewHome() {
     h("h1", {}, "c-cellar"),
     h("p", { class: "lead" }, "Practice C by writing it, and review the theory. Everything is checked locally."),
     h("div", { class: "list" },
-      h("a", { class: "row", href: "#/coding" }, h("div", { class: "main" }, h("div", { class: "title" }, "Coding exercises"), h("div", { class: "sub" }, `${m.chapters.length} chapters from 1 to 5 stars, with an automatic checker`)), h("span", { class: "pct" }, `${m.passed}/${m.items.length}`)),
+      h("a", { class: "row", href: "#/coding" }, h("div", { class: "main" }, h("div", { class: "title" }, "Coding exercises"), h("div", { class: "sub" }, `${m.chapters.length} chapters from 1 to 5 stars, with an automatic checker`)), h("span", { class: "pct" }, `${m.passed}/${m.total}`)),
       h("a", { class: "row", href: "#/theory" }, h("div", { class: "main" }, h("div", { class: "title" }, "Theory questions"), h("div", { class: "sub" }, "Choose, type, predict the output, match, sort or put in order: with an explanation after every answer")), h("span", { class: "pct" }, `${okq}/${nq}`)),
       h("a", { class: "row", href: "#/reference" }, h("div", { class: "main" }, h("div", { class: "title" }, "Reference"), h("div", { class: "sub" }, "One entry per function, command and keyword: syntax, options, examples, common mistakes")), h("span", { class: "pct" }, String(idx.reference))),
     ),
@@ -346,16 +359,16 @@ async function viewCodingList() {
         const rows = c.items.filter((i) => keep(c, i));
         if (!rows.length) return null;
         shown += rows.length;
-        const done = c.items.filter((i) => i.status === "passed").length;
+        const done = c.live.filter((i) => i.status === "passed").length;
         const isNext = m.next && c.items.includes(m.next);
         const det = h("details", { class: "chapter", "data-key": c.key, open: openState.has(c.key) ? openState.get(c.key) : narrowed ? true : isNext || done === 0 && c === chs[0] },
-          h("summary", {}, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted csub" }, c.blurb), narrowed ? h("span", { class: "muted", style: "font-size:13px" }, `${rows.length} shown`) : null, h("span", { class: "cprog" }, `${done}/${c.items.length}`),
-            h("span", { class: "bar", style: "width:70px" }, h("span", { style: `width:${(done / c.items.length) * 100}%` }))),
-          h("div", { class: "list" }, rows.map((i) => h("a", { class: "row", href: "#/coding/" + i.id },
-            h("span", { class: "st " + i.status, title: STATUS[i.status][1] }, STATUS[i.status][0]),
+          h("summary", {}, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted csub" }, c.blurb), narrowed ? h("span", { class: "muted", style: "font-size:13px" }, `${rows.length} shown`) : null, c.live.length ? h("span", { class: "cprog" }, `${done}/${c.live.length}`) : h("span", { class: "cprog muted" }, "skipped"),
+            h("span", { class: "bar", style: "width:70px" }, h("span", { style: `width:${c.live.length ? (done / c.live.length) * 100 : 0}%` }))),
+          h("div", { class: "list" }, rows.map((i) => h("a", { class: "row" + (i.skipped ? " skipped" : ""), href: "#/coding/" + i.id },
+            i.skipped ? h("span", { class: "st skip", title: "Skipped: it does not count" }, "⊘") : h("span", { class: "st " + i.status, title: STATUS[i.status][1] }, STATUS[i.status][0]),
             h("div", { class: "main" }, h("div", { class: "title" }, i.title), h("div", { class: "sub" }, i.summary)), h("span", { class: "tag", title: "Course topic " + T(i.tag) }, T(i.tag)), stars(i.stars)))));
         det.addEventListener("toggle", () => openState.set(c.key, det.open));
-        const link = h("button", { class: "reflink chaplink", title: c.title + ": " + c.blurb, onclick: () => goTo(entry) }, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted" }, `${done}/${c.items.length}`));
+        const link = h("button", { class: "reflink chaplink", title: c.title + ": " + c.blurb, onclick: () => goTo(entry) }, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted" }, c.live.length ? `${done}/${c.live.length}` : "–"));
         const entry = { key: c.key, det, link };
         listed.push(entry);
         return det;
@@ -363,7 +376,7 @@ async function viewCodingList() {
       if (!sections.some(Boolean)) return null;   // nothing of this track matches the filters
       navGroups.push(h("h4", {}, title), ...listed.filter((e) => chs.some((c) => c.key === e.key)).map((e) => e.link));
       const inTrack = chs.flatMap((c) => c.items);
-      return h("section", {}, h("h2", {}, title, " ", h("span", { class: "muted" }, `${inTrack.filter((i) => i.status === "passed").length}/${inTrack.length}`)),
+      return h("section", {}, h("h2", {}, title, " ", h("span", { class: "muted" }, `${inTrack.filter((i) => live(i) && i.status === "passed").length}/${inTrack.filter(live).length}`)),
         h("p", { class: "muted", style: "margin:-6px 0 10px" }, blurb), sections);
     }));
     if (!shown) holder.append(h("p", { class: "muted" }, filters.hideDone ? "No exercise matches these filters (the completed ones are hidden)." : "No exercise matches these filters."));
@@ -373,7 +386,7 @@ async function viewCodingList() {
     if (listed.length) markActive(listed[0].key);
     onScroll();
     pathHolder.replaceChildren(pathPanel(m, () => { openState.clear(); render(); }, {
-      count: (x) => x.items.length, done: m.pathPassed, total: m.path.items.length, noun: "exercises passed",
+      count: (x) => x.live.length, done: m.pathPassed, total: m.pathTotal, noun: "exercises passed",
       action: m.next ? h("a", { class: "btn primary", href: "#/coding/" + m.next.id }, (m.pathPassed ? "Continue: " : "Start: ") + m.next.title) : h("b", {}, "Everything passed ✔") }));
   };
   search.addEventListener("input", changed);
@@ -649,8 +662,23 @@ async function viewExercise(id) {
   const skipDone = readSkipDone();
   const prev = isDaily ? null : stepTarget(list, pos, -1, skipDone), next = isDaily ? null : stepTarget(list, pos, 1, skipDone);
   const chip = h("span", { class: "status-chip" });
-  const setStatus = (s) => { chip.replaceChildren(h("span", { class: "st " + s }, STATUS[s][0]), STATUS[s][1]); };
-  setStatus(d.status);
+  let status = d.status, skipped = !!d.skipped;
+  const drawChip = () => chip.replaceChildren(h("span", { class: "st " + status }, STATUS[status][0]), STATUS[status][1], skipped ? h("span", { class: "muted", title: "It does not count in totals or progress" }, " · skipped") : null);
+  const setStatus = (s) => { status = s; drawChip(); };
+  drawChip();
+  const skipBtn = d.track === "daily" ? null : h("button", { class: "btn" });   // (a daily exercise belongs to the streak: it cannot be skipped)
+  const drawSkip = () => {
+    skipBtn.textContent = skipped ? "Unskip" : "Skip";
+    skipBtn.title = skipped ? "Count this exercise again" : "Leave this exercise out: it stops counting in totals, progress bars, Continue and next/previous";
+  };
+  if (skipBtn) {
+    drawSkip();
+    skipBtn.addEventListener("click", async () => {
+      try { await api("coding/" + id + "/skip", { on: !skipped }); } catch (e) { return toast(e.message); }
+      skipped = !skipped; drawSkip(); drawChip();
+      toast(skipped ? "Skipped: it no longer counts" : "Unskipped: it counts again");
+    });
+  }
   const results = h("div", {});
   const notice = h("div", {});
   const extras = h("div", {});
@@ -788,7 +816,7 @@ async function viewExercise(id) {
     h("div", { html: md(d.statement) }),
     d.theory ? h("div", { class: "qlinks" }, h("span", { class: "muted" }, "Theory: "), h("a", { href: "#/theory/" + d.theory.id, target: "_blank", rel: "noopener" }, `${d.theory.title} (${d.theory.count} questions)`)) : null,
     h("div", { class: "muted", style: "font-size:13px" }, "Write it in ", d.files.map((f, i) => [i ? ", " : "", h("code", {}, f)]), " in VS Code. It saves by itself. ", h("kbd", {}, "Alt+X"), " ", h("kbd", {}, "Alt+T"), " ", h("kbd", {}, "Alt+V"), " move the keyboard between this panel, the terminal and VS Code."),
-    h("div", { class: "actions" }, checkBtn, compileBtn, runBtn, hintBtn, infoBtn, solBtn, resetBtn, h("span", { class: "spacer" }), chip),
+    h("div", { class: "actions" }, checkBtn, compileBtn, runBtn, hintBtn, infoBtn, solBtn, resetBtn, skipBtn, h("span", { class: "spacer" }), chip),
     notice, hintBox, results, extras,
     h("div", { class: "qnav" }, prev ? h("a", { class: "btn small step prev", href: "#/coding/" + prev.id }, h("span", { class: "steplabel" }, "Previous"), "← " + prev.title) : null, h("span", { class: "spacer" }), next ? h("a", { class: "btn small step next", href: "#/coding/" + next.id }, h("span", { class: "steplabel" }, "Next"), next.title + " →") : null));
   const dock = mountDock({ instr: left, term: termFrame, code: codeFrame });
@@ -1363,6 +1391,48 @@ function stepControl() {
   return h("div", { class: "pop-block" }, h("div", { class: "pop-row" }, h("span", { class: "muted" }, "Next / previous exercise")),
     h("div", { class: "segs stepsegs", role: "radiogroup", "aria-label": "Exercises the next and previous buttons go to" }, opts));
 }
+/** Show or hide the skipped exercises in the lists, and a window to see all of them and unskip (needed when they are hidden). */
+const refreshPage = () => { if (!location.hash.startsWith("#/coding/")) route(); };   // (an open exercise stays as it is: its editor and terminal would reload)
+function skipControl() {
+  const hide = readHideSkipped();
+  const opts = [[false, "Show in lists"], [true, "Hide"]].map(([v, label]) => {
+    const input = h("input", { type: "radio", name: "skipshow", value: String(v), checked: v === hide, onchange: () => {
+      try { localStorage.setItem(SKIPSHOW_KEY, v ? "hide" : "show"); } catch (e) { /* not remembered */ }
+      refreshPage();
+    } });
+    return h("label", { class: "seg" }, input, h("span", {}, label));
+  });
+  return h("div", { class: "pop-block" }, h("div", { class: "pop-row" }, h("span", { class: "muted" }, "Skipped exercises")),
+    h("div", { class: "segs stepsegs", role: "radiogroup", "aria-label": "Skipped exercises in the lists" }, opts),
+    h("div", { style: "margin-top:8px" }, h("button", { class: "btn small", onclick: () => openSkipped() }, "View skipped exercises")));
+}
+async function openSkipped() {
+  let overlay;
+  const close = () => { overlay.remove(); document.removeEventListener("keydown", onEsc, true); };
+  const onEsc = (e) => { if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); close(); } };
+  const body = h("div", {});
+  const draw = async () => {
+    const idx = await api("index");
+    const chapters = new Map(idx.chapters.map((c, n) => [c.tag + "/" + c.id, { title: c.title, n }]));
+    const list = idx.coding.filter((c) => c.skipped).sort((a, b) => (chapters.get(a.tag + "/" + a.topic).n - chapters.get(b.tag + "/" + b.topic).n) || byOrder(a, b));
+    body.replaceChildren(list.length ? h("div", { class: "list" }, list.map((i) => h("div", { class: "row" },
+      h("div", { class: "main" }, h("div", { class: "title" }, h("a", { href: "#/coding/" + i.id, onclick: close }, i.title)), h("div", { class: "sub" }, chapters.get(i.tag + "/" + i.topic).title, " · ", stars(i.stars))),
+      h("button", { class: "btn small", title: "Count this exercise again", onclick: async () => {
+        try { await api("coding/" + i.id + "/skip", { on: false }); } catch (e) { return toast(e.message); }
+        await draw(); refreshPage();
+      } }, "Unskip"))))
+      : h("p", { class: "muted" }, "No skipped exercises."));
+  };
+  const closeBtn = h("button", { class: "btn small", onclick: close }, "Close");
+  overlay = h("div", { class: "keys-overlay", onmousedown: (e) => { if (e.target === overlay) close(); } },
+    h("div", { class: "keys-box", role: "dialog", "aria-modal": "true", "aria-label": "Skipped exercises" },
+      h("div", { class: "keys-head" }, h("h2", {}, "Skipped exercises"), h("span", { class: "spacer" }), closeBtn),
+      h("p", { class: "muted" }, "They do not count in totals, progress bars, Continue or next/previous. Unskip one to bring it back."), body));
+  document.body.append(overlay);
+  document.addEventListener("keydown", onEsc, true);
+  closeBtn.focus();
+  try { await draw(); } catch (e) { body.replaceChildren(h("p", { class: "muted" }, e.message)); }
+}
 function initSettings() {
   const btn = $("#settings"), pop = $("#settings-pop");
   let mode = localStorage.getItem("cellar.theme") || "system";
@@ -1373,7 +1443,7 @@ function initSettings() {
   });
   const accent = accentControls();
   pop.replaceChildren(h("div", { class: "pop-title" }, "Settings"), h("div", { class: "pop-row" }, h("span", { class: "muted" }, "Theme"), h("div", { class: "segs", role: "radiogroup", "aria-label": "Theme" }, radios)),
-    accent, streakControl(), stepControl(),
+    accent, streakControl(), stepControl(), skipControl(),
     h("div", { class: "pop-note muted" }, "The code editor follows your system theme."));
   const close = () => { pop.hidden = true; btn.setAttribute("aria-expanded", "false"); };
   btn.addEventListener("click", (e) => { e.stopPropagation(); pop.hidden = !pop.hidden; btn.setAttribute("aria-expanded", String(!pop.hidden)); });

@@ -344,3 +344,7 @@ button.reflink { width: 100%; border: 0; background: none; font: inherit; font-s
 .pathblurb { font-size: 14px; }
 
 .stepsegs { display: flex; margin-top: 6px; } .stepsegs .seg { flex: 1; text-align: center; }
+
+/* skipped exercises: dimmed in the lists, marked with a symbol instead of the status */
+.st.skip { color: var(--muted); }
+.row.skipped { opacity: .55; }
