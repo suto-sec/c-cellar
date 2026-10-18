@@ -335,9 +335,17 @@ button.reflink { width: 100%; border: 0; background: none; font: inherit; font-s
 .chaplink .muted { font: 12px var(--mono); flex: none; }
 .codemain { min-width: 0; } .codemain > h1 { margin-top: 0; }
 
-/* learning-path chooser (coding and theory pages) */
-.pathpanel { display: grid; gap: 10px; }
+/* what-to-study chooser (coding and theory pages): study plans are cards (by time), topics are chips (by subject) */
+.pathpanel { display: grid; gap: 12px; }
 .pathhead { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; } .pathhead .muted { font-size: 13px; }
+.pathgroup { display: grid; gap: 6px; }
+.pathlabel { display: flex; flex-wrap: wrap; gap: 0 10px; align-items: baseline; font-size: 13px; }
+.pathlabel b { font: 600 11px var(--mono); text-transform: uppercase; letter-spacing: .06em; }
+.plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.plancard { display: grid; gap: 2px; text-align: left; border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 10px; padding: 9px 12px; cursor: pointer; font: inherit; }
+.plancard:hover { background: var(--panel2); }
+.plancard .plantitle { font-weight: 700; font-size: 15px; } .plancard .planmeta { font: 12px var(--mono); opacity: .75; }
+.plancard.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); } .plancard.on .planmeta { opacity: .9; }
 .pathchips { gap: 6px; }
 .pcount { font: 600 11px var(--mono); opacity: .7; margin-left: 2px; }
 .pathbody { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }

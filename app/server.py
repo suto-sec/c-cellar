@@ -79,22 +79,25 @@ def load_paths():
 
 
 def load_learning_paths():
-    """{tag: [path]}: the paths a student can choose, content/<tag>/paths.json. A path is {id, title, blurb, chapters, items}: its exercises are the
-    ones of its chapters (in the order the chapters are listed, then the order of the chapter); the one marked `course` is path.json."""
+    """{tag: [path]}: the paths a student can choose, content/<tag>/paths.json. A path is {id, title, blurb, kind, chapters, items}.
+    `kind` is "plan" (how much to study: a list of exercises in the order of the course, or the whole course itself) or "topic" (what to study: the
+    exercises of some chapters, in the order the chapters are listed, then the order of the chapter). The one marked `course` is path.json."""
     coding = load_coding()
     out = {}
     for tag, course in load_paths().items():
         f = CONTENT / tag / "paths.json"
-        defs = _read_json(f)["paths"] if f.exists() else [{"id": "course", "title": "The whole course", "blurb": "", "course": True}]
+        defs = _read_json(f)["paths"] if f.exists() else [{"id": "course", "kind": "plan", "title": "The whole course", "blurb": "", "course": True}]
         paths = []
         for d in defs:
             if d.get("course"):
                 items, chapters = list(course), None
+            elif "items" in d:
+                items, chapters = [i for i in d["items"] if i in coding], None
             else:
                 chapters = list(d["chapters"])
                 mine = [e for e in coding.values() if e["tag"] == tag and e["topic"] in chapters]
                 items = [e["id"] for e in sorted(mine, key=lambda e: (chapters.index(e["topic"]), e.get("order", 0), e["id"]))]
-            paths.append({"id": d["id"], "title": d["title"], "blurb": d.get("blurb", ""), "chapters": chapters, "items": items})
+            paths.append({"id": d["id"], "title": d["title"], "blurb": d.get("blurb", ""), "kind": d.get("kind", "topic"), "chapters": chapters, "items": items})
         out[tag] = paths
     return out
 

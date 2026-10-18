@@ -235,8 +235,22 @@ def main():
         if "course" not in pids:
             err(f"learning paths of {tag}: there is no `course` path")
         covered = set()
+        raw = S._read_json(S.CONTENT / tag / "paths.json")["paths"] if (S.CONTENT / tag / "paths.json").exists() else []
+        for d in raw:
+            for i in d.get("items", []):
+                if i not in coding:
+                    err(f"learning path {tag}/{d['id']} lists unknown exercise {i}")
+        course_items = next((p["items"] for p in paths if p["id"] == "course"), [])
+        plan_sizes = []
         for p in paths:
             where = f"learning path {tag}/{p['id']}"
+            if p["kind"] not in ("plan", "topic"):
+                err(f"{where}: kind must be 'plan' or 'topic'")
+            if p["kind"] == "plan":
+                # a study plan is the course with exercises left out: the same order, and the same gradual climb
+                plan_sizes.append(len(p["items"]))
+                if [i for i in course_items if i in set(p["items"])] != p["items"]:
+                    err(f"{where}: a plan must list exercises of the course, in the order of the course")
             if not p["title"].strip() or not p["items"]:
                 err(f"{where}: needs a title and exercises")
             if len(p["items"]) != len(set(p["items"])):
@@ -253,6 +267,13 @@ def main():
         for e in coding.values():
             if e["tag"] == tag and e["id"] not in covered:
                 err(f"exercise {e['id']} is in no themed learning path of {tag}")
+        if plan_sizes != sorted(plan_sizes) or len(set(plan_sizes)) != len(plan_sizes):
+            err(f"learning paths of {tag}: the study plans must grow from the shortest to the whole course")
+        shortest = next((p for p in paths if p["kind"] == "plan"), None)
+        if shortest:
+            chap_of = {coding[i]["topic"] for i in shortest["items"] if i in coding}
+            for c in {e["topic"] for e in coding.values() if e["tag"] == tag and e.get("track") == "derusting"} - chap_of:
+                err(f"learning path {tag}/{shortest['id']}: the shortest plan leaves out the whole chapter '{c}'")
         print(f"learning paths of {tag}: {len(paths)}")
     for (tag, cid), c in chap.items():
         n = sum(1 for e in coding.values() if e["tag"] == tag and e["topic"] == cid)
