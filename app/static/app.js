@@ -124,15 +124,49 @@ const uniqueSorted = (list) => [...new Set(list)].sort((a, b) => a - b);
 
 // ------------------------------------------------------------------ home
 const byOrder = (a, b) => (a.order - b.order) || a.id.localeCompare(b.id);
-/** Coding data for the given tags (none = all): chapters with their exercises, the suggested path and the next exercise to do. */
+// ------------------------------------------------------------------ learning paths
+// A path is a list of exercises about one theme (pointers and memory, system calls, directories...) in the order to do them. The student picks
+// one on the coding and the theory pages; the choice is remembered and the lists, the Continue buttons and next/previous follow it.
+const PATH_KEY = "cellar.path";
+const readPathId = () => { try { return localStorage.getItem(PATH_KEY) || "course"; } catch (e) { return "course"; } };
+const writePathId = (id) => { try { localStorage.setItem(PATH_KEY, id); } catch (e) { /* private window: not remembered */ } };
+
+/** Coding data for the given tags (none = all): chapters with their exercises, the learning paths, the chosen one and the next exercise to do in it. */
 function codingModel(idx, tags = []) {
   const want = (t) => !tags.length || tags.includes(t);
   const items = idx.coding.filter((c) => want(c.tag));
   const chapters = idx.chapters.filter((c) => want(c.tag)).map((c) => ({ ...c, key: c.tag + "/" + c.id, items: items.filter((i) => i.tag === c.tag && i.topic === c.id).sort(byOrder) })).filter((c) => c.items.length);
-  const path = Object.keys(idx.paths).filter(want).flatMap((t) => idx.paths[t]).map((id) => items.find((i) => i.id === id)).filter(Boolean);
-  const order = path.length ? path : chapters.flatMap((c) => c.items);
-  const next = order.find((i) => i.status !== "passed");
-  return { items, chapters, order, next, passed: items.filter((i) => i.status === "passed").length };
+  // (a server older than this page only knows the one suggested path)
+  const raw = idx.learning_paths || Object.fromEntries(Object.entries(idx.paths).map(([t, ids]) => [t, [{ id: "course", title: "The whole course", blurb: "All the exercises in one order that climbs gradually.", chapters: null, items: ids }]]));
+  const joined = new Map();   // a path of several topics joins their exercises
+  for (const tag of Object.keys(raw).filter(want)) for (const p of raw[tag]) {
+    const e = joined.get(p.id) || { id: p.id, title: p.title, blurb: p.blurb, chapterKeys: p.chapters ? [] : null, ids: [] };
+    e.ids.push(...p.items);
+    if (p.chapters) e.chapterKeys.push(...p.chapters.map((c) => tag + "/" + c));
+    joined.set(p.id, e);
+  }
+  const byId = new Map(items.map((i) => [i.id, i]));
+  let paths = [...joined.values()].map((p) => ({ ...p, items: p.ids.map((id) => byId.get(id)).filter(Boolean) })).filter((p) => p.items.length);
+  const course = paths.find((p) => p.id === "course") || { id: "course", title: "The whole course", blurb: "", chapterKeys: null, items: chapters.flatMap((c) => c.items) };
+  if (!paths.length) paths = [course];
+  const path = paths.find((p) => p.id === readPathId()) || course;
+  const next = path.items.find((i) => i.status !== "passed");
+  return { items, chapters, paths, path, course, order: path.items, courseOrder: course.items, next, passed: items.filter((i) => i.status === "passed").length, pathPassed: path.items.filter((i) => i.status === "passed").length };
+}
+
+/** The path chooser, shared by the coding and theory pages: one chip per path, then what the page says about the chosen one.
+ *  `count(path)` is the number on each chip; `done`/`total`/`noun` feed the progress bar; `action` is the Continue button. */
+function pathPanel(model, onPick, { count, done, total, noun, action }) {
+  const p = model.path;
+  return h("div", { class: "panel pathpanel" },
+    h("div", { class: "pathhead" }, h("b", {}, "Learning path"), h("span", { class: "muted" }, "Pick what you want to learn: the lists, Continue and the next/previous buttons follow it.")),
+    h("div", { class: "fgroup pathchips" }, model.paths.map((x) => h("button", { class: "chip" + (x.id === p.id ? " on" : ""), "aria-pressed": String(x.id === p.id), title: x.blurb, onclick: () => { writePathId(x.id); onPick(x.id); } },
+      x.title, " ", h("span", { class: "pcount" }, String(count(x)))))),
+    h("div", { class: "pathbody" },
+      h("div", { style: "flex:1;min-width:220px" }, h("div", { class: "pathblurb" }, p.blurb),
+        h("div", { class: "muted", style: "font-size:13px;margin-top:4px" }, `${done} of ${total} ${noun}`),
+        h("div", { class: "bar", style: "margin-top:6px" }, h("span", { style: `width:${total ? (done / total) * 100 : 0}%` }))),
+      action));
 }
 
 /** The local calendar date as YYYY-MM-DD (not UTC: the daily exercise changes at the user's midnight). */
@@ -235,7 +269,8 @@ async function viewHome() {
       h("a", { class: "row", href: "#/theory" }, h("div", { class: "main" }, h("div", { class: "title" }, "Theory questions"), h("div", { class: "sub" }, "Choose, type, predict the output, match, sort or put in order: with an explanation after every answer")), h("span", { class: "pct" }, `${okq}/${nq}`)),
       h("a", { class: "row", href: "#/reference" }, h("div", { class: "main" }, h("div", { class: "title" }, "Reference"), h("div", { class: "sub" }, "One entry per function, command and keyword: syntax, options, examples, common mistakes")), h("span", { class: "pct" }, String(idx.reference))),
     ),
-    m.next ? h("p", {}, h("a", { class: "btn primary", href: "#/coding/" + m.next.id }, (m.passed ? "Continue: " : "Start: ") + m.next.title)) : null,
+    m.next ? h("p", {}, h("a", { class: "btn primary", href: "#/coding/" + m.next.id }, (m.pathPassed ? "Continue: " : "Start: ") + m.next.title),
+      " ", h("span", { class: "muted" }, "in the path "), h("a", { href: "#/coding", title: "Choose another learning path" }, m.path.title)) : null,
   ));
 }
 
@@ -273,7 +308,11 @@ async function viewCodingList() {
     });
   };
   const wanted = state.query.get("chapter");   // a link from a theory set or question: show that chapter, whatever the filters were
-  if (wanted) { localStorage.removeItem(FILTER_KEYS.coding); openState.set(wanted, true); }
+  if (wanted) {
+    localStorage.removeItem(FILTER_KEYS.coding); openState.set(wanted, true);
+    const keys = codingModel(idx).path.chapterKeys;
+    if (keys && !keys.includes(wanted)) writePathId("course");   // the chapter is not in the chosen path: show the whole course
+  }
   const bar = makeFilters(FILTER_KEYS.coding, { levels: uniqueSorted(idx.coding.map((c) => c.stars)), levelLabel: (n) => "★".repeat(n), levelTitle: (n) => n + (n === 1 ? " star" : " stars"), done: true, onChange: () => changed() });
   const filters = bar.f;
   const isNarrowed = () => search.value || filters.levels.length || filters.hideDone;
@@ -281,14 +320,18 @@ async function viewCodingList() {
 
   const render = () => {
     const m = codingModel(idx, filters.tags);
+    const inPath = m.path.chapterKeys ? new Set(m.path.items.map((i) => i.id)) : null;   // the whole course shows everything, in tracks; a theme shows its chapters in its own order
+    const chapterList = !inPath ? m.chapters : m.chapters.map((c) => ({ ...c, items: c.items.filter((i) => inPath.has(i.id)) })).filter((c) => c.items.length)
+      .sort((a, b) => m.path.chapterKeys.indexOf(a.key) - m.path.chapterKeys.indexOf(b.key));
+    const groups = inPath ? [[null, m.path.title, m.path.blurb]] : TRACKS;
     const q = search.value.toLowerCase();
     const narrowed = isNarrowed();
     listed = [];
     const keep = (c, i) => (!filters.levels.length || filters.levels.includes(i.stars)) && !(filters.hideDone && i.status === "passed") && (!q || (i.title + " " + c.title + " " + i.summary).toLowerCase().includes(q));
     let shown = 0;
     const navGroups = [];
-    holder.replaceChildren(...TRACKS.map(([key, title, blurb]) => {
-      const chs = m.chapters.filter((c) => c.track === key);
+    holder.replaceChildren(...groups.map(([key, title, blurb]) => {
+      const chs = inPath ? chapterList : chapterList.filter((c) => c.track === key);
       if (!chs.length) return null;
       const sections = chs.map((c) => {
         const rows = c.items.filter((i) => keep(c, i));
@@ -320,10 +363,9 @@ async function viewCodingList() {
     side.hidden = !listed.length;
     if (listed.length) markActive(listed[0].key);
     onScroll();
-    pathHolder.replaceChildren(m.order.length ? h("div", { class: "panel", style: "display:flex;gap:14px;align-items:center;flex-wrap:wrap" },
-      h("div", { style: "flex:1;min-width:220px" }, h("b", {}, "Suggested path"), h("div", { class: "muted", style: "font-size:13px" }, `${m.passed} of ${m.items.length} passed. The path mixes the chapters so the difficulty climbs gradually.`),
-        h("div", { class: "bar", style: "margin-top:6px" }, h("span", { style: `width:${(m.passed / m.items.length) * 100}%` }))),
-      m.next ? h("a", { class: "btn primary", href: "#/coding/" + m.next.id }, (m.passed ? "Continue: " : "Start: ") + m.next.title) : h("b", {}, "Everything passed ✔")) : null);
+    pathHolder.replaceChildren(pathPanel(m, () => { openState.clear(); render(); }, {
+      count: (x) => x.items.length, done: m.pathPassed, total: m.path.items.length, noun: "exercises passed",
+      action: m.next ? h("a", { class: "btn primary", href: "#/coding/" + m.next.id }, (m.pathPassed ? "Continue: " : "Start: ") + m.next.title) : h("b", {}, "Everything passed ✔") }));
   };
   search.addEventListener("input", changed);
   render();
@@ -590,7 +632,8 @@ function frameShortcut(ev) {
 async function viewExercise(id) {
   setNav("coding");
   const [d, idx] = await Promise.all([api("coding/" + id), api("index")]);
-  const list = codingModel(idx).order;
+  const model = codingModel(idx);
+  const list = model.order.some((c) => c.id === id) ? model.order : model.courseOrder;   // an exercise outside the chosen path: next/previous follow the whole course
   const chapter = idx.chapters.find((c) => c.tag === d.tag && c.id === d.topic);
   const pos = list.findIndex((c) => c.id === id);
   const isDaily = d.track === "daily";
@@ -748,14 +791,19 @@ async function viewTheoryList() {
   const idx = await api("index");
   const holder = h("div", {});
   const bar = makeFilters(FILTER_KEYS.theory, { levels: uniqueSorted(idx.theory.flatMap((t) => t.qs.map((q) => q.d))), levelLabel: (n) => "★".repeat(n), levelTitle: (n) => n + (n === 1 ? " star" : " stars"), done: true, onChange: () => render() });
+  // the sets of the chosen learning path: a set mirrors one coding chapter, so a path (a list of chapters) selects sets
+  const inPathOf = (model) => { const keys = model.path.chapterKeys; return (t) => !keys || keys.includes(t.tag + "/" + t.chapter); };
   let render = () => {
     const f = bar.f;
+    const model = codingModel(idx, f.tags), inPath = inPathOf(model);
+    const pk = model.path.chapterKeys;
     // a set shows only the questions that match the difficulty filter, with progress counted on those
-    const sets = idx.theory.filter((t) => !f.tags.length || f.tags.includes(t.tag)).map((t) => {
+    const sets = idx.theory.filter((t) => (!f.tags.length || f.tags.includes(t.tag)) && inPath(t)).map((t) => {
       const qs = t.qs.filter((q) => !f.levels.length || f.levels.includes(q.d));
       return { ...t, count: qs.length, answered: qs.filter((q) => q.a).length, correct: qs.filter((q) => q.c).length };
     }).filter((t) => t.count && !(f.hideDone && t.correct === t.count));   // (a set you have answered correctly all through counts as completed)
-    const total = idx.theory.filter((t) => !f.tags.length || f.tags.includes(t.tag)).reduce((a, t) => a + t.count, 0);
+    if (pk) sets.sort((a, b) => pk.indexOf(a.tag + "/" + a.chapter) - pk.indexOf(b.tag + "/" + b.chapter));
+    const total = idx.theory.filter((t) => (!f.tags.length || f.tags.includes(t.tag)) && inPath(t)).reduce((a, t) => a + t.count, 0);
     const shown = sets.reduce((a, t) => a + t.count, 0);
     holder.replaceChildren(
       f.levels.length ? h("p", { class: "muted", style: "margin:0 0 10px" }, `Showing ${shown} of ${total} questions.`) : null,
@@ -765,19 +813,20 @@ async function viewTheoryList() {
         return h("a", { class: "row", href: "#/theory/" + s.id },
           h("div", { class: "main" }, h("div", { class: "title" }, s.title, " ", h("span", { class: "tag", title: "Course topic " + T(s.tag) }, T(s.tag))), h("div", { class: "sub" }, `${s.count} questions · ${s.types.join(", ")} · ${s.answered} answered`)),
           h("div", { class: "bar", style: "width:120px" }, h("span", { style: `width:${pct(p)}%` })), h("span", { class: "pct" }, pct(p) + "%"));
-      })) : h("p", { class: "muted" }, f.hideDone ? "No set matches these filters (the completed ones are hidden)." : "No question matches these filters."));
+      })) : h("p", { class: "muted" }, !total ? "This path has no theory questions: its chapters are exercises only (choose another path above)." : f.hideDone ? "No set matches these filters (the completed ones are hidden)." : "No question matches these filters."));
   };
   const pathBox = h("div", {});
   const drawPath = () => {
     const f = bar.f;
-    const visible = idx.theory.filter((t) => !f.tags.length || f.tags.includes(t.tag));
+    const model = codingModel(idx, f.tags), inPath = inPathOf(model);
+    const visible = idx.theory.filter((t) => (!f.tags.length || f.tags.includes(t.tag)) && inPath(t));
     const qs = visible.flatMap((t) => t.qs.filter((q) => !f.levels.length || f.levels.includes(q.d)).map((q) => ({ ...q, set: t })));
     const done = qs.filter((q) => q.c).length;
     const next = qs.find((q) => !q.c);
-    pathBox.replaceChildren(qs.length ? h("div", { class: "panel", style: "display:flex;gap:14px;align-items:center;flex-wrap:wrap" },
-      h("div", { style: "flex:1;min-width:220px" }, h("b", {}, "Suggested path"), h("div", { class: "muted", style: "font-size:13px" }, `${done} of ${qs.length} questions answered correctly. The sets follow the coding chapters, easiest questions first.`),
-        h("div", { class: "bar", style: "margin-top:6px" }, h("span", { style: `width:${(done / qs.length) * 100}%` }))),
-      next ? h("a", { class: "btn primary", href: "#/theory/" + next.set.id }, (done ? "Continue: " : "Start: ") + next.set.title) : h("b", {}, "Everything correct ✔")) : null);
+    const countOf = (x) => idx.theory.filter((t) => (!x.chapterKeys || x.chapterKeys.includes(t.tag + "/" + t.chapter)) && (!f.tags.length || f.tags.includes(t.tag))).reduce((a, t) => a + t.count, 0);
+    pathBox.replaceChildren(pathPanel(model, () => render(), {
+      count: countOf, done, total: qs.length, noun: "questions answered correctly",
+      action: next ? h("a", { class: "btn primary", href: "#/theory/" + next.set.id }, (done ? "Continue: " : "Start: ") + next.set.title) : qs.length ? h("b", {}, "Everything correct ✔") : null }));
   };
   const baseRender = render;
   render = () => { baseRender(); drawPath(); };

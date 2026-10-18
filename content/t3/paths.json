@@ -1,0 +1,76 @@
+{
+ "paths": [
+  {
+   "id": "course",
+   "title": "The whole course",
+   "blurb": "Everything, in one order that climbs gradually: the chapters are mixed so a hard exercise never comes right after an easy one.",
+   "course": true
+  },
+  {
+   "id": "basics",
+   "title": "C basics",
+   "blurb": "Start here if C is rusty: output, variables, operators, input, conditions and loops.",
+   "chapters": ["output", "variables", "operators", "input", "conditions", "loops"]
+  },
+  {
+   "id": "functions-arrays",
+   "title": "Functions, arrays & strings",
+   "blurb": "Split a program into functions, work with arrays and matrices, and handle text as arrays of characters.",
+   "chapters": ["functions", "arrays", "strings"]
+  },
+  {
+   "id": "pointers-memory",
+   "title": "Pointers & dynamic memory",
+   "blurb": "Addresses, pointer arithmetic, and memory you reserve yourself with malloc, realloc and free.",
+   "chapters": ["pointers", "memory"]
+  },
+  {
+   "id": "structs",
+   "title": "Structs & data structures",
+   "blurb": "Group data in structs and enums, then keep collections of records in memory.",
+   "chapters": ["structs", "records"]
+  },
+  {
+   "id": "args-commands",
+   "title": "Arguments & shell commands",
+   "blurb": "argc, argv and the environment, then your own versions of wc, cat, cut, sort and friends.",
+   "chapters": ["args", "cmds"]
+  },
+  {
+   "id": "files",
+   "title": "Files with stdio",
+   "blurb": "fopen, fgets, fscanf, fread and friends: read and write text and binary files, then work on their words and lines.",
+   "chapters": ["stdio", "textfiles"]
+  },
+  {
+   "id": "syscalls",
+   "title": "System calls & descriptors",
+   "blurb": "open, read, write, lseek, dup and dup2: files seen as numbers, and redirecting them.",
+   "chapters": ["syscalls", "fdprogs"]
+  },
+  {
+   "id": "directories",
+   "title": "Directories",
+   "blurb": "opendir and readdir, mkdir, chdir and access: look at a directory, then walk a whole tree.",
+   "chapters": ["directories", "dirprogs"]
+  },
+  {
+   "id": "errors",
+   "title": "Errors & errno",
+   "blurb": "What fails and why: return values, errno, perror, strerror and exit statuses.",
+   "chapters": ["errors"]
+  },
+  {
+   "id": "building",
+   "title": "Modules, libraries & make",
+   "blurb": "Split a program into several files, build static and shared libraries, and write a Makefile.",
+   "chapters": ["build"]
+  },
+  {
+   "id": "exam",
+   "title": "Exam-style programs",
+   "blurb": "Whole programs of the kind the class exercises ask for. Do the chapters you need first, then come here.",
+   "chapters": ["classic", "menus", "programs", "cmds", "textfiles", "records", "fdprogs", "dirprogs"]
+  }
+ ]
+}

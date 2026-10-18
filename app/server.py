@@ -78,6 +78,27 @@ def load_paths():
     return out
 
 
+def load_learning_paths():
+    """{tag: [path]}: the paths a student can choose, content/<tag>/paths.json. A path is {id, title, blurb, chapters, items}: its exercises are the
+    ones of its chapters (in the order the chapters are listed, then the order of the chapter); the one marked `course` is path.json."""
+    coding = load_coding()
+    out = {}
+    for tag, course in load_paths().items():
+        f = CONTENT / tag / "paths.json"
+        defs = _read_json(f)["paths"] if f.exists() else [{"id": "course", "title": "The whole course", "blurb": "", "course": True}]
+        paths = []
+        for d in defs:
+            if d.get("course"):
+                items, chapters = list(course), None
+            else:
+                chapters = list(d["chapters"])
+                mine = [e for e in coding.values() if e["tag"] == tag and e["topic"] in chapters]
+                items = [e["id"] for e in sorted(mine, key=lambda e: (chapters.index(e["topic"]), e.get("order", 0), e["id"]))]
+            paths.append({"id": d["id"], "title": d["title"], "blurb": d.get("blurb", ""), "chapters": chapters, "items": items})
+        out[tag] = paths
+    return out
+
+
 def load_theory():
     """{id: set}. A set mirrors one chapter (`chapter`); questions inside a set are ordered by difficulty."""
     order = {(c["tag"], c["id"]): c["order"] for c in load_chapters()}
@@ -775,7 +796,7 @@ class Handler(BaseHTTPRequestHandler):
                                "qs": [{"d": q.get("difficulty", 1), "a": bool(x), "c": bool(x and x.get("last_correct"))} for q, x in zip(qs, st)]})
             ref = load_reference()
             return self._send(200, {"coding": coding, "theory": theory, "reference": len(ref),
-                                    "chapters": load_chapters(), "paths": load_paths()})
+                                    "chapters": load_chapters(), "paths": load_paths(), "learning_paths": load_learning_paths()})
         if parts[0] == "coding" and len(parts) == 2:
             ex = get_exercise(parts[1])
             if not ex:

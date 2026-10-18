@@ -204,6 +204,33 @@ def main():
         for k in range(1, len(stars)):
             if stars[k] > max(stars[max(0, k - 8):k]) + 1:
                 err(f"path of {tag}: stars jump to {stars[k]} at {ids[k]}")
+    # the learning paths a student chooses from: well-formed, in a sensible order, and nothing unreachable from the thematic ones
+    for tag, paths in S.load_learning_paths().items():
+        pids = [p["id"] for p in paths]
+        if len(pids) != len(set(pids)):
+            err(f"learning paths of {tag}: duplicate id")
+        if "course" not in pids:
+            err(f"learning paths of {tag}: there is no `course` path")
+        covered = set()
+        for p in paths:
+            where = f"learning path {tag}/{p['id']}"
+            if not p["title"].strip() or not p["items"]:
+                err(f"{where}: needs a title and exercises")
+            if len(p["items"]) != len(set(p["items"])):
+                err(f"{where}: lists an exercise twice")
+            for cid in p["chapters"] or []:
+                if (tag, cid) not in chap:
+                    err(f"{where}: chapter '{cid}' is not a chapter of {tag}")
+            stars = [coding[i]["stars"] for i in p["items"] if i in coding]
+            for k in range(1, len(stars)):
+                if stars[k] > max(stars[max(0, k - 8):k]) + 1:
+                    err(f"{where}: stars jump to {stars[k]} at {p['items'][k]}")
+            if p["chapters"] is not None:
+                covered |= set(p["items"])
+        for e in coding.values():
+            if e["tag"] == tag and e["id"] not in covered:
+                err(f"exercise {e['id']} is in no themed learning path of {tag}")
+        print(f"learning paths of {tag}: {len(paths)}")
     for (tag, cid), c in chap.items():
         n = sum(1 for e in coding.values() if e["tag"] == tag and e["topic"] == cid)
         if n == 0:

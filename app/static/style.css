@@ -334,3 +334,11 @@ button.reflink { width: 100%; border: 0; background: none; font: inherit; font-s
 .chaplink .ctitle { font-weight: 400; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .chaplink .muted { font: 12px var(--mono); flex: none; }
 .codemain { min-width: 0; } .codemain > h1 { margin-top: 0; }
+
+/* learning-path chooser (coding and theory pages) */
+.pathpanel { display: grid; gap: 10px; }
+.pathhead { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; } .pathhead .muted { font-size: 13px; }
+.pathchips { gap: 6px; }
+.pcount { font: 600 11px var(--mono); opacity: .7; margin-left: 2px; }
+.pathbody { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.pathblurb { font-size: 14px; }
