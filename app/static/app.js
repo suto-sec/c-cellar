@@ -154,6 +154,15 @@ function codingModel(idx, tags = []) {
   return { items, chapters, paths, path, course, order: path.items, courseOrder: course.items, next, passed: items.filter((i) => i.status === "passed").length, pathPassed: path.items.filter((i) => i.status === "passed").length };
 }
 
+/** Whether the next/previous buttons of an exercise skip the exercises already passed (a setting; skipped by default). */
+const STEPDONE_KEY = "cellar.stepdone";
+const readSkipDone = () => { try { return localStorage.getItem(STEPDONE_KEY) !== "include"; } catch (e) { return true; } };
+/** The exercise `dir` (1 = next, -1 = previous) steps away from position `pos` of `list`, passing over the completed ones when `skipDone`. */
+function stepTarget(list, pos, dir, skipDone) {
+  for (let k = pos + dir; k >= 0 && k < list.length; k += dir) if (!skipDone || list[k].status !== "passed") return list[k];
+  return null;
+}
+
 /** The path chooser, shared by the coding and theory pages: one chip per path, then what the page says about the chosen one.
  *  `count(path)` is the number on each chip; `done`/`total`/`noun` feed the progress bar; `action` is the Continue button. */
 function pathPanel(model, onPick, { count, done, total, noun, action }) {
@@ -637,7 +646,8 @@ async function viewExercise(id) {
   const chapter = idx.chapters.find((c) => c.tag === d.tag && c.id === d.topic);
   const pos = list.findIndex((c) => c.id === id);
   const isDaily = d.track === "daily";
-  const prev = isDaily ? null : list[pos - 1], next = isDaily ? null : list[pos + 1];
+  const skipDone = readSkipDone();
+  const prev = isDaily ? null : stepTarget(list, pos, -1, skipDone), next = isDaily ? null : stepTarget(list, pos, 1, skipDone);
   const chip = h("span", { class: "status-chip" });
   const setStatus = (s) => { chip.replaceChildren(h("span", { class: "st " + s }, STATUS[s][0]), STATUS[s][1]); };
   setStatus(d.status);
@@ -1342,6 +1352,17 @@ function streakControl() {
   });
   return h("div", { class: "pop-block pop-row" }, h("span", { class: "muted" }, "Top-bar streak"), h("div", { class: "segs", role: "radiogroup", "aria-label": "Streak in the top bar" }, opts));
 }
+function stepControl() {
+  const skip = readSkipDone();
+  const opts = [[true, "Skip completed"], [false, "Include completed"]].map(([v, label]) => {
+    const input = h("input", { type: "radio", name: "stepdone", value: String(v), checked: v === skip, onchange: () => {
+      try { localStorage.setItem(STEPDONE_KEY, v ? "skip" : "include"); } catch (e) { /* not remembered */ }
+    } });
+    return h("label", { class: "seg" }, input, h("span", {}, label));
+  });
+  return h("div", { class: "pop-block" }, h("div", { class: "pop-row" }, h("span", { class: "muted" }, "Next / previous exercise")),
+    h("div", { class: "segs stepsegs", role: "radiogroup", "aria-label": "Exercises the next and previous buttons go to" }, opts));
+}
 function initSettings() {
   const btn = $("#settings"), pop = $("#settings-pop");
   let mode = localStorage.getItem("cellar.theme") || "system";
@@ -1352,7 +1373,7 @@ function initSettings() {
   });
   const accent = accentControls();
   pop.replaceChildren(h("div", { class: "pop-title" }, "Settings"), h("div", { class: "pop-row" }, h("span", { class: "muted" }, "Theme"), h("div", { class: "segs", role: "radiogroup", "aria-label": "Theme" }, radios)),
-    accent, streakControl(),
+    accent, streakControl(), stepControl(),
     h("div", { class: "pop-note muted" }, "The code editor follows your system theme."));
   const close = () => { pop.hidden = true; btn.setAttribute("aria-expanded", "false"); };
   btn.addEventListener("click", (e) => { e.stopPropagation(); pop.hidden = !pop.hidden; btn.setAttribute("aria-expanded", String(!pop.hidden)); });

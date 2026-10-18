@@ -342,3 +342,5 @@ button.reflink { width: 100%; border: 0; background: none; font: inherit; font-s
 .pcount { font: 600 11px var(--mono); opacity: .7; margin-left: 2px; }
 .pathbody { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
 .pathblurb { font-size: 14px; }
+
+.stepsegs { display: flex; margin-top: 6px; } .stepsegs .seg { flex: 1; text-align: center; }
