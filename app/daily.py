@@ -133,15 +133,29 @@ def parse_levels(text):
     return levels or None
 
 
+def parse_chapters(text):
+    """The chapter ids of a comma separated list ("loops,arrays") as a set; empty means every chapter (None)."""
+    chapters = {x.strip() for x in str(text or "").split(",") if re.fullmatch(r"[a-z][a-z0-9-]*", x.strip())}
+    return chapters or None
+
+
+def of_chapters(templates, tag, chapters=None):
+    """The templates of a topic (tag), limited to the given chapters when there is a template in them; else all of the tag's."""
+    mine = [t for t in templates if t["tag"] == tag]
+    chosen = [t for t in mine if t["chapter"] in chapters] if chapters else mine
+    return chosen or mine
+
+
 def available_stars(templates, tag):
     """The star levels the templates of a topic can produce (a few specs of each are built to see)."""
     return sorted({generate(t, f"stars-{k}")["stars"] for t in templates if t["tag"] == tag for k in range(6)})
 
 
-def choose(root, templates, tag, day, levels=None):
+def choose(root, templates, tag, day, levels=None, chapters=None):
     """(template, spec) of a day. The template comes from the date, never one of the last RECENT days; with `levels` the first one
-    (in that same date-seeded order) whose exercise has one of those star levels, else the closest level."""
-    mine = [t for t in templates if t["tag"] == tag]
+    (in that same date-seeded order) whose exercise has one of those star levels, else the closest level; with `chapters` only the
+    templates of those chapters are used (all of them if none of the chapters has one)."""
+    mine = of_chapters(templates, tag, chapters)
     recent = recent_templates(root, day, tag)
     pool = [t for t in mine if t["id"] not in recent] or mine
     rng = random.Random("pick-" + day.isoformat())
@@ -162,7 +176,7 @@ def choose(root, templates, tag, day, levels=None):
     return best[1], best[2]
 
 
-def for_date(root, templates, tag, day, levels=None):
+def for_date(root, templates, tag, day, levels=None, chapters=None):
     """The exercise of a day, generated and written the first time it is asked for. `root` is the folder of daily exercises."""
     ex_id = daily_id(tag, day)
     d = Path(root) / ex_id
@@ -170,7 +184,7 @@ def for_date(root, templates, tag, day, levels=None):
         return load(d)
     if not any(t["tag"] == tag for t in templates):
         return None
-    template, spec = choose(root, templates, tag, day, levels)
+    template, spec = choose(root, templates, tag, day, levels, chapters)
     Path(root).mkdir(parents=True, exist_ok=True)
     tmp = Path(tempfile.mkdtemp(prefix=ex_id + ".", dir=root))
     try:

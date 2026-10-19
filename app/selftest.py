@@ -102,6 +102,19 @@ def check_daily(ref_names):
                     err(f"daily: levels={{{n}}} on {day} is not repeatable")
         if D.parse_levels("2, 3,x,9") != {2, 3} or D.parse_levels("") is not None or D.parse_levels("0,6") is not None:
             err("daily: parse_levels")
+        # the topic choice: only templates of the chosen chapters are used, each chapter can be asked for, an unknown chapter changes nothing
+        chapters = sorted({t["chapter"] for t in templates if t["tag"] == tag})
+        for ch in chapters:
+            for k in range(4):
+                day = _date(2026, 3, 1 + k)
+                tpl, _ = D.choose(root, templates, tag, day, None, {ch})
+                if tpl["chapter"] != ch:
+                    err(f"daily: chapters={{{ch}}} on {day} gave a template of {tpl['chapter']}")
+        if {t["id"] for t in D.of_chapters(templates, tag, {"no-such-chapter"})} != {t["id"] for t in templates if t["tag"] == tag}:
+            err("daily: an unknown chapter should leave every template")
+        if D.parse_chapters("loops, arrays,Bad!,") != {"loops", "arrays"} or D.parse_chapters("") is not None or D.parse_chapters("../x") is not None:
+            err("daily: parse_chapters")
+        print(f"  ok   daily topics: {len(chapters)} chapters can be asked for")
     # the streak
     day = D.date
     ds = lambda *xs: {x for x in xs}  # noqa: E731

@@ -1,14 +1,14 @@
 // Runs inside VS Code and the terminal (they are other origins than the c-cellar page, so their keys never reach it).
-// It forwards the c-cellar shortcuts to the page, which does the work: Alt+Enter (compile & run), Alt+X (instructions panel), Alt+T (terminal)
-// and Alt+V (VS Code). The page can also ask this frame to take the keyboard ({cellar: "focus"}).
+// It forwards the c-cellar shortcuts to the page, which does the work: Alt+Enter (compile & run), Alt+X (instructions panel), Alt+T (terminal),
+// Alt+V (VS Code) and Alt+M (maximize the panel the keyboard is in). The page can also ask this frame to take the keyboard ({cellar: "focus"}).
 // Keep the matching rule identical to frameShortcut() in app/static/app.js.
 (function () {
   if (window.parent === window) return;
   // The page checks that the frames run a script it understands (version 2 or newer): an old terminal page or VS Code image is reported.
-  function hello() { parent.postMessage({ cellar: "hello", version: 2 }, "*"); }
+  function hello() { parent.postMessage({ cellar: "hello", version: 3 }, "*"); }
   hello();
   addEventListener("load", hello);
-  var KEYS = { Enter: "run", NumpadEnter: "run", KeyX: "instructions", KeyT: "terminal", KeyV: "code" };
+  var KEYS = { Enter: "run", NumpadEnter: "run", KeyX: "instructions", KeyT: "terminal", KeyV: "code", KeyM: "maximize" };
   addEventListener("keydown", function (ev) {
     if (!ev.altKey || ev.ctrlKey || ev.metaKey || ev.shiftKey || (ev.getModifierState && ev.getModifierState("AltGraph"))) return;
     var action = KEYS[ev.code];

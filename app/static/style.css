@@ -162,6 +162,8 @@ kbd { background: var(--panel2); border: 1px solid var(--line); border-bottom-wi
 .chapter > summary:hover { background: var(--panel2); }
 .ctitle { font-weight: 600; } .csub { flex: 1; font-size: 13px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cprog { font: 600 13px var(--mono); }
+.etime, .ctime { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.row .etime { min-width: 52px; text-align: right; }
 .chapter .list { border: 0; border-top: 1px solid var(--line); border-radius: 0; }
 /* settings popover */
 #top { position: relative; }
@@ -171,8 +173,8 @@ kbd { background: var(--panel2); border: 1px solid var(--line); border-bottom-wi
 .pop-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .pop-note { font-size: 12px; margin-top: 10px; }
 .segs { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
-.seg { cursor: pointer; } .seg input { position: absolute; opacity: 0; pointer-events: none; }
-.seg span { display: block; padding: 4px 11px; font-size: 13px; background: var(--panel); }
+.seg { cursor: pointer; display: flex; } .seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg span { display: block; flex: 1; padding: 4px 11px; font-size: 13px; background: var(--panel); }
 .seg input:checked + span { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
 .seg input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: -2px; }
 /* reference */
@@ -234,9 +236,6 @@ pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } p
 .favmark { color: #d9a400; font-size: 12px; }
 .welcome h2 { font-size: 18px; margin: 22px 0 8px; }
 .refpane .backref { margin: 0 0 12px; }
-.btn.step { flex-direction: column; align-items: flex-start; gap: 0; }
-.btn.step.next { align-items: flex-end; }
-.steplabel { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
 .infobox h3 { margin: 0 0 4px; font-size: 15px; }
 .reclist { list-style: none; margin: 8px 0 0; padding: 0; }
 .reclist li { padding: 6px 0; border-top: 1px solid var(--line); }
@@ -246,8 +245,17 @@ pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } p
 /* exercise screen: statement, terminal and VS Code docked in a tree of splits (see mountDock) */
 .dock { position: relative; height: 100%; min-height: 0; background: var(--line); }
 .dpanel { position: absolute; display: flex; flex-direction: column; box-sizing: border-box; border: 1px solid var(--line); background: var(--bg); min-width: 0; min-height: 0; }
-.dhead { flex: none; padding: 3px 10px; font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); background: var(--panel2); border-bottom: 1px solid var(--line); cursor: grab; user-select: none; touch-action: none; }
+.dhead { display: flex; align-items: center; flex: none; padding: 3px 10px; font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); background: var(--panel2); border-bottom: 1px solid var(--line); cursor: grab; user-select: none; touch-action: none; }
 .dhead .grip { margin-right: 6px; opacity: .7; }
+.dmax { margin-left: auto; flex: none; display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 20px; padding: 0; border: 0; border-radius: 5px; background: none; color: var(--muted); cursor: pointer; }
+.dmax:hover { background: var(--line); color: var(--text); }
+.dmax:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
+.dmax .dicon { display: block; line-height: 0; }
+.dmax svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.dpanel.max { left: 0 !important; top: 0 !important; width: 100% !important; height: 100% !important; z-index: 4; }
+.dpanel.max .dhead { cursor: default; }
+.dock.hasmax .dpanel:not(.max) { visibility: hidden; }
+.dock.hasmax .dsplit { display: none; }
 .dbody-wrap { position: relative; flex: 1; min-height: 0; background: var(--code); }
 .dbody-wrap > iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .dbody-wrap > .dbody { position: absolute; inset: 0; overflow: auto; padding: 18px 22px 40px; background: var(--bg); }
@@ -278,6 +286,7 @@ pre.fillcode input.right { border-color: var(--ok); background: var(--okbg); } p
   .dock { overflow: auto; display: flex; flex-direction: column; background: var(--bg); }
   .dpanel { position: relative !important; left: auto !important; top: auto !important; width: auto !important; height: 75vh !important; flex: none; }
   .dsplit { display: none; }
+  .dock.hasmax .dpanel:not(.max) { display: none; }
 }
 .pop-block { margin-top: 14px; }
 .accentrow { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
@@ -351,7 +360,7 @@ button.reflink { width: 100%; border: 0; background: none; font: inherit; font-s
 .pathbody { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
 .pathblurb { font-size: 14px; }
 
-.stepsegs { display: flex; margin-top: 6px; } .stepsegs .seg { flex: 1; text-align: center; }
+.stepsegs { display: flex; margin-top: 6px; } .stepsegs .seg { flex: 1; text-align: center; }   /* (the label is a flex box, so its span fills it even when the other option wraps to two lines) */
 
 /* skipped exercises: dimmed in the lists, marked with a symbol instead of the status */
 .st.skip { color: var(--muted); }

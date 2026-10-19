@@ -181,10 +181,27 @@ function stepTarget(list, pos, dir, skipDone) {
   return null;
 }
 
-/** A rough time for an exercise of that many stars, in minutes: it only lets a study plan say how long it takes. */
+/** Rough times, in minutes, by difficulty: an exercise of that many stars, a theory question of that difficulty. They are estimates, shown with a "~"
+ *  next to every exercise, chapter, set and path, and as the time still pending wherever the progress is shown. */
 const MINUTES = { 1: 8, 2: 15, 3: 25, 4: 40, 5: 60 };
-const spend = (items) => items.reduce((a, i) => a + (MINUTES[i.stars] || 25), 0);
-const hoursText = (min) => min < 90 ? `${Math.max(5, Math.round(min / 5) * 5)} min` : `${Math.round(min / 60)} h`;
+const QMINUTES = { 1: 1, 2: 1, 3: 2, 4: 3, 5: 4 };
+const exMin = (i) => MINUTES[i.stars] || 25;
+const spend = (items) => items.reduce((a, i) => a + exMin(i), 0);
+const qSpend = (qs) => qs.reduce((a, q) => a + (QMINUTES[q.d] || 2), 0);
+/** 25 min, 1 h 20 min, 2 h (from ten hours on, whole hours). */
+function timeText(min) {
+  min = Math.round(min);
+  if (min < 60) return `${min} min`;
+  if (min >= 600) return `${Math.round(min / 60)} h`;
+  const r = Math.round(min / 5) * 5, hh = Math.floor(r / 60), mm = r % 60;
+  return mm ? `${hh} h ${mm} min` : `${hh} h`;
+}
+/** The time of a group (chapter, track...) of exercises that count, and what is pending of it once part of it is passed: "~2 h · 45 min left". */
+function timeLabel(items) {
+  const live = items.filter((i) => !i.skipped), total = spend(live), left = spend(live.filter((i) => i.status !== "passed"));
+  return left > 0 && left < total ? `~${timeText(total)} · ${timeText(left)} left` : `~${timeText(total)}`;
+}
+const timeTag = (i) => h("span", { class: "etime", title: "Estimated time for this exercise" }, "~" + timeText(exMin(i)));
 
 /** The path chooser, shared by the coding and theory pages. Two ways to choose, drawn differently: the study plans (how much time you have: a card
  *  each, with its size and time) and the topics (what you want to learn: one chip each). Then what the page says about the chosen one.
@@ -194,21 +211,21 @@ function pathPanel(model, onPick, { count, unit, minutes, done, total, noun, act
   const p = model.path;
   const pick = (x) => () => { writePathId(x.id); onPick(x.id); };
   const plans = model.paths.filter((x) => x.kind === "plan"), topics = model.paths.filter((x) => x.kind !== "plan");
-  const left = minutes && total > done ? minutes(p) : 0;
+  const left = minutes && total > done ? minutes(p) : 0, whole = minutes ? minutes(p, true) : 0;
   return h("div", { class: "panel pathpanel" },
     h("div", { class: "pathhead" }, h("b", {}, "What do you want to study?"), h("span", { class: "muted" }, "The lists, Continue and the next/previous buttons follow your choice.")),
     plans.length ? h("div", { class: "pathgroup" },
       h("div", { class: "pathlabel" }, h("b", {}, "Study plans"), h("span", { class: "muted" }, "by the time you have")),
       h("div", { class: "plans" }, plans.map((x) => h("button", { class: "plancard" + (x.id === p.id ? " on" : ""), "aria-pressed": String(x.id === p.id), title: x.blurb, onclick: pick(x) },
         h("span", { class: "plantitle" }, x.title),
-        h("span", { class: "planmeta" }, `${count(x)} ${unit}`, minutes ? ` · about ${hoursText(minutes(x, true))}` : ""))))) : null,
+        h("span", { class: "planmeta" }, `${count(x)} ${unit}`, minutes ? ` · about ${timeText(minutes(x, true))}` : ""))))) : null,
     topics.length ? h("div", { class: "pathgroup" },
       h("div", { class: "pathlabel" }, h("b", {}, "Topics"), h("span", { class: "muted" }, "by what you want to learn")),
       h("div", { class: "fgroup pathchips" }, topics.map((x) => h("button", { class: "chip" + (x.id === p.id ? " on" : ""), "aria-pressed": String(x.id === p.id), title: x.blurb, onclick: pick(x) },
-        x.title, " ", h("span", { class: "pcount" }, String(count(x))))))) : null,
+        x.title, " ", h("span", { class: "pcount" }, String(count(x)) + (minutes ? " · " + timeText(minutes(x, true)) : "")))))) : null,
     h("div", { class: "pathbody" },
       h("div", { style: "flex:1;min-width:220px" }, h("div", { class: "pathblurb" }, h("b", {}, p.title), h("span", { class: "muted" }, p.kind === "plan" ? " · study plan" : " · topic"), h("div", {}, p.blurb)),
-        h("div", { class: "muted", style: "font-size:13px;margin-top:4px" }, `${done} of ${total} ${noun}`, left ? ` · about ${hoursText(left)} left` : ""),
+        h("div", { class: "muted", style: "font-size:13px;margin-top:4px" }, `${done} of ${total} ${noun}`, whole ? (left ? ` · about ${timeText(left)} left of ${timeText(whole)}` : ` · about ${timeText(whole)} in total`) : ""),
         h("div", { class: "bar", style: "margin-top:6px" }, h("span", { style: `width:${total ? (done / total) * 100 : 0}%` }))),
       action));
 }
@@ -223,10 +240,20 @@ const DAILY_LEVELS_KEY = "cellar.daily.levels";   // the star levels the daily c
 function dailyLevels() {
   try { const l = JSON.parse(localStorage.getItem(DAILY_LEVELS_KEY)); return Array.isArray(l) ? l.filter(Number.isInteger) : []; } catch (e) { return []; }
 }
+const DAILY_TOPICS_KEY = "cellar.daily.topics";   // the topics (ids of the topic paths of the coding page) the daily challenge may come from (none = any)
+function dailyTopics() {
+  try { const l = JSON.parse(localStorage.getItem(DAILY_TOPICS_KEY)); return Array.isArray(l) ? l.filter((x) => typeof x === "string") : []; } catch (e) { return []; }
+}
+/** The chapter ids the chosen topics cover (what the server filters the daily templates by); empty = any. */
+function chaptersOfTopics(topics, ids) {
+  return [...new Set(topics.filter((p) => ids.includes(p.id) && p.chapterKeys).flatMap((p) => p.chapterKeys.map((k) => k.split("/")[1])))];
+}
 async function loadDaily() {
   const date = localDate();
   const levels = dailyLevels();
-  const d = await api("daily?date=" + date + (levels.length ? "&levels=" + levels.join(",") : ""));
+  const ids = dailyTopics();
+  const chapters = ids.length ? chaptersOfTopics(codingModel(await api("index")).paths, ids) : [];
+  const d = await api("daily?date=" + date + (levels.length ? "&levels=" + levels.join(",") : "") + (chapters.length ? "&chapters=" + chapters.join(",") : ""));
   state.dailyDate = date;
   setStreak(d.streak, d.id);
   return d;
@@ -262,29 +289,38 @@ function dailyCard(d) {
       h("span", { class: "daybadge " + (done ? "done" : "todo") }, done ? "✔ Done today" : "○ " + state)),
     h("div", { class: "dailymain" },
       h("div", { class: "main" }, h("div", { class: "muted" }, "Today · " + d.date), h("a", { class: "title", href: "#/coding/" + d.id }, d.title),
-        h("div", { class: "sub" }, d.chapter, " · ", stars(d.stars), " ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag)))),
+        h("div", { class: "sub" }, d.chapter, " · ", stars(d.stars), " ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag)), " · ", timeTag(d))),
       h("a", { class: "btn" + (done ? "" : " primary"), href: "#/coding/" + d.id }, done ? "Open again" : d.status === "todo" ? "Start today's challenge" : "Continue today's challenge")));
 }
-/** Which difficulties (stars) the daily challenge may have: several can be on, none on means any. Changing it rebuilds today's challenge if it is not passed. */
-function dailyLevelsBox(available) {
-  const on = dailyLevels();
-  const toggle = (n) => {
-    const next = on.includes(n) ? on.filter((x) => x !== n) : [...on, n].sort();
-    localStorage.setItem(DAILY_LEVELS_KEY, JSON.stringify(next));
-    viewDaily();
-  };
+/** What the daily challenge may be: the topics it comes from (the ones of the coding page) and its difficulties (stars); several can be on in each,
+ *  none on means any. Changing either rebuilds today's challenge, as long as it has not been started. */
+function dailyChoiceBox(d, topics) {
+  const onStars = dailyLevels(), onTopics = dailyTopics();
+  const has = new Set(d.chapters_available || []);
+  const shown = topics.filter((p) => p.chapterKeys && p.chapterKeys.some((k) => has.has(k.split("/")[1])));   // (a topic none of whose chapters has a daily template is not offered)
+  const set = (key, list) => { try { localStorage.setItem(key, JSON.stringify(list)); } catch (e) { /* not remembered */ } viewDaily(); };
+  const clear = (key) => { try { localStorage.removeItem(key); } catch (e) { /* not remembered */ } viewDaily(); };
+  const toggleStar = (n) => set(DAILY_LEVELS_KEY, onStars.includes(n) ? onStars.filter((x) => x !== n) : [...onStars, n].sort());
+  const toggleTopic = (id) => set(DAILY_TOPICS_KEY, onTopics.includes(id) ? onTopics.filter((x) => x !== id) : [...onTopics, id]);
+  const any = onStars.length || onTopics.length;
   return h("div", { class: "panel dailylevels" },
-    h("div", { class: "fgroup" }, h("span", { class: "flabel" }, "Difficulty"),
-      available.map((n) => h("button", { class: "chip" + (on.includes(n) ? " on" : ""), "aria-pressed": String(on.includes(n)), title: n + (n === 1 ? " star" : " stars"), onclick: () => toggle(n) }, "★".repeat(n))),
-      on.length ? h("button", { class: "btn small", onclick: () => { localStorage.removeItem(DAILY_LEVELS_KEY); viewDaily(); } }, "Any difficulty") : null),
-    h("div", { class: "muted", style: "font-size:13px;margin-top:6px" }, on.length
-      ? "The daily challenge will have one of these difficulties. Today's challenge changes to match if you have not passed it yet."
-      : "Any difficulty. Choose one or more to limit the daily challenge to them; today's challenge changes to match if you have not passed it yet."));
+    shown.length ? h("div", { class: "fgroup" }, h("span", { class: "flabel" }, "Topic"),
+      shown.map((p) => h("button", { class: "chip" + (onTopics.includes(p.id) ? " on" : ""), "aria-pressed": String(onTopics.includes(p.id)), title: p.blurb || p.title, onclick: () => toggleTopic(p.id) }, p.title)),
+      onTopics.length ? h("button", { class: "btn small", onclick: () => clear(DAILY_TOPICS_KEY) }, "Any topic") : null) : null,
+    h("div", { class: "fgroup", style: shown.length ? "margin-top:8px" : "" }, h("span", { class: "flabel" }, "Difficulty"),
+      (d.levels_available || []).map((n) => h("button", { class: "chip" + (onStars.includes(n) ? " on" : ""), "aria-pressed": String(onStars.includes(n)), title: n + (n === 1 ? " star" : " stars"), onclick: () => toggleStar(n) }, "★".repeat(n))),
+      onStars.length ? h("button", { class: "btn small", onclick: () => clear(DAILY_LEVELS_KEY) }, "Any difficulty") : null),
+    h("div", { class: "muted", style: "font-size:13px;margin-top:6px" }, any
+      ? "The daily challenge comes from the topics and difficulties you chose (if there is none with that exact mix, the closest). Today's challenge changes to match only while you have not started it."
+      : "Any topic and difficulty. Choose one or more topics or difficulties to limit the daily challenge to them; today's challenge changes to match only while you have not started it."));
 }
 async function viewDaily() {
   setNav("daily");
-  let today, past;
-  try { [today, past] = await Promise.all([loadDaily(), api("daily/history?date=" + localDate())]); } catch (e) {
+  let today, past, topics;
+  try {
+    [today, past] = await Promise.all([loadDaily(), api("daily/history?date=" + localDate())]);
+    topics = codingModel(await api("index")).paths.filter((p) => p.kind === "topic");
+  } catch (e) {
     mount(page(h("h1", {}, "Daily challenge"), h("p", { class: "muted" }, "There are no daily challenges available.")));
     return;
   }
@@ -292,10 +328,10 @@ async function viewDaily() {
   mount(page(h("h1", {}, "Daily challenge"),
     h("p", { class: "lead" }, "A new exercise every day, built for you from the course topics. Pass it on the same day to grow your streak. Past challenges can be retried at any time, but only today's counts for the streak."),
     dailyCard(today),
-    dailyLevelsBox(today.levels_available || []),
+    dailyChoiceBox(today, topics),
     h("h2", {}, "Past challenges"),
     past.items.length ? h("div", { class: "list" }, past.items.map((x) => h("a", { class: "row", href: "#/coding/" + x.id },
-      h("div", { class: "main" }, h("div", { class: "title" }, x.title), h("div", { class: "sub" }, dateLabel(x.date), " · ", x.chapter, " · ", stars(x.stars), " ", h("span", { class: "tag", title: "Course topic " + T(x.tag) }, T(x.tag)))),
+      h("div", { class: "main" }, h("div", { class: "title" }, x.title), h("div", { class: "sub" }, dateLabel(x.date), " · ", x.chapter, " · ", stars(x.stars), " ", h("span", { class: "tag", title: "Course topic " + T(x.tag) }, T(x.tag)), " · ", timeTag(x))),
       h("span", { class: "status-chip" }, h("span", { class: "st " + x.status }, STATUS[x.status][0]), STATUS[x.status][1] + (x.status === "passed" && x.on_time ? " on the day" : "")),
       h("span", { class: "btn small" }, "Retry")))) : h("p", { class: "muted" }, "Nothing here yet: each day's challenge appears here after it, so you can try it again.")));
 }
@@ -305,16 +341,17 @@ async function viewHome() {
   const idx = await api("index");
   const m = codingModel(idx);
   const nq = idx.theory.reduce((a, t) => a + t.count, 0), okq = idx.theory.reduce((a, t) => a + t.correct, 0);
+  const codeLeft = spend(m.items.filter((i) => live(i) && i.status !== "passed")), theoryLeft = qSpend(idx.theory.flatMap((t) => t.qs.filter((q) => !q.c)));
   mount(page(
     h("h1", {}, "c-cellar"),
     h("p", { class: "lead" }, "Practice C by writing it, and review the theory. Everything is checked locally."),
     h("div", { class: "list" },
-      h("a", { class: "row", href: "#/coding" }, h("div", { class: "main" }, h("div", { class: "title" }, "Coding exercises"), h("div", { class: "sub" }, `${m.chapters.length} chapters from 1 to 5 stars, with an automatic checker`)), h("span", { class: "pct" }, `${m.passed}/${m.total}`)),
-      h("a", { class: "row", href: "#/theory" }, h("div", { class: "main" }, h("div", { class: "title" }, "Theory questions"), h("div", { class: "sub" }, "Choose, type, predict the output, match, sort or put in order: with an explanation after every answer")), h("span", { class: "pct" }, `${okq}/${nq}`)),
+      h("a", { class: "row", href: "#/coding" }, h("div", { class: "main" }, h("div", { class: "title" }, "Coding exercises"), h("div", { class: "sub" }, `${m.chapters.length} chapters from 1 to 5 stars, with an automatic checker` + (codeLeft ? ` · about ${timeText(codeLeft)} left` : ""))), h("span", { class: "pct" }, `${m.passed}/${m.total}`)),
+      h("a", { class: "row", href: "#/theory" }, h("div", { class: "main" }, h("div", { class: "title" }, "Theory questions"), h("div", { class: "sub" }, "Choose, type, predict the output, match, sort or put in order: with an explanation after every answer" + (theoryLeft ? ` · about ${timeText(theoryLeft)} left` : ""))), h("span", { class: "pct" }, `${okq}/${nq}`)),
       h("a", { class: "row", href: "#/reference" }, h("div", { class: "main" }, h("div", { class: "title" }, "Reference"), h("div", { class: "sub" }, "One entry per function, command and keyword: syntax, options, examples, common mistakes")), h("span", { class: "pct" }, String(idx.reference))),
     ),
     m.next ? h("p", {}, h("a", { class: "btn primary", href: "#/coding/" + m.next.id }, (m.pathPassed ? "Continue: " : "Start: ") + m.next.title),
-      " ", h("span", { class: "muted" }, m.path.kind === "plan" ? "in the study plan " : "in the topic "), h("a", { href: "#/coding", title: "Choose another plan or topic" }, m.path.title)) : null,
+      " ", h("span", { class: "muted" }, m.path.kind === "plan" ? "in the study plan " : "in the topic "), h("a", { href: "#/coding", title: "Choose another plan or topic" }, m.path.title), h("span", { class: "muted" }, ` · about ${timeText(spend(m.path.live.filter((i) => i.status !== "passed")))} left in it`)) : null,
   ));
 }
 
@@ -386,13 +423,13 @@ async function viewCodingList() {
         const done = c.live.filter((i) => i.status === "passed").length;
         const isNext = m.next && c.items.includes(m.next);
         const det = h("details", { class: "chapter", "data-key": c.key, open: openState.has(c.key) ? openState.get(c.key) : narrowed ? true : isNext || done === 0 && c === chs[0] },
-          h("summary", {}, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted csub" }, c.blurb), narrowed ? h("span", { class: "muted", style: "font-size:13px" }, `${rows.length} shown`) : null, c.live.length ? h("span", { class: "cprog" }, `${done}/${c.live.length}`) : h("span", { class: "cprog muted" }, "skipped"),
+          h("summary", {}, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted csub" }, c.blurb), narrowed ? h("span", { class: "muted", style: "font-size:13px" }, `${rows.length} shown`) : null, c.live.length ? h("span", { class: "muted ctime", title: "Estimated time of the chapter, and what is left of it" }, timeLabel(c.live)) : null, c.live.length ? h("span", { class: "cprog" }, `${done}/${c.live.length}`) : h("span", { class: "cprog muted" }, "skipped"),
             h("span", { class: "bar", style: "width:70px" }, h("span", { style: `width:${c.live.length ? (done / c.live.length) * 100 : 0}%` }))),
           h("div", { class: "list" }, rows.map((i) => h("a", { class: "row" + (i.skipped ? " skipped" : ""), href: "#/coding/" + i.id },
             i.skipped ? h("span", { class: "st skip", title: "Skipped: it does not count" }, "⊘") : h("span", { class: "st " + i.status, title: STATUS[i.status][1] }, STATUS[i.status][0]),
-            h("div", { class: "main" }, h("div", { class: "title" }, i.title), h("div", { class: "sub" }, i.summary)), h("span", { class: "tag", title: "Course topic " + T(i.tag) }, T(i.tag)), stars(i.stars)))));
+            h("div", { class: "main" }, h("div", { class: "title" }, i.title), h("div", { class: "sub" }, i.summary)), timeTag(i), h("span", { class: "tag", title: "Course topic " + T(i.tag) }, T(i.tag)), stars(i.stars)))));
         det.addEventListener("toggle", () => openState.set(c.key, det.open));
-        const link = h("button", { class: "reflink chaplink", title: c.title + ": " + c.blurb, onclick: () => goTo(entry) }, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted" }, c.live.length ? `${done}/${c.live.length}` : "–"));
+        const link = h("button", { class: "reflink chaplink", title: c.title + ": " + c.blurb + (c.live.length ? " (" + timeLabel(c.live) + ")" : ""), onclick: () => goTo(entry) }, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted" }, c.live.length ? `${done}/${c.live.length}` : "–"));
         const entry = { key: c.key, det, link };
         listed.push(entry);
         return det;
@@ -400,7 +437,7 @@ async function viewCodingList() {
       if (!sections.some(Boolean)) return null;   // nothing of this track matches the filters
       navGroups.push(h("h4", {}, title), ...listed.filter((e) => chs.some((c) => c.key === e.key)).map((e) => e.link));
       const inTrack = chs.flatMap((c) => c.items);
-      return h("section", {}, h("h2", {}, title, " ", h("span", { class: "muted" }, `${inTrack.filter((i) => live(i) && i.status === "passed").length}/${inTrack.filter(live).length}`)),
+      return h("section", {}, h("h2", {}, title, " ", h("span", { class: "muted" }, `${inTrack.filter((i) => live(i) && i.status === "passed").length}/${inTrack.filter(live).length} · ${timeLabel(inTrack)}`)),
         h("p", { class: "muted", style: "margin:-6px 0 10px" }, blurb), sections);
     }));
     if (!shown) holder.append(h("p", { class: "muted" }, filters.hideDone ? "No exercise matches these filters (the completed ones are hidden)." : "No exercise matches these filters."));
@@ -495,6 +532,8 @@ function layoutIcon(tree) {
   return svg;
 }
 
+const MAXIMIZE_ICON = '<svg viewBox="0 0 16 16"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5"/></svg>';
+const RESTORE_ICON = '<svg viewBox="0 0 16 16"><path d="M6 5V4A1.5 1.5 0 0 1 7.5 2.5H12A1.5 1.5 0 0 1 13.5 4v4.5A1.5 1.5 0 0 1 12 10h-1"/><rect x="2.5" y="6" width="8" height="7.5" rx="1.5"/></svg>';
 function mountDock(bodies) {
   const readJson = (key) => { try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; } };
   const writeJson = (key, v) => { try { localStorage.setItem(key, JSON.stringify(v)); } catch (e) { /* private window: not remembered */ } };
@@ -509,9 +548,13 @@ function mountDock(bodies) {
   const frames = [bodies.term, bodies.code];
   const guard = (on) => frames.forEach((f) => { f.style.pointerEvents = on ? "none" : ""; });
 
-  const panels = {}, heads = {};
+  const panels = {}, heads = {}, maxBtns = {};
+  let maxed = null;   // the panel that fills the whole dock (null = the layout), not remembered
   for (const key of Object.keys(PANELS)) {
-    heads[key] = h("div", { class: "dhead", title: "Drag to move this panel" }, h("span", { class: "grip" }, "⠿"), PANELS[key]);
+    maxBtns[key] = h("button", { class: "dmax", type: "button" });
+    maxBtns[key].addEventListener("pointerdown", (ev) => ev.stopPropagation());   // (a press on the button is not the start of dragging the panel)
+    maxBtns[key].addEventListener("click", () => toggleMax(key));
+    heads[key] = h("div", { class: "dhead", title: "Drag to move this panel" }, h("span", { class: "grip" }, "⠿"), PANELS[key], maxBtns[key]);
     panels[key] = h("section", { class: "dpanel", "data-panel": key }, heads[key], h("div", { class: "dbody-wrap" }, bodies[key]));
   }
   const splitEls = [h("div", { class: "dsplit", title: "Drag to resize" }), h("div", { class: "dsplit", title: "Drag to resize" })];
@@ -519,6 +562,20 @@ function mountDock(bodies) {
   const dock = h("div", { class: "dock" }, ...Object.values(panels), ...splitEls, hint);
   let splits = [];
 
+  // maximize: the panel is only laid over the others with CSS, so the editor and the shell inside the frames keep running
+  const drawMax = () => {
+    dock.classList.toggle("hasmax", !!maxed);
+    for (const k of Object.keys(PANELS)) {
+      const on = maxed === k;
+      panels[k].classList.toggle("max", on);
+      maxBtns[k].replaceChildren(h("span", { class: "dicon", "aria-hidden": "true", html: on ? RESTORE_ICON : MAXIMIZE_ICON }));
+      maxBtns[k].title = on ? `Back to the layout (Alt+M)` : `Maximize ${PANELS[k]} (Alt+M)`;
+      maxBtns[k].setAttribute("aria-pressed", String(on));
+      heads[k].title = on ? "" : "Drag to move this panel";
+    }
+  };
+  const toggleMax = (key) => { maxed = maxed === key ? null : key; drawMax(); };
+  const reveal = (key) => { if (maxed && maxed !== key) { maxed = key; drawMax(); } };   // (a shortcut or a button that goes to a hidden panel brings it up)
   const persist = () => { writeJson(LAYOUT_KEY, { name, tree }); if (name === "custom") writeJson(LAYOUT_KEY + ".custom", tree); };
   const render = () => {
     const rects = {};
@@ -531,6 +588,7 @@ function mountDock(bodies) {
       Object.assign(el.style, s.axis === "x" ? { left: s.at + "%", top: s.rect.y + "%", height: s.rect.h + "%", width: "" } : { top: s.at + "%", left: s.rect.x + "%", width: s.rect.w + "%", height: "" });
     });
     drawMenu();
+    drawMax();
     persist();
   };
   const becomeCustom = () => { name = "custom"; custom = clone(tree); };
@@ -572,7 +630,7 @@ function mountDock(bodies) {
   let stopPanelDrag = null;
   for (const key of Object.keys(PANELS)) {
     heads[key].addEventListener("pointerdown", (ev) => {
-      if (ev.button !== 0) return;
+      if (ev.button !== 0 || maxed) return;
       ev.preventDefault();
       let target = null, edge = null;
       guard(true); document.body.style.cursor = "grabbing";
@@ -603,6 +661,7 @@ function mountDock(bodies) {
   const menu = h("div", { class: "layoutmenu", role: "menu", hidden: true });
   const menuBtn = h("button", { class: "btn small", "aria-haspopup": "true", "aria-expanded": "false", title: "Choose how the statement, terminal and VS Code are arranged (or drag a panel by its header)" }, "⬚ Layout");
   const choose = (id) => {
+    maxed = null;
     if (id === "custom") { custom = custom || clone(tree); tree = clone(custom); name = "custom"; }
     else { tree = preset(id).tree(); name = id; }
     setMenu(false); render();
@@ -623,6 +682,8 @@ function mountDock(bodies) {
   render();
   return {
     el: dock,
+    toggleMax,
+    reveal,
     destroy() {
       slot.replaceChildren(); slot.hidden = true;
       document.removeEventListener("click", outside); document.removeEventListener("keydown", onEsc);
@@ -669,8 +730,8 @@ function renderCase(c) {
 }
 
 /** The keyboard shortcuts of the exercise page that also work from inside VS Code and the terminal: "run" (Alt+Enter), "instructions" (Alt+X),
- *  "terminal" (Alt+T) and "code" (Alt+V), or null. Alt alone (no Ctrl/Meta/Shift/AltGr, so a Spanish AltGr never triggers them), by physical key. */
-const FRAME_KEYS = { Enter: "run", NumpadEnter: "run", KeyX: "instructions", KeyT: "terminal", KeyV: "code" };
+ *  "terminal" (Alt+T), "code" (Alt+V) and "maximize" (Alt+M, the panel the keyboard is in), or null. Alt alone (no Ctrl/Meta/Shift/AltGr, so a Spanish AltGr never triggers them), by physical key. */
+const FRAME_KEYS = { Enter: "run", NumpadEnter: "run", KeyX: "instructions", KeyT: "terminal", KeyV: "code", KeyM: "maximize" };
 function frameShortcut(ev) {
   if (!ev.altKey || ev.ctrlKey || ev.metaKey || ev.shiftKey || (ev.getModifierState && ev.getModifierState("AltGraph"))) return null;
   return FRAME_KEYS[ev.code] || null;
@@ -752,6 +813,7 @@ async function viewExercise(id) {
   const inTerminal = (more) => {
     if (!d.compile_cmd) return toast("The server is older than this page: restart the lab with ./lab web");
     termFrame.contentWindow.postMessage({ cellar: "type", text: `cd "$CELLAR_EX" && ${d.compile_cmd}${more}` }, termOrigin);
+    dock.reveal("term");
     termFrame.focus();
   };
   const compileBtn = h("button", { class: "btn", title: "Compile your code into ./prog: the command is typed in the terminal for you" }, "Compile");
@@ -802,12 +864,14 @@ async function viewExercise(id) {
     setTimeout(give, 60);
     setTimeout(give, 250);
   };
-  const act = (name) => {
+  const focusedPanel = () => document.activeElement === codeFrame ? "code" : document.activeElement === termFrame ? "term" : "instr";
+  const act = (name, from) => {   // from: the panel a message came from (a key pressed inside VS Code or the terminal), else the page decides by the focus
     if (name === "release") name = "instructions";   // (the name an older frame script uses for Alt+X)
     if (name === "run") runBtn.click();
-    else if (name === "instructions") toInstructions();
-    else if (name === "terminal") toFrame(termFrame, termOrigin);
-    else if (name === "code") toFrame(codeFrame, codeOrigin);
+    else if (name === "maximize") dock.toggleMax(from || focusedPanel());
+    else if (name === "instructions") { dock.reveal("instr"); toInstructions(); }
+    else if (name === "terminal") { dock.reveal("term"); toFrame(termFrame, termOrigin); }
+    else if (name === "code") { dock.reveal("code"); toFrame(codeFrame, codeOrigin); }
   };
   const onKey = (e) => {
     if ((e.ctrlKey || e.metaKey) && !e.altKey && e.key === "Enter") { e.preventDefault(); check(); return; }
@@ -819,7 +883,7 @@ async function viewExercise(id) {
     const from = ev.source === codeFrame.contentWindow ? "code" : ev.source === termFrame.contentWindow ? "term" : null;
     if (!from || !ev.data) return;   // only our own two frames
     if (ev.data.cellar === "hello" && ev.data.version >= 2) hello[from] = true;
-    else if (ev.data.cellar === "key" && (Object.values(FRAME_KEYS).includes(ev.data.action) || ev.data.action === "release")) act(ev.data.action);
+    else if (ev.data.cellar === "key" && (Object.values(FRAME_KEYS).includes(ev.data.action) || ev.data.action === "release")) act(ev.data.action, from);
   };
   // VS Code and the terminal are pages of the lab image / the lab's start-up: if they are older than this page (the lab was not restarted after an
   // update) they cannot take part in the shortcuts or the Compile buttons, and the page says so instead of failing silently.
@@ -837,13 +901,15 @@ async function viewExercise(id) {
   const codeFrame = h("iframe", { src: frameUrl(state.cfg.vscode_port, `folder=${encodeURIComponent(d.workspace)}&payload=${payload}`), title: "VS Code", allow: "clipboard-read; clipboard-write" });
   const termFrame = h("iframe", { src: frameUrl(state.cfg.term_port, "arg=" + encodeURIComponent(d.file.replace(/\/[^/]*$/, ""))), title: "Terminal", allow: "clipboard-read; clipboard-write" });   // opens in the folder of answer.c
   const left = h("div", { class: "dbody statement", tabindex: "-1" },
-    h("div", { class: "crumbs" }, h("a", { href: "#/coding" }, "Coding"), " › ", isDaily ? [h("a", { href: "#/daily" }, "Daily challenge"), " (" + d.date + ")"] : d.track === "derusting" ? "C derusting" : "C exercises", " › ", chapter ? chapter.title : d.topic, " · ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag)), " ", stars(d.stars)),
+    h("div", { class: "crumbs" }, h("a", { href: "#/coding" }, "Coding"), " › ", isDaily ? [h("a", { href: "#/daily" }, "Daily challenge"), " (" + d.date + ")"] : d.track === "derusting" ? "C derusting" : "C exercises", " › ", chapter ? chapter.title : d.topic, " · ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag)), " ", stars(d.stars), " ", h("span", { class: "etime", title: "Estimated time for this exercise" }, "~" + timeText(exMin(d)))),
     h("div", { html: md(d.statement) }),
     d.theory ? h("div", { class: "qlinks" }, h("span", { class: "muted" }, "Theory: "), h("a", { href: "#/theory/" + d.theory.id, target: "_blank", rel: "noopener" }, `${d.theory.title} (${d.theory.count} questions)`)) : null,
-    h("div", { class: "muted", style: "font-size:13px" }, "Write it in ", d.files.map((f, i) => [i ? ", " : "", h("code", {}, f)]), " in VS Code. It saves by itself. ", h("kbd", {}, "Alt+X"), " ", h("kbd", {}, "Alt+T"), " ", h("kbd", {}, "Alt+V"), " move the keyboard between this panel, the terminal and VS Code."),
-    h("div", { class: "actions" }, checkBtn, compileBtn, runBtn, hintBtn, infoBtn, solBtn, resetBtn, skipBtn, h("span", { class: "spacer" }), chip),
-    notice, hintBox, results, extras,
-    h("div", { class: "qnav" }, prev ? h("a", { class: "btn small step prev", href: "#/coding/" + prev.id }, h("span", { class: "steplabel" }, "Previous"), "← " + prev.title) : null, h("span", { class: "spacer" }), next ? h("a", { class: "btn small step next", href: "#/coding/" + next.id }, h("span", { class: "steplabel" }, "Next"), next.title + " →") : null));
+    h("div", { class: "muted", style: "font-size:13px" }, "Write it in ", d.files.map((f, i) => [i ? ", " : "", h("code", {}, f)]), " in VS Code. It saves by itself. ", h("kbd", {}, "Alt+X"), " ", h("kbd", {}, "Alt+T"), " ", h("kbd", {}, "Alt+V"), " move the keyboard between this panel, the terminal and VS Code; ", h("kbd", {}, "Alt+M"), " maximizes the one you are in."),
+    h("div", { class: "actions" }, checkBtn, compileBtn, runBtn, hintBtn, infoBtn, solBtn, resetBtn, skipBtn, h("span", { class: "spacer" }), chip,
+      // (with the other buttons, above the line, so they are in reach after hints, checks and the answer have pushed the page down)
+      prev ? h("a", { class: "btn", href: "#/coding/" + prev.id, title: "Previous: " + prev.title }, "← Previous") : null,
+      next ? h("a", { class: "btn", href: "#/coding/" + next.id, title: "Next: " + next.title }, "Next →") : null),
+    notice, hintBox, results, extras);
   const dock = mountDock({ instr: left, term: termFrame, code: codeFrame });
   mount(dock.el);
   state.cleanup = () => { clearTimeout(staleTimer); document.removeEventListener("keydown", onKey); window.removeEventListener("message", onMsg); dock.destroy(); };
@@ -856,6 +922,7 @@ async function viewTheoryList() {
   const bar = makeFilters(FILTER_KEYS.theory, { levels: uniqueSorted(idx.theory.flatMap((t) => t.qs.map((q) => q.d))), levelLabel: (n) => "★".repeat(n), levelTitle: (n) => n + (n === 1 ? " star" : " stars"), done: true, onChange: () => render() });
   // the sets of the chosen path: a set mirrors one coding chapter, so a path selects the sets of its chapters (a study plan, those it has exercises of)
   const inPathOf = (model) => { const keys = model.path.setKeys; return (t) => !keys || keys.includes(t.tag + "/" + t.chapter); };
+  const setTime = (qs) => { const total = qSpend(qs), left = qSpend(qs.filter((q) => !q.c)); return left > 0 && left < total ? `~${timeText(total)} · ${timeText(left)} left` : `~${timeText(total)}`; };
   let render = () => {
     const f = bar.f;
     const model = codingModel(idx, f.tags), inPath = inPathOf(model);
@@ -863,7 +930,7 @@ async function viewTheoryList() {
     // a set shows only the questions that match the difficulty filter, with progress counted on those
     const sets = idx.theory.filter((t) => (!f.tags.length || f.tags.includes(t.tag)) && inPath(t)).map((t) => {
       const qs = t.qs.filter((q) => !f.levels.length || f.levels.includes(q.d));
-      return { ...t, count: qs.length, answered: qs.filter((q) => q.a).length, correct: qs.filter((q) => q.c).length };
+      return { ...t, qs, count: qs.length, answered: qs.filter((q) => q.a).length, correct: qs.filter((q) => q.c).length };
     }).filter((t) => t.count && !(f.hideDone && t.correct === t.count));   // (a set you have answered correctly all through counts as completed)
     if (pk) sets.sort((a, b) => pk.indexOf(a.tag + "/" + a.chapter) - pk.indexOf(b.tag + "/" + b.chapter));
     const total = idx.theory.filter((t) => (!f.tags.length || f.tags.includes(t.tag)) && inPath(t)).reduce((a, t) => a + t.count, 0);
@@ -875,6 +942,7 @@ async function viewTheoryList() {
         const p = s.count ? s.correct / s.count : 0;
         return h("a", { class: "row", href: "#/theory/" + s.id },
           h("div", { class: "main" }, h("div", { class: "title" }, s.title, " ", h("span", { class: "tag", title: "Course topic " + T(s.tag) }, T(s.tag))), h("div", { class: "sub" }, `${s.count} questions · ${s.types.join(", ")} · ${s.answered} answered`)),
+          h("span", { class: "muted ctime", title: "Estimated time of the set, and what is left of it" }, setTime(s.qs)),
           h("div", { class: "bar", style: "width:120px" }, h("span", { style: `width:${pct(p)}%` })), h("span", { class: "pct" }, pct(p) + "%"));
       })) : h("p", { class: "muted" }, !total ? "This path has no theory questions: its chapters are exercises only (choose another path above)." : f.hideDone ? "No set matches these filters (the completed ones are hidden)." : "No question matches these filters."));
   };
@@ -889,6 +957,7 @@ async function viewTheoryList() {
     const countOf = (x) => idx.theory.filter((t) => (!x.setKeys || x.setKeys.includes(t.tag + "/" + t.chapter)) && (!f.tags.length || f.tags.includes(t.tag))).reduce((a, t) => a + t.count, 0);
     pathBox.replaceChildren(pathPanel(model, () => render(), {
       count: countOf, unit: "questions", done, total: qs.length, noun: "questions answered correctly",
+      minutes: (x, whole) => qSpend(idx.theory.filter((t) => (!x.setKeys || x.setKeys.includes(t.tag + "/" + t.chapter)) && (!f.tags.length || f.tags.includes(t.tag))).flatMap((t) => t.qs.filter((q) => (!f.levels.length || f.levels.includes(q.d)) && (whole || !q.c)))),
       action: next ? h("a", { class: "btn primary", href: "#/theory/" + next.set.id }, (done ? "Continue: " : "Start: ") + next.set.title) : qs.length ? h("b", {}, "Everything correct ✔") : null }));
   };
   const baseRender = render;
@@ -1185,7 +1254,7 @@ function entryCard(e, byId, fav) {
     e.example ? [h("h5", {}, "Example"), h("pre", {}, h("code", {}, e.example))] : null,
     e.mistakes ? [h("h5", {}, "Common mistakes"), h("ul", {}, e.mistakes.map((m) => h("li", { html: rmd(m) })))] : null,
     moreList(e.questions && e.questions.count ? `Theory questions (${e.questions.count})` : "", e.questions, (q) => h("li", {}, h("a", { href: "#/theory/" + q.set }, q.prompt.replace(/\{\{\d+\}\}/g, "____").replace(/`/g, "")))),
-    moreList(e.practice && e.practice.count ? `Practice (${e.practice.count} exercise${e.practice.count === 1 ? "" : "s"} use it)` : "", e.practice && { count: e.practice.count, items: e.practice.exercises }, (x) => h("li", {}, h("a", { href: "#/coding/" + x.id }, x.title), " ", stars(x.stars))),
+    moreList(e.practice && e.practice.count ? `Practice (${e.practice.count} exercise${e.practice.count === 1 ? "" : "s"} use it)` : "", e.practice && { count: e.practice.count, items: e.practice.exercises }, (x) => h("li", {}, h("a", { href: "#/coding/" + x.id }, x.title), " ", stars(x.stars), " ", timeTag(x))),
     e.see ? h("div", { class: "muted", style: "margin-top:10px" }, "See also: ", e.see.map((s) => { const t = byId.get(s); return t ? [h("a", { href: "#/reference/" + s }, h("code", {}, t.title)), " "] : null; })) : null);
 }
 
@@ -1441,7 +1510,7 @@ async function openSkipped() {
     const chapters = new Map(idx.chapters.map((c, n) => [c.tag + "/" + c.id, { title: c.title, n }]));
     const list = idx.coding.filter((c) => c.skipped).sort((a, b) => (chapters.get(a.tag + "/" + a.topic).n - chapters.get(b.tag + "/" + b.topic).n) || byOrder(a, b));
     body.replaceChildren(list.length ? h("div", { class: "list" }, list.map((i) => h("div", { class: "row" },
-      h("div", { class: "main" }, h("div", { class: "title" }, h("a", { href: "#/coding/" + i.id, onclick: close }, i.title)), h("div", { class: "sub" }, chapters.get(i.tag + "/" + i.topic).title, " · ", stars(i.stars))),
+      h("div", { class: "main" }, h("div", { class: "title" }, h("a", { href: "#/coding/" + i.id, onclick: close }, i.title)), h("div", { class: "sub" }, chapters.get(i.tag + "/" + i.topic).title, " · ", stars(i.stars), " · ", timeTag(i))),
       h("button", { class: "btn small", title: "Count this exercise again", onclick: async () => {
         try { await api("coding/" + i.id + "/skip", { on: false }); } catch (e) { return toast(e.message); }
         await draw(); refreshPage();
@@ -1483,7 +1552,8 @@ const SHORTCUTS = [
     [["Alt", "Enter"], "Compile & run in the terminal"],
     [["Alt", "X"], "Instructions panel: the keyboard goes back to this page (from VS Code, the terminal or a button)"],
     [["Alt", "T"], "Terminal"],
-    [["Alt", "V"], "VS Code"]]],
+    [["Alt", "V"], "VS Code"],
+    [["Alt", "M"], "Maximize the panel the keyboard is in, and back to the layout (the button on the right of each panel's bar does the same)"]]],
   ["Theory questions", [
     [["Enter"], "Check the answer, then go to the next question"],
     [["Ctrl", "Enter"], "The same inside the “predict the output” box (Enter is a new line there)"]]],

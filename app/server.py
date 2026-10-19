@@ -179,6 +179,20 @@ def workspace_files(ex):
     return ex.get("files") or ["answer.c"]
 
 
+def started(ex):
+    """Whether the student has already worked on an exercise: something typed in its files, a check, or the answer seen."""
+    if coding_status(load_progress()["coding"].get(ex["id"])) != "todo":
+        return True
+    d = workspace_dir(ex["id"])
+    for name in workspace_files(ex):
+        try:
+            if (d / name).read_text(encoding="utf-8", errors="replace").strip():
+                return True
+        except OSError:
+            pass
+    return False
+
+
 def ensure_workspace(ex):
     d = workspace_dir(ex["id"])
     d.mkdir(parents=True, exist_ok=True)
@@ -849,24 +863,27 @@ class Handler(BaseHTTPRequestHandler):
         if not tags:
             return self._send(404, {"error": "no daily exercises"})
         levels = daily.parse_levels(q.get("levels"))
+        chapters = daily.parse_chapters(q.get("chapters"))
         with LOCK:
             ex = daily.find(DAILY_DIR, daily.daily_id(tags[0], day))
-            if ex and levels and ex["stars"] not in levels and not load_progress()["coding"].get(ex["id"], {}).get("passed"):
-                # the levels were changed after today's exercise was built and it is not passed: build another one if there is one to build
-                template, _ = daily.choose(DAILY_DIR, templates, tags[0], day, levels)
+            wanted = {t["chapter"] for t in daily.of_chapters(templates, tags[0], chapters)}   # (the chapters that really have a template)
+            if ex and (levels or chapters) and (ex["topic"] not in wanted or (levels and ex["stars"] not in levels)) and not started(ex):
+                # the topics or levels were changed after today's exercise was built and it is not started: build another one if there is one to build
+                template, _ = daily.choose(DAILY_DIR, templates, tags[0], day, levels, chapters)
                 if template["id"] != ex.get("template"):
                     shutil.rmtree(ex["dir"], ignore_errors=True)
                     shutil.rmtree(workspace_dir(ex["id"]), ignore_errors=True)   # (its answer.c belongs to the exercise that is gone)
                     prog = load_progress()
                     prog["coding"].pop(ex["id"], None)
                     save_progress(prog)
-            ex = daily.for_date(DAILY_DIR, templates, tags[0], day, levels)
+            ex = daily.for_date(DAILY_DIR, templates, tags[0], day, levels, chapters)
         coding = load_progress()["coding"]
         chapter = next((c for c in load_chapters() if c["tag"] == ex["tag"] and c["id"] == ex["topic"]), None)
         days = {v["streak_day"] for v in coding.values() if v.get("streak_day")}
         return self._send(200, {"id": ex["id"], "date": day.isoformat(), "title": ex["title"], "stars": ex["stars"], "tag": ex["tag"],
                                 "chapter": chapter["title"] if chapter else ex["topic"], "status": coding_status(coding.get(ex["id"])),
-                                "streak": daily.streak(days, day.isoformat()), "levels_available": daily.available_stars(templates, ex["tag"])})
+                                "streak": daily.streak(days, day.isoformat()), "levels_available": daily.available_stars(templates, ex["tag"]),
+                                "chapters_available": sorted({t["chapter"] for t in templates if t["tag"] == ex["tag"]})})
 
     def _daily_history(self, q):
         """The past daily challenges that exist (days on which the app generated one), newest first, with how each went."""
