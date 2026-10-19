@@ -5,6 +5,7 @@
  "topic": "pointers",
  "title": "Your own strcpy",
  "stars": 3,
+ "minutes": 6,
  "order": 6,
  "summary": "Copying with two pointers.",
  "hints": [

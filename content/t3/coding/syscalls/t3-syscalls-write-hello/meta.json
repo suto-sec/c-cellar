@@ -5,6 +5,7 @@
  "topic": "syscalls",
  "title": "Write with write()",
  "stars": 1,
+ "minutes": 4,
  "order": 1,
  "summary": "The write system call.",
  "hints": [

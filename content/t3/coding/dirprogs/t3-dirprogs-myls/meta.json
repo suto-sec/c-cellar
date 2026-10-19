@@ -5,6 +5,7 @@
  "topic": "dirprogs",
  "title": "myls",
  "stars": 4,
+ "minutes": 40,
  "order": 2,
  "summary": "ls -1 with -a and directories marked with a slash, sorted by name.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "syscalls",
  "title": "Overwrite bytes in place",
  "stars": 3,
+ "minutes": 9,
  "order": 8,
  "summary": "lseek before write.",
  "hints": [

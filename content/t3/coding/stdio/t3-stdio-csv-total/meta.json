@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "Total of a CSV file",
  "stars": 4,
+ "minutes": 13,
  "order": 25,
  "summary": "fgets + sscanf with a character class.",
  "hints": [

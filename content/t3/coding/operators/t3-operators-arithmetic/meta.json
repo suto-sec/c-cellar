@@ -5,6 +5,7 @@
  "topic": "operators",
  "title": "Five operations",
  "stars": 1,
+ "minutes": 4,
  "order": 1,
  "summary": "+ - * / %.",
  "hints": [

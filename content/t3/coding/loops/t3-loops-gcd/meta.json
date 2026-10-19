@@ -5,6 +5,7 @@
  "topic": "loops",
  "title": "Greatest common divisor",
  "stars": 3,
+ "minutes": 7,
  "order": 12,
  "summary": "Euclid's algorithm with while.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "arrays",
  "title": "Rotate left",
  "stars": 3,
+ "minutes": 10,
  "order": 10,
  "summary": "Moving elements around.",
  "hints": [

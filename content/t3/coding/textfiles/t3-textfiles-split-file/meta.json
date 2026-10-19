@@ -5,6 +5,7 @@
  "topic": "textfiles",
  "title": "Split a file in pieces",
  "stars": 4,
+ "minutes": 25,
  "order": 9,
  "summary": "Write a file as several smaller files of N lines each, named FILE.part1, FILE.part2...",
  "hints": [

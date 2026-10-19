@@ -5,6 +5,7 @@
  "topic": "variables",
  "title": "Swap two variables",
  "stars": 2,
+ "minutes": 4,
  "order": 2,
  "summary": "Use a temporary variable.",
  "hints": [

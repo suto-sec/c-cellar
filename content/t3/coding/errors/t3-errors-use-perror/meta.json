@@ -5,6 +5,7 @@
  "topic": "errors",
  "title": "Use perror",
  "stars": 2,
+ "minutes": 6,
  "order": 2,
  "summary": "The standard shortcut.",
  "hints": [

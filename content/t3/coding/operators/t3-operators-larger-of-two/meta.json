@@ -5,6 +5,7 @@
  "topic": "operators",
  "title": "Larger of two",
  "stars": 2,
+ "minutes": 4,
  "order": 6,
  "summary": "The conditional operator ?:.",
  "hints": [

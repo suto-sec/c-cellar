@@ -5,6 +5,7 @@
  "topic": "conditions",
  "title": "Name of the day",
  "stars": 2,
+ "minutes": 6,
  "order": 5,
  "summary": "switch with default.",
  "hints": [

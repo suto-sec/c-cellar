@@ -5,6 +5,7 @@
  "topic": "classic",
  "title": "Sort the words of a file",
  "stars": 4,
+ "minutes": 28,
  "order": 4,
  "summary": "A .txt file and its number of words: check the arguments, load the words, bubble-sort them.",
  "hints": [

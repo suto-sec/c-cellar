@@ -5,6 +5,7 @@
  "topic": "memory",
  "title": "A line of any length",
  "stars": 3,
+ "minutes": 14,
  "order": 6,
  "summary": "Growing a buffer with realloc.",
  "hints": [

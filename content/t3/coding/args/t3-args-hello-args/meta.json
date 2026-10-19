@@ -5,6 +5,7 @@
  "topic": "args",
  "title": "Hello, arguments",
  "stars": 2,
+ "minutes": 4,
  "order": 2,
  "summary": "One greeting per argument.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "dirprogs",
  "title": "The biggest file",
  "stars": 5,
+ "minutes": 38,
  "order": 9,
  "summary": "Walk a tree remembering the largest file seen so far: its path and its size.",
  "hints": [

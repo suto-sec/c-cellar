@@ -5,6 +5,7 @@
  "topic": "structs",
  "title": "Functions on a struct",
  "stars": 3,
+ "minutes": 7,
  "order": 5,
  "summary": "Passing a struct by value.",
  "hints": [

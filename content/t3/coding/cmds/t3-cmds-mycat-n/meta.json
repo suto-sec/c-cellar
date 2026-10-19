@@ -5,6 +5,7 @@
  "topic": "cmds",
  "title": "mycat with -n",
  "stars": 4,
+ "minutes": 22,
  "order": 4,
  "summary": "cat(1) with -n: files or standard input, numbered lines, and errors that do not stop the rest.",
  "hints": [

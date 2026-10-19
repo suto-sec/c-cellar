@@ -5,6 +5,7 @@
  "topic": "functions",
  "title": "A prime test function",
  "stars": 3,
+ "minutes": 6,
  "order": 8,
  "summary": "Reusing a function.",
  "hints": [

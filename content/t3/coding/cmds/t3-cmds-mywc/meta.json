@@ -5,6 +5,7 @@
  "topic": "cmds",
  "title": "mywc",
  "stars": 3,
+ "minutes": 18,
  "order": 2,
  "summary": "wc(1) on standard input: lines, words and bytes, or just one of them.",
  "hints": [

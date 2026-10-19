@@ -5,6 +5,7 @@
  "topic": "loops",
  "title": "Sum from 1 to n",
  "stars": 1,
+ "minutes": 4,
  "order": 2,
  "summary": "Accumulating in a loop.",
  "hints": [

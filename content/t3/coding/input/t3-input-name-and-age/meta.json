@@ -5,6 +5,7 @@
  "topic": "input",
  "title": "Name and age",
  "stars": 1,
+ "minutes": 4,
  "order": 2,
  "summary": "Reading a word and a number.",
  "hints": [

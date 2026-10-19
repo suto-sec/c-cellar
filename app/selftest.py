@@ -38,6 +38,8 @@ def check_daily(ref_names):
     chapter_ids = {(c["tag"], c["id"]) for c in S.load_chapters()}
     ids = set()
     for t in templates:
+        if not isinstance(t.get("minutes"), int) or not 2 <= t["minutes"] <= 60:
+            err(f"daily {t['id']}: needs minutes (2 to 60) in MINUTES of its daily.py")
         label = t["id"]
         if t["id"] in ids:
             err(f"{label}: duplicate template id")
@@ -197,6 +199,8 @@ def main():
             err(f"{ex['id']}: must live in content/{ex['tag']}/coding/{ex['topic']}/")
         if len(ex.get("hints", [])) < 2:
             err(f"{ex['id']}: needs at least 2 hints")
+        if not isinstance(ex.get("minutes"), int) or not 2 <= ex["minutes"] <= 60:
+            err(f"{ex['id']}: needs \"minutes\" (2 to 60), the estimated time to write and pass it, judged for this exercise and not from its stars")
         if (d / "starter.c").exists() and (d / "starter.c").read_text().strip():
             err(f"{ex['id']}: starters must be blank (no fill-in exercises); remove starter.c")
         r = S.check_solution(ex)

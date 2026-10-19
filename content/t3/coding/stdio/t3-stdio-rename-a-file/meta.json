@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "A tiny mv",
  "stars": 2,
+ "minutes": 5,
  "order": 8,
  "summary": "rename().",
  "hints": [

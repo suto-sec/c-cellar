@@ -5,6 +5,7 @@
  "topic": "variables",
  "title": "Fixed-width integers",
  "stars": 2,
+ "minutes": 5,
  "order": 7,
  "summary": "int64_t and uint8_t from <stdint.h>.",
  "hints": [

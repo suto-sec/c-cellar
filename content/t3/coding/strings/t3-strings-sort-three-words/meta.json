@@ -5,6 +5,7 @@
  "topic": "strings",
  "title": "Sort three words",
  "stars": 3,
+ "minutes": 9,
  "order": 14,
  "summary": "strcmp for ordering.",
  "hints": [

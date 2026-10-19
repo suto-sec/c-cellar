@@ -5,6 +5,7 @@
  "topic": "args",
  "title": "A small option parser",
  "stars": 4,
+ "minutes": 15,
  "order": 12,
  "summary": "Options before the file names.",
  "hints": [

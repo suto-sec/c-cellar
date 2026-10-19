@@ -5,6 +5,7 @@
  "topic": "args",
  "title": "Validate numbers",
  "stars": 3,
+ "minutes": 9,
  "order": 9,
  "summary": "strtol with an end pointer.",
  "hints": [

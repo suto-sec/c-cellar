@@ -5,6 +5,7 @@
  "topic": "records",
  "title": "Fraction calculator",
  "stars": 4,
+ "minutes": 40,
  "order": 4,
  "summary": "A struct for a fraction, functions that operate on structs, and a greatest common divisor to keep results reduced.",
  "hints": [

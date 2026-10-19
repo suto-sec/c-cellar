@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "Show a file",
  "stars": 2,
+ "minutes": 7,
  "order": 4,
  "summary": "fopen, fgets and fputs.",
  "hints": [

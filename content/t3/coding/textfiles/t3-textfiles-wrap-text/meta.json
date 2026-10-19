@@ -5,6 +5,7 @@
  "topic": "textfiles",
  "title": "Wrap text to a width",
  "stars": 5,
+ "minutes": 22,
  "order": 10,
  "summary": "Re-flow the words of standard input into lines of at most WIDTH characters.",
  "hints": [

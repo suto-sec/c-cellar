@@ -5,6 +5,7 @@
  "topic": "variables",
  "title": "Constants: a circle",
  "stars": 2,
+ "minutes": 4,
  "order": 4,
  "summary": "#define and const.",
  "hints": [

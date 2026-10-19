@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "Count the lines of a file",
  "stars": 2,
+ "minutes": 7,
  "order": 5,
  "summary": "fgetc until EOF.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "memory",
  "title": "Your first malloc",
  "stars": 2,
+ "minutes": 7,
  "order": 1,
  "summary": "Ask the system for the memory of ONE int, use it through a pointer, and give it back.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "build",
  "title": "A header and a source file",
  "stars": 2,
+ "minutes": 10,
  "order": 1,
  "summary": "Declaration in .h, definition in .c.",
  "hints": [

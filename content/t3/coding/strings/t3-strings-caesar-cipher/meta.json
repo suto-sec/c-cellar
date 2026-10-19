@@ -5,6 +5,7 @@
  "topic": "strings",
  "title": "Caesar cipher",
  "stars": 3,
+ "minutes": 9,
  "order": 13,
  "summary": "Arithmetic on characters.",
  "hints": [

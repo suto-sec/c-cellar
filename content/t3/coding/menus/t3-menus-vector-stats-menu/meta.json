@@ -5,6 +5,7 @@
  "topic": "menus",
  "title": "Statistics of a vector",
  "stars": 3,
+ "minutes": 35,
  "order": 4,
  "summary": "Read N numbers into an array, then answer menu options with functions that receive the array.",
  "hints": [

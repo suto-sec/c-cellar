@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "The number behind a stream",
  "stars": 2,
+ "minutes": 5,
  "order": 21,
  "summary": "fileno: every FILE * is built on a descriptor; ask which one.",
  "hints": [

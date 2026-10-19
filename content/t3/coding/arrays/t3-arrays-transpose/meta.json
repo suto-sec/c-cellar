@@ -5,6 +5,7 @@
  "topic": "arrays",
  "title": "Transpose a matrix",
  "stars": 3,
+ "minutes": 8,
  "order": 9,
  "summary": "Swapping the roles of rows and columns.",
  "hints": [

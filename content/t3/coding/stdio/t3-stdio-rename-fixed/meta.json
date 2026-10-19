@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "Rename one file",
  "stars": 1,
+ "minutes": 4,
  "order": 7,
  "summary": "rename(old, new) with fixed names, and what it returns.",
  "hints": [

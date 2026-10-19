@@ -5,6 +5,7 @@
  "topic": "textfiles",
  "title": "Capitalize every word",
  "stars": 3,
+ "minutes": 15,
  "order": 5,
  "summary": "Copy a file changing each word to Capitalized form, character by character.",
  "hints": [

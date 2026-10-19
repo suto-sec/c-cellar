@@ -5,6 +5,7 @@
  "topic": "errors",
  "title": "Parse a number safely",
  "stars": 3,
+ "minutes": 12,
  "order": 5,
  "summary": "strtol, ERANGE and the end pointer.",
  "hints": [

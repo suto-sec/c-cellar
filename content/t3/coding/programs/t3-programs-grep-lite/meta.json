@@ -5,6 +5,7 @@
  "topic": "programs",
  "title": "A tiny grep",
  "stars": 4,
+ "minutes": 18,
  "order": 7,
  "summary": "Options, strstr and an exit status.",
  "hints": [

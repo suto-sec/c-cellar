@@ -5,6 +5,7 @@
  "topic": "structs",
  "title": "Compare two dates",
  "stars": 3,
+ "minutes": 9,
  "order": 8,
  "summary": "A struct and a function that compares.",
  "hints": [

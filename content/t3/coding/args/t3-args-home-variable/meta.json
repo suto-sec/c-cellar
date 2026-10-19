@@ -5,6 +5,7 @@
  "topic": "args",
  "title": "Read an environment variable",
  "stars": 2,
+ "minutes": 4,
  "order": 6,
  "summary": "getenv.",
  "hints": [

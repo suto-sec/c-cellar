@@ -5,6 +5,7 @@
  "topic": "programs",
  "title": "Count from FIRST to LAST",
  "stars": 3,
+ "minutes": 12,
  "order": 1,
  "summary": "Argument checking, atoi and a loop with a step.",
  "hints": [

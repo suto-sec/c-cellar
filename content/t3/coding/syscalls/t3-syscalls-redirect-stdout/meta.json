@@ -5,6 +5,7 @@
  "topic": "syscalls",
  "title": "Redirect standard output",
  "stars": 4,
+ "minutes": 11,
  "order": 11,
  "summary": "open and dup2.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "programs",
  "title": "List the PATH",
  "stars": 3,
+ "minutes": 12,
  "order": 4,
  "summary": "getenv and splitting a string.",
  "hints": [

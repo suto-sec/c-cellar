@@ -5,6 +5,7 @@
  "topic": "operators",
  "title": "Bit operations",
  "stars": 3,
+ "minutes": 7,
  "order": 7,
  "summary": "& | ^ << >>.",
  "hints": [

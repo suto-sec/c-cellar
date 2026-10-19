@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "Copy with fread and fwrite",
  "stars": 3,
+ "minutes": 12,
  "order": 12,
  "summary": "Binary block copy.",
  "hints": [

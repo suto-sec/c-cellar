@@ -10,5 +10,6 @@
   "Inside swap, *a is the int that a points to. You need a temporary variable.",
   "In minmax, start from v[0] and walk the array; write results with *min = ... and *max = ..."
  ],
- "stars": 3
+ "stars": 3,
+ "minutes": 10
 }

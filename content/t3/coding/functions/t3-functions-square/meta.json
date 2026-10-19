@@ -5,6 +5,7 @@
  "topic": "functions",
  "title": "Your first function",
  "stars": 1,
+ "minutes": 3,
  "order": 1,
  "summary": "Define and call a function.",
  "hints": [

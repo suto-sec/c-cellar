@@ -181,13 +181,13 @@ function stepTarget(list, pos, dir, skipDone) {
   return null;
 }
 
-/** Rough times, in minutes, by difficulty: an exercise of that many stars, a theory question of that difficulty. They are estimates, shown with a "~"
- *  next to every exercise, chapter, set and path, and as the time still pending wherever the progress is shown. */
-const MINUTES = { 1: 8, 2: 15, 3: 25, 4: 40, 5: 60 };
-const QMINUTES = { 1: 1, 2: 1, 3: 2, 4: 3, 5: 4 };
-const exMin = (i) => MINUTES[i.stars] || 25;
-const spend = (items) => items.reduce((a, i) => a + exMin(i), 0);
-const qSpend = (qs) => qs.reduce((a, q) => a + (QMINUTES[q.d] || 2), 0);
+/** Estimated times. An exercise carries its own `minutes` (judged one by one for a student who has met the topic: reading, typing, one or two
+ *  compile-and-fix rounds); a theory question carries `s` seconds (from its type, its code and its options). They are shown with a "~" next to every
+ *  exercise, chapter, set and path, and as the time still pending wherever progress is shown. Where an item has no estimate (a server older than
+ *  this page) nothing is shown: a group shows a time only when all of its items have one. */
+const exMin = (i) => (i && i.minutes > 0 ? i.minutes : null);
+const spend = (items) => (items.every(exMin) ? items.reduce((a, i) => a + i.minutes, 0) : null);
+const qSpend = (qs) => (qs.every((q) => q.s > 0) ? Math.max(1, Math.round(qs.reduce((a, q) => a + q.s, 0) / 60)) : null);
 /** 25 min, 1 h 20 min, 2 h (from ten hours on, whole hours). */
 function timeText(min) {
   min = Math.round(min);
@@ -196,12 +196,18 @@ function timeText(min) {
   const r = Math.round(min / 5) * 5, hh = Math.floor(r / 60), mm = r % 60;
   return mm ? `${hh} h ${mm} min` : `${hh} h`;
 }
-/** The time of a group (chapter, track...) of exercises that count, and what is pending of it once part of it is passed: "~2 h · 45 min left". */
-function timeLabel(items) {
-  const live = items.filter((i) => !i.skipped), total = spend(live), left = spend(live.filter((i) => i.status !== "passed"));
+/** "~2 h", and once part of it is done "~2 h · 45 min left" (empty when a total is not known). */
+function leftLabel(total, left) {
+  if (total == null) return "";
   return left > 0 && left < total ? `~${timeText(total)} · ${timeText(left)} left` : `~${timeText(total)}`;
 }
-const timeTag = (i) => h("span", { class: "etime", title: "Estimated time for this exercise" }, "~" + timeText(exMin(i)));
+/** The time of a group (chapter, track...) of exercises that count, with what is pending of it. */
+function timeLabel(items) {
+  const live = items.filter((i) => !i.skipped);
+  return leftLabel(spend(live), spend(live.filter((i) => i.status !== "passed")));
+}
+const timeTag = (i) => (exMin(i) ? h("span", { class: "etime", title: "Estimated time for this exercise" }, "~" + timeText(i.minutes)) : null);
+const timeDot = (i) => (exMin(i) ? [" · ", timeTag(i)] : null);
 
 /** The path chooser, shared by the coding and theory pages. Two ways to choose, drawn differently: the study plans (how much time you have: a card
  *  each, with its size and time) and the topics (what you want to learn: one chip each). Then what the page says about the chosen one.
@@ -211,18 +217,19 @@ function pathPanel(model, onPick, { count, unit, minutes, done, total, noun, act
   const p = model.path;
   const pick = (x) => () => { writePathId(x.id); onPick(x.id); };
   const plans = model.paths.filter((x) => x.kind === "plan"), topics = model.paths.filter((x) => x.kind !== "plan");
-  const left = minutes && total > done ? minutes(p) : 0, whole = minutes ? minutes(p, true) : 0;
+  const mins = (x, whole) => (minutes ? minutes(x, whole) : null);   // (null: no estimate known)
+  const left = total > done ? mins(p) : 0, whole = mins(p, true);
   return h("div", { class: "panel pathpanel" },
     h("div", { class: "pathhead" }, h("b", {}, "What do you want to study?"), h("span", { class: "muted" }, "The lists, Continue and the next/previous buttons follow your choice.")),
     plans.length ? h("div", { class: "pathgroup" },
       h("div", { class: "pathlabel" }, h("b", {}, "Study plans"), h("span", { class: "muted" }, "by the time you have")),
       h("div", { class: "plans" }, plans.map((x) => h("button", { class: "plancard" + (x.id === p.id ? " on" : ""), "aria-pressed": String(x.id === p.id), title: x.blurb, onclick: pick(x) },
         h("span", { class: "plantitle" }, x.title),
-        h("span", { class: "planmeta" }, `${count(x)} ${unit}`, minutes ? ` · about ${timeText(minutes(x, true))}` : ""))))) : null,
+        h("span", { class: "planmeta" }, `${count(x)} ${unit}`, mins(x, true) ? ` · about ${timeText(mins(x, true))}` : ""))))) : null,
     topics.length ? h("div", { class: "pathgroup" },
       h("div", { class: "pathlabel" }, h("b", {}, "Topics"), h("span", { class: "muted" }, "by what you want to learn")),
       h("div", { class: "fgroup pathchips" }, topics.map((x) => h("button", { class: "chip" + (x.id === p.id ? " on" : ""), "aria-pressed": String(x.id === p.id), title: x.blurb, onclick: pick(x) },
-        x.title, " ", h("span", { class: "pcount" }, String(count(x)) + (minutes ? " · " + timeText(minutes(x, true)) : "")))))) : null,
+        x.title, " ", h("span", { class: "pcount" }, String(count(x)) + (mins(x, true) ? " · " + timeText(mins(x, true)) : "")))))) : null,
     h("div", { class: "pathbody" },
       h("div", { style: "flex:1;min-width:220px" }, h("div", { class: "pathblurb" }, h("b", {}, p.title), h("span", { class: "muted" }, p.kind === "plan" ? " · study plan" : " · topic"), h("div", {}, p.blurb)),
         h("div", { class: "muted", style: "font-size:13px;margin-top:4px" }, `${done} of ${total} ${noun}`, whole ? (left ? ` · about ${timeText(left)} left of ${timeText(whole)}` : ` · about ${timeText(whole)} in total`) : ""),
@@ -289,7 +296,7 @@ function dailyCard(d) {
       h("span", { class: "daybadge " + (done ? "done" : "todo") }, done ? "✔ Done today" : "○ " + state)),
     h("div", { class: "dailymain" },
       h("div", { class: "main" }, h("div", { class: "muted" }, "Today · " + d.date), h("a", { class: "title", href: "#/coding/" + d.id }, d.title),
-        h("div", { class: "sub" }, d.chapter, " · ", stars(d.stars), " ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag)), " · ", timeTag(d))),
+        h("div", { class: "sub" }, d.chapter, " · ", stars(d.stars), " ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag)), timeDot(d))),
       h("a", { class: "btn" + (done ? "" : " primary"), href: "#/coding/" + d.id }, done ? "Open again" : d.status === "todo" ? "Start today's challenge" : "Continue today's challenge")));
 }
 /** What the daily challenge may be: the topics it comes from (the ones of the coding page) and its difficulties (stars); several can be on in each,
@@ -331,7 +338,7 @@ async function viewDaily() {
     dailyChoiceBox(today, topics),
     h("h2", {}, "Past challenges"),
     past.items.length ? h("div", { class: "list" }, past.items.map((x) => h("a", { class: "row", href: "#/coding/" + x.id },
-      h("div", { class: "main" }, h("div", { class: "title" }, x.title), h("div", { class: "sub" }, dateLabel(x.date), " · ", x.chapter, " · ", stars(x.stars), " ", h("span", { class: "tag", title: "Course topic " + T(x.tag) }, T(x.tag)), " · ", timeTag(x))),
+      h("div", { class: "main" }, h("div", { class: "title" }, x.title), h("div", { class: "sub" }, dateLabel(x.date), " · ", x.chapter, " · ", stars(x.stars), " ", h("span", { class: "tag", title: "Course topic " + T(x.tag) }, T(x.tag)), timeDot(x))),
       h("span", { class: "status-chip" }, h("span", { class: "st " + x.status }, STATUS[x.status][0]), STATUS[x.status][1] + (x.status === "passed" && x.on_time ? " on the day" : "")),
       h("span", { class: "btn small" }, "Retry")))) : h("p", { class: "muted" }, "Nothing here yet: each day's challenge appears here after it, so you can try it again.")));
 }
@@ -342,6 +349,7 @@ async function viewHome() {
   const m = codingModel(idx);
   const nq = idx.theory.reduce((a, t) => a + t.count, 0), okq = idx.theory.reduce((a, t) => a + t.correct, 0);
   const codeLeft = spend(m.items.filter((i) => live(i) && i.status !== "passed")), theoryLeft = qSpend(idx.theory.flatMap((t) => t.qs.filter((q) => !q.c)));
+  const pathLeft = spend(m.path.live.filter((i) => i.status !== "passed"));
   mount(page(
     h("h1", {}, "c-cellar"),
     h("p", { class: "lead" }, "Practice C by writing it, and review the theory. Everything is checked locally."),
@@ -351,7 +359,7 @@ async function viewHome() {
       h("a", { class: "row", href: "#/reference" }, h("div", { class: "main" }, h("div", { class: "title" }, "Reference"), h("div", { class: "sub" }, "One entry per function, command and keyword: syntax, options, examples, common mistakes")), h("span", { class: "pct" }, String(idx.reference))),
     ),
     m.next ? h("p", {}, h("a", { class: "btn primary", href: "#/coding/" + m.next.id }, (m.pathPassed ? "Continue: " : "Start: ") + m.next.title),
-      " ", h("span", { class: "muted" }, m.path.kind === "plan" ? "in the study plan " : "in the topic "), h("a", { href: "#/coding", title: "Choose another plan or topic" }, m.path.title), h("span", { class: "muted" }, ` · about ${timeText(spend(m.path.live.filter((i) => i.status !== "passed")))} left in it`)) : null,
+      " ", h("span", { class: "muted" }, m.path.kind === "plan" ? "in the study plan " : "in the topic "), h("a", { href: "#/coding", title: "Choose another plan or topic" }, m.path.title), pathLeft ? h("span", { class: "muted" }, ` · about ${timeText(pathLeft)} left in it`) : null) : null,
   ));
 }
 
@@ -423,13 +431,13 @@ async function viewCodingList() {
         const done = c.live.filter((i) => i.status === "passed").length;
         const isNext = m.next && c.items.includes(m.next);
         const det = h("details", { class: "chapter", "data-key": c.key, open: openState.has(c.key) ? openState.get(c.key) : narrowed ? true : isNext || done === 0 && c === chs[0] },
-          h("summary", {}, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted csub" }, c.blurb), narrowed ? h("span", { class: "muted", style: "font-size:13px" }, `${rows.length} shown`) : null, c.live.length ? h("span", { class: "muted ctime", title: "Estimated time of the chapter, and what is left of it" }, timeLabel(c.live)) : null, c.live.length ? h("span", { class: "cprog" }, `${done}/${c.live.length}`) : h("span", { class: "cprog muted" }, "skipped"),
+          h("summary", {}, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted csub" }, c.blurb), narrowed ? h("span", { class: "muted", style: "font-size:13px" }, `${rows.length} shown`) : null, c.live.length && timeLabel(c.live) ? h("span", { class: "muted ctime", title: "Estimated time of the chapter, and what is left of it" }, timeLabel(c.live)) : null, c.live.length ? h("span", { class: "cprog" }, `${done}/${c.live.length}`) : h("span", { class: "cprog muted" }, "skipped"),
             h("span", { class: "bar", style: "width:70px" }, h("span", { style: `width:${c.live.length ? (done / c.live.length) * 100 : 0}%` }))),
           h("div", { class: "list" }, rows.map((i) => h("a", { class: "row" + (i.skipped ? " skipped" : ""), href: "#/coding/" + i.id },
             i.skipped ? h("span", { class: "st skip", title: "Skipped: it does not count" }, "⊘") : h("span", { class: "st " + i.status, title: STATUS[i.status][1] }, STATUS[i.status][0]),
             h("div", { class: "main" }, h("div", { class: "title" }, i.title), h("div", { class: "sub" }, i.summary)), timeTag(i), h("span", { class: "tag", title: "Course topic " + T(i.tag) }, T(i.tag)), stars(i.stars)))));
         det.addEventListener("toggle", () => openState.set(c.key, det.open));
-        const link = h("button", { class: "reflink chaplink", title: c.title + ": " + c.blurb + (c.live.length ? " (" + timeLabel(c.live) + ")" : ""), onclick: () => goTo(entry) }, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted" }, c.live.length ? `${done}/${c.live.length}` : "–"));
+        const link = h("button", { class: "reflink chaplink", title: c.title + ": " + c.blurb + (c.live.length && timeLabel(c.live) ? " (" + timeLabel(c.live) + ")" : ""), onclick: () => goTo(entry) }, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted" }, c.live.length ? `${done}/${c.live.length}` : "–"));
         const entry = { key: c.key, det, link };
         listed.push(entry);
         return det;
@@ -437,7 +445,7 @@ async function viewCodingList() {
       if (!sections.some(Boolean)) return null;   // nothing of this track matches the filters
       navGroups.push(h("h4", {}, title), ...listed.filter((e) => chs.some((c) => c.key === e.key)).map((e) => e.link));
       const inTrack = chs.flatMap((c) => c.items);
-      return h("section", {}, h("h2", {}, title, " ", h("span", { class: "muted" }, `${inTrack.filter((i) => live(i) && i.status === "passed").length}/${inTrack.filter(live).length} · ${timeLabel(inTrack)}`)),
+      return h("section", {}, h("h2", {}, title, " ", h("span", { class: "muted" }, `${inTrack.filter((i) => live(i) && i.status === "passed").length}/${inTrack.filter(live).length}` + (timeLabel(inTrack) ? " · " + timeLabel(inTrack) : ""))),
         h("p", { class: "muted", style: "margin:-6px 0 10px" }, blurb), sections);
     }));
     if (!shown) holder.append(h("p", { class: "muted" }, filters.hideDone ? "No exercise matches these filters (the completed ones are hidden)." : "No exercise matches these filters."));
@@ -901,7 +909,7 @@ async function viewExercise(id) {
   const codeFrame = h("iframe", { src: frameUrl(state.cfg.vscode_port, `folder=${encodeURIComponent(d.workspace)}&payload=${payload}`), title: "VS Code", allow: "clipboard-read; clipboard-write" });
   const termFrame = h("iframe", { src: frameUrl(state.cfg.term_port, "arg=" + encodeURIComponent(d.file.replace(/\/[^/]*$/, ""))), title: "Terminal", allow: "clipboard-read; clipboard-write" });   // opens in the folder of answer.c
   const left = h("div", { class: "dbody statement", tabindex: "-1" },
-    h("div", { class: "crumbs" }, h("a", { href: "#/coding" }, "Coding"), " › ", isDaily ? [h("a", { href: "#/daily" }, "Daily challenge"), " (" + d.date + ")"] : d.track === "derusting" ? "C derusting" : "C exercises", " › ", chapter ? chapter.title : d.topic, " · ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag)), " ", stars(d.stars), " ", h("span", { class: "etime", title: "Estimated time for this exercise" }, "~" + timeText(exMin(d)))),
+    h("div", { class: "crumbs" }, h("a", { href: "#/coding" }, "Coding"), " › ", isDaily ? [h("a", { href: "#/daily" }, "Daily challenge"), " (" + d.date + ")"] : d.track === "derusting" ? "C derusting" : "C exercises", " › ", chapter ? chapter.title : d.topic, " · ", h("span", { class: "tag", title: "Course topic " + T(d.tag) }, T(d.tag)), " ", stars(d.stars), " ", timeTag(d)),
     h("div", { html: md(d.statement) }),
     d.theory ? h("div", { class: "qlinks" }, h("span", { class: "muted" }, "Theory: "), h("a", { href: "#/theory/" + d.theory.id, target: "_blank", rel: "noopener" }, `${d.theory.title} (${d.theory.count} questions)`)) : null,
     h("div", { class: "muted", style: "font-size:13px" }, "Write it in ", d.files.map((f, i) => [i ? ", " : "", h("code", {}, f)]), " in VS Code. It saves by itself. ", h("kbd", {}, "Alt+X"), " ", h("kbd", {}, "Alt+T"), " ", h("kbd", {}, "Alt+V"), " move the keyboard between this panel, the terminal and VS Code; ", h("kbd", {}, "Alt+M"), " maximizes the one you are in."),
@@ -922,7 +930,7 @@ async function viewTheoryList() {
   const bar = makeFilters(FILTER_KEYS.theory, { levels: uniqueSorted(idx.theory.flatMap((t) => t.qs.map((q) => q.d))), levelLabel: (n) => "★".repeat(n), levelTitle: (n) => n + (n === 1 ? " star" : " stars"), done: true, onChange: () => render() });
   // the sets of the chosen path: a set mirrors one coding chapter, so a path selects the sets of its chapters (a study plan, those it has exercises of)
   const inPathOf = (model) => { const keys = model.path.setKeys; return (t) => !keys || keys.includes(t.tag + "/" + t.chapter); };
-  const setTime = (qs) => { const total = qSpend(qs), left = qSpend(qs.filter((q) => !q.c)); return left > 0 && left < total ? `~${timeText(total)} · ${timeText(left)} left` : `~${timeText(total)}`; };
+  const setTime = (qs) => leftLabel(qSpend(qs), qSpend(qs.filter((q) => !q.c)));
   let render = () => {
     const f = bar.f;
     const model = codingModel(idx, f.tags), inPath = inPathOf(model);
@@ -942,7 +950,7 @@ async function viewTheoryList() {
         const p = s.count ? s.correct / s.count : 0;
         return h("a", { class: "row", href: "#/theory/" + s.id },
           h("div", { class: "main" }, h("div", { class: "title" }, s.title, " ", h("span", { class: "tag", title: "Course topic " + T(s.tag) }, T(s.tag))), h("div", { class: "sub" }, `${s.count} questions · ${s.types.join(", ")} · ${s.answered} answered`)),
-          h("span", { class: "muted ctime", title: "Estimated time of the set, and what is left of it" }, setTime(s.qs)),
+          setTime(s.qs) ? h("span", { class: "muted ctime", title: "Estimated time of the set, and what is left of it" }, setTime(s.qs)) : null,
           h("div", { class: "bar", style: "width:120px" }, h("span", { style: `width:${pct(p)}%` })), h("span", { class: "pct" }, pct(p) + "%"));
       })) : h("p", { class: "muted" }, !total ? "This path has no theory questions: its chapters are exercises only (choose another path above)." : f.hideDone ? "No set matches these filters (the completed ones are hidden)." : "No question matches these filters."));
   };
@@ -1510,7 +1518,7 @@ async function openSkipped() {
     const chapters = new Map(idx.chapters.map((c, n) => [c.tag + "/" + c.id, { title: c.title, n }]));
     const list = idx.coding.filter((c) => c.skipped).sort((a, b) => (chapters.get(a.tag + "/" + a.topic).n - chapters.get(b.tag + "/" + b.topic).n) || byOrder(a, b));
     body.replaceChildren(list.length ? h("div", { class: "list" }, list.map((i) => h("div", { class: "row" },
-      h("div", { class: "main" }, h("div", { class: "title" }, h("a", { href: "#/coding/" + i.id, onclick: close }, i.title)), h("div", { class: "sub" }, chapters.get(i.tag + "/" + i.topic).title, " · ", stars(i.stars), " · ", timeTag(i))),
+      h("div", { class: "main" }, h("div", { class: "title" }, h("a", { href: "#/coding/" + i.id, onclick: close }, i.title)), h("div", { class: "sub" }, chapters.get(i.tag + "/" + i.topic).title, " · ", stars(i.stars), timeDot(i))),
       h("button", { class: "btn small", title: "Count this exercise again", onclick: async () => {
         try { await api("coding/" + i.id + "/skip", { on: false }); } catch (e) { return toast(e.message); }
         await draw(); refreshPage();

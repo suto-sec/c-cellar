@@ -5,6 +5,7 @@
  "topic": "functions",
  "title": "Print in binary",
  "stars": 4,
+ "minutes": 8,
  "order": 14,
  "summary": "Recursion that prints on the way back.",
  "hints": [

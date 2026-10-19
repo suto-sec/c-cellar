@@ -5,6 +5,7 @@
  "topic": "build",
  "title": "A shared library",
  "stars": 5,
+ "minutes": 18,
  "order": 6,
  "summary": "-fPIC, -shared and LD_LIBRARY_PATH.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "syscalls",
  "title": "Read one byte with read",
  "stars": 2,
+ "minutes": 7,
  "order": 4,
  "summary": "The system call read: one byte from a descriptor into a variable.",
  "hints": [

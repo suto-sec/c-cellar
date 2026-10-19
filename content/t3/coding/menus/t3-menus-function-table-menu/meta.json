@@ -5,6 +5,7 @@
  "topic": "menus",
  "title": "A table of functions",
  "stars": 4,
+ "minutes": 14,
  "order": 5,
  "summary": "Select an operation through an array of pointers to functions instead of a long switch.",
  "hints": [

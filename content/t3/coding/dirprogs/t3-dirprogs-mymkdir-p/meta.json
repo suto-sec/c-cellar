@@ -5,6 +5,7 @@
  "topic": "dirprogs",
  "title": "mymkdir -p",
  "stars": 4,
+ "minutes": 25,
  "order": 5,
  "summary": "Create every missing directory of a path: mkdir for each prefix, and what to do when one already exists.",
  "hints": [

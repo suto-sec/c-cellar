@@ -5,6 +5,7 @@
  "topic": "classic",
  "title": "myseq",
  "stars": 3,
+ "minutes": 20,
  "order": 1,
  "summary": "seq(1) without options: LAST, FIRST LAST or FIRST INCREMENT LAST.",
  "hints": [

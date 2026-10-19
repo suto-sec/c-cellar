@@ -5,6 +5,7 @@
  "topic": "arrays",
  "title": "Binary search",
  "stars": 4,
+ "minutes": 14,
  "order": 12,
  "summary": "Halving the search range.",
  "hints": [

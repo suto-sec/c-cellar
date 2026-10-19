@@ -5,6 +5,7 @@
  "topic": "strings",
  "title": "Letter frequency",
  "stars": 3,
+ "minutes": 8,
  "order": 11,
  "summary": "An array of counters.",
  "hints": [

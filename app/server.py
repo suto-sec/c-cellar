@@ -179,6 +179,28 @@ def workspace_files(ex):
     return ex.get("files") or ["answer.c"]
 
 
+def minutes_of(ex, by_template=None):
+    """Estimated minutes of an exercise: written in its meta.json; a daily one built before that was added takes its template's
+    (`by_template`: {template id: minutes}, loaded here when not given)."""
+    if ex.get("minutes"):
+        return ex["minutes"]
+    if ex.get("template"):
+        by_template = by_template or {t["id"]: t["minutes"] for t in daily.load_templates(CONTENT)}
+        return by_template.get(ex["template"])
+    return None
+
+
+QUESTION_SECONDS = {"single": 25, "multiple": 40, "fill": 35, "order": 40, "match": 45, "sort": 45, "predict": 25}
+
+
+def question_seconds(q):
+    """Estimated seconds to answer a theory question and read its explanation: a base by type, more for the code to read (tracing a
+    "predict the output" takes longest) and for each option, item or pair to weigh."""
+    code = len([l for l in (q.get("code") or "").splitlines() if l.strip()])
+    parts = len(q.get("options") or q.get("items") or q.get("pairs") or q.get("blanks") or [])
+    return QUESTION_SECONDS.get(q["type"], 40) + (6 if q["type"] == "predict" else 3) * code + 4 * parts + 10
+
+
 def started(ex):
     """Whether the student has already worked on an exercise: something typed in its files, a check, or the answer seen."""
     if coding_status(load_progress()["coding"].get(ex["id"])) != "todo":
@@ -807,7 +829,7 @@ class Handler(BaseHTTPRequestHandler):
         if route == "index":
             prog = load_progress()
             coding = [{"id": e["id"], "tag": e["tag"], "track": e["track"], "topic": e["topic"], "title": e["title"],
-                       "stars": e["stars"], "order": e.get("order", 0), "summary": e.get("summary", ""),
+                       "stars": e["stars"], "minutes": e.get("minutes"), "order": e.get("order", 0), "summary": e.get("summary", ""),
                        "status": coding_status(prog["coding"].get(e["id"])), "skipped": is_skipped(prog["coding"].get(e["id"]))} for e in load_coding().values()]
             theory = []
             for s in load_theory().values():
@@ -817,7 +839,7 @@ class Handler(BaseHTTPRequestHandler):
                                "count": len(qs), "answered": sum(1 for x in st if x),
                                "correct": sum(1 for x in st if x and x.get("last_correct")),
                                "types": sorted({q["type"] for q in qs}),
-                               "qs": [{"d": q.get("difficulty", 1), "a": bool(x), "c": bool(x and x.get("last_correct"))} for q, x in zip(qs, st)]})
+                               "qs": [{"d": q.get("difficulty", 1), "s": question_seconds(q), "a": bool(x), "c": bool(x and x.get("last_correct"))} for q, x in zip(qs, st)]})
             ref = load_reference()
             return self._send(200, {"coding": coding, "theory": theory, "reference": len(ref),
                                     "chapters": load_chapters(), "paths": load_paths(), "learning_paths": load_learning_paths()})
@@ -830,7 +852,7 @@ class Handler(BaseHTTPRequestHandler):
             prog = load_progress()["coding"].get(ex["id"], {})
             return self._send(200, {
                 "id": ex["id"], "tag": ex["tag"], "title": ex["title"], "track": ex["track"], "topic": ex["topic"],
-                "stars": ex["stars"], "statement": (d / "statement.md").read_text(encoding="utf-8"),
+                "stars": ex["stars"], "minutes": minutes_of(ex), "statement": (d / "statement.md").read_text(encoding="utf-8"),
                 "hints": ex.get("hints", []), "recommended": recommended_commands(ex), "date": ex.get("date"), "files": workspace_files(ex),
                 "workspace": str(ws), "compile_cmd": build_command(ex), "file": str(ws / workspace_files(ex)[0]), "progress": prog, "status": coding_status(prog), "skipped": is_skipped(prog),
                 "theory": chapter_theory(ex["tag"], ex["topic"])})
@@ -881,7 +903,7 @@ class Handler(BaseHTTPRequestHandler):
         chapter = next((c for c in load_chapters() if c["tag"] == ex["tag"] and c["id"] == ex["topic"]), None)
         days = {v["streak_day"] for v in coding.values() if v.get("streak_day")}
         return self._send(200, {"id": ex["id"], "date": day.isoformat(), "title": ex["title"], "stars": ex["stars"], "tag": ex["tag"],
-                                "chapter": chapter["title"] if chapter else ex["topic"], "status": coding_status(coding.get(ex["id"])),
+                                "chapter": chapter["title"] if chapter else ex["topic"], "status": coding_status(coding.get(ex["id"])), "minutes": minutes_of(ex),
                                 "streak": daily.streak(days, day.isoformat()), "levels_available": daily.available_stars(templates, ex["tag"]),
                                 "chapters_available": sorted({t["chapter"] for t in templates if t["tag"] == ex["tag"]})})
 
@@ -893,9 +915,10 @@ class Handler(BaseHTTPRequestHandler):
         coding = load_progress()["coding"]
         chapters = {(c["tag"], c["id"]): c["title"] for c in load_chapters()}
         items = []
+        by_template = {t["id"]: t["minutes"] for t in daily.load_templates(CONTENT)}
         for m in daily.history(DAILY_DIR, day):
             p = coding.get(m["id"], {})
-            items.append({"id": m["id"], "date": m["date"], "title": m["title"], "stars": m["stars"], "tag": m["tag"],
+            items.append({"id": m["id"], "date": m["date"], "title": m["title"], "stars": m["stars"], "minutes": minutes_of(m, by_template), "tag": m["tag"],
                           "chapter": chapters.get((m["tag"], m["topic"]), m["topic"]), "status": coding_status(p),
                           "on_time": p.get("streak_day") == m["date"]})
         return self._send(200, {"items": items})

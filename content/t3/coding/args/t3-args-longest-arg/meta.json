@@ -5,6 +5,7 @@
  "topic": "args",
  "title": "The longest argument",
  "stars": 3,
+ "minutes": 6,
  "order": 8,
  "summary": "Comparing lengths.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "output",
  "title": "Numbers in text",
  "stars": 1,
+ "minutes": 4,
  "order": 4,
  "summary": "%d, %.2f and %c.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "args",
  "title": "Sum the arguments",
  "stars": 2,
+ "minutes": 5,
  "order": 3,
  "summary": "atoi.",
  "hints": [

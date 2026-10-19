@@ -5,6 +5,7 @@
  "topic": "dirprogs",
  "title": "Bytes in a tree",
  "stars": 5,
+ "minutes": 32,
  "order": 8,
  "summary": "The total size of all the files under a directory, measuring each one with lseek.",
  "hints": [

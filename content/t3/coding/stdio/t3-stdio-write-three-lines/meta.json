@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "Write a file",
  "stars": 2,
+ "minutes": 7,
  "order": 3,
  "summary": "fopen, fprintf, fclose.",
  "hints": [

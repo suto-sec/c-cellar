@@ -5,6 +5,7 @@
  "topic": "textfiles",
  "title": "Palindrome words",
  "stars": 3,
+ "minutes": 18,
  "order": 4,
  "summary": "Find the words of a file that read the same backwards.",
  "hints": [

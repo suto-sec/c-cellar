@@ -5,6 +5,7 @@
  "topic": "textfiles",
  "title": "Replace text",
  "stars": 4,
+ "minutes": 18,
  "order": 8,
  "summary": "A search and replace over a file, with strstr, printing the pieces as you go.",
  "hints": [

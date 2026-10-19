@@ -5,6 +5,7 @@
  "topic": "directories",
  "title": "Count the entries",
  "stars": 2,
+ "minutes": 9,
  "order": 6,
  "summary": "opendir and readdir.",
  "hints": [

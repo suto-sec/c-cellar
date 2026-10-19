@@ -5,6 +5,7 @@
  "topic": "conditions",
  "title": "Largest of three",
  "stars": 2,
+ "minutes": 5,
  "order": 2,
  "summary": "Nested conditions.",
  "hints": [

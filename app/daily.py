@@ -45,7 +45,7 @@ def id_date(ex_id):
 
 
 def load_templates(content):
-    """[{id, tag, chapter, fn}] from every content/<tag>/daily.py (a list TEMPLATES of (id, chapter, function))."""
+    """[{id, tag, chapter, fn, minutes}] from every content/<tag>/daily.py (a list TEMPLATES of (id, chapter, function) and a dict MINUTES)."""
     out = []
     for f in sorted(Path(content).glob("*/daily.py")):
         spec = importlib.util.spec_from_file_location("daily_" + f.parent.name, f)
@@ -53,7 +53,7 @@ def load_templates(content):
         assert spec.loader is not None
         spec.loader.exec_module(mod)
         for tid, chapter, fn in mod.TEMPLATES:
-            out.append({"id": tid, "tag": f.parent.name, "chapter": chapter, "fn": fn})
+            out.append({"id": tid, "tag": f.parent.name, "chapter": chapter, "fn": fn, "minutes": getattr(mod, "MINUTES", {}).get(tid)})
     return out
 
 
@@ -71,7 +71,7 @@ def example_text(case):
     return ""
 
 
-def write_exercise(d, ex_id, tag, chapter, template_id, day, spec):
+def write_exercise(d, ex_id, tag, chapter, template_id, day, spec, minutes=None):
     """Write the spec into folder d (created); meta.json goes last, so a folder with a meta is always complete."""
     d = Path(d)
     d.mkdir(parents=True)
@@ -99,6 +99,8 @@ def write_exercise(d, ex_id, tag, chapter, template_id, day, spec):
             (d / "hidden" / n).write_text(text, encoding="utf-8")
     meta = {"id": ex_id, "tag": tag, "track": "daily", "topic": chapter, "title": spec["title"], "stars": spec["stars"],
             "summary": spec["summary"], "hints": spec["hints"], "template": template_id, "date": day.isoformat()}
+    if minutes:
+        meta["minutes"] = minutes
     if spec.get("files"):
         meta["files"] = spec["files"]
     if spec.get("build"):
@@ -188,7 +190,7 @@ def for_date(root, templates, tag, day, levels=None, chapters=None):
     Path(root).mkdir(parents=True, exist_ok=True)
     tmp = Path(tempfile.mkdtemp(prefix=ex_id + ".", dir=root))
     try:
-        write_exercise(tmp / "x", ex_id, tag, template["chapter"], template["id"], day, spec)
+        write_exercise(tmp / "x", ex_id, tag, template["chapter"], template["id"], day, spec, template.get("minutes"))
         try:
             os.rename(tmp / "x", d)   # two requests may race on the first load of the day: the second rename fails and uses the first folder
         except OSError:

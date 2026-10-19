@@ -5,6 +5,7 @@
  "topic": "fdprogs",
  "title": "The last bytes of a file",
  "stars": 3,
+ "minutes": 15,
  "order": 2,
  "summary": "tail -c with lseek: jump near the end and copy from there with read and write.",
  "hints": [

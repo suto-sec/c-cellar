@@ -5,6 +5,7 @@
  "topic": "programs",
  "title": "The longest line",
  "stars": 3,
+ "minutes": 15,
  "order": 2,
  "summary": "fgets, strlen and a running best.",
  "hints": [

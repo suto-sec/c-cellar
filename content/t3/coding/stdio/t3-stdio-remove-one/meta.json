@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "Delete one file",
  "stars": 1,
+ "minutes": 4,
  "order": 9,
  "summary": "remove(name) with a fixed name, and what it returns.",
  "hints": [

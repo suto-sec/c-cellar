@@ -5,6 +5,7 @@
  "topic": "strings",
  "title": "Trim a string in place",
  "stars": 4,
+ "minutes": 11,
  "order": 16,
  "summary": "Pointer-free string surgery.",
  "hints": [

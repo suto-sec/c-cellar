@@ -5,6 +5,7 @@
  "topic": "loops",
  "title": "A triangle of stars",
  "stars": 2,
+ "minutes": 7,
  "order": 7,
  "summary": "Nested loops.",
  "hints": [

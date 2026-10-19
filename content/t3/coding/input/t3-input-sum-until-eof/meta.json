@@ -5,6 +5,7 @@
  "topic": "input",
  "title": "Sum until the end",
  "stars": 2,
+ "minutes": 6,
  "order": 5,
  "summary": "Reading until scanf fails.",
  "hints": [

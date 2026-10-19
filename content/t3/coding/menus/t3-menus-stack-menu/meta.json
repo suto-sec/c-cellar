@@ -5,6 +5,7 @@
  "topic": "menus",
  "title": "A stack with a menu",
  "stars": 3,
+ "minutes": 25,
  "order": 2,
  "summary": "Push, pop, top and size on a stack of at most 5 values kept in an array.",
  "hints": [

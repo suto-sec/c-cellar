@@ -5,6 +5,7 @@
  "topic": "arrays",
  "title": "Row and column sums",
  "stars": 3,
+ "minutes": 12,
  "order": 8,
  "summary": "Two-dimensional arrays.",
  "hints": [

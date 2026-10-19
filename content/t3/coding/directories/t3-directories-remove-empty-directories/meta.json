@@ -5,6 +5,7 @@
  "topic": "directories",
  "title": "A tiny rmdir",
  "stars": 2,
+ "minutes": 6,
  "order": 8,
  "summary": "rmdir().",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "variables",
  "title": "Limits of int",
  "stars": 2,
+ "minutes": 3,
  "order": 5,
  "summary": "limits.h.",
  "hints": [

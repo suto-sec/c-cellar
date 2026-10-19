@@ -5,6 +5,7 @@
  "topic": "cmds",
  "title": "mycmp",
  "stars": 4,
+ "minutes": 25,
  "order": 9,
  "summary": "cmp(1): the first byte where two files differ, or which one ends first.",
  "hints": [

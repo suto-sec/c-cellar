@@ -5,6 +5,7 @@
  "topic": "records",
  "title": "Adding times",
  "stars": 3,
+ "minutes": 22,
  "order": 1,
  "summary": "A struct with hours, minutes and seconds, a function that adds two of them, and the carry between fields.",
  "hints": [

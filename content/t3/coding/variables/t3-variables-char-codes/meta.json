@@ -5,6 +5,7 @@
  "topic": "variables",
  "title": "Characters are numbers",
  "stars": 2,
+ "minutes": 3,
  "order": 6,
  "summary": "A char is a small integer.",
  "hints": [

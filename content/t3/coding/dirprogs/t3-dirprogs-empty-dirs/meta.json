@@ -5,6 +5,7 @@
  "topic": "dirprogs",
  "title": "Find the empty directories",
  "stars": 4,
+ "minutes": 25,
  "order": 3,
  "summary": "Walk a tree and list the directories that have nothing inside.",
  "hints": [

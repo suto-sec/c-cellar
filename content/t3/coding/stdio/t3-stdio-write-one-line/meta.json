@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "Your first file",
  "stars": 1,
+ "minutes": 6,
  "order": 1,
  "summary": "Create a file with fopen, put one line in it with fputs and close it.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "memory",
  "title": "Join two strings",
  "stars": 3,
+ "minutes": 10,
  "order": 5,
  "summary": "Computing the size to allocate.",
  "hints": [

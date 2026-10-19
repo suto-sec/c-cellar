@@ -5,6 +5,7 @@
  "topic": "strings",
  "title": "Length and vowels",
  "stars": 2,
+ "minutes": 7,
  "order": 4,
  "summary": "Read a line with fgets; walk a string up to its '\\0'.",
  "hints": [

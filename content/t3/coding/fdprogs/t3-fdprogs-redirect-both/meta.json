@@ -5,6 +5,7 @@
  "topic": "fdprogs",
  "title": "Redirect stdout and stderr",
  "stars": 4,
+ "minutes": 15,
  "order": 6,
  "summary": "dup2 inside the program: the equivalent of `> FILE 2>&1`, and the buffering trap that comes with it.",
  "hints": [

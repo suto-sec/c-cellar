@@ -5,6 +5,7 @@
  "topic": "directories",
  "title": "Change directory and print",
  "stars": 2,
+ "minutes": 6,
  "order": 2,
  "summary": "chdir then getcwd.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "arrays",
  "title": "Second largest",
  "stars": 3,
+ "minutes": 12,
  "order": 7,
  "summary": "Tracking two values.",
  "hints": [

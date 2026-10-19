@@ -5,6 +5,7 @@
  "topic": "conditions",
  "title": "Positive, negative or zero",
  "stars": 1,
+ "minutes": 3,
  "order": 1,
  "summary": "if / else if / else.",
  "hints": [

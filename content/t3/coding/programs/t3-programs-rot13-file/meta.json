@@ -5,6 +5,7 @@
  "topic": "programs",
  "title": "ROT13 a file",
  "stars": 4,
+ "minutes": 15,
  "order": 8,
  "summary": "Reading one file and writing another.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "directories",
  "title": "Only the hidden files",
  "stars": 3,
+ "minutes": 18,
  "order": 9,
  "summary": "Filtering and sorting names.",
  "hints": [

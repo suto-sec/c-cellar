@@ -5,6 +5,7 @@
  "topic": "cmds",
  "title": "myuniq",
  "stars": 4,
+ "minutes": 20,
  "order": 7,
  "summary": "uniq(1): collapse adjacent equal lines, optionally with the number of repetitions (-c).",
  "hints": [

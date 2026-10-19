@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "Where am I in the file?",
  "stars": 2,
+ "minutes": 9,
  "order": 13,
  "summary": "Read a line character by character and ask the stream how far it has read with ftell.",
  "hints": [

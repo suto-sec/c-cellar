@@ -5,6 +5,7 @@
  "topic": "memory",
  "title": "An array of the size you are told",
  "stars": 2,
+ "minutes": 9,
  "order": 2,
  "summary": "malloc and free.",
  "hints": [

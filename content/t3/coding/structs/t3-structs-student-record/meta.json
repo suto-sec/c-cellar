@@ -5,6 +5,7 @@
  "topic": "structs",
  "title": "A student record",
  "stars": 2,
+ "minutes": 7,
  "order": 2,
  "summary": "A struct with a string, an int and a double.",
  "hints": [

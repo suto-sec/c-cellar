@@ -5,6 +5,7 @@
  "topic": "loops",
  "title": "How many digits?",
  "stars": 2,
+ "minutes": 7,
  "order": 8,
  "summary": "A do-while loop runs at least once.",
  "hints": [

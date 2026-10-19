@@ -5,6 +5,7 @@
  "topic": "arrays",
  "title": "Maximum and where it is",
  "stars": 2,
+ "minutes": 6,
  "order": 2,
  "summary": "Searching an array.",
  "hints": [

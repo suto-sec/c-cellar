@@ -5,6 +5,7 @@
  "topic": "input",
  "title": "Read a whole line",
  "stars": 2,
+ "minutes": 6,
  "order": 4,
  "summary": "fgets keeps the newline.",
  "hints": [

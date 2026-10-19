@@ -5,6 +5,7 @@
  "topic": "classic",
  "title": "mycd",
  "stars": 3,
+ "minutes": 14,
  "order": 3,
  "summary": "Change directory (absolute, relative or HOME) and print where you are.",
  "hints": [

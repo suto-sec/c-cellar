@@ -5,6 +5,7 @@
  "topic": "variables",
  "title": "Scientific notation",
  "stars": 3,
+ "minutes": 4,
  "order": 10,
  "summary": "%e and %g.",
  "hints": [

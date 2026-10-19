@@ -5,6 +5,7 @@
  "topic": "cmds",
  "title": "mybasename",
  "stars": 3,
+ "minutes": 16,
  "order": 1,
  "summary": "basename(1): the last component of a path, with an optional suffix removed.",
  "hints": [

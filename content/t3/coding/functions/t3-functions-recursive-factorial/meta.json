@@ -5,6 +5,7 @@
  "topic": "functions",
  "title": "Recursive factorial",
  "stars": 3,
+ "minutes": 5,
  "order": 9,
  "summary": "A function that calls itself.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "programs",
  "title": "A bank account",
  "stars": 5,
+ "minutes": 28,
  "order": 10,
  "summary": "A small state machine driven by commands.",
  "hints": [

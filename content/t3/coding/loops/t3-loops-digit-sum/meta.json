@@ -5,6 +5,7 @@
  "topic": "loops",
  "title": "Sum of the digits",
  "stars": 2,
+ "minutes": 6,
  "order": 5,
  "summary": "while with / and %.",
  "hints": [

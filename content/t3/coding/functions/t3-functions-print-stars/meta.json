@@ -5,6 +5,7 @@
  "topic": "functions",
  "title": "A void function",
  "stars": 2,
+ "minutes": 4,
  "order": 4,
  "summary": "A function that prints instead of returning.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "functions",
  "title": "Recursive Fibonacci",
  "stars": 3,
+ "minutes": 5,
  "order": 10,
  "summary": "Two recursive calls.",
  "hints": [

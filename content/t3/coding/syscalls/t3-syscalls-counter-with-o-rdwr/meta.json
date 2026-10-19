@@ -5,6 +5,7 @@
  "topic": "syscalls",
  "title": "A counter with O_RDWR",
  "stars": 3,
+ "minutes": 14,
  "order": 10,
  "summary": "One descriptor for reading and writing.",
  "hints": [

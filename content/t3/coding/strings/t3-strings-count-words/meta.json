@@ -5,6 +5,7 @@
  "topic": "strings",
  "title": "Count the words",
  "stars": 3,
+ "minutes": 9,
  "order": 9,
  "summary": "Spaces separate words.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "syscalls",
  "title": "Open a file with open",
  "stars": 1,
+ "minutes": 6,
  "order": 2,
  "summary": "The first system call on a file: open returns a number (a descriptor), and close gives it back.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "conditions",
  "title": "Vowel or consonant",
  "stars": 2,
+ "minutes": 6,
  "order": 4,
  "summary": "switch and fall-through.",
  "hints": [

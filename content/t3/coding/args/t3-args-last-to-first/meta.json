@@ -5,6 +5,7 @@
  "topic": "args",
  "title": "Last to first",
  "stars": 2,
+ "minutes": 4,
  "order": 4,
  "summary": "Walking argv backwards.",
  "hints": [

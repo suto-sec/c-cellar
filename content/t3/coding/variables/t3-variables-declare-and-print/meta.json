@@ -5,6 +5,7 @@
  "topic": "variables",
  "title": "Declare and print",
  "stars": 1,
+ "minutes": 4,
  "order": 1,
  "summary": "Variables of different types.",
  "hints": [

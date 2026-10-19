@@ -5,6 +5,7 @@
  "topic": "classic",
  "title": "myhead",
  "stars": 3,
+ "minutes": 14,
  "order": 2,
  "summary": "head(1) on standard input: 10 lines or the first N (-N), read with fgets.",
  "hints": [

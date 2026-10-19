@@ -5,6 +5,7 @@
  "topic": "syscalls",
  "title": "Print a file backwards",
  "stars": 4,
+ "minutes": 14,
  "order": 13,
  "summary": "lseek to the end and walk back.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "Lines, words and bytes",
  "stars": 3,
+ "minutes": 14,
  "order": 15,
  "summary": "A tiny wc.",
  "hints": [

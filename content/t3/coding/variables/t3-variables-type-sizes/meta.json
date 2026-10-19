@@ -5,6 +5,7 @@
  "topic": "variables",
  "title": "Sizes of types",
  "stars": 2,
+ "minutes": 4,
  "order": 3,
  "summary": "sizeof and %zu.",
  "hints": [

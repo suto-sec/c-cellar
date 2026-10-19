@@ -5,6 +5,7 @@
  "topic": "strings",
  "title": "Count the capital letters",
  "stars": 2,
+ "minutes": 5,
  "order": 12,
  "summary": "isupper: the same loop as counting letters, with a different question for each character.",
  "hints": [

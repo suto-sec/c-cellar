@@ -5,6 +5,7 @@
  "topic": "directories",
  "title": "lsdir: sorted directory listing",
  "stars": 4,
+ "minutes": 25,
  "order": 12,
  "summary": "opendir/readdir, skip . and .., collect names and sort them.",
  "hints": [

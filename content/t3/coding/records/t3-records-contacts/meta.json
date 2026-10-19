@@ -5,6 +5,7 @@
  "topic": "records",
  "title": "A contact book",
  "stars": 4,
+ "minutes": 45,
  "order": 3,
  "summary": "Commands that add, find and delete records kept in a growing array of structs.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "fdprogs",
  "title": "Which descriptor?",
  "stars": 3,
+ "minutes": 13,
  "order": 1,
  "summary": "open, close, dup and dup2: always the lowest free number, or the one you ask for.",
  "hints": [

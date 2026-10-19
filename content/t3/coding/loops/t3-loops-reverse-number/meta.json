@@ -5,6 +5,7 @@
  "topic": "loops",
  "title": "Reverse a number",
  "stars": 3,
+ "minutes": 8,
  "order": 11,
  "summary": "Building a number digit by digit.",
  "hints": [

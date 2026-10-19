@@ -877,3 +877,12 @@ TEMPLATES = [
     ("t3-tpl-build-module", "build", build_module),
     ("t3-tpl-programs-records", "programs", programs_records),
 ]
+
+# Minutes a student takes to write and pass one exercise of the template (an estimate, compared with the course exercises of the same chapter).
+MINUTES = {
+    "t3-tpl-output-frame": 4, "t3-tpl-variables-print": 4, "t3-tpl-operators-arith": 4, "t3-tpl-input-stats": 8,
+    "t3-tpl-conditions-classify": 8, "t3-tpl-loops-series": 7, "t3-tpl-arrays-ops": 10, "t3-tpl-strings-ops": 9,
+    "t3-tpl-pointers-helper": 7, "t3-tpl-memory-dynamic": 14, "t3-tpl-structs-records": 12, "t3-tpl-args-tool": 7,
+    "t3-tpl-functions-helper": 5, "t3-tpl-stdio-lines": 10, "t3-tpl-syscalls-file": 12, "t3-tpl-directories-list": 14,
+    "t3-tpl-errors-open": 9, "t3-tpl-build-module": 10, "t3-tpl-programs-records": 20,
+}

@@ -5,6 +5,7 @@
  "topic": "programs",
  "title": "Sort the lines of a file",
  "stars": 4,
+ "minutes": 25,
  "order": 6,
  "summary": "Dynamic storage of any number of lines and qsort.",
  "hints": [

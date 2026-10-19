@@ -5,6 +5,7 @@
  "topic": "memory",
  "title": "Histogram of digits",
  "stars": 3,
+ "minutes": 9,
  "order": 3,
  "summary": "calloc gives zeroed memory.",
  "hints": [

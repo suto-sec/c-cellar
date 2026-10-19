@@ -5,6 +5,7 @@
  "topic": "directories",
  "title": "Open a directory",
  "stars": 1,
+ "minutes": 6,
  "order": 4,
  "summary": "opendir and closedir: ask the system for a directory and see if it worked.",
  "hints": [

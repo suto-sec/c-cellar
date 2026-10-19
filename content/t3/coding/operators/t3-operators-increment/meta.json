@@ -5,6 +5,7 @@
  "topic": "operators",
  "title": "Pre and post increment",
  "stars": 2,
+ "minutes": 5,
  "order": 5,
  "summary": "i++ versus ++i.",
  "hints": [

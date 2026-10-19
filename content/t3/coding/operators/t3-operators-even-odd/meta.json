@@ -5,6 +5,7 @@
  "topic": "operators",
  "title": "Even or odd",
  "stars": 1,
+ "minutes": 3,
  "order": 2,
  "summary": "The remainder operator.",
  "hints": [

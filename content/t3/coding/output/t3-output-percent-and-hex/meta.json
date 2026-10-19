@@ -5,6 +5,7 @@
  "topic": "output",
  "title": "Bases and percent",
  "stars": 2,
+ "minutes": 5,
  "order": 5,
  "summary": "%x, %o and a literal %.",
  "hints": [

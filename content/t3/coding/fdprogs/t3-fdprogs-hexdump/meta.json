@@ -5,6 +5,7 @@
  "topic": "fdprogs",
  "title": "A small hex dump",
  "stars": 4,
+ "minutes": 25,
  "order": 4,
  "summary": "Show a file as hexadecimal bytes, 16 per line, reading it with read in blocks.",
  "hints": [

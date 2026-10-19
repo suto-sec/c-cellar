@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "A counter in a text file",
  "stars": 3,
+ "minutes": 12,
  "order": 19,
  "summary": "fopen mode \"r+\": read and write the same file.",
  "hints": [

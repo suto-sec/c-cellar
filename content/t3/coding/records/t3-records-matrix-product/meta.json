@@ -5,6 +5,7 @@
  "topic": "records",
  "title": "Multiply two matrices",
  "stars": 5,
+ "minutes": 40,
  "order": 6,
  "summary": "A struct that owns a dynamically allocated block of numbers, functions that create and free it, and the triple loop.",
  "hints": [

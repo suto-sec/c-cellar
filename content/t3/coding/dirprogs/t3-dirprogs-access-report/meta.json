@@ -5,6 +5,7 @@
  "topic": "dirprogs",
  "title": "Permission report",
  "stars": 3,
+ "minutes": 12,
  "order": 1,
  "summary": "access(2) with R_OK, W_OK and X_OK: what can I do with each path?",
  "hints": [

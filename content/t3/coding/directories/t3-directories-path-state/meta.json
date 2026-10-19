@@ -5,6 +5,7 @@
  "topic": "directories",
  "title": "What is this path?",
  "stars": 2,
+ "minutes": 9,
  "order": 7,
  "summary": "opendir and errno.",
  "hints": [

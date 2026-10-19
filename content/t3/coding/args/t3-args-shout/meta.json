@@ -5,6 +5,7 @@
  "topic": "args",
  "title": "Shout",
  "stars": 2,
+ "minutes": 5,
  "order": 5,
  "summary": "Upper-casing the arguments.",
  "hints": [

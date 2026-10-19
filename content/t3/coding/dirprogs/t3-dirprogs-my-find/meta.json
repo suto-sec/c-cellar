@@ -5,6 +5,7 @@
  "topic": "dirprogs",
  "title": "myfind",
  "stars": 5,
+ "minutes": 28,
  "order": 7,
  "summary": "find DIR -name NAME: every entry with that exact name, in a tree of any depth.",
  "hints": [

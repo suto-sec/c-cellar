@@ -5,6 +5,7 @@
  "topic": "strings",
  "title": "Join a path",
  "stars": 2,
+ "minutes": 7,
  "order": 7,
  "summary": "Build a string with strcpy and strcat.",
  "hints": [

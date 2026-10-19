@@ -5,6 +5,7 @@
  "topic": "menus",
  "title": "Temperature menu",
  "stars": 2,
+ "minutes": 18,
  "order": 1,
  "summary": "A numbered menu that repeats until Exit, with one function per conversion.",
  "hints": [

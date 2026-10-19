@@ -5,6 +5,7 @@
  "topic": "loops",
  "title": "Fibonacci numbers",
  "stars": 2,
+ "minutes": 7,
  "order": 6,
  "summary": "Two variables updated in a loop.",
  "hints": [

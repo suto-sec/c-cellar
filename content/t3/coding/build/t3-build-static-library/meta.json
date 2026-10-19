@@ -5,6 +5,7 @@
  "topic": "build",
  "title": "A static library",
  "stars": 4,
+ "minutes": 14,
  "order": 5,
  "summary": "ar and -l.",
  "hints": [

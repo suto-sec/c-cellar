@@ -5,6 +5,7 @@
  "topic": "input",
  "title": "Echo a number",
  "stars": 1,
+ "minutes": 3,
  "order": 1,
  "summary": "scanf with %d.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "output",
  "title": "Zero-padded time",
  "stars": 2,
+ "minutes": 4,
  "order": 7,
  "summary": "Zero padding with %02d.",
  "hints": [

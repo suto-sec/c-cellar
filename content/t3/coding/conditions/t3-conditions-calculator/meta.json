@@ -5,6 +5,7 @@
  "topic": "conditions",
  "title": "A small calculator",
  "stars": 3,
+ "minutes": 9,
  "order": 8,
  "summary": "switch on an operator.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "Sum the numbers of a file",
  "stars": 2,
+ "minutes": 8,
  "order": 17,
  "summary": "fscanf is scanf for a file: read integers until it stops returning 1.",
  "hints": [

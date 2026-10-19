@@ -5,6 +5,7 @@
  "topic": "pointers",
  "title": "Address and value",
  "stars": 1,
+ "minutes": 5,
  "order": 1,
  "summary": "&, * and a pointer variable.",
  "hints": [

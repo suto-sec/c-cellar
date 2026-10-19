@@ -5,6 +5,7 @@
  "topic": "programs",
  "title": "A shapes calculator",
  "stars": 3,
+ "minutes": 14,
  "order": 3,
  "summary": "A command loop reading lines from standard input.",
  "hints": [

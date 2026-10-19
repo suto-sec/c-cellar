@@ -5,6 +5,7 @@
  "topic": "structs",
  "title": "Distance between two points",
  "stars": 2,
+ "minutes": 6,
  "order": 1,
  "summary": "A struct with two members.",
  "hints": [

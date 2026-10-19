@@ -5,6 +5,7 @@
  "topic": "programs",
  "title": "The last lines",
  "stars": 5,
+ "minutes": 22,
  "order": 11,
  "summary": "A circular buffer of lines.",
  "hints": [

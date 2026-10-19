@@ -5,6 +5,7 @@
  "topic": "records",
  "title": "Statistics of any amount of numbers",
  "stars": 4,
+ "minutes": 22,
  "order": 5,
  "summary": "Read integers until the input ends, growing the array as needed, then report count, minimum, maximum and median.",
  "hints": [

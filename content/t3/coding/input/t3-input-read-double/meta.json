@@ -5,6 +5,7 @@
  "topic": "input",
  "title": "Area of a rectangle",
  "stars": 1,
+ "minutes": 4,
  "order": 3,
  "summary": "scanf with %lf.",
  "hints": [

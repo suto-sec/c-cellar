@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "Binary file of integers",
  "stars": 4,
+ "minutes": 14,
  "order": 23,
  "summary": "fwrite and fread with ints.",
  "hints": [

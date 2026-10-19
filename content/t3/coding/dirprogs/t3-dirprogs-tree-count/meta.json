@@ -5,6 +5,7 @@
  "topic": "dirprogs",
  "title": "Count a tree",
  "stars": 4,
+ "minutes": 25,
  "order": 4,
  "summary": "How many files and how many directories are inside a directory, at any depth.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "errors",
  "title": "A copy that checks everything",
  "stars": 4,
+ "minutes": 22,
  "order": 7,
  "summary": "Distinct exit codes for distinct failures.",
  "hints": [

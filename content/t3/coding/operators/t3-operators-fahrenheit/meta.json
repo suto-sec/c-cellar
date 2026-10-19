@@ -5,6 +5,7 @@
  "topic": "operators",
  "title": "Fahrenheit to Celsius",
  "stars": 2,
+ "minutes": 4,
  "order": 4,
  "summary": "Mixed int and double arithmetic.",
  "hints": [

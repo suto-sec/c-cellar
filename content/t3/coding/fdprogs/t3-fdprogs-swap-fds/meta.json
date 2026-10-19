@@ -5,6 +5,7 @@
  "topic": "fdprogs",
  "title": "Swap stdout and stderr",
  "stars": 5,
+ "minutes": 14,
  "order": 7,
  "summary": "Exchange descriptors 1 and 2 with dup and dup2, the way you swap two variables.",
  "hints": [

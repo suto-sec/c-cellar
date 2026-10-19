@@ -5,6 +5,7 @@
  "topic": "loops",
  "title": "Ask until it is valid",
  "stars": 2,
+ "minutes": 8,
  "order": 9,
  "summary": "do-while: ask first, check afterwards.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "menus",
  "title": "Areas menu",
  "stars": 3,
+ "minutes": 30,
  "order": 3,
  "summary": "The classic menu: triangle, rectangle, square and circle, each area in its own function.",
  "hints": [

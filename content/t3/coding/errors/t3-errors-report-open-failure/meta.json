@@ -5,6 +5,7 @@
  "topic": "errors",
  "title": "Report why it failed",
  "stars": 2,
+ "minutes": 8,
  "order": 1,
  "summary": "strerror(errno).",
  "hints": [

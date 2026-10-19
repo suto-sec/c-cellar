@@ -5,6 +5,7 @@
  "topic": "dirprogs",
  "title": "Change the extension of many files",
  "stars": 4,
+ "minutes": 35,
  "order": 6,
  "summary": "rename every FILE.old of a directory to FILE.new, without destroying anything that is already there.",
  "hints": [

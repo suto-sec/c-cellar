@@ -5,6 +5,7 @@
  "topic": "textfiles",
  "title": "Words grouped by length",
  "stars": 4,
+ "minutes": 30,
  "order": 7,
  "summary": "For each word length that appears, list the words of that length in file order.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "arrays",
  "title": "Reverse an array",
  "stars": 2,
+ "minutes": 6,
  "order": 3,
  "summary": "Walking an array backwards.",
  "hints": [

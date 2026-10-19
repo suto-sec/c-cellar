@@ -5,6 +5,7 @@
  "topic": "loops",
  "title": "A diamond",
  "stars": 4,
+ "minutes": 14,
  "order": 14,
  "summary": "Nested loops with a computed number of spaces.",
  "hints": [

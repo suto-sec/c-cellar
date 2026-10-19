@@ -5,6 +5,7 @@
  "topic": "output",
  "title": "Three lines",
  "stars": 1,
+ "minutes": 3,
  "order": 2,
  "summary": "Several printf calls and newlines.",
  "hints": [

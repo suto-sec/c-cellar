@@ -5,6 +5,7 @@
  "topic": "input",
  "title": "Stop at the first bad token",
  "stars": 3,
+ "minutes": 11,
  "order": 9,
  "summary": "Telling a bad token from the end of input.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "arrays",
  "title": "Sum of an array",
  "stars": 1,
+ "minutes": 5,
  "order": 1,
  "summary": "Read into an array and add.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "textfiles",
  "title": "How many times each word",
  "stars": 4,
+ "minutes": 28,
  "order": 6,
  "summary": "Count each distinct word, listing them in the order they first appear.",
  "hints": [

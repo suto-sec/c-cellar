@@ -5,6 +5,7 @@
  "topic": "pointers",
  "title": "A pointer to a pointer",
  "stars": 4,
+ "minutes": 9,
  "order": 11,
  "summary": "Changing the caller's pointer.",
  "hints": [

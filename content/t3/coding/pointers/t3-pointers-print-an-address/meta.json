@@ -5,6 +5,7 @@
  "topic": "pointers",
  "title": "Print an address",
  "stars": 2,
+ "minutes": 4,
  "order": 5,
  "summary": "Pointers are addresses: print one with %p.",
  "hints": [

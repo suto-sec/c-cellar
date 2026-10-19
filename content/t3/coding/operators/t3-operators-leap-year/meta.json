@@ -5,6 +5,7 @@
  "topic": "operators",
  "title": "Leap year",
  "stars": 3,
+ "minutes": 5,
  "order": 8,
  "summary": "Combining && and ||.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "cmds",
  "title": "mycut",
  "stars": 4,
+ "minutes": 26,
  "order": 6,
  "summary": "cut(1) by delimiter and field: -dC -fN, empty fields included.",
  "hints": [

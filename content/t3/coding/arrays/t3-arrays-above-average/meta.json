@@ -5,6 +5,7 @@
  "topic": "arrays",
  "title": "Above the average",
  "stars": 3,
+ "minutes": 9,
  "order": 5,
  "summary": "Two passes over an array.",
  "hints": [

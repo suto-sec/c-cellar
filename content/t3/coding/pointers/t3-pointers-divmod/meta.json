@@ -5,6 +5,7 @@
  "topic": "pointers",
  "title": "Quotient and remainder",
  "stars": 2,
+ "minutes": 5,
  "order": 2,
  "summary": "Returning two results through pointers.",
  "hints": [

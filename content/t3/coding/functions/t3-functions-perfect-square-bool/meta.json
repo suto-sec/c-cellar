@@ -5,6 +5,7 @@
  "topic": "functions",
  "title": "Perfect square?",
  "stars": 2,
+ "minutes": 7,
  "order": 7,
  "summary": "A function that returns bool (<stdbool.h>).",
  "hints": [

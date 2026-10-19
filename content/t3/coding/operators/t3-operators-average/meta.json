@@ -5,6 +5,7 @@
  "topic": "operators",
  "title": "Average of three",
  "stars": 2,
+ "minutes": 4,
  "order": 3,
  "summary": "Floating-point division.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "directories",
  "title": "Read the entries of a directory",
  "stars": 2,
+ "minutes": 8,
  "order": 5,
  "summary": "readdir in a loop: every call gives the next entry, NULL means no more.",
  "hints": [

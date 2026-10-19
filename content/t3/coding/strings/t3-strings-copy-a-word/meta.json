@@ -5,6 +5,7 @@
  "topic": "strings",
  "title": "Copy a string",
  "stars": 2,
+ "minutes": 5,
  "order": 6,
  "summary": "strcpy: a string cannot be copied with =; copy it into your own array.",
  "hints": [

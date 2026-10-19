@@ -5,6 +5,7 @@
  "topic": "directories",
  "title": "Create a directory",
  "stars": 2,
+ "minutes": 7,
  "order": 3,
  "summary": "mkdir and its errors.",
  "hints": [

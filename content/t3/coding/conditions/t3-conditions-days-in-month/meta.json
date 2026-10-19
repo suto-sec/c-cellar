@@ -5,6 +5,7 @@
  "topic": "conditions",
  "title": "Days in a month",
  "stars": 3,
+ "minutes": 9,
  "order": 9,
  "summary": "switch plus the leap-year rule.",
  "hints": [

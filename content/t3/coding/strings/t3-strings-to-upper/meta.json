@@ -5,6 +5,7 @@
  "topic": "strings",
  "title": "To upper case",
  "stars": 2,
+ "minutes": 5,
  "order": 5,
  "summary": "Changing characters in place.",
  "hints": [

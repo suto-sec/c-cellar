@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "Which descriptor?",
  "stars": 3,
+ "minutes": 8,
  "order": 22,
  "summary": "fileno(): the descriptor behind a FILE *.",
  "hints": [

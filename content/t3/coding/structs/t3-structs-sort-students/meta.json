@@ -5,6 +5,7 @@
  "topic": "structs",
  "title": "Sort records",
  "stars": 4,
+ "minutes": 14,
  "order": 10,
  "summary": "qsort on an array of structs.",
  "hints": [

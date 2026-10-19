@@ -5,6 +5,7 @@
  "topic": "programs",
  "title": "The most frequent word",
  "stars": 5,
+ "minutes": 45,
  "order": 12,
  "summary": "Words, case folding, counting and ties.",
  "hints": [

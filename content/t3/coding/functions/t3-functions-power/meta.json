@@ -5,6 +5,7 @@
  "topic": "functions",
  "title": "Power",
  "stars": 2,
+ "minutes": 5,
  "order": 5,
  "summary": "A function with a loop.",
  "hints": [

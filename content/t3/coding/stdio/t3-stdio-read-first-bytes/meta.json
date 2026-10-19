@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "Read a block with fread",
  "stars": 2,
+ "minutes": 9,
  "order": 11,
  "summary": "fread: ask for some bytes and look at how many you really got.",
  "hints": [

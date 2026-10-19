@@ -5,6 +5,7 @@
  "topic": "output",
  "title": "Aligned columns",
  "stars": 2,
+ "minutes": 5,
  "order": 6,
  "summary": "Field widths with printf.",
  "hints": [

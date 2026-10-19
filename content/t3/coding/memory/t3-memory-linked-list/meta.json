@@ -5,6 +5,7 @@
  "topic": "memory",
  "title": "A linked list",
  "stars": 5,
+ "minutes": 22,
  "order": 10,
  "summary": "Structures that point to each other.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "strings",
  "title": "Reverse a word",
  "stars": 2,
+ "minutes": 7,
  "order": 2,
  "summary": "Swapping characters inside a string.",
  "hints": [

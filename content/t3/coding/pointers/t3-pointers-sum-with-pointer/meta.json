@@ -5,6 +5,7 @@
  "topic": "pointers",
  "title": "Sum with a pointer",
  "stars": 2,
+ "minutes": 6,
  "order": 3,
  "summary": "Walking an array with pointer arithmetic.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "strings",
  "title": "Length of a word",
  "stars": 1,
+ "minutes": 3,
  "order": 1,
  "summary": "strlen or a loop up to '\\0'.",
  "hints": [

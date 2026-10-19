@@ -5,6 +5,7 @@
  "topic": "structs",
  "title": "A typedef'd rectangle",
  "stars": 3,
+ "minutes": 9,
  "order": 9,
  "summary": "Name a struct type with typedef.",
  "hints": [

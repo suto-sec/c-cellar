@@ -5,6 +5,7 @@
  "topic": "records",
  "title": "Class ranking",
  "stars": 4,
+ "minutes": 38,
  "order": 2,
  "summary": "Load NAME GRADE records into an array of structs, sort them with qsort and print a numbered list and the average.",
  "hints": [

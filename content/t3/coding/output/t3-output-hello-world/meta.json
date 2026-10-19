@@ -5,6 +5,7 @@
  "topic": "output",
  "title": "Hello, world!",
  "stars": 1,
+ "minutes": 2,
  "order": 1,
  "summary": "Your first program.",
  "hints": [

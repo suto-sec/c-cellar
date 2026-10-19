@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "From a descriptor to a stream",
  "stars": 4,
+ "minutes": 12,
  "order": 28,
  "summary": "fdopen(): a FILE * on top of an open descriptor.",
  "hints": [

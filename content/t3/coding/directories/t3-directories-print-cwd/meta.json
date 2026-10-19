@@ -5,6 +5,7 @@
  "topic": "directories",
  "title": "Where am I?",
  "stars": 1,
+ "minutes": 5,
  "order": 1,
  "summary": "getcwd.",
  "hints": [

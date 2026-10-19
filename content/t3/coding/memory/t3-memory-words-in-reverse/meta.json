@@ -5,6 +5,7 @@
  "topic": "memory",
  "title": "Remember every word",
  "stars": 4,
+ "minutes": 16,
  "order": 9,
  "summary": "A growing array of strings.",
  "hints": [

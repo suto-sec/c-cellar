@@ -5,6 +5,7 @@
  "topic": "args",
  "title": "Repeat a text",
  "stars": 3,
+ "minutes": 7,
  "order": 7,
  "summary": "atoi, loops and a usage message.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "functions",
  "title": "Maximum of three",
  "stars": 1,
+ "minutes": 4,
  "order": 2,
  "summary": "A function with three parameters.",
  "hints": [

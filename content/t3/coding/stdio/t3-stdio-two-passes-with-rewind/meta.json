@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "Two passes over a file",
  "stars": 3,
+ "minutes": 11,
  "order": 18,
  "summary": "rewind() goes back to the start of a stream.",
  "hints": [

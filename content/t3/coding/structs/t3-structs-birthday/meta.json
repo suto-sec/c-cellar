@@ -5,6 +5,7 @@
  "topic": "structs",
  "title": "Modify a struct through a pointer",
  "stars": 3,
+ "minutes": 5,
  "order": 6,
  "summary": "The -> operator.",
  "hints": [

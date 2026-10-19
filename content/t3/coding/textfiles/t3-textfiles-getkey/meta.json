@@ -5,6 +5,7 @@
  "topic": "textfiles",
  "title": "Read a setting",
  "stars": 3,
+ "minutes": 16,
  "order": 1,
  "summary": "A KEY=VALUE configuration file: print the value of one key.",
  "hints": [

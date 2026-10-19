@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "Numbers in a file",
  "stars": 2,
+ "minutes": 6,
  "order": 2,
  "summary": "The same three calls, now with fprintf to write numbers.",
  "hints": [

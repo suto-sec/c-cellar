@@ -5,6 +5,7 @@
  "topic": "strings",
  "title": "Where is the letter?",
  "stars": 2,
+ "minutes": 6,
  "order": 3,
  "summary": "strchr: find a character in a string and turn the answer into a position.",
  "hints": [

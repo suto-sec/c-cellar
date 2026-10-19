@@ -5,6 +5,7 @@
  "topic": "variables",
  "title": "Unsigned wrap-around",
  "stars": 3,
+ "minutes": 4,
  "order": 8,
  "summary": "Overflow of an unsigned char.",
  "hints": [

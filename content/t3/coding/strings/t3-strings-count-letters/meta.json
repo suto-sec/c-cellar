@@ -5,6 +5,7 @@
  "topic": "strings",
  "title": "Count the letters",
  "stars": 2,
+ "minutes": 5,
  "order": 10,
  "summary": "isalpha from <ctype.h>: is this character a letter?",
  "hints": [

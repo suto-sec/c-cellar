@@ -5,6 +5,7 @@
  "topic": "arrays",
  "title": "Sort with bubble sort",
  "stars": 3,
+ "minutes": 9,
  "order": 6,
  "summary": "Nested loops over an array.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "cmds",
  "title": "mysort with options",
  "stars": 4,
+ "minutes": 40,
  "order": 8,
  "summary": "sort(1) on standard input: -r reverse, -n numeric, -u unique, alone or clustered (-rn).",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "loops",
  "title": "Factorial",
  "stars": 2,
+ "minutes": 6,
  "order": 4,
  "summary": "Read a number with scanf, loop, print the result.",
  "hints": [

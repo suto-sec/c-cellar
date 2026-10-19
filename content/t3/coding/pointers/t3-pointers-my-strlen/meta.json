@@ -5,6 +5,7 @@
  "topic": "pointers",
  "title": "Your own strlen",
  "stars": 2,
+ "minutes": 5,
  "order": 4,
  "summary": "Pointers and the terminating zero.",
  "hints": [

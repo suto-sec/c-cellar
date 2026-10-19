@@ -5,6 +5,7 @@
  "topic": "input",
  "title": "Minutes since midnight",
  "stars": 3,
+ "minutes": 9,
  "order": 8,
  "summary": "fgets + sscanf.",
  "hints": [

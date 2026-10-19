@@ -5,6 +5,7 @@
  "topic": "cmds",
  "title": "mytr",
  "stars": 4,
+ "minutes": 22,
  "order": 5,
  "summary": "tr(1): translate characters of standard input by position, or delete them with -d.",
  "hints": [

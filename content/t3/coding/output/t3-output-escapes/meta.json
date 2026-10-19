@@ -5,6 +5,7 @@
  "topic": "output",
  "title": "Special characters",
  "stars": 1,
+ "minutes": 4,
  "order": 3,
  "summary": "Tab, quotes and backslash in strings.",
  "hints": [

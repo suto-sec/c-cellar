@@ -5,6 +5,7 @@
  "topic": "functions",
  "title": "Sum of digits, recursively",
  "stars": 4,
+ "minutes": 6,
  "order": 12,
  "summary": "Recursion on a number.",
  "hints": [

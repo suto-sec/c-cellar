@@ -5,6 +5,7 @@
  "topic": "textfiles",
  "title": "Unique words, sorted",
  "stars": 3,
+ "minutes": 25,
  "order": 2,
  "summary": "Every different word of a file, once, in alphabetical order, for a file of any size.",
  "hints": [

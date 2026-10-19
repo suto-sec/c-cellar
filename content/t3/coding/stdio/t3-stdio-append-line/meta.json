@@ -5,6 +5,7 @@
  "topic": "stdio",
  "title": "Append a line",
  "stars": 2,
+ "minutes": 6,
  "order": 6,
  "summary": "The \"a\" mode.",
  "hints": [

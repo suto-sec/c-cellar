@@ -5,6 +5,7 @@
  "topic": "functions",
  "title": "Recursive gcd",
  "stars": 3,
+ "minutes": 5,
  "order": 11,
  "summary": "Euclid with recursion.",
  "hints": [

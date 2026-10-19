@@ -5,6 +5,7 @@
  "topic": "functions",
  "title": "Is it even?",
  "stars": 1,
+ "minutes": 3,
  "order": 3,
  "summary": "A function that returns a truth value.",
  "hints": [

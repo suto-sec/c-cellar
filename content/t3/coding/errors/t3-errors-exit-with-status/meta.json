@@ -5,6 +5,7 @@
  "topic": "errors",
  "title": "Choose the exit status",
  "stars": 2,
+ "minutes": 4,
  "order": 3,
  "summary": "exit() and $?.",
  "hints": [

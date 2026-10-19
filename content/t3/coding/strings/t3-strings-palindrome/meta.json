@@ -5,6 +5,7 @@
  "topic": "strings",
  "title": "Palindrome",
  "stars": 3,
+ "minutes": 7,
  "order": 8,
  "summary": "Comparing a string with itself.",
  "hints": [

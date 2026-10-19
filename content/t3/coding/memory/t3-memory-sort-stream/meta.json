@@ -11,5 +11,6 @@
   "Assign realloc's result to a temporary pointer first: if it fails you must not lose the old block.",
   "qsort needs a comparison function; do not compute a-b (it can overflow), compare with (a>b)-(a<b)."
  ],
- "stars": 4
+ "stars": 4,
+ "minutes": 20
 }

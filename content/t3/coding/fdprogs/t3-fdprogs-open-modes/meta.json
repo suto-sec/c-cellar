@@ -5,6 +5,7 @@
  "topic": "fdprogs",
  "title": "fopen modes with open",
  "stars": 4,
+ "minutes": 25,
  "order": 5,
  "summary": "What r, w, a, r+, w+ and a+ mean as flags of open: create, truncate, append and the access mode.",
  "hints": [

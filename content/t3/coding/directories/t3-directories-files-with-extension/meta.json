@@ -5,6 +5,7 @@
  "topic": "directories",
  "title": "Files with an extension",
  "stars": 3,
+ "minutes": 15,
  "order": 10,
  "summary": "String suffixes in a directory listing.",
  "hints": [

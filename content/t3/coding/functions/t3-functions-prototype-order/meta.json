@@ -5,6 +5,7 @@
  "topic": "functions",
  "title": "Prototype before main",
  "stars": 2,
+ "minutes": 6,
  "order": 6,
  "summary": "Declare first, define later.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "loops",
  "title": "Count to n",
  "stars": 1,
+ "minutes": 3,
  "order": 1,
  "summary": "A for loop.",
  "hints": [

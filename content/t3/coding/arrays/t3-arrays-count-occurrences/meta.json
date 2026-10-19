@@ -5,6 +5,7 @@
  "topic": "arrays",
  "title": "Count occurrences",
  "stars": 2,
+ "minutes": 6,
  "order": 4,
  "summary": "Counting matches.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "errors",
  "title": "Tell the errors apart",
  "stars": 3,
+ "minutes": 10,
  "order": 4,
  "summary": "Different errno values.",
  "hints": [

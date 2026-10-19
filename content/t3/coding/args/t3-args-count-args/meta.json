@@ -5,6 +5,7 @@
  "topic": "args",
  "title": "How many arguments?",
  "stars": 1,
+ "minutes": 3,
  "order": 1,
  "summary": "argc.",
  "hints": [

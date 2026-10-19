@@ -5,6 +5,7 @@
  "topic": "structs",
  "title": "Complex numbers",
  "stars": 4,
+ "minutes": 8,
  "order": 11,
  "summary": "Returning structs from functions.",
  "hints": [

@@ -5,6 +5,7 @@
  "topic": "input",
  "title": "Count characters and lines",
  "stars": 2,
+ "minutes": 7,
  "order": 6,
  "summary": "getchar until EOF.",
  "hints": [
