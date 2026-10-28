@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "initial: 2\nafter wait: 1\nafter second wait: 0\nafter post: 1\n"
+  }
+ ]
+}

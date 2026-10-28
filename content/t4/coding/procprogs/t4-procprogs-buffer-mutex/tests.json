@@ -1,0 +1,17 @@
+{
+ "cases": [
+  {
+   "args": [
+    "mutex"
+   ],
+   "stdout": "all reads consistent\n"
+  },
+  {
+   "args": [
+    "mutex"
+   ],
+   "name": "again (the answer must never vary)",
+   "stdout": "all reads consistent\n"
+  }
+ ]
+}

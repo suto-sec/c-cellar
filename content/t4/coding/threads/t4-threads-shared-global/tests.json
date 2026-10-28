@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "before: 1\nafter: 42\n"
+  }
+ ]
+}

@@ -1,0 +1,25 @@
+{
+ "cases": [
+  {
+   "args": [
+    "3"
+   ],
+   "match": "sorted",
+   "stdout": "worker 1\nworker 2\nworker 3\n"
+  },
+  {
+   "args": [
+    "1"
+   ],
+   "match": "sorted",
+   "stdout": "worker 1\n"
+  },
+  {
+   "args": [
+    "8"
+   ],
+   "match": "sorted",
+   "stdout": "worker 1\nworker 2\nworker 3\nworker 4\nworker 5\nworker 6\nworker 7\nworker 8\n"
+  }
+ ]
+}

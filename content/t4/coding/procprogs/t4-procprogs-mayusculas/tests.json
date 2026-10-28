@@ -1,0 +1,24 @@
+{
+ "cases": [
+  {
+   "stdin": "hola\nmundo\n",
+   "stdout": "HOLA\nMUNDO\n"
+  },
+  {
+   "stdin": "",
+   "stdout": ""
+  },
+  {
+   "stdin": "Hello World 42!\n",
+   "stdout": "HELLO WORLD 42!\n"
+  },
+  {
+   "stdin": "a\nb\nc\nd\ne\n",
+   "stdout": "A\nB\nC\nD\nE\n"
+  },
+  {
+   "stdin": "ALREADY UP\nmixed Case\n",
+   "stdout": "ALREADY UP\nMIXED CASE\n"
+  }
+ ]
+}

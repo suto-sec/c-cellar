@@ -1,0 +1,15 @@
+{
+ "id": "t4-condvars-wait-ready",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "condvars",
+ "title": "Wait until it is ready",
+ "stars": 3,
+ "minutes": 10,
+ "order": 1,
+ "summary": "pthread_cond_wait in a while loop, and the signal that wakes it.",
+ "hints": [
+  "Waiter: `lock; while (!ready) pthread_cond_wait(&c, &m); unlock;`. Setter: `lock; ready = 1; pthread_cond_signal(&c); unlock;`.",
+  "`pthread_cond_wait` releases the mutex while it sleeps and takes it again before it returns, so it must be called with the mutex held. The `while` (not `if`) protects against waking up when the condition is still false."
+ ]
+}

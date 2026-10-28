@@ -1,0 +1,15 @@
+{
+ "id": "t4-procprogs-buffer-mutex",
+ "tag": "t4",
+ "track": "exercises",
+ "topic": "procprogs",
+ "title": "buffer-mutex: reader and writer",
+ "stars": 4,
+ "minutes": 18,
+ "order": 8,
+ "summary": "Two threads on a shared buffer: consistent only if they take turns.",
+ "hints": [
+  "The writer fills the whole buffer with the pass number (`buffer[i] = pass` for every `i`); the reader checks that all elements equal `buffer[0]`. A reader that comes in the middle of a pass sees two different numbers.",
+  "With the `mutex` argument, take the SAME mutex around the whole fill and around the whole check, so passes are atomic as seen by the other thread."
+ ]
+}

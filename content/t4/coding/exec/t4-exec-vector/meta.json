@@ -1,0 +1,15 @@
+{
+ "id": "t4-exec-vector",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "exec",
+ "title": "The v variants take an array",
+ "stars": 3,
+ "minutes": 6,
+ "order": 3,
+ "summary": "execv: arguments in an array ending with NULL.",
+ "hints": [
+  "`char *args[] = {\"echo\", \"one\", \"two\", NULL};` and then `execv(\"/bin/echo\", args);`. The array ends with `NULL`, like `argv`.",
+  "`execv` does not search the PATH: it needs the full path of the program."
+ ]
+}

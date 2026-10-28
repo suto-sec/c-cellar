@@ -1,0 +1,15 @@
+{
+ "id": "t4-procs-waitpid-nohang",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "procs",
+ "title": "Not finished yet",
+ "stars": 3,
+ "minutes": 9,
+ "order": 11,
+ "summary": "waitpid with WNOHANG asks without blocking.",
+ "hints": [
+  "`waitpid(pid, &status, WNOHANG)` returns 0 when the child is still running, without waiting.",
+  "The child can use `sleep(1)` to be sure it is still running when the parent asks."
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "id": "t4-races-bank-transfer",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "races",
+ "title": "Moving money both ways",
+ "stars": 3,
+ "minutes": 13,
+ "order": 6,
+ "summary": "Two updates that must happen together: one mutex around both.",
+ "hints": [
+  "`a -= 1; b += 1;` is one operation as far as the other thread is concerned: lock before the first line and unlock after the second.",
+  "One global mutex is enough for this exercise."
+ ]
+}

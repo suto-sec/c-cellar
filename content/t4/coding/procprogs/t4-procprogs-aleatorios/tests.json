@@ -1,0 +1,24 @@
+{
+ "cases": [
+  {
+   "cmd": "printf 'a\\nb\\nc\\n' | \"$BIN\" | awk '/^([0-9]|10)$/ {n++} END {print n+0}'",
+   "name": "three lines in, three valid numbers out",
+   "stdout": "3\n"
+  },
+  {
+   "cmd": "\"$BIN\" < /dev/null | wc -l | tr -d ' '",
+   "name": "no lines in, nothing out",
+   "stdout": "0\n"
+  },
+  {
+   "cmd": "seq 20 | \"$BIN\" | awk '/^([0-9]|10)$/ {n++} END {print n+0}'",
+   "name": "twenty lines in, twenty valid numbers out",
+   "stdout": "20\n"
+  },
+  {
+   "cmd": "seq 40 | \"$BIN\" | sort -u | awk 'END {print (NR > 1) ? 1 : 0}'",
+   "name": "the numbers are not all the same",
+   "stdout": "1\n"
+  }
+ ]
+}

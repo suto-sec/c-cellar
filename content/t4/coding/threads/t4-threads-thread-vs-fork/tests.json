@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "after thread: x = 2\nafter child process: x = 2\n"
+  }
+ ]
+}

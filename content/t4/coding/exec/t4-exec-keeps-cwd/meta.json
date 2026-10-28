@@ -1,0 +1,15 @@
+{
+ "id": "t4-exec-keeps-cwd",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "exec",
+ "title": "exec keeps the directory",
+ "stars": 3,
+ "minutes": 6,
+ "order": 7,
+ "summary": "A new program inherits the current directory (and open files).",
+ "hints": [
+  "`chdir(argv[1])` in the PARENT, before the `fork`: the child inherits the directory, and `exec` keeps it.",
+  "The program `pwd` (with `execlp(\"pwd\", \"pwd\", NULL)`) prints the directory it runs in."
+ ]
+}

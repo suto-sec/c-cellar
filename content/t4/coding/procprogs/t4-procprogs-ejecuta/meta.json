@@ -1,0 +1,15 @@
+{
+ "id": "t4-procprogs-ejecuta",
+ "tag": "t4",
+ "track": "exercises",
+ "topic": "procprogs",
+ "title": "ejecuta: run a command",
+ "stars": 3,
+ "minutes": 14,
+ "order": 1,
+ "summary": "Run a command with its options in a child and report what happened.",
+ "hints": [
+  "Child: `execvp(argv[1], &argv[1]);`, and if it returns, print the reason with `strerror(errno)` to standard error and `exit(1)`.",
+  "Parent: `wait(&status)`; the command was correct only if `WIFEXITED(status)` and `WEXITSTATUS(status) == 0`."
+ ]
+}

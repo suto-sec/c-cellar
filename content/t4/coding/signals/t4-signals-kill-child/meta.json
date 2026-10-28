@@ -1,0 +1,15 @@
+{
+ "id": "t4-signals-kill-child",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "signals",
+ "title": "Kill a child",
+ "stars": 3,
+ "minutes": 8,
+ "order": 5,
+ "summary": "kill() sends SIGTERM; a killed child is not a normal exit.",
+ "hints": [
+  "The child loops `for (;;) pause();`. The parent calls `kill(pid, SIGTERM);` and then `wait(&status);`.",
+  "`WIFEXITED(status)` is false when a signal killed the child."
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "id": "t4-signals-child-handler",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "signals",
+ "title": "The child waits for a signal",
+ "stars": 4,
+ "minutes": 11,
+ "order": 6,
+ "summary": "A handler installed before fork is inherited by the child.",
+ "hints": [
+  "Install the handler BEFORE `fork`: the child inherits it, so there is no moment in which `SIGUSR1` could still kill it.",
+  "Handler (child side): print `child: got SIGUSR1` with `write` and `exit(0)`. The parent: `kill(pid, SIGUSR1)`, `waitpid`, then print."
+ ]
+}

@@ -1,0 +1,16 @@
+{
+ "cases": [
+  {
+   "setup": "touch b.txt a.txt c.txt",
+   "stdout": "A.TXT\nB.TXT\nC.TXT\n"
+  },
+  {
+   "setup": "true",
+   "stdout": ""
+  },
+  {
+   "setup": "touch notes.md data",
+   "stdout": "DATA\nNOTES.MD\n"
+  }
+ ]
+}

@@ -1,0 +1,16 @@
+{
+ "cases": [
+  {
+   "setup": "touch a b c d",
+   "stdout": "d\nc\n"
+  },
+  {
+   "setup": "touch a b",
+   "stdout": "b\na\n"
+  },
+  {
+   "setup": "touch only",
+   "stdout": "only\n"
+  }
+ ]
+}

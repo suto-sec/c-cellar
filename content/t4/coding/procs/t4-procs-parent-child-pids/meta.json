@@ -1,0 +1,15 @@
+{
+ "id": "t4-procs-parent-child-pids",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "procs",
+ "title": "Who is my parent?",
+ "stars": 2,
+ "minutes": 6,
+ "order": 2,
+ "summary": "getpid in the parent, getppid in the child, and a status to report back.",
+ "hints": [
+  "Save `getpid()` in a variable BEFORE the fork: after it, the child's own `getpid()` is a different number.",
+  "The child can only talk to the parent through its exit status (`exit(0)` for yes, `exit(1)` for no); the parent reads it with `WIFEXITED` and `WEXITSTATUS`."
+ ]
+}

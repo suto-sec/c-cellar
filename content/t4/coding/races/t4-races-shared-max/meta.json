@@ -1,0 +1,15 @@
+{
+ "id": "t4-races-shared-max",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "races",
+ "title": "A shared maximum",
+ "stars": 3,
+ "minutes": 12,
+ "order": 5,
+ "summary": "Four threads update one global maximum: lock around the compare-and-set.",
+ "hints": [
+  "The check `if (v > best)` and the assignment `best = v` must be in the SAME locked section; locking each separately still loses updates.",
+  "To keep the lock short, compare against the global only after finding your own best, or lock per element: both are correct."
+ ]
+}

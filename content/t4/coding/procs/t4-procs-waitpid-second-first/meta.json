@@ -1,0 +1,15 @@
+{
+ "id": "t4-procs-waitpid-second-first",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "procs",
+ "title": "Wait for a particular child",
+ "stars": 3,
+ "minutes": 8,
+ "order": 9,
+ "summary": "waitpid picks the child you want to collect.",
+ "hints": [
+  "`waitpid(pid, &status, 0)` waits only for that child. Keep both pids in variables.",
+  "Collect the SECOND child first, then the first one; each call has its own `status`."
+ ]
+}

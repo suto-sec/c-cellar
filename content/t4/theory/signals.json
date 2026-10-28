@@ -1,0 +1,258 @@
+{
+ "id": "t4-th-signals",
+ "tag": "t4",
+ "title": "Signals",
+ "chapter": "signals",
+ "questions": [
+  {
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "Which signal does Ctrl+C send to the foreground program?",
+   "options": [
+    "SIGKILL",
+    "SIGINT",
+    "SIGTERM",
+    "SIGUSR1"
+   ],
+   "answer": 1,
+   "explain": "Ctrl+C sends `SIGINT`; its default action ends the program.",
+   "ref": [
+    "signals"
+   ],
+   "id": "t4-q-signals-01"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Which signals can NOT be caught or ignored?",
+   "options": [
+    "SIGINT and SIGTERM",
+    "SIGKILL and SIGSTOP",
+    "SIGUSR1 and SIGUSR2",
+    "SIGCHLD and SIGALRM"
+   ],
+   "answer": 1,
+   "explain": "The system keeps `SIGKILL` and `SIGSTOP` out of reach of the program, so that a process can always be stopped or killed.",
+   "ref": [
+    "signals"
+   ],
+   "id": "t4-q-signals-02"
+  },
+  {
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each signal with its meaning.",
+   "pairs": [
+    [
+     "SIGINT",
+     "interrupt from the keyboard (Ctrl+C)"
+    ],
+    [
+     "SIGTERM",
+     "polite request to end"
+    ],
+    [
+     "SIGKILL",
+     "kills at once, cannot be caught"
+    ],
+    [
+     "SIGUSR1",
+     "free for the programmer"
+    ],
+    [
+     "SIGCHLD",
+     "a child process ended"
+    ],
+    [
+     "SIGALRM",
+     "a timer set by alarm expired"
+    ]
+   ],
+   "explain": "`kill` sends SIGTERM by default.",
+   "ref": [
+    "signals",
+    "kill",
+    "alarm"
+   ],
+   "id": "t4-q-signals-03"
+  },
+  {
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "code": "#include <stdio.h>\n#include <signal.h>\n#include <unistd.h>\n\nstatic void handler(int sig)\n{\n    (void)sig;\n    write(1, \"H\\n\", 2);\n}\n\nint main(void)\n{\n    signal(SIGUSR1, handler);\n    raise(SIGUSR1);\n    puts(\"M\");\n    return 0;\n}\n",
+   "answer": "H\nM",
+   "explain": "`raise` delivers the signal before it returns, so the handler writes `H` first; `puts` then prints `M`.",
+   "ref": [
+    "signal",
+    "raise"
+   ],
+   "id": "t4-q-signals-04"
+  },
+  {
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "code": "#include <stdio.h>\n#include <signal.h>\n\nstatic volatile sig_atomic_t n = 0;\n\nstatic void handler(int sig)\n{\n    (void)sig;\n    n++;\n}\n\nint main(void)\n{\n    int i;\n\n    signal(SIGUSR1, handler);\n    for (i = 0; i < 3; i++)\n        raise(SIGUSR1);\n    printf(\"%d\\n\", (int)n);\n    return 0;\n}\n",
+   "answer": "3",
+   "explain": "Each `raise` runs the handler before returning, so the counter reaches 3.",
+   "ref": [
+    "signal",
+    "raise"
+   ],
+   "id": "t4-q-signals-05"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What does `signal(SIGINT, SIG_IGN)` do?",
+   "options": [
+    "Ends the program",
+    "Makes the process ignore SIGINT",
+    "Restores the default action",
+    "Sends SIGINT to the process"
+   ],
+   "answer": 1,
+   "explain": "`SIG_IGN` means ignore; `SIG_DFL` restores the default action.",
+   "ref": [
+    "signal"
+   ],
+   "id": "t4-q-signals-06"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Why should a handler be installed BEFORE `fork` when the parent will signal the child?",
+   "options": [
+    "The child inherits it, so an early signal cannot kill the child before it is ready",
+    "`signal` does not work after `fork`",
+    "Handlers are copied only once",
+    "It is faster"
+   ],
+   "answer": 0,
+   "explain": "If the parent signals the child before the child installed its handler, the default action (usually ending the process) happens.",
+   "ref": [
+    "signal",
+    "kill",
+    "fork"
+   ],
+   "id": "t4-q-signals-07"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Which of these is safe to call inside a signal handler?",
+   "options": [
+    "`printf`",
+    "`malloc`",
+    "`write`",
+    "`fopen`"
+   ],
+   "answer": 2,
+   "explain": "`write` is async-signal-safe. `printf`, `malloc` and `fopen` use shared internal state and can corrupt it if the signal interrupted them.",
+   "ref": [
+    "signal"
+   ],
+   "id": "t4-q-signals-08"
+  },
+  {
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "What can a process do when it receives a signal?",
+   "options": [
+    "Ignore it (for most signals)",
+    "Let the default action happen",
+    "Run its own handler",
+    "Refuse it so that the sender gets an error"
+   ],
+   "answer": [
+    0,
+    1,
+    2
+   ],
+   "explain": "Those are the three options (with some signals only allowing the default). The sender never learns whether the signal was ignored.",
+   "ref": [
+    "signal",
+    "signals"
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "True.",
+    "False."
+   ],
+   "id": "t4-q-signals-09"
+  },
+  {
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "`alarm(3)` asks the system to send the signal {{0}} to the process in three seconds.",
+   "blanks": [
+    {
+     "accept": [
+      "SIGALRM",
+      "ALRM",
+      "sigalrm"
+     ]
+    }
+   ],
+   "explain": "If nothing handles it, `SIGALRM` ends the process.",
+   "ref": [
+    "alarm"
+   ],
+   "id": "t4-q-signals-10"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What does `kill(pid, 0)` do?",
+   "options": [
+    "Kills the process",
+    "Sends nothing, but tells whether the process exists",
+    "Sends SIGTERM",
+    "Stops the process"
+   ],
+   "answer": 1,
+   "explain": "Signal 0 is only a check of existence (and permission).",
+   "ref": [
+    "kill"
+   ],
+   "id": "t4-q-signals-11"
+  },
+  {
+   "type": "single",
+   "difficulty": 4,
+   "prompt": "Why is `while (!flag) pause();` not completely safe?",
+   "options": [
+    "`pause` is too slow",
+    "If the signal arrives between the test and `pause`, the process sleeps forever",
+    "`flag` cannot be changed by a handler",
+    "`pause` does not work in loops"
+   ],
+   "answer": 1,
+   "explain": "The wakeup can be lost in that tiny window. Robust code uses `sigsuspend`, or a loop with `sleep`.",
+   "ref": [
+    "pause"
+   ],
+   "id": "t4-q-signals-12"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Several children end at the same moment and the parent gets a single SIGCHLD. What should its handler do?",
+   "options": [
+    "Call `wait` once",
+    "Loop on `waitpid(-1, NULL, WNOHANG)` until it returns 0 or -1",
+    "Ignore it",
+    "Call `exit`"
+   ],
+   "answer": 1,
+   "explain": "Equal signals can merge, so one call may leave other zombies behind: collect every child that has ended.",
+   "ref": [
+    "waitpid",
+    "signals"
+   ],
+   "id": "t4-q-signals-13"
+  }
+ ]
+}

@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "child still running\nchild exited with 5\n"
+  }
+ ]
+}

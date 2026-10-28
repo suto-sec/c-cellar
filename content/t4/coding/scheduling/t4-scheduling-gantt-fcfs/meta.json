@@ -1,0 +1,15 @@
+{
+ "id": "t4-scheduling-gantt-fcfs",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "scheduling",
+ "title": "Draw the Gantt chart",
+ "stars": 3,
+ "minutes": 13,
+ "order": 7,
+ "summary": "The timeline of an FCFS schedule, with idle periods.",
+ "hints": [
+  "Use the same FCFS loop, and when the next process arrives AFTER the clock (`arr > t`), first print the idle interval `t-arr idle` and move the clock.",
+  "Print each interval as `START-END NAME` after the clock has been moved."
+ ]
+}

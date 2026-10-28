@@ -1,0 +1,15 @@
+{
+ "id": "t4-pipes-capture-command",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "pipes",
+ "title": "Capture a command's output",
+ "stars": 4,
+ "minutes": 13,
+ "order": 6,
+ "summary": "dup2 the pipe onto the child's stdout; the parent reads what the command prints.",
+ "hints": [
+  "In the child: `close(p[0]); dup2(p[1], STDOUT_FILENO); close(p[1]); execvp(argv[1], &argv[1]);`.",
+  "The parent closes `p[1]`, reads the pipe through `fdopen(p[0], \"r\")` and `fgets`, and prints each line after the two characters `> `."
+ ]
+}

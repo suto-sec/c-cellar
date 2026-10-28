@@ -1,0 +1,15 @@
+{
+ "id": "t4-races-trylock",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "races",
+ "title": "Is the mutex free?",
+ "stars": 3,
+ "minutes": 9,
+ "order": 3,
+ "summary": "pthread_mutex_trylock does not wait: it returns EBUSY when the mutex is taken.",
+ "hints": [
+  "`pthread_mutex_trylock` returns 0 when it got the mutex, and `EBUSY` (from `<errno.h>`) when somebody holds it.",
+  "Order: main locks, creates the thread, joins it, only then unlocks. After that, a `trylock` in main must succeed (and be unlocked again)."
+ ]
+}

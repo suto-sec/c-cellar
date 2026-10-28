@@ -1,0 +1,209 @@
+{
+ "id": "t4-th-threads",
+ "tag": "t4",
+ "title": "Threads",
+ "chapter": "threads",
+ "questions": [
+  {
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "What do all the threads of a process share?",
+   "options": [
+    "The global variables",
+    "The heap",
+    "The open files",
+    "The stack"
+   ],
+   "answer": [
+    0,
+    1,
+    2
+   ],
+   "explain": "Each thread has its own stack and registers; everything else belongs to the process.",
+   "ref": [
+    "threads"
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "True.",
+    "False: every thread has its own stack."
+   ],
+   "id": "t4-q-threads-01"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does each thread have of its own?",
+   "options": [
+    "Its own global variables",
+    "Its own program counter, registers and stack",
+    "Its own open files",
+    "Its own code"
+   ],
+   "answer": 1,
+   "explain": "A thread needs its own point of execution and its own local variables, so it has its own registers and stack.",
+   "ref": [
+    "threads"
+   ],
+   "id": "t4-q-threads-02"
+  },
+  {
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "code": "#include <stdio.h>\n#include <pthread.h>\n\nstatic int x = 1;\n\nstatic void *f(void *a)\n{\n    (void)a;\n    x = 2;\n    return NULL;\n}\n\nint main(void)\n{\n    pthread_t t;\n\n    pthread_create(&t, NULL, f, NULL);\n    pthread_join(t, NULL);\n    printf(\"%d\\n\", x);\n    return 0;\n}\n",
+   "answer": "2",
+   "explain": "Threads share the global `x`, so the main thread sees the change once the thread has finished.",
+   "ref": [
+    "pthread_create",
+    "pthread_join"
+   ],
+   "id": "t4-q-threads-03"
+  },
+  {
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "code": "#include <stdio.h>\n#include <stdlib.h>\n#include <pthread.h>\n\nstatic void *square(void *a)\n{\n    int *r = malloc(sizeof *r);\n\n    *r = *(int *)a * *(int *)a;\n    return r;\n}\n\nint main(void)\n{\n    pthread_t t;\n    int n = 7;\n    void *ret;\n\n    pthread_create(&t, NULL, square, &n);\n    pthread_join(t, &ret);\n    printf(\"%d\\n\", *(int *)ret);\n    free(ret);\n    return 0;\n}\n",
+   "answer": "49",
+   "explain": "`pthread_join` hands back the pointer the thread returned.",
+   "ref": [
+    "pthread_join",
+    "pthread_exit"
+   ],
+   "id": "t4-q-threads-04"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Why is `pthread_create(&t[i], NULL, f, &i)` inside a `for` loop a bug?",
+   "options": [
+    "`&i` is not a valid argument",
+    "All threads receive the address of the same variable, which keeps changing",
+    "Threads cannot be created in loops",
+    "`i` is read-only"
+   ],
+   "answer": 1,
+   "explain": "Give each thread its own argument (for example `&ids[i]` from an array).",
+   "ref": [
+    "pthread_create"
+   ],
+   "id": "t4-q-threads-05"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What is the type of the function that a thread runs?",
+   "options": [
+    "`void f(void)`",
+    "`int f(int)`",
+    "`void *f(void *)`",
+    "`void f(int)`"
+   ],
+   "answer": 2,
+   "explain": "It takes one `void *` (your data) and returns a `void *` (the result for `pthread_join`).",
+   "ref": [
+    "pthread_create"
+   ],
+   "id": "t4-q-threads-06"
+  },
+  {
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "A program that uses pthreads is compiled with the option -{{0}}.",
+   "blanks": [
+    {
+     "accept": [
+      "pthread",
+      "lpthread"
+     ]
+    }
+   ],
+   "explain": "`-pthread` is the recommended form (the slides write `-lpthread`).",
+   "ref": [
+    "threads"
+   ],
+   "id": "t4-q-threads-07"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "A thread returns the address of one of its own local variables. What is wrong?",
+   "options": [
+    "Nothing",
+    "The variable no longer exists after the thread ends",
+    "Threads cannot return values",
+    "`pthread_join` modifies it"
+   ],
+   "answer": 1,
+   "explain": "A thread's stack is gone when it ends. Return a `malloc`ed block or fill a struct that belongs to the caller.",
+   "ref": [
+    "pthread_join"
+   ],
+   "id": "t4-q-threads-08"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does `pthread_join` do?",
+   "options": [
+    "Starts a thread",
+    "Waits for a thread to end and can collect its result",
+    "Joins two threads into one",
+    "Locks a mutex"
+   ],
+   "answer": 1,
+   "explain": "It is the thread equivalent of `waitpid`.",
+   "ref": [
+    "pthread_join"
+   ],
+   "id": "t4-q-threads-09"
+  },
+  {
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "Which statements are true?",
+   "options": [
+    "The threads of a process are scheduled independently",
+    "A thread can end simply by returning from its function",
+    "When `main` returns, the other threads keep running",
+    "A thread can only end by calling `pthread_exit`"
+   ],
+   "answer": [
+    0,
+    1
+   ],
+   "explain": "A `return` from the thread function is equivalent to `pthread_exit` (the slides say threads \"always\" end with it; they do not need to). When `main` returns, the whole process ends.",
+   "ref": [
+    "threads",
+    "pthread_exit"
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "False: the process ends and takes all its threads with it.",
+    "False."
+   ],
+   "id": "t4-q-threads-10"
+  },
+  {
+   "type": "single",
+   "difficulty": 4,
+   "prompt": "`main` returns while other threads are still running. What happens?",
+   "options": [
+    "They finish normally",
+    "The whole process ends, killing them",
+    "They become zombies",
+    "They are moved to another process"
+   ],
+   "answer": 1,
+   "explain": "Returning from `main` calls `exit`. Join the threads you need, or end `main` with `pthread_exit`.",
+   "ref": [
+    "threads",
+    "exit"
+   ],
+   "id": "t4-q-threads-11"
+  }
+ ]
+}

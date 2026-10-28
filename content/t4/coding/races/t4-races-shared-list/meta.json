@@ -1,0 +1,15 @@
+{
+ "id": "t4-races-shared-list",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "races",
+ "title": "Everybody appends to the list",
+ "stars": 3,
+ "minutes": 11,
+ "order": 4,
+ "summary": "A shared array and its index are updated together, under one lock.",
+ "hints": [
+  "Putting the value AND increasing the index is one critical section: `list[count] = v; count++;` inside the lock.",
+  "Each thread appends its value (`i + 1`) 1000 times, so a lost update changes `entries` or `sum`."
+ ]
+}

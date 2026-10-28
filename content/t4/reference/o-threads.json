@@ -1,0 +1,116 @@
+{
+ "order": 15,
+ "entries": [
+  {
+   "id": "t4-ref-threads",
+   "title": "threads",
+   "category": "Threads",
+   "summary": "Several flows of execution inside one process (pthreads).",
+   "practice_chapters": [
+    "threads",
+    "concepts"
+   ],
+   "aliases": [
+    "thread",
+    "pthread",
+    "pthreads",
+    "-pthread"
+   ],
+   "syntax": "#include <pthread.h>   /* compile with -pthread */",
+   "header": "<pthread.h>",
+   "description": "A **thread** is a unit of CPU use inside a process. All the threads of a process share the code, the global data, the heap and the open files; each has its own program counter, registers and **stack**, and an identifier (`pthread_t`). Compared with processes they are cheaper to create and to switch between, they share data with no copying, and they use several CPUs: but they also share every bug (one bad write corrupts the others) and they need **synchronisation** when they touch the same data. **User threads** are provided by a library (POSIX `pthread`); **kernel threads** by the operating system. Compile with `-pthread` (the course also writes `-lpthread`).",
+   "mistakes": [
+    "Thinking that threads get their own copy of the globals (that is processes)."
+   ],
+   "see": [
+    "t4-ref-pthread_create",
+    "t4-ref-pthread_join",
+    "t4-ref-race-condition"
+   ]
+  },
+  {
+   "id": "t4-ref-pthread_create",
+   "title": "pthread_create",
+   "category": "Threads",
+   "summary": "Start a new thread.",
+   "practice_chapters": [
+    "threads",
+    "races"
+   ],
+   "aliases": [
+    "pthread_t",
+    "pthread_attr_t"
+   ],
+   "syntax": "int pthread_create(pthread_t *tid, const pthread_attr_t *attr,\n                   void *(*start)(void *), void *arg);",
+   "header": "<pthread.h>",
+   "description": "Creates a thread that runs `start(arg)`. The identifier is stored in `*tid`. `attr` selects attributes (`NULL` = defaults). `start` must be a function that takes and returns a `void *`; `arg` is how you give it data (the address of an `int`, of a struct...). Returns `0` on success, an error number otherwise (it does not set `errno`). The new thread may begin running before `pthread_create` returns.",
+   "example": "void *worker(void *arg)\n{\n    int n = *(int *)arg;\n    return NULL;\n}\n...\npthread_t t;\nint n = 5;\npthread_create(&t, NULL, worker, &n);",
+   "mistakes": [
+    "Passing `&i` of a loop counter: all threads see the same variable, which keeps changing. Give each thread its own argument (an array element).",
+    "Passing the address of a local variable that has gone out of scope when the thread reads it."
+   ],
+   "see": [
+    "t4-ref-pthread_join",
+    "t4-ref-pthread_exit",
+    "t4-ref-threads"
+   ]
+  },
+  {
+   "id": "t4-ref-pthread_join",
+   "title": "pthread_join",
+   "category": "Threads",
+   "summary": "Wait for a thread to end and get its result.",
+   "practice_chapters": [
+    "threads"
+   ],
+   "syntax": "int pthread_join(pthread_t tid, void **retval);",
+   "header": "<pthread.h>",
+   "description": "Blocks until the thread `tid` ends. If `retval` is not `NULL`, it receives the value that the thread returned or passed to `pthread_exit` (a `void *`). Returns `0` or an error number. Every thread that is not *detached* should be joined once. (The course's slide writes the second parameter as `int **`; the right type is `void **`.) Whatever the thread wrote is visible to the joiner afterwards.",
+   "example": "void *ret;\npthread_join(t, &ret);\nint *result = ret;",
+   "mistakes": [
+    "Returning a pointer to a local variable of the thread: it is gone after the thread ends (use `malloc` or a struct of the caller).",
+    "Joining inside the loop that creates the threads: they then run one after another."
+   ],
+   "see": [
+    "t4-ref-pthread_create",
+    "t4-ref-pthread_exit"
+   ]
+  },
+  {
+   "id": "t4-ref-pthread_exit",
+   "title": "pthread_exit",
+   "category": "Threads",
+   "summary": "End the calling thread, optionally returning a value.",
+   "practice_chapters": [
+    "threads"
+   ],
+   "syntax": "void pthread_exit(void *value);",
+   "header": "<pthread.h>",
+   "description": "Ends the calling thread; `value` is what `pthread_join` will receive. A `return value;` from the thread's function does exactly the same, so (course wording aside) threads do **not** have to end with `pthread_exit`. Calling `exit` instead ends the whole process, with all its threads; so does `return` from `main`.",
+   "example": "pthread_exit(NULL);",
+   "mistakes": [
+    "Calling `exit` from a thread when you only meant to end that thread."
+   ],
+   "see": [
+    "t4-ref-pthread_create",
+    "t4-ref-pthread_join"
+   ]
+  },
+  {
+   "id": "t4-ref-pthread_self",
+   "title": "pthread_self",
+   "category": "Threads",
+   "summary": "The identifier of the calling thread.",
+   "practice_chapters": [
+    "threads"
+   ],
+   "syntax": "pthread_t pthread_self(void);",
+   "header": "<pthread.h>",
+   "description": "Returns the `pthread_t` of the thread that calls it. Compare two identifiers with `pthread_equal`, not with `==` in portable code.",
+   "example": "pthread_t me = pthread_self();",
+   "see": [
+    "t4-ref-pthread_create"
+   ]
+  }
+ ]
+}

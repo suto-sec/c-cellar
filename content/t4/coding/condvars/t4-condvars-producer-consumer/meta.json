@@ -1,0 +1,15 @@
+{
+ "id": "t4-condvars-producer-consumer",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "condvars",
+ "title": "Bounded buffer with conditions",
+ "stars": 5,
+ "minutes": 24,
+ "order": 5,
+ "summary": "The same producer/consumer, now with one mutex and two condition variables.",
+ "hints": [
+  "Two conditions: `has_room` (the producer waits on it while `count == SLOTS`) and `has_data` (the consumer waits on it while `count == 0`). Each side signals the OTHER condition after changing `count`.",
+  "Always `while`, never `if`, around `pthread_cond_wait`. Track the largest `count` ever seen (inside the lock) to prove the buffer never overflowed."
+ ]
+}

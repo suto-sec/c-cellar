@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "args": [
+    "3"
+   ],
+   "stdout": "entries: 3000\nsum: 6000\n"
+  },
+  {
+   "args": [
+    "1"
+   ],
+   "stdout": "entries: 1000\nsum: 1000\n"
+  },
+  {
+   "args": [
+    "8"
+   ],
+   "stdout": "entries: 8000\nsum: 36000\n"
+  },
+  {
+   "args": [
+    "5"
+   ],
+   "stdout": "entries: 5000\nsum: 15000\n"
+  }
+ ]
+}

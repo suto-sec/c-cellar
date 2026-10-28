@@ -1,0 +1,15 @@
+{
+ "id": "t4-procs-flush-before-fork",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "procs",
+ "title": "Print once, not twice",
+ "stars": 3,
+ "minutes": 6,
+ "order": 8,
+ "summary": "Unflushed stdio buffers are copied by fork: flush first.",
+ "hints": [
+  "When the output is a pipe or a file, `printf` keeps the text in a buffer until it is full or the program ends. `fork` copies that buffer into the child too, so both print it.",
+  "Call `fflush(stdout)` right before `fork()`."
+ ]
+}

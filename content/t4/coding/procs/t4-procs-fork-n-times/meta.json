@@ -1,0 +1,15 @@
+{
+ "id": "t4-procs-fork-n-times",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "procs",
+ "title": "2 to the N",
+ "stars": 3,
+ "minutes": 6,
+ "order": 5,
+ "summary": "A loop of N forks gives 2^N processes.",
+ "hints": [
+  "`for (i = 0; i < n; i++) fork();` creates children that ALSO continue the loop.",
+  "Read `n` with `atoi(argv[1])`. Print only after the loop, so that nothing is printed before the forks (a buffered line would be copied too)."
+ ]
+}

@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "worker: ready\nmain: go\n"
+  }
+ ]
+}

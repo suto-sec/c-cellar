@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "args": [
+    "0"
+   ],
+   "stdout": "x\n"
+  },
+  {
+   "args": [
+    "1"
+   ],
+   "stdout": "x\nx\n"
+  },
+  {
+   "args": [
+    "3"
+   ],
+   "stdout": "x\nx\nx\nx\nx\nx\nx\nx\n"
+  },
+  {
+   "args": [
+    "4"
+   ],
+   "stdout": "x\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\n"
+  }
+ ]
+}

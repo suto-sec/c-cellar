@@ -1,0 +1,29 @@
+{
+ "cases": [
+  {
+   "args": [
+    "echo",
+    "hi"
+   ],
+   "stdout": "> hi\n"
+  },
+  {
+   "args": [
+    "printf",
+    "a\\nb\\n"
+   ],
+   "stdout": "> a\n> b\n"
+  },
+  {
+   "args": [
+    "true"
+   ],
+   "stdout": ""
+  },
+  {
+   "cmd": "printf \"x\\ny\\nz\\n\" > f.txt; \"$BIN\" wc -l < f.txt",
+   "setup": "true",
+   "stdout": "> 3\n"
+  }
+ ]
+}

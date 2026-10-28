@@ -1,0 +1,16 @@
+{
+ "id": "t4-procprogs-relevos",
+ "tag": "t4",
+ "track": "exercises",
+ "topic": "procprogs",
+ "title": "relevos: a relay race",
+ "stars": 5,
+ "minutes": 26,
+ "order": 4,
+ "summary": "Four processes pass the baton with signals, in order.",
+ "hints": [
+  "The first runner must know the second one's pid, and so on: create the children in REVERSE order (runner 4 first), so each child already inherits the pid of the next runner from the parent.",
+  "Install the `SIGUSR1` handler (it just sets a flag) before the first fork. A runner waits with `while (!go) pause();`. IMPORTANT: `fflush(stdout)` before every `kill`, or the next runner's output can be written before yours.",
+  "Before the start the parent sleeps one second: a signal sent before a runner reaches `pause()` is not queued for it and the runner could wait forever."
+ ]
+}

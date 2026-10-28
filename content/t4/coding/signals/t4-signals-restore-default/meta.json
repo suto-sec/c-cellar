@@ -1,0 +1,15 @@
+{
+ "id": "t4-signals-restore-default",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "signals",
+ "title": "Handle once, then die",
+ "stars": 4,
+ "minutes": 12,
+ "order": 7,
+ "summary": "A handler can put the default action back with SIG_DFL.",
+ "hints": [
+  "In the child, the handler does `write(...)` of `first` and then `signal(SIGINT, SIG_DFL);`. The second `raise(SIGINT)` then finds the default action: it ends the process.",
+  "The parent can tell with `WIFEXITED(status)`: a child killed by a signal did not exit normally."
+ ]
+}

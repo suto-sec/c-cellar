@@ -1,0 +1,15 @@
+{
+ "id": "t4-races-counter",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "races",
+ "title": "Two threads, one counter",
+ "stars": 3,
+ "minutes": 9,
+ "order": 1,
+ "summary": "Protect a shared counter with a mutex so no update is lost.",
+ "hints": [
+  "`counter++` is three steps (read, add, write): two threads can read the same value and one update disappears. Wrap it in `pthread_mutex_lock(&m)` / `pthread_mutex_unlock(&m)`.",
+  "Initialise the mutex with `PTHREAD_MUTEX_INITIALIZER` (or `pthread_mutex_init`). Join both threads before printing."
+ ]
+}

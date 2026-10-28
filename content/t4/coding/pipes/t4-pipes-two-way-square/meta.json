@@ -1,0 +1,15 @@
+{
+ "id": "t4-pipes-two-way-square",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "pipes",
+ "title": "A question and an answer",
+ "stars": 4,
+ "minutes": 14,
+ "order": 9,
+ "summary": "Two pipes make a conversation: one for each direction.",
+ "hints": [
+  "Make two pipes before the fork: `up[2]` (parent to child) and `down[2]` (child to parent). Each process closes the two ends it does not use.",
+  "Ask one number at a time: the parent writes `n`, then reads the answer, before sending the next. The child loops until `read` on `up` returns 0."
+ ]
+}

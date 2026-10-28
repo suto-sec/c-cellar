@@ -1,0 +1,249 @@
+{
+ "order": 14,
+ "entries": [
+  {
+   "id": "t4-ref-ipc",
+   "title": "ipc",
+   "category": "Pipes and IPC",
+   "summary": "How processes cooperate: signals, pipes, shared memory, messages.",
+   "practice_chapters": [
+    "concepts",
+    "pipes"
+   ],
+   "aliases": [
+    "interprocess"
+   ],
+   "syntax": "signals   pipes   shared memory   message passing",
+   "description": "Independent processes do not affect each other; **cooperating** processes do, to share information, speed up a job or split it into modules. They need **interprocess communication (IPC)**. To warn about an event: **signals** (`kill`) and **semaphores**. To transfer data: **pipes** (a one-way channel, usually between parent and child), **shared memory** (a region both can read and write, with no help from the kernel after it is set up) and **message passing** (`send` / `receive`, the kernel moves the data and the processes do not share memory; it also works between machines).",
+   "see": [
+    "t4-ref-pipe",
+    "t4-ref-signal",
+    "t4-ref-shared-memory",
+    "t4-ref-message-passing"
+   ]
+  },
+  {
+   "id": "t4-ref-shared-memory",
+   "title": "shared-memory",
+   "category": "Pipes and IPC",
+   "summary": "A memory region that two processes can both use.",
+   "practice_chapters": [
+    "concepts"
+   ],
+   "aliases": [
+    "shmget",
+    "shmat",
+    "shmdt",
+    "shmctl"
+   ],
+   "syntax": "shmget  shmat  shmdt  shmctl",
+   "description": "The kernel maps one segment of memory into the address space of several processes. Afterwards they communicate simply by reading and writing it; the kernel does not intervene, so the processes decide the layout of the data and must **synchronise** their accesses themselves (semaphores, mutexes). The calls are `shmget` (create or find the segment), `shmat` / `shmdt` (attach / detach it) and `shmctl` (control or remove it). Threads share memory without any of this, because they live in one process.",
+   "mistakes": [
+    "Forgetting that shared memory without synchronisation has the same race conditions as threads."
+   ],
+   "see": [
+    "t4-ref-ipc",
+    "t4-ref-message-passing",
+    "t4-ref-race-condition"
+   ]
+  },
+  {
+   "id": "t4-ref-message-passing",
+   "title": "message-passing",
+   "category": "Pipes and IPC",
+   "summary": "send and receive: communication without shared memory.",
+   "practice_chapters": [
+    "concepts"
+   ],
+   "aliases": [
+    "send",
+    "receive"
+   ],
+   "syntax": "send(destination, message)\nreceive(source, message)",
+   "description": "Processes exchange messages with two operations, `send` and `receive`, and the system hides where the other side is. It suits processes on different machines. The communication can be **blocking** (synchronous): the sender waits until the message is received, the receiver waits until a message arrives; or **non-blocking** (asynchronous): the sender goes on at once, the receiver gets a message or an empty answer. Compared with shared memory it is easier to get right, but every message passes through the kernel.",
+   "see": [
+    "t4-ref-ipc",
+    "t4-ref-shared-memory",
+    "t4-ref-pipe"
+   ]
+  },
+  {
+   "id": "t4-ref-pipe",
+   "title": "pipe",
+   "category": "Pipes and IPC",
+   "summary": "A one-way channel between processes (a pair of file descriptors).",
+   "practice_chapters": [
+    "pipes",
+    "procprogs"
+   ],
+   "aliases": [
+    "pipes"
+   ],
+   "syntax": "int pipe(int fd[2]);",
+   "header": "<unistd.h>",
+   "description": "Creates a pipe and stores two descriptors in `fd`: `fd[0]` is the end you **read** from and `fd[1]` the end you **write** to. A pipe is one-way: data written at one end comes out at the other, in order. `read` **blocks** while the pipe is empty, and returns `0` (end of file) only when **every** descriptor of the write end, in every process, has been closed. A child created with `fork` inherits both descriptors, so each process must `close` the end it does not use, as soon as it can. For a conversation in both directions use two pipes. `fdopen` turns an end into a `FILE *`; `dup2` connects an end to stdin or stdout before an `exec` (how a shell builds `a | b`).",
+   "example": "int fd[2];\npipe(fd);\nif (fork() == 0) {\n    close(fd[0]);\n    write(fd[1], \"hi\", 2);\n    exit(0);\n}\nclose(fd[1]);\nread(fd[0], buf, sizeof buf);",
+   "mistakes": [
+    "Not closing the unused ends: the reader never sees the end of file and hangs.",
+    "Creating the pipe AFTER the `fork`: parent and child then have different pipes.",
+    "Reading more than you wrote and printing the buffer as a string without adding the `'\\0'`."
+   ],
+   "see": [
+    "t3-ref-dup2",
+    "t3-ref-fdopen",
+    "t3-ref-read",
+    "t3-ref-write",
+    "t3-ref-close",
+    "t4-ref-fork"
+   ]
+  },
+  {
+   "id": "t4-ref-signals",
+   "title": "signals",
+   "category": "Signals",
+   "summary": "Notifications sent to a process: SIGINT, SIGTERM, SIGKILL, SIGUSR1...",
+   "practice_chapters": [
+    "signals",
+    "concepts"
+   ],
+   "aliases": [
+    "SIGINT",
+    "SIGTERM",
+    "SIGKILL",
+    "SIGSTOP",
+    "SIGUSR1",
+    "SIGUSR2",
+    "SIGCHLD",
+    "SIGALRM",
+    "SIGPIPE",
+    "SIGSEGV",
+    "sig_atomic_t"
+   ],
+   "syntax": "SIGINT 2   SIGKILL 9   SIGUSR1 10   SIGTERM 15   SIGCHLD 17   SIGSTOP 19",
+   "header": "<signal.h>",
+   "description": "A signal tells a process that something happened. It acts like an interrupt: the process stops what it is doing, runs the **handler** for that signal, and goes on. For each signal a process can **ignore** it (`SIG_IGN`), keep the **default action** (`SIG_DFL`: most signals end the process) or install **its own handler**. The important ones: `SIGINT` (Ctrl+C), `SIGTERM` (polite request to end, the default of `kill`), `SIGKILL` (kills at once: cannot be caught or ignored), `SIGSTOP` (stops the process, also cannot be caught; Ctrl+Z sends `SIGTSTP`, which can), `SIGUSR1` and `SIGUSR2` (free for the programmer, default: end the process), `SIGCHLD` (a child ended: default is to ignore it), `SIGALRM` (an `alarm` expired), `SIGPIPE` (write to a pipe nobody reads) and `SIGSEGV` (invalid memory access).",
+   "mistakes": [
+    "Trying to catch `SIGKILL` or `SIGSTOP`: it is not allowed.",
+    "Using `printf` in a handler: it is not safe (use `write`)."
+   ],
+   "see": [
+    "t4-ref-signal",
+    "t4-ref-kill",
+    "t4-ref-raise",
+    "t4-ref-pause",
+    "t4-ref-alarm"
+   ]
+  },
+  {
+   "id": "t4-ref-signal",
+   "title": "signal",
+   "category": "Signals",
+   "summary": "Choose what a process does when it receives a signal.",
+   "practice_chapters": [
+    "signals"
+   ],
+   "aliases": [
+    "SIG_IGN",
+    "SIG_DFL",
+    "sighandler_t"
+   ],
+   "syntax": "void (*signal(int signum, void (*handler)(int)))(int);",
+   "header": "<signal.h>",
+   "description": "Sets the action for the signal `signum`: `SIG_IGN` (ignore it), `SIG_DFL` (the default action) or a function `void handler(int sig)` of yours, which receives the signal number. It returns the previous action (or `SIG_ERR`). A handler stays installed for next time on Linux. Handlers inherited through `fork` stay; `exec` puts caught signals back to default. Inside a handler do as little as possible: set a flag (`volatile sig_atomic_t`), or call `write`, `_exit`... (functions that are *async-signal-safe*); `printf` and `malloc` are not.",
+   "example": "static void on_int(int sig)\n{\n    (void)sig;\n    write(1, \"got it\\n\", 7);\n}\n...\nsignal(SIGINT, on_int);\nsignal(SIGTERM, SIG_IGN);",
+   "mistakes": [
+    "Installing the handler after the signal may already have arrived (install it BEFORE `fork`).",
+    "Relying on a signal being delivered once per `kill`: several equal signals can merge into one."
+   ],
+   "see": [
+    "t4-ref-signals",
+    "t4-ref-kill",
+    "t4-ref-raise",
+    "t4-ref-pause"
+   ]
+  },
+  {
+   "id": "t4-ref-kill",
+   "title": "kill",
+   "category": "Signals",
+   "summary": "Send a signal to a process.",
+   "practice_chapters": [
+    "signals",
+    "procprogs"
+   ],
+   "syntax": "int kill(pid_t pid, int sig);",
+   "header": "<signal.h>",
+   "description": "Sends the signal `sig` to the process with the given pid (also the `kill` command: `kill -USR1 1234`). Returns `0`, or `-1` on error (no such process, no permission). With `sig` equal to `0` nothing is sent: it only checks that the process exists. Sending a signal to a child that has not yet installed its handler can kill it: install the handler before `fork`.",
+   "example": "kill(child, SIGUSR1);\nkill(child, SIGTERM);",
+   "mistakes": [
+    "Passing the arguments the other way round: it is `kill(pid, signal)`.",
+    "Using `kill(0, sig)`, which signals the whole process group."
+   ],
+   "see": [
+    "t4-ref-signal",
+    "t4-ref-signals",
+    "t4-ref-raise"
+   ]
+  },
+  {
+   "id": "t4-ref-raise",
+   "title": "raise",
+   "category": "Signals",
+   "summary": "Send a signal to yourself.",
+   "practice_chapters": [
+    "signals"
+   ],
+   "syntax": "int raise(int sig);",
+   "header": "<signal.h>",
+   "description": "Equivalent to `kill(getpid(), sig)`. The signal is delivered before `raise` returns, so the handler has already run when the next line executes (in a single-threaded program).",
+   "example": "signal(SIGUSR1, handler);\nraise(SIGUSR1);   /* handler runs here */",
+   "see": [
+    "t4-ref-kill",
+    "t4-ref-signal"
+   ]
+  },
+  {
+   "id": "t4-ref-pause",
+   "title": "pause",
+   "category": "Signals",
+   "summary": "Sleep until a signal arrives.",
+   "practice_chapters": [
+    "signals",
+    "procprogs"
+   ],
+   "syntax": "int pause(void);",
+   "header": "<unistd.h>",
+   "description": "Suspends the process until a signal is caught; after the handler returns, `pause` returns `-1` (with `errno` set to `EINTR`). Beware of the **lost wakeup**: if the signal arrives between your test of a flag and the call to `pause`, you wait forever. The reliable tools are `sigsuspend`, or a loop with `sleep`; in simple programs make sure the other side starts late enough.",
+   "example": "while (!done)\n    pause();",
+   "mistakes": [
+    "Writing `while (!flag) pause();` and thinking it is perfectly safe."
+   ],
+   "see": [
+    "t4-ref-alarm",
+    "t4-ref-signal",
+    "t4-ref-sleep"
+   ]
+  },
+  {
+   "id": "t4-ref-alarm",
+   "title": "alarm",
+   "category": "Signals",
+   "summary": "Ask for a SIGALRM after some seconds.",
+   "practice_chapters": [
+    "signals"
+   ],
+   "syntax": "unsigned int alarm(unsigned int seconds);",
+   "header": "<unistd.h>",
+   "description": "Arranges for the process to receive `SIGALRM` in the given number of seconds, and returns the seconds left of a previous alarm. `alarm(0)` cancels it. There is only one alarm per process: a new call replaces the old one. If nobody handles `SIGALRM` the default action ends the process.",
+   "example": "signal(SIGALRM, on_alarm);\nalarm(2);\npause();",
+   "mistakes": [
+    "Forgetting to install the handler: the process is killed by the alarm."
+   ],
+   "see": [
+    "t4-ref-signal",
+    "t4-ref-pause",
+    "t4-ref-sleep"
+   ]
+  }
+ ]
+}

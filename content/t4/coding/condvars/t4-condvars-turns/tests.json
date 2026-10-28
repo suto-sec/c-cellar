@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "args": [
+    "1"
+   ],
+   "stdout": "ABC\n"
+  },
+  {
+   "args": [
+    "2"
+   ],
+   "stdout": "ABCABC\n"
+  },
+  {
+   "args": [
+    "10"
+   ],
+   "stdout": "ABCABCABCABCABCABCABCABCABCABC\n"
+  },
+  {
+   "args": [
+    "4"
+   ],
+   "stdout": "ABCABCABCABC\n"
+  }
+ ]
+}

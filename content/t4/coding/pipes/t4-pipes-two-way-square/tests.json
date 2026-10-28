@@ -1,0 +1,20 @@
+{
+ "cases": [
+  {
+   "stdin": "2 3 10\n",
+   "stdout": "2 squared is 4\n3 squared is 9\n10 squared is 100\n"
+  },
+  {
+   "stdin": "",
+   "stdout": ""
+  },
+  {
+   "stdin": "-4\n",
+   "stdout": "-4 squared is 16\n"
+  },
+  {
+   "stdin": "1\n2\n3\n4\n5\n",
+   "stdout": "1 squared is 1\n2 squared is 4\n3 squared is 9\n4 squared is 16\n5 squared is 25\n"
+  }
+ ]
+}

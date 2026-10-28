@@ -1,0 +1,427 @@
+{
+ "order": 16,
+ "entries": [
+  {
+   "id": "t4-ref-race-condition",
+   "title": "race-condition",
+   "category": "Synchronization",
+   "summary": "A bug in which the result depends on who runs first.",
+   "practice_chapters": [
+    "races",
+    "concepts"
+   ],
+   "aliases": [
+    "race",
+    "lost-update"
+   ],
+   "syntax": "counter++;   /* read, add, write: three steps */",
+   "description": "A **race condition** exists when several threads or processes use the same data at the same time, at least one of them changes it, and the result depends on the exact order of their steps. The classic case is `counter++` from two threads: each reads the old value, adds one and writes it back, so one of the two updates is lost. It shows up rarely and differently on every run. `volatile` does NOT fix it (course wording aside): it only forces the variable to be read from memory every time; the read-add-write is still not atomic. The fix is mutual exclusion on the **critical section**: a mutex, a semaphore or similar.",
+   "mistakes": [
+    "Thinking that `volatile` makes an operation atomic.",
+    "Concluding that a program is correct because it printed the right answer once."
+   ],
+   "see": [
+    "t4-ref-critical-section",
+    "t4-ref-pthread_mutex_lock",
+    "t4-ref-semaphore"
+   ]
+  },
+  {
+   "id": "t4-ref-critical-section",
+   "title": "critical-section",
+   "category": "Synchronization",
+   "summary": "The code that uses shared data and must not run in two threads at once.",
+   "practice_chapters": [
+    "races",
+    "concepts"
+   ],
+   "aliases": [
+    "mutual-exclusion"
+   ],
+   "syntax": "enter section\n   ... critical section ...\nexit section",
+   "description": "A **critical section** is the part of a program that touches shared data. A correct solution must give **mutual exclusion** (only one at a time inside), **progress** (if nobody is inside and some want in, only those can decide who enters, and the decision cannot be postponed forever) and **bounded waiting** (a limit to how many times others enter before a waiting thread does). In practice you use a mutex or a binary semaphore: lock when entering, unlock when leaving, and keep the section as short as possible.",
+   "mistakes": [
+    "Locking in one place and forgetting another place that touches the same data."
+   ],
+   "see": [
+    "t4-ref-race-condition",
+    "t4-ref-pthread_mutex_lock",
+    "t4-ref-sem_wait"
+   ]
+  },
+  {
+   "id": "t4-ref-deadlock",
+   "title": "deadlock",
+   "category": "Synchronization",
+   "summary": "Two or more threads waiting for each other forever.",
+   "practice_chapters": [
+    "races",
+    "procprogs"
+   ],
+   "syntax": "T1: lock(A); lock(B);      T2: lock(B); lock(A);",
+   "description": "A **deadlock** happens when each of several threads holds something and waits for something another one holds, so none can ever continue. The textbook case: thread 1 takes lock A then B, thread 2 takes B then A; each ends up with one and waits for the other. The usual cure is to take several locks **always in the same order**. Related, but different: **starvation**, when a thread could run but never gets its turn.",
+   "mistakes": [
+    "Believing that deadlocks always show up: they depend on timing and may hide for thousands of runs."
+   ],
+   "see": [
+    "t4-ref-pthread_mutex_lock",
+    "t4-ref-dining-philosophers"
+   ]
+  },
+  {
+   "id": "t4-ref-pthread_mutex_init",
+   "title": "pthread_mutex_init",
+   "category": "Synchronization",
+   "summary": "Create (and destroy) a mutex.",
+   "practice_chapters": [
+    "races"
+   ],
+   "aliases": [
+    "pthread_mutex_destroy",
+    "PTHREAD_MUTEX_INITIALIZER",
+    "pthread_mutex_t",
+    "mutex"
+   ],
+   "syntax": "pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;\nint pthread_mutex_init(pthread_mutex_t *m, const pthread_mutexattr_t *attr);\nint pthread_mutex_destroy(pthread_mutex_t *m);",
+   "header": "<pthread.h>",
+   "description": "A **mutex** (mutual exclusion lock) is a lock with an owner: whoever locked it must unlock it. It protects a critical section. A global or static one can be initialised with `PTHREAD_MUTEX_INITIALIZER`; otherwise call `pthread_mutex_init(&m, NULL)` before using it and `pthread_mutex_destroy` when no thread uses it any more. A mutex is *not exactly* a binary semaphore (course wording): the semaphore has no owner and can be released by another thread.",
+   "mistakes": [
+    "Using a mutex that was never initialised.",
+    "Copying a mutex: use its address."
+   ],
+   "see": [
+    "t4-ref-pthread_mutex_lock",
+    "t4-ref-pthread_mutex_unlock",
+    "t4-ref-semaphore"
+   ]
+  },
+  {
+   "id": "t4-ref-pthread_mutex_lock",
+   "title": "pthread_mutex_lock",
+   "category": "Synchronization",
+   "summary": "Take a mutex, waiting if somebody has it.",
+   "practice_chapters": [
+    "races",
+    "condvars",
+    "procprogs"
+   ],
+   "syntax": "int pthread_mutex_lock(pthread_mutex_t *m);",
+   "header": "<pthread.h>",
+   "description": "Takes the mutex. If another thread holds it, the caller blocks until it is released. Only one thread at a time can be between `lock` and `unlock`. Locking a mutex you already hold (with the default kind) deadlocks you. Returns `0` or an error number.",
+   "example": "pthread_mutex_lock(&m);\ncounter++;\npthread_mutex_unlock(&m);",
+   "mistakes": [
+    "Returning from a function while the mutex is still locked."
+   ],
+   "see": [
+    "t4-ref-pthread_mutex_unlock",
+    "t4-ref-pthread_mutex_trylock",
+    "t4-ref-deadlock"
+   ]
+  },
+  {
+   "id": "t4-ref-pthread_mutex_unlock",
+   "title": "pthread_mutex_unlock",
+   "category": "Synchronization",
+   "summary": "Release a mutex.",
+   "practice_chapters": [
+    "races",
+    "condvars"
+   ],
+   "syntax": "int pthread_mutex_unlock(pthread_mutex_t *m);",
+   "header": "<pthread.h>",
+   "description": "Releases a mutex that the calling thread holds; one waiting thread (if any) can then take it. Unlocking a mutex you do not hold, or that is not locked, is a bug: the result is undefined.",
+   "example": "pthread_mutex_unlock(&m);",
+   "mistakes": [
+    "Unlocking from a thread that did not lock it."
+   ],
+   "see": [
+    "t4-ref-pthread_mutex_lock"
+   ]
+  },
+  {
+   "id": "t4-ref-pthread_mutex_trylock",
+   "title": "pthread_mutex_trylock",
+   "category": "Synchronization",
+   "summary": "Try to take a mutex without waiting.",
+   "practice_chapters": [
+    "races"
+   ],
+   "syntax": "int pthread_mutex_trylock(pthread_mutex_t *m);",
+   "header": "<pthread.h>",
+   "description": "Like `pthread_mutex_lock` but never blocks: returns `0` if it took the mutex, and `EBUSY` (from `<errno.h>`) if somebody else holds it. Lets a thread do something else instead of waiting. If it returns `0`, you must `unlock` later.",
+   "example": "if (pthread_mutex_trylock(&m) == 0) {\n    /* got it */\n    pthread_mutex_unlock(&m);\n}",
+   "mistakes": [
+    "Treating any non-zero result as a fatal error: `EBUSY` is normal."
+   ],
+   "see": [
+    "t4-ref-pthread_mutex_lock",
+    "t4-ref-pthread_mutex_unlock"
+   ]
+  },
+  {
+   "id": "t4-ref-semaphore",
+   "title": "semaphore",
+   "category": "Synchronization",
+   "summary": "A counter you can wait on and post to: order, limits and mutual exclusion.",
+   "practice_chapters": [
+    "semaphores",
+    "concepts"
+   ],
+   "aliases": [
+    "semaphores",
+    "wait-signal"
+   ],
+   "syntax": "wait(S): S--, block if S < 0     signal(S): S++, wake one if S <= 0",
+   "header": "<semaphore.h>",
+   "description": "A **semaphore** is an integer that is only changed by two atomic operations: **wait** (decrement; if there is nothing left, block) and **signal** or **post** (increment; wake a waiter). A **binary** semaphore (0 or 1) gives mutual exclusion: start it at 1, `wait` to enter and `post` to leave. A **counting** semaphore controls a resource with several identical units (the places in a car park). Started at 0, a semaphore makes one thread wait for an event of another: S1 before S2. The producer/consumer problem uses three: free places, filled places and one to protect the buffer. In POSIX the functions are `sem_init`, `sem_wait`, `sem_post`, `sem_destroy`.",
+   "mistakes": [
+    "Taking two semaphores in opposite orders in two threads: deadlock."
+   ],
+   "see": [
+    "t4-ref-sem_init",
+    "t4-ref-sem_wait",
+    "t4-ref-sem_post",
+    "t4-ref-producer-consumer"
+   ]
+  },
+  {
+   "id": "t4-ref-sem_init",
+   "title": "sem_init",
+   "category": "Synchronization",
+   "summary": "Create (and destroy) an unnamed semaphore.",
+   "practice_chapters": [
+    "semaphores"
+   ],
+   "aliases": [
+    "sem_destroy",
+    "sem_t"
+   ],
+   "syntax": "int sem_init(sem_t *sem, int pshared, unsigned int value);\nint sem_destroy(sem_t *sem);",
+   "header": "<semaphore.h>",
+   "description": "Initialises the semaphore `*sem` with the starting `value`. `pshared` is `0` to share it only among the threads of this process (the usual case); non-zero lets different processes use it, but then the `sem_t` must live in memory they share (a plain copy made by `fork` is NOT shared). `sem_destroy` frees it when nobody waits on it.",
+   "example": "sem_t s;\nsem_init(&s, 0, 1);   /* binary: a lock */",
+   "mistakes": [
+    "Using a semaphore before `sem_init`.",
+    "Thinking that `pshared != 0` is enough to share across `fork`."
+   ],
+   "see": [
+    "t4-ref-sem_wait",
+    "t4-ref-sem_post",
+    "t4-ref-semaphore"
+   ]
+  },
+  {
+   "id": "t4-ref-sem_wait",
+   "title": "sem_wait",
+   "category": "Synchronization",
+   "summary": "Take one unit: decrement or block.",
+   "practice_chapters": [
+    "semaphores",
+    "procprogs"
+   ],
+   "syntax": "int sem_wait(sem_t *sem);",
+   "header": "<semaphore.h>",
+   "description": "If the value is greater than zero, decrements it and returns at once; if it is zero, blocks until another thread does `sem_post`. This is the *wait* (or P) operation. It can return `-1` with `EINTR` if a signal interrupts it.",
+   "example": "sem_wait(&s);\n/* critical section */\nsem_post(&s);",
+   "mistakes": [
+    "Calling `sem_wait` twice for the same unit and blocking yourself."
+   ],
+   "see": [
+    "t4-ref-sem_post",
+    "t4-ref-sem_init",
+    "t4-ref-semaphore"
+   ]
+  },
+  {
+   "id": "t4-ref-sem_post",
+   "title": "sem_post",
+   "category": "Synchronization",
+   "summary": "Give one unit back: increment and wake a waiter.",
+   "practice_chapters": [
+    "semaphores",
+    "procprogs"
+   ],
+   "syntax": "int sem_post(sem_t *sem);",
+   "header": "<semaphore.h>",
+   "description": "Increments the value; if threads are blocked in `sem_wait`, one of them wakes up. This is the *signal* (or V) operation. Unlike a mutex unlock, any thread may post, not only the one that waited: that is what lets a semaphore start at 0 and order two threads.",
+   "example": "sem_post(&done);",
+   "mistakes": [
+    "Posting more times than waiting: the count grows and the semaphore stops protecting anything."
+   ],
+   "see": [
+    "t4-ref-sem_wait",
+    "t4-ref-sem_init"
+   ]
+  },
+  {
+   "id": "t4-ref-sem_getvalue",
+   "title": "sem_getvalue",
+   "category": "Synchronization",
+   "summary": "Read the current value of a semaphore.",
+   "practice_chapters": [
+    "semaphores"
+   ],
+   "syntax": "int sem_getvalue(sem_t *sem, int *value);",
+   "header": "<semaphore.h>",
+   "description": "Stores the current value in `*value`. On Linux a negative number is never reported (it gives 0 when threads wait). The value may change right after you read it, so use it for debugging or printing, never to decide whether a `sem_wait` would block.",
+   "example": "int v;\nsem_getvalue(&s, &v);",
+   "mistakes": [
+    "Using the value to decide whether to wait: it is already out of date."
+   ],
+   "see": [
+    "t4-ref-sem_wait",
+    "t4-ref-sem_post"
+   ]
+  },
+  {
+   "id": "t4-ref-condition",
+   "title": "condition",
+   "category": "Synchronization",
+   "summary": "Wait inside a critical section until something becomes true.",
+   "practice_chapters": [
+    "condvars",
+    "concepts"
+   ],
+   "aliases": [
+    "cond",
+    "condition-variable",
+    "monitor"
+   ],
+   "syntax": "lock(m);\nwhile (!ready)\n    wait(c, m);\n...\nunlock(m);",
+   "description": "Sometimes a thread that holds the mutex cannot go on because a condition is false, and only another thread can change it, from its own critical section: which needs the mutex. A **condition variable** solves it: `wait(c, m)` atomically releases the mutex and sleeps; when woken, the thread takes the mutex again before it continues. The waiter always tests the condition in a **`while`** loop (the condition may be false again, or the wakeup spurious); the thread that changes it calls **signal** (wake one waiter) or **broadcast** (wake all) while holding the mutex. Each condition variable is used with ONE mutex.",
+   "mistakes": [
+    "Testing the condition with `if` instead of `while`.",
+    "Calling `signal` before changing the data."
+   ],
+   "see": [
+    "t4-ref-pthread_cond_wait",
+    "t4-ref-pthread_cond_signal",
+    "t4-ref-pthread_cond_broadcast"
+   ]
+  },
+  {
+   "id": "t4-ref-pthread_cond_init",
+   "title": "pthread_cond_init",
+   "category": "Synchronization",
+   "summary": "Create (and destroy) a condition variable.",
+   "practice_chapters": [
+    "condvars"
+   ],
+   "aliases": [
+    "pthread_cond_destroy",
+    "PTHREAD_COND_INITIALIZER",
+    "pthread_cond_t"
+   ],
+   "syntax": "pthread_cond_t c = PTHREAD_COND_INITIALIZER;\nint pthread_cond_init(pthread_cond_t *c, const pthread_condattr_t *attr);\nint pthread_cond_destroy(pthread_cond_t *c);",
+   "header": "<pthread.h>",
+   "description": "Like a mutex, a condition variable can be initialised statically with `PTHREAD_COND_INITIALIZER` or with `pthread_cond_init(&c, NULL)` before first use, and released with `pthread_cond_destroy` when nobody waits on it.",
+   "see": [
+    "t4-ref-pthread_cond_wait",
+    "t4-ref-condition"
+   ]
+  },
+  {
+   "id": "t4-ref-pthread_cond_wait",
+   "title": "pthread_cond_wait",
+   "category": "Synchronization",
+   "summary": "Release the mutex and sleep until signalled.",
+   "practice_chapters": [
+    "condvars",
+    "procprogs"
+   ],
+   "syntax": "int pthread_cond_wait(pthread_cond_t *c, pthread_mutex_t *m);",
+   "header": "<pthread.h>",
+   "description": "Must be called with `m` locked. It atomically unlocks `m` and blocks on `c`; when the thread is woken it locks `m` again before returning. Because the condition may no longer hold at that moment, always call it inside `while (!condition) pthread_cond_wait(&c, &m);`.",
+   "example": "pthread_mutex_lock(&m);\nwhile (count == 0)\n    pthread_cond_wait(&has_data, &m);\ncount--;\npthread_mutex_unlock(&m);",
+   "mistakes": [
+    "Calling it without holding the mutex.",
+    "Using `if` instead of `while`."
+   ],
+   "see": [
+    "t4-ref-pthread_cond_signal",
+    "t4-ref-pthread_cond_broadcast",
+    "t4-ref-condition",
+    "t4-ref-pthread_mutex_lock"
+   ]
+  },
+  {
+   "id": "t4-ref-pthread_cond_signal",
+   "title": "pthread_cond_signal",
+   "category": "Synchronization",
+   "summary": "Wake one thread waiting on the condition.",
+   "practice_chapters": [
+    "condvars"
+   ],
+   "syntax": "int pthread_cond_signal(pthread_cond_t *c);",
+   "header": "<pthread.h>",
+   "description": "Wakes at least one thread blocked in `pthread_cond_wait` on `c` (if there is none, the signal is lost: it is not remembered). Call it after changing the data that the condition is about, normally while still holding the mutex. If several different waiters could proceed, or you are not sure which one, use `broadcast`.",
+   "example": "buffer_count++;\npthread_cond_signal(&has_data);",
+   "mistakes": [
+    "Using `signal` when all the waiters must be woken: the others sleep forever."
+   ],
+   "see": [
+    "t4-ref-pthread_cond_wait",
+    "t4-ref-pthread_cond_broadcast"
+   ]
+  },
+  {
+   "id": "t4-ref-pthread_cond_broadcast",
+   "title": "pthread_cond_broadcast",
+   "category": "Synchronization",
+   "summary": "Wake all the threads waiting on the condition.",
+   "practice_chapters": [
+    "condvars",
+    "procprogs"
+   ],
+   "syntax": "int pthread_cond_broadcast(pthread_cond_t *c);",
+   "header": "<pthread.h>",
+   "description": "Wakes every thread blocked on `c`. They then compete for the mutex one by one, and each re-tests its own condition. Use it for a \"start\" event, when one state change can let several threads go on, or when the condition variable is shared by threads waiting for different things (each wakes, checks and goes back to sleep if it is not its turn).",
+   "example": "go = 1;\npthread_cond_broadcast(&start);",
+   "see": [
+    "t4-ref-pthread_cond_wait",
+    "t4-ref-pthread_cond_signal"
+   ]
+  },
+  {
+   "id": "t4-ref-producer-consumer",
+   "title": "producer-consumer",
+   "category": "Synchronization",
+   "summary": "The classic problem: a bounded buffer between two kinds of threads.",
+   "practice_chapters": [
+    "semaphores",
+    "condvars",
+    "concepts"
+   ],
+   "syntax": "producer -> [ buffer of N slots ] -> consumer",
+   "description": "A **producer** puts items in a shared buffer of fixed size `N` and a **consumer** takes them out. The rules: the producer must wait when the buffer is full, the consumer when it is empty, and nobody may touch the buffer while another is changing it. With semaphores: `empty` starts at `N`, `full` at 0 and a binary one for the buffer; producer: `wait(empty) wait(mutex) put signal(mutex) signal(full)`; consumer: `wait(full) wait(mutex) get signal(mutex) signal(empty)`. With a mutex and two conditions (`has_room`, `has_data`) each side waits in a `while` and signals the other after changing the count. The buffer is usually **circular**: indexes advance with `% N`.",
+   "mistakes": [
+    "Swapping the two `wait`s of one side: both can block forever."
+   ],
+   "see": [
+    "t4-ref-semaphore",
+    "t4-ref-condition",
+    "t4-ref-pthread_cond_wait"
+   ]
+  },
+  {
+   "id": "t4-ref-dining-philosophers",
+   "title": "dining-philosophers",
+   "category": "Synchronization",
+   "summary": "Five philosophers, five chopsticks: a test bed for deadlock.",
+   "practice_chapters": [
+    "procprogs",
+    "concepts"
+   ],
+   "syntax": "philosopher i needs chopsticks i and (i + 1) % 5",
+   "description": "Five philosophers sit round a table, with a chopstick between each pair; to eat, a philosopher needs the two next to them. If all take their left chopstick at the same time, each waits for the right one forever: a **deadlock**. Ways out: take the chopstick with the **lower number first** (everybody but one picks the left one first, and the last picks the other way), allow only **four** philosophers at the table (a counting semaphore), or let a philosopher eat only when **both neighbours are not eating** (state array, mutex and condition).",
+   "mistakes": [
+    "Believing that a program that has not deadlocked in a test is deadlock-free."
+   ],
+   "see": [
+    "t4-ref-deadlock",
+    "t4-ref-semaphore",
+    "t4-ref-condition"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "args": [
+    "7"
+   ],
+   "stdout": "child exited with 7\n"
+  },
+  {
+   "args": [
+    "0"
+   ],
+   "stdout": "child exited with 0\n"
+  },
+  {
+   "args": [
+    "255"
+   ],
+   "stdout": "child exited with 255\n"
+  },
+  {
+   "args": [
+    "3"
+   ],
+   "stdout": "child exited with 3\n"
+  }
+ ]
+}

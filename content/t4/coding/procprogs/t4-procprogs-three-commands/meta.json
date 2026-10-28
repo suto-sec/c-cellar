@@ -1,0 +1,15 @@
+{
+ "id": "t4-procprogs-three-commands",
+ "tag": "t4",
+ "track": "exercises",
+ "topic": "procprogs",
+ "title": "Three commands in a chain",
+ "stars": 5,
+ "minutes": 20,
+ "order": 6,
+ "summary": "Two pipes and three children: ls | sort -r | head -2.",
+ "hints": [
+  "Two pipes, `p1` (ls to sort) and `p2` (sort to head). The middle child uses BOTH: `dup2(p1[0], 0)` and `dup2(p2[1], 1)`.",
+  "Every process must close ALL four pipe ends it does not use (the parent too), or the readers never see the end of the data."
+ ]
+}

@@ -1,0 +1,8 @@
+{
+ "cases": [
+  {
+   "timeout": 10,
+   "stdout": "max inside: 2\n"
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "id": "t4-threads-hello",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "threads",
+ "title": "Hello from a thread",
+ "stars": 1,
+ "minutes": 4,
+ "order": 1,
+ "summary": "pthread_create and pthread_join, the smallest threaded program.",
+ "hints": [
+  "The thread function has the shape `void *name(void *arg)`. `pthread_create(&tid, NULL, name, NULL)` starts it and `pthread_join(tid, NULL)` waits for it.",
+  "Compile with `-pthread` (the Compile button already does). Include `<pthread.h>`."
+ ]
+}

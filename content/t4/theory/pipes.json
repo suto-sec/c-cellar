@@ -1,0 +1,277 @@
+{
+ "id": "t4-th-pipes",
+ "tag": "t4",
+ "title": "Pipes and redirection",
+ "chapter": "pipes",
+ "questions": [
+  {
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "After `int fd[2]; pipe(fd);`, which descriptor do you READ from?",
+   "options": [
+    "fd[0]",
+    "fd[1]",
+    "Either",
+    "Neither: pipes use stdin"
+   ],
+   "answer": 0,
+   "explain": "`fd[0]` is the read end and `fd[1]` the write end.",
+   "ref": [
+    "pipe"
+   ],
+   "id": "t4-q-pipes-01"
+  },
+  {
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "`fd[{{0}}]` is the read end of a pipe and `fd[{{1}}]` the write end.",
+   "blanks": [
+    {
+     "accept": [
+      "0"
+     ]
+    },
+    {
+     "accept": [
+      "1"
+     ]
+    }
+   ],
+   "explain": "Remember: 0 like stdin (read), 1 like stdout (write).",
+   "ref": [
+    "pipe"
+   ],
+   "id": "t4-q-pipes-02"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does `read` return when the pipe is empty and every write end has been closed?",
+   "options": [
+    "-1",
+    "0",
+    "The size of the buffer",
+    "It blocks forever"
+   ],
+   "answer": 1,
+   "explain": "0 means end of file. If a write end is still open somewhere, `read` blocks instead.",
+   "ref": [
+    "pipe",
+    "read"
+   ],
+   "id": "t4-q-pipes-03"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "A child loops on `read` from a pipe and never sees the end of the data, even though the parent has finished writing. Most likely cause?",
+   "options": [
+    "The pipe is too small",
+    "Some process still has the write end open (for instance the parent, or the child itself)",
+    "The child must call `exec`",
+    "`read` cannot return 0 on a pipe"
+   ],
+   "answer": 1,
+   "explain": "End of file arrives only when ALL copies of the write end are closed, in every process. Close the ends you do not use right after the fork.",
+   "ref": [
+    "pipe",
+    "close"
+   ],
+   "id": "t4-q-pipes-04"
+  },
+  {
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "Which statements about pipes are true?",
+   "options": [
+    "Data goes one way only",
+    "`read` blocks while the pipe is empty and writers exist",
+    "After a `fork` both processes have both ends open",
+    "One pipe is enough for a two-way conversation"
+   ],
+   "answer": [
+    0,
+    1,
+    2
+   ],
+   "explain": "A pipe is one-way: for a conversation make two. After `fork` each process should close the end it does not use.",
+   "ref": [
+    "pipe"
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "True.",
+    "False: use two pipes, one for each direction."
+   ],
+   "id": "t4-q-pipes-05"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "How many pipes do two processes need to talk in both directions?",
+   "options": [
+    "1",
+    "2",
+    "3",
+    "It depends on the message size"
+   ],
+   "answer": 1,
+   "explain": "One pipe for each direction.",
+   "ref": [
+    "pipe"
+   ],
+   "id": "t4-q-pipes-06"
+  },
+  {
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "code": "#include <stdio.h>\n#include <unistd.h>\n#include <sys/wait.h>\n\nint main(void)\n{\n    int p[2];\n    char buf[10];\n    int n;\n\n    pipe(p);\n    if (fork() == 0) {\n        close(p[0]);\n        write(p[1], \"hi\\n\", 3);\n        return 0;\n    }\n    close(p[1]);\n    n = read(p[0], buf, sizeof buf - 1);\n    buf[n] = '\\0';\n    printf(\"%s\", buf);\n    wait(NULL);\n    return 0;\n}\n",
+   "answer": "hi",
+   "explain": "The child writes three bytes (`h`, `i`, newline) into the pipe; the parent reads them, ends the string and prints it.",
+   "ref": [
+    "pipe",
+    "read",
+    "write"
+   ],
+   "id": "t4-q-pipes-07"
+  },
+  {
+   "type": "order",
+   "difficulty": 3,
+   "prompt": "Put the steps to run `ls | wc` without a shell in order.",
+   "items": [
+    "`pipe(p)`",
+    "`fork` the first child: `dup2(p[1], 1)`, close both ends, `exec ls`",
+    "`fork` the second child: `dup2(p[0], 0)`, close both ends, `exec wc`",
+    "The parent closes both ends of the pipe",
+    "The parent waits for both children"
+   ],
+   "explain": "The pipe must exist before the forks so both children inherit it. The parent closes its own copies so that `wc` can see the end of its input.",
+   "ref": [
+    "pipe",
+    "dup2",
+    "exec"
+   ],
+   "id": "t4-q-pipes-08"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What does `dup2(p[1], STDOUT_FILENO)` do?",
+   "options": [
+    "Closes standard output",
+    "Makes descriptor 1 refer to the write end of the pipe",
+    "Creates a second pipe",
+    "Copies the contents of the pipe to the screen"
+   ],
+   "answer": 1,
+   "explain": "After it, anything the process writes to its standard output (including after an `exec`) goes into the pipe.",
+   "ref": [
+    "dup2"
+   ],
+   "id": "t4-q-pipes-09"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "After `dup2(p[1], 1)` in a child, why do you also `close(p[1])`?",
+   "options": [
+    "`dup2` needs it",
+    "Otherwise there is an extra, useless write end open and the reader may never get end of file",
+    "To free the memory of the pipe",
+    "It is only a good habit with no effect"
+   ],
+   "answer": 1,
+   "explain": "Every open copy of the write end delays the end of file for the reader.",
+   "ref": [
+    "pipe",
+    "close"
+   ],
+   "id": "t4-q-pipes-10"
+  },
+  {
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each function with what it is used for in pipe programs.",
+   "pairs": [
+    [
+     "pipe",
+     "creates the two ends of a pipe"
+    ],
+    [
+     "dup2",
+     "makes one descriptor a copy of another"
+    ],
+    [
+     "fdopen",
+     "wraps a descriptor in a FILE *"
+    ],
+    [
+     "close",
+     "releases a descriptor"
+    ],
+    [
+     "read",
+     "takes bytes out of a pipe, blocking if empty"
+    ]
+   ],
+   "explain": "`fdopen` lets you use `fgets` and `fprintf` on a pipe end.",
+   "ref": [
+    "pipe",
+    "dup2",
+    "fdopen",
+    "close",
+    "read"
+   ],
+   "id": "t4-q-pipes-11"
+  },
+  {
+   "type": "multiple",
+   "difficulty": 4,
+   "prompt": "Which situations can make a process that reads a pipe hang forever?",
+   "options": [
+    "The writer never closes its end",
+    "The reader itself still holds the write end open",
+    "The writer closed its end after sending everything",
+    "A third process holds a copy of the write end"
+   ],
+   "answer": [
+    0,
+    1,
+    3
+   ],
+   "explain": "As long as ANY write end is open, `read` waits for more data.",
+   "ref": [
+    "pipe",
+    "close"
+   ],
+   "option_notes": [
+    "True.",
+    "True: close the unused end in the reader.",
+    "False: that is the correct way to finish.",
+    "True."
+   ],
+   "id": "t4-q-pipes-12"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Why must the pipe be created BEFORE the `fork`?",
+   "options": [
+    "`fork` closes pipes made later",
+    "Each process would otherwise get its own, unrelated pipe",
+    "Pipes cannot be created in a child",
+    "There is no reason"
+   ],
+   "answer": 1,
+   "explain": "The child inherits the descriptors that exist at the moment of the fork. A pipe made afterwards would be private to one of them.",
+   "ref": [
+    "pipe",
+    "fork"
+   ],
+   "id": "t4-q-pipes-13"
+  }
+ ]
+}

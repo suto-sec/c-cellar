@@ -1,0 +1,19 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" | sed -n 1,2p | sort",
+   "name": "the first two lines are the before lines",
+   "stdout": "A before\nB before\n"
+  },
+  {
+   "cmd": "\"$BIN\" | sed -n 3,4p | sort",
+   "name": "the last two lines are the after lines",
+   "stdout": "A after\nB after\n"
+  },
+  {
+   "cmd": "\"$BIN\" | wc -l",
+   "name": "four lines in all",
+   "stdout": "4\n"
+  }
+ ]
+}

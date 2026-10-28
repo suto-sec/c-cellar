@@ -1,0 +1,16 @@
+{
+ "cases": [
+  {
+   "cmd": "\"$BIN\" out.txt echo hello && cat out.txt",
+   "stdout": "saved\nhello\n"
+  },
+  {
+   "cmd": "printf \"a\\nb\\nc\\n\" > in.txt; \"$BIN\" out.txt wc -l in.txt && cut -d\" \" -f1 out.txt",
+   "stdout": "saved\n3\n"
+  },
+  {
+   "cmd": "echo old-old-old > out.txt; \"$BIN\" out.txt echo new && cat out.txt",
+   "stdout": "saved\nnew\n"
+  }
+ ]
+}

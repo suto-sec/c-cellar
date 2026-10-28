@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "child: x = 20\nparent: x = 10\n"
+  }
+ ]
+}

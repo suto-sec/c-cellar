@@ -1,0 +1,15 @@
+{
+ "id": "t4-procprogs-aleatorios",
+ "tag": "t4",
+ "track": "exercises",
+ "topic": "procprogs",
+ "title": "aleatorios: a random number on request",
+ "stars": 5,
+ "minutes": 25,
+ "order": 3,
+ "summary": "A child that answers each SIGUSR1 with a random number through a pipe.",
+ "hints": [
+  "Install the `SIGUSR1` handler BEFORE the `fork` (the child inherits it), so a signal sent early cannot kill the child. The handler writes the number to the pipe with `write` (`rand() % 11`; a number of two digits is only `10`).",
+  "The child seeds with `srand(getpid())` and then loops on `pause()`. The parent, per input line, does `kill(child, SIGUSR1)` and `read`s the reply before asking the next time; at the end it sends `SIGTERM` and waits."
+ ]
+}

@@ -1,0 +1,30 @@
+{
+ "cases": [
+  {
+   "args": [
+    "true"
+   ],
+   "stdout": "exit status 0\n"
+  },
+  {
+   "args": [
+    "false"
+   ],
+   "stdout": "exit status 1\n"
+  },
+  {
+   "args": [
+    "sh",
+    "-c",
+    "exit 3"
+   ],
+   "stdout": "exit status 3\n"
+  },
+  {
+   "args": [
+    "nosuchcommand_xyz"
+   ],
+   "stdout": "command not found\n"
+  }
+ ]
+}

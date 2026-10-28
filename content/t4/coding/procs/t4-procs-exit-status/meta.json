@@ -1,0 +1,15 @@
+{
+ "id": "t4-procs-exit-status",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "procs",
+ "title": "Report the exit status",
+ "stars": 2,
+ "minutes": 6,
+ "order": 7,
+ "summary": "The child ends with a number, the parent reads it.",
+ "hints": [
+  "`exit(n)` in the child; in the parent `wait(&status)`, then `WIFEXITED(status)` tells you it ended normally and `WEXITSTATUS(status)` gives `n`.",
+  "Convert the argument with `atoi(argv[1])`."
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "id": "t4-condvars-bank-withdraw",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "condvars",
+ "title": "Wait for the salary",
+ "stars": 4,
+ "minutes": 16,
+ "order": 4,
+ "summary": "The classic: the employee waits (releasing the mutex) until the balance is enough.",
+ "hints": [
+  "Employee: `lock; while (balance < 1000) pthread_cond_wait(&enough, &m); balance -= 1000; unlock;` six times. Do NOT sleep while holding the mutex: the bank could never deposit.",
+  "Bank: twice, `sleep(1)` (outside the lock), then `lock; balance += 3000; pthread_cond_signal(&enough); unlock;`."
+ ]
+}

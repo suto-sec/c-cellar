@@ -1,0 +1,15 @@
+{
+ "id": "t4-signals-count",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "signals",
+ "title": "Count the signals",
+ "stars": 3,
+ "minutes": 8,
+ "order": 3,
+ "summary": "A handler that counts, and why the counter is volatile.",
+ "hints": [
+  "Declare the counter `volatile sig_atomic_t received = 0;` as a global; the handler does `received++`.",
+  "Install the handler once, then `raise(SIGUSR1)` N times in a loop, and print the counter at the end."
+ ]
+}

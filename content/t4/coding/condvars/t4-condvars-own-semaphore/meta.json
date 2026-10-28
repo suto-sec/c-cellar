@@ -1,0 +1,15 @@
+{
+ "id": "t4-condvars-own-semaphore",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "condvars",
+ "title": "Build a semaphore",
+ "stars": 5,
+ "minutes": 20,
+ "order": 6,
+ "summary": "A counting semaphore made of a mutex, a condition and a counter.",
+ "hints": [
+  "`struct sem { pthread_mutex_t m; pthread_cond_t c; int count; };`. `my_wait`: lock, `while (count == 0) cond_wait`, `count--`, unlock. `my_post`: lock, `count++`, `cond_signal`, unlock.",
+  "Then use it exactly like `sem_t` with initial value 1 to protect the counter in the threads."
+ ]
+}

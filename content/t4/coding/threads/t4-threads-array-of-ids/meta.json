@@ -1,0 +1,15 @@
+{
+ "id": "t4-threads-array-of-ids",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "threads",
+ "title": "Each thread gets its own number",
+ "stars": 3,
+ "minutes": 9,
+ "order": 6,
+ "summary": "Do not pass &i of the loop variable: give every thread its own argument.",
+ "hints": [
+  "Keep an array `int ids[8]` and pass `&ids[i]`: every thread has its own slot. `&i` is shared by all and changes while the loop runs.",
+  "Each thread writes `i * i` into `results[i]` (a global array); the main thread prints after joining ALL the threads."
+ ]
+}

@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "stdin": "3\n0 24\n0 3\n0 3\n",
+   "stdout": "P1: 24\nP2: 27\nP3: 30\naverage: 27.00\n"
+  },
+  {
+   "stdin": "3\n0 3\n0 3\n0 24\n",
+   "stdout": "P1: 3\nP2: 6\nP3: 30\naverage: 13.00\n"
+  },
+  {
+   "stdin": "2\n0 5\n10 2\n",
+   "stdout": "P1: 5\nP2: 2\naverage: 3.50\n"
+  },
+  {
+   "stdin": "4\n5 3\n0 8\n2 4\n12 1\n",
+   "stdout": "P1: 10\nP2: 8\nP3: 10\nP4: 4\naverage: 8.00\n"
+  },
+  {
+   "stdin": "3\n1 2\n1 2\n0 5\n",
+   "stdout": "P1: 6\nP2: 8\nP3: 5\naverage: 6.33\n"
+  },
+  {
+   "stdin": "1\n0 4\n",
+   "stdout": "P1: 4\naverage: 4.00\n"
+  }
+ ]
+}

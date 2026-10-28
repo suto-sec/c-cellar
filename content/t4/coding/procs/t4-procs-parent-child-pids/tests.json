@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "child sees the right parent: yes\n"
+  }
+ ]
+}

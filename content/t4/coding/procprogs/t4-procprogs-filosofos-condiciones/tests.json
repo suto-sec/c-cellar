@@ -1,0 +1,11 @@
+{
+ "cases": [
+  {
+   "stdout": "philosopher 0 ate 3 times\nphilosopher 1 ate 3 times\nphilosopher 2 ate 3 times\nphilosopher 3 ate 3 times\nphilosopher 4 ate 3 times\ntotal meals: 15\n"
+  },
+  {
+   "name": "again (no deadlock, ever)",
+   "stdout": "philosopher 0 ate 3 times\nphilosopher 1 ate 3 times\nphilosopher 2 ate 3 times\nphilosopher 3 ate 3 times\nphilosopher 4 ate 3 times\ntotal meals: 15\n"
+  }
+ ]
+}

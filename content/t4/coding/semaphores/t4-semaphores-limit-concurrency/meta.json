@@ -1,0 +1,15 @@
+{
+ "id": "t4-semaphores-limit-concurrency",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "semaphores",
+ "title": "Only two at a time",
+ "stars": 4,
+ "minutes": 15,
+ "order": 5,
+ "summary": "A counting semaphore lets K threads in; a mutex protects the bookkeeping.",
+ "hints": [
+  "Counting semaphore: `sem_init(&room, 0, 2)`; each thread does `sem_wait(&room)` ... `sem_post(&room)` around its work.",
+  "Inside the room: lock a mutex, `inside++`, update `max_inside` if bigger, unlock; then `sleep(1)`; then lock, `inside--`, unlock, and leave the room."
+ ]
+}

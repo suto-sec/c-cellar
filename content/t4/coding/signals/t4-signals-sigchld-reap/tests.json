@@ -1,0 +1,25 @@
+{
+ "cases": [
+  {
+   "args": [
+    "3"
+   ],
+   "timeout": 10,
+   "stdout": "reaped 3\n"
+  },
+  {
+   "args": [
+    "1"
+   ],
+   "timeout": 10,
+   "stdout": "reaped 1\n"
+  },
+  {
+   "args": [
+    "0"
+   ],
+   "timeout": 10,
+   "stdout": "reaped 0\n"
+  }
+ ]
+}

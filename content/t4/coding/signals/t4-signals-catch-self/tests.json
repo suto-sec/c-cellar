@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "got SIGUSR1\nafter\n"
+  }
+ ]
+}

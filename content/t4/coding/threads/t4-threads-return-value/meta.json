@@ -1,0 +1,15 @@
+{
+ "id": "t4-threads-return-value",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "threads",
+ "title": "A thread that returns a result",
+ "stars": 3,
+ "minutes": 8,
+ "order": 4,
+ "summary": "pthread_exit / return a pointer, and pthread_join to receive it.",
+ "hints": [
+  "The thread allocates `int *result = malloc(sizeof *result);`, stores the square and returns `result` (`return result;` or `pthread_exit(result);`).",
+  "`void *ret; pthread_join(tid, &ret);` gives the pointer back; read `*(int *)ret` and `free` it. Never return the address of a local variable."
+ ]
+}

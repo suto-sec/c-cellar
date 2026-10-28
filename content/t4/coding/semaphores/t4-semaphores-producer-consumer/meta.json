@@ -1,0 +1,15 @@
+{
+ "id": "t4-semaphores-producer-consumer",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "semaphores",
+ "title": "Producer and consumer",
+ "stars": 5,
+ "minutes": 24,
+ "order": 6,
+ "summary": "The classic bounded buffer with three semaphores.",
+ "hints": [
+  "Three semaphores: `empty` starts at the buffer size (free slots), `full` at 0 (filled slots) and `mutex` at 1 (the buffer itself). Producer: `wait(empty) wait(mutex) put post(mutex) post(full)`. Consumer: `wait(full) wait(mutex) get post(mutex) post(empty)`.",
+  "Taking the two `wait`s in the other order can deadlock: never wait for the mutex while holding the only slot the other side needs."
+ ]
+}

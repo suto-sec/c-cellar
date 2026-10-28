@@ -1,0 +1,328 @@
+{
+ "id": "t4-th-concepts",
+ "tag": "t4",
+ "title": "Processes: the concepts",
+ "chapter": "concepts",
+ "questions": [
+  {
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "What is a process?",
+   "options": [
+    "A program stored on disk",
+    "A program in execution, with its own memory, registers and state",
+    "A thread of another program",
+    "Any file that has execute permission"
+   ],
+   "answer": 1,
+   "explain": "A program is a passive file; a process is that program running. The same program can be running as several processes at once, each independent of the others.",
+   "ref": [
+    "process"
+   ],
+   "id": "t4-q-concepts-01"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Which of these is NOT kept in the process control block (PCB)?",
+   "options": [
+    "The pid and the parent's pid",
+    "The saved values of the CPU registers",
+    "The list of open files",
+    "The C source code the program was compiled from",
+    "The scheduling priority"
+   ],
+   "answer": 3,
+   "explain": "The PCB holds what the system needs to manage the process: identifiers, state, saved registers and program counter, accounting and scheduling data, memory tables and open files. The source code is not part of a process at all.",
+   "ref": [
+    "process"
+   ],
+   "id": "t4-q-concepts-02"
+  },
+  {
+   "type": "order",
+   "difficulty": 2,
+   "prompt": "Put the life of a typical process in order.",
+   "items": [
+    "New: it is being created",
+    "Ready: it waits for a CPU",
+    "Running: its instructions execute",
+    "Waiting: it asks for disk I/O",
+    "Ready again: the I/O finished",
+    "Running again",
+    "Terminated"
+   ],
+   "explain": "A process is admitted to the ready queue, runs until it asks for I/O (then waits), goes back to ready when the I/O completes, and so on until it exits. It never goes from waiting straight to running.",
+   "ref": [
+    "states"
+   ],
+   "id": "t4-q-concepts-03"
+  },
+  {
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each state change with its cause.",
+   "pairs": [
+    [
+     "running to ready",
+     "the time slice expired (interrupt)"
+    ],
+    [
+     "running to waiting",
+     "it asks for I/O or waits for an event"
+    ],
+    [
+     "waiting to ready",
+     "the I/O or event it waited for is complete"
+    ],
+    [
+     "ready to running",
+     "the scheduler dispatches it"
+    ],
+    [
+     "new to ready",
+     "the system admits it"
+    ]
+   ],
+   "explain": "Only the scheduler moves a process into the running state, and a process that was waiting always passes through ready first.",
+   "ref": [
+    "states",
+    "scheduling"
+   ],
+   "id": "t4-q-concepts-04"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "A process that was waiting for disk I/O sees its I/O finish. Which state does it enter?",
+   "options": [
+    "Running",
+    "Ready",
+    "New",
+    "Terminated"
+   ],
+   "answer": 1,
+   "explain": "It becomes ready and has to wait for the scheduler to give it the CPU again.",
+   "ref": [
+    "states"
+   ],
+   "id": "t4-q-concepts-05"
+  },
+  {
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "Which statements are true about two processes started from the same program?",
+   "options": [
+    "They are independent processes",
+    "Each has its own PCB",
+    "They have different pids",
+    "They share all their variables"
+   ],
+   "answer": [
+    0,
+    1,
+    2
+   ],
+   "explain": "Two instances of a program do not share variables. Each one is a separate process with its own identifier and its own control block.",
+   "ref": [
+    "process"
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "True.",
+    "False: each has its own copy of the data. Sharing needs an explicit mechanism."
+   ],
+   "id": "t4-q-concepts-06"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "How are the processes of a Unix system related to each other?",
+   "options": [
+    "They are all independent: none creates another",
+    "They form a tree: every process was created by a parent",
+    "They form a ring",
+    "They are in a single list ordered by pid"
+   ],
+   "answer": 1,
+   "explain": "Each process is created by another, its parent, so the system forms a tree whose root is the first process (`init`).",
+   "ref": [
+    "process",
+    "fork"
+   ],
+   "id": "t4-q-concepts-07"
+  },
+  {
+   "type": "sort",
+   "difficulty": 2,
+   "prompt": "Does the mechanism mainly move DATA between processes or only tell about an EVENT?",
+   "categories": [
+    "Moves data",
+    "Notifies an event"
+   ],
+   "items": [
+    [
+     "pipe",
+     "Moves data"
+    ],
+    [
+     "shared memory",
+     "Moves data"
+    ],
+    [
+     "message passing",
+     "Moves data"
+    ],
+    [
+     "signal",
+     "Notifies an event"
+    ],
+    [
+     "semaphore",
+     "Notifies an event"
+    ]
+   ],
+   "explain": "Pipes, shared memory and messages transfer data. Signals and semaphores only tell a process that something happened (or make it wait for that).",
+   "ref": [
+    "ipc"
+   ],
+   "id": "t4-q-concepts-08"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Which IPC style lets processes on DIFFERENT machines communicate without sharing memory?",
+   "options": [
+    "Shared memory",
+    "Message passing",
+    "Signals",
+    "Semaphores"
+   ],
+   "answer": 1,
+   "explain": "Message passing uses `send` and `receive`; the system hides where the other side is, so it also works over a network.",
+   "ref": [
+    "message-passing"
+   ],
+   "id": "t4-q-concepts-09"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "With shared memory between two processes, who is responsible for the format of the data and for synchronising the accesses?",
+   "options": [
+    "The kernel, on every access",
+    "The processes themselves",
+    "The compiler",
+    "The scheduler"
+   ],
+   "answer": 1,
+   "explain": "After the kernel maps the segment into both address spaces it does not intervene any more: the processes agree on the layout and must use semaphores or mutexes to avoid races.",
+   "ref": [
+    "shared-memory"
+   ],
+   "id": "t4-q-concepts-10"
+  },
+  {
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "In message passing, a blocking `receive` makes the receiver {{0}} until a message is available (wait or continue?).",
+   "blanks": [
+    {
+     "accept": [
+      "wait",
+      "waits",
+      "block",
+      "blocks",
+      "blocked",
+      "stop",
+      "stops"
+     ]
+    }
+   ],
+   "explain": "Blocking (synchronous) receive waits for a message. A non-blocking receive returns at once, with a message or an empty answer.",
+   "ref": [
+    "message-passing"
+   ],
+   "id": "t4-q-concepts-11"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "With a blocking (synchronous) `send`, when does the sender continue?",
+   "options": [
+    "Immediately",
+    "When the receiver has received the message",
+    "Never",
+    "When the receiver ends"
+   ],
+   "answer": 1,
+   "explain": "A blocking send waits until the message has been received. A non-blocking send continues right away.",
+   "ref": [
+    "message-passing"
+   ],
+   "id": "t4-q-concepts-12"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Which of the three schedulers decides, very often, which ready process runs next?",
+   "options": [
+    "The long-term scheduler",
+    "The medium-term scheduler",
+    "The short-term scheduler",
+    "The compiler"
+   ],
+   "answer": 2,
+   "explain": "The short-term (CPU) scheduler runs all the time, so it must be fast. The long-term one admits new processes and the medium-term one suspends and resumes processes.",
+   "ref": [
+    "scheduling"
+   ],
+   "id": "t4-q-concepts-13"
+  },
+  {
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "Which are advantages of threads over separate processes?",
+   "options": [
+    "They are cheaper to create",
+    "They share data without any special IPC",
+    "An error in one thread cannot damage the others",
+    "They can run in parallel on several CPUs"
+   ],
+   "answer": [
+    0,
+    1,
+    3
+   ],
+   "explain": "Threads share memory, so they are cheap and communicate easily, and they can use several CPUs. The price is that they also share every bug.",
+   "ref": [
+    "threads"
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "False: they share memory, so one thread can corrupt data that another uses.",
+    "True."
+   ],
+   "id": "t4-q-concepts-14"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "During a context switch, where does the system save the state of the process that leaves the CPU?",
+   "options": [
+    "In its PCB",
+    "In the file it was started from",
+    "In the ready queue",
+    "In the pipe"
+   ],
+   "answer": 0,
+   "explain": "The state and registers go into the PCB of the old process and the state of the new one is loaded from its PCB. The CPU does no useful work during the switch.",
+   "ref": [
+    "context-switch"
+   ],
+   "id": "t4-q-concepts-15"
+  }
+ ]
+}

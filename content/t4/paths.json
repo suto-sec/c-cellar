@@ -1,0 +1,62 @@
+{
+ "paths": [
+  {
+   "id": "course",
+   "kind": "plan",
+   "title": "The whole course",
+   "course": true,
+   "blurb": "Every exercise of the topic, from fork to round robin, in one order that climbs gradually."
+  },
+  {
+   "id": "processes",
+   "kind": "topic",
+   "title": "Processes and exec",
+   "blurb": "Creating processes, waiting for them and running other programs: fork, wait, exit status and the exec family.",
+   "chapters": [
+    "concepts",
+    "procs",
+    "exec"
+   ]
+  },
+  {
+   "id": "ipc",
+   "kind": "topic",
+   "title": "Pipes and signals",
+   "blurb": "How processes talk: pipes with dup2 redirection, and signals.",
+   "chapters": [
+    "pipes",
+    "signals"
+   ]
+  },
+  {
+   "id": "threads-sync",
+   "kind": "topic",
+   "title": "Threads and synchronization",
+   "blurb": "Threads, race conditions, mutexes, semaphores and condition variables.",
+   "chapters": [
+    "threads",
+    "races",
+    "semaphores",
+    "condvars"
+   ]
+  },
+  {
+   "id": "scheduling",
+   "kind": "topic",
+   "title": "CPU scheduling",
+   "blurb": "Waiting times, turnaround and Gantt charts for FCFS, SJF, priorities and round robin.",
+   "chapters": [
+    "scheduling"
+   ]
+  },
+  {
+   "id": "class-programs",
+   "kind": "topic",
+   "title": "Process and thread programs",
+   "blurb": "The class exercises of the topic and exam-style programs that mix processes, pipes, signals and threads.",
+   "chapters": [
+    "procprogs"
+   ]
+  }
+ ]
+}

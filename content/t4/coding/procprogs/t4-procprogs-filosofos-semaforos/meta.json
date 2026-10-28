@@ -1,0 +1,15 @@
+{
+ "id": "t4-procprogs-filosofos-semaforos",
+ "tag": "t4",
+ "track": "exercises",
+ "topic": "procprogs",
+ "title": "filosofos: with semaphores",
+ "stars": 5,
+ "minutes": 24,
+ "order": 9,
+ "summary": "Dining philosophers without deadlock, using one semaphore per chopstick.",
+ "hints": [
+  "Five semaphores, one per chopstick, all starting at 1. Philosopher `i` needs chopsticks `i` and `(i + 1) % 5`.",
+  "If everybody takes the left one first they can all hold one and wait forever. Break the cycle: take the chopstick with the LOWER number first (or let only 4 philosophers sit at the table, with one more semaphore)."
+ ]
+}

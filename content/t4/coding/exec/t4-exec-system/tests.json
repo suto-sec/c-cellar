@@ -1,0 +1,20 @@
+{
+ "cases": [
+  {
+   "stdin": "echo hi\n",
+   "stdout": "hi\nstatus 0\n"
+  },
+  {
+   "stdin": "echo a; exit 4\n",
+   "stdout": "a\nstatus 4\n"
+  },
+  {
+   "stdin": "false\n",
+   "stdout": "status 1\n"
+  },
+  {
+   "stdin": "echo one two | wc -w\n",
+   "stdout": "2\nstatus 0\n"
+  }
+ ]
+}

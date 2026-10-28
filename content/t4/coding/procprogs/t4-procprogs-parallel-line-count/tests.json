@@ -1,0 +1,42 @@
+{
+ "cases": [
+  {
+   "args": [
+    "a.txt",
+    "b.txt",
+    "c.txt"
+   ],
+   "setup": "printf 'a\\nb\\nc\\n' > a.txt; : > b.txt; printf '1\\n2\\n3\\n4\\n5\\n' > c.txt",
+   "stdout": "a.txt: 3\nb.txt: 0\nc.txt: 5\ntotal: 8\n"
+  },
+  {
+   "args": [
+    "only.txt"
+   ],
+   "setup": "printf 'x\\ny\\n' > only.txt",
+   "stdout": "only.txt: 2\ntotal: 2\n"
+  },
+  {
+   "args": [
+    "a.txt",
+    "missing.txt"
+   ],
+   "setup": "echo one > a.txt",
+   "stdout": "a.txt: 1\nmissing.txt: error\ntotal: 1\n"
+  },
+  {
+   "args": [
+    "f1",
+    "f2",
+    "f3",
+    "f4",
+    "f5",
+    "f6",
+    "f7",
+    "f8"
+   ],
+   "setup": "for i in 1 2 3 4 5 6 7 8; do : > f$i; j=0; while [ $j -lt $i ]; do echo x >> f$i; j=$((j+1)); done; done",
+   "stdout": "f1: 1\nf2: 2\nf3: 3\nf4: 4\nf5: 5\nf6: 6\nf7: 7\nf8: 8\ntotal: 36\n"
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "id": "t4-exec-echo",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "exec",
+ "title": "Run echo in a child",
+ "stars": 1,
+ "minutes": 4,
+ "order": 1,
+ "summary": "fork + execlp: the child becomes another program.",
+ "hints": [
+  "In the child: `execlp(\"echo\", \"echo\", \"hello\", \"world\", NULL);`. The first `\"echo\"` is the file to find in the PATH, the second is `argv[0]` of the new program, and the list ends with `NULL`.",
+  "The parent waits with `wait(NULL)` and then prints `done`."
+ ]
+}

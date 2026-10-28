@@ -1,0 +1,8 @@
+{
+ "cases": [
+  {
+   "timeout": 10,
+   "stdout": "withdrew 6000\nbalance 0\n"
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "id": "t4-threads-sum-range",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "threads",
+ "title": "Add up 1 to N in a thread",
+ "stars": 3,
+ "minutes": 9,
+ "order": 5,
+ "summary": "A struct as the thread argument: input and output together.",
+ "hints": [
+  "Define `struct job { int limit; long sum; };` in `main`, pass `&job`; the thread reads `limit` and writes `sum`.",
+  "After `pthread_join` the main thread reads `job.sum`."
+ ]
+}

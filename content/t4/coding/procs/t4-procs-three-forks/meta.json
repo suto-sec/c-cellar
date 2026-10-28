@@ -1,0 +1,15 @@
+{
+ "id": "t4-procs-three-forks",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "procs",
+ "title": "Three forks",
+ "stars": 2,
+ "minutes": 4,
+ "order": 4,
+ "summary": "Every process keeps running after fork: 3 forks make 8 processes.",
+ "hints": [
+  "Both the parent and the child continue after `fork()`. After three forks in a row there are 2 x 2 x 2 processes.",
+  "You do not need `wait`: the lines are all the same, so their order does not matter."
+ ]
+}

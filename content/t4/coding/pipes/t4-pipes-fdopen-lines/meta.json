@@ -1,0 +1,15 @@
+{
+ "id": "t4-pipes-fdopen-lines",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "pipes",
+ "title": "Lines through a FILE *",
+ "stars": 3,
+ "minutes": 10,
+ "order": 5,
+ "summary": "fdopen turns a pipe end into a stream: use fprintf and fgets.",
+ "hints": [
+  "`FILE *out = fdopen(p[1], \"w\");` then `fprintf(out, \"alpha\\n\");` and `fclose(out)` (which flushes and closes the descriptor).",
+  "The parent reads with `FILE *in = fdopen(p[0], \"r\"); while (fgets(line, sizeof line, in)) ...`."
+ ]
+}

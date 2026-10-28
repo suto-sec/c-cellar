@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "args": [
+    "1"
+   ],
+   "stdout": "ping\npong\n"
+  },
+  {
+   "args": [
+    "2"
+   ],
+   "stdout": "ping\npong\nping\npong\n"
+  },
+  {
+   "args": [
+    "10"
+   ],
+   "stdout": "ping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\n"
+  },
+  {
+   "args": [
+    "20"
+   ],
+   "stdout": "ping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\nping\npong\n"
+  }
+ ]
+}

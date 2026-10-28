@@ -1,0 +1,15 @@
+{
+ "id": "t4-condvars-turns",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "condvars",
+ "title": "A, B, C, A, B, C",
+ "stars": 4,
+ "minutes": 14,
+ "order": 3,
+ "summary": "One mutex, one condition and a turn variable make N threads take turns.",
+ "hints": [
+  "A shared `turn` (0, 1, 2). Thread `k` does `lock; while (turn != k) wait; print letter; turn = (turn + 1) % 3; broadcast; unlock;`, `N` times.",
+  "Use `pthread_cond_broadcast`: with `signal` the one thread woken may be the wrong one, and the right one keeps sleeping."
+ ]
+}

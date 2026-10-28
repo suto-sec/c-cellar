@@ -1,0 +1,15 @@
+{
+ "id": "t4-procs-children-in-order",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "procs",
+ "title": "One child at a time",
+ "stars": 2,
+ "minutes": 7,
+ "order": 6,
+ "summary": "Create N children, waiting for each before creating the next.",
+ "hints": [
+  "Put the `fork` AND the `wait` in the same loop iteration: the parent waits for child `i` before creating child `i + 1`.",
+  "The child must `exit(0)` so that it does not go on to create more children."
+ ]
+}

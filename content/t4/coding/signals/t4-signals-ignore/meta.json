@@ -1,0 +1,15 @@
+{
+ "id": "t4-signals-ignore",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "signals",
+ "title": "Ignore a signal",
+ "stars": 2,
+ "minutes": 4,
+ "order": 2,
+ "summary": "SIG_IGN: the default action (ending the program) never happens.",
+ "hints": [
+  "`signal(SIGINT, SIG_IGN);` before the `raise`.",
+  "Without it, `SIGINT` ends the process and nothing is printed."
+ ]
+}

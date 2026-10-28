@@ -1,0 +1,278 @@
+{
+ "id": "t4-th-races",
+ "tag": "t4",
+ "title": "Race conditions and mutexes",
+ "chapter": "races",
+ "questions": [
+  {
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "What is a race condition?",
+   "options": [
+    "A program that runs too slowly",
+    "A bug in which the result depends on the order in which threads access shared data",
+    "Two threads that never finish",
+    "A thread that finishes before `main`"
+   ],
+   "answer": 1,
+   "explain": "The outcome changes from run to run, which makes these bugs hard to find.",
+   "ref": [
+    "race-condition"
+   ],
+   "id": "t4-q-races-01"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Two threads each run `counter++` 100000 times on a shared `int` with no protection. What is guaranteed?",
+   "options": [
+    "It prints exactly 200000",
+    "It prints a number between 100000 and 200000",
+    "Nothing precise: it may print less than 200000",
+    "It always prints 100000"
+   ],
+   "answer": 2,
+   "explain": "`counter++` is read, add, write. Two threads can read the same value and one update is lost.",
+   "ref": [
+    "race-condition"
+   ],
+   "id": "t4-q-races-02"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "A shared variable is declared `volatile int j`. Why does `j = j + 1` from two threads still lose updates?",
+   "options": [
+    "`volatile` is ignored by the compiler",
+    "`volatile` forces memory accesses but does not make read-add-write atomic",
+    "`volatile` only works for `char`",
+    "Threads cannot share volatile variables"
+   ],
+   "answer": 1,
+   "explain": "`volatile` is not synchronisation. The slides use it in the racy example and the examples that are fixed by a mutex or a semaphore: the fix is the lock, not the keyword.",
+   "ref": [
+    "race-condition"
+   ],
+   "id": "t4-q-races-03"
+  },
+  {
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "A correct solution to the critical section problem must provide:",
+   "options": [
+    "Mutual exclusion",
+    "Progress",
+    "Bounded waiting",
+    "That the section runs in under a millisecond"
+   ],
+   "answer": [
+    0,
+    1,
+    2
+   ],
+   "explain": "Mutual exclusion (one at a time), progress (the decision to enter is not postponed forever) and bounded waiting (no thread waits forever).",
+   "ref": [
+    "critical-section"
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "True.",
+    "False: speed is not a requirement."
+   ],
+   "id": "t4-q-races-04"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does `pthread_mutex_lock` do when another thread holds the mutex?",
+   "options": [
+    "Fails with an error",
+    "Blocks until the mutex is free",
+    "Takes the mutex anyway",
+    "Ends the program"
+   ],
+   "answer": 1,
+   "explain": "The thread sleeps until the owner unlocks.",
+   "ref": [
+    "pthread_mutex_lock"
+   ],
+   "id": "t4-q-races-05"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Which sequence protects `counter++` correctly?",
+   "options": [
+    "lock, counter++, unlock",
+    "counter++, lock, unlock",
+    "unlock, counter++, lock",
+    "lock, unlock, counter++"
+   ],
+   "answer": 0,
+   "explain": "The access to the shared variable must be between the lock and the unlock.",
+   "ref": [
+    "pthread_mutex_lock",
+    "pthread_mutex_unlock"
+   ],
+   "id": "t4-q-races-06"
+  },
+  {
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "`pthread_mutex_trylock` returns {{0}} (an error name) when the mutex is already held by another thread.",
+   "blanks": [
+    {
+     "accept": [
+      "EBUSY",
+      "ebusy"
+     ]
+    }
+   ],
+   "explain": "It returns 0 when it got the mutex.",
+   "ref": [
+    "pthread_mutex_trylock"
+   ],
+   "id": "t4-q-races-07"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Thread 1 locks mutex A and then B; thread 2 locks B and then A. What can happen?",
+   "options": [
+    "Nothing: mutexes cannot deadlock",
+    "A deadlock: each holds one and waits for the other",
+    "Both run in parallel",
+    "The compiler rejects it"
+   ],
+   "answer": 1,
+   "explain": "This is the classic lock-ordering deadlock.",
+   "ref": [
+    "deadlock"
+   ],
+   "id": "t4-q-races-08"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What is the simplest way to avoid that deadlock?",
+   "options": [
+    "Use more threads",
+    "Always take the locks in the same order in every thread",
+    "Use `sleep` between the locks",
+    "Unlock before locking"
+   ],
+   "answer": 1,
+   "explain": "If every thread locks A before B, nobody can hold B while waiting for A.",
+   "ref": [
+    "deadlock"
+   ],
+   "id": "t4-q-races-09"
+  },
+  {
+   "type": "order",
+   "difficulty": 2,
+   "prompt": "Put the parts of a critical section in order.",
+   "items": [
+    "`pthread_mutex_lock(&m)`",
+    "Read and change the shared data",
+    "`pthread_mutex_unlock(&m)`",
+    "Continue with code that does not use the shared data"
+   ],
+   "explain": "Keep what is between lock and unlock as short as possible.",
+   "ref": [
+    "critical-section",
+    "pthread_mutex_lock"
+   ],
+   "id": "t4-q-races-10"
+  },
+  {
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each function with its purpose.",
+   "pairs": [
+    [
+     "pthread_mutex_init",
+     "prepares a mutex for use"
+    ],
+    [
+     "pthread_mutex_lock",
+     "takes the mutex, waiting if needed"
+    ],
+    [
+     "pthread_mutex_unlock",
+     "releases the mutex"
+    ],
+    [
+     "pthread_mutex_trylock",
+     "takes the mutex only if it is free"
+    ],
+    [
+     "pthread_mutex_destroy",
+     "frees the mutex when it is no longer used"
+    ]
+   ],
+   "explain": "Initialise once, lock and unlock around each critical section, destroy at the end.",
+   "ref": [
+    "pthread_mutex_init",
+    "pthread_mutex_lock",
+    "pthread_mutex_unlock",
+    "pthread_mutex_trylock"
+   ],
+   "id": "t4-q-races-11"
+  },
+  {
+   "type": "single",
+   "difficulty": 4,
+   "prompt": "What is the main difference between a mutex and a binary semaphore?",
+   "options": [
+    "There is none",
+    "A mutex has an owner: only the thread that locked it may unlock it",
+    "A mutex can count above 1",
+    "A semaphore cannot block"
+   ],
+   "answer": 1,
+   "explain": "The slides call a binary semaphore a \"mutex\". In POSIX they are different: a semaphore can be posted by any thread, which makes it useful for signalling.",
+   "ref": [
+    "pthread_mutex_init",
+    "semaphore"
+   ],
+   "id": "t4-q-races-12"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "A thread locks a normal mutex it already holds. What happens?",
+   "options": [
+    "The lock count goes to 2",
+    "It blocks forever, waiting for itself",
+    "The second lock is ignored",
+    "The mutex is destroyed"
+   ],
+   "answer": 1,
+   "explain": "With the default type there is no recursion: the thread deadlocks itself.",
+   "ref": [
+    "pthread_mutex_lock"
+   ],
+   "id": "t4-q-races-13"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "One function updates `count` under a mutex; another function updates `count` without any lock. Is the program correct?",
+   "options": [
+    "Yes, one protected access is enough",
+    "No: every access to the shared data must use the same lock",
+    "Yes, if the other function is short",
+    "Yes, if `count` is global"
+   ],
+   "answer": 1,
+   "explain": "Mutual exclusion only works when all the accesses take part.",
+   "ref": [
+    "race-condition",
+    "critical-section"
+   ],
+   "id": "t4-q-races-14"
+  }
+ ]
+}

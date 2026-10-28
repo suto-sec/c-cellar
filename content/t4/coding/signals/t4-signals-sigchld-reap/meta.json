@@ -1,0 +1,15 @@
+{
+ "id": "t4-signals-sigchld-reap",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "signals",
+ "title": "Collect children from a handler",
+ "stars": 4,
+ "minutes": 14,
+ "order": 8,
+ "summary": "SIGCHLD tells the parent that a child ended; waitpid(-1, ..., WNOHANG) in a loop collects them all.",
+ "hints": [
+  "Several children can end while only one `SIGCHLD` is delivered, so the handler must loop: `while (waitpid(-1, NULL, WNOHANG) > 0) reaped++;`.",
+  "In the parent wait with `while (reaped < n) sleep(1);`: a signal wakes `sleep` early, and if the signal came first the sleep just takes a second."
+ ]
+}

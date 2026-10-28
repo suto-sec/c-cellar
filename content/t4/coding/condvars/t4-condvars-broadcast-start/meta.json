@@ -1,0 +1,15 @@
+{
+ "id": "t4-condvars-broadcast-start",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "condvars",
+ "title": "Starting gun",
+ "stars": 4,
+ "minutes": 15,
+ "order": 2,
+ "summary": "pthread_cond_broadcast wakes every waiter; signal wakes only one.",
+ "hints": [
+  "Workers: lock, `waiting++`, signal the main thread's condition, `while (!go) pthread_cond_wait(&go_cv, &m)`, `started++`, unlock.",
+  "Main: lock, `while (waiting < N) pthread_cond_wait(&all_waiting_cv, &m)`, `go = 1`, `pthread_cond_broadcast(&go_cv)`, unlock. With `signal` only ONE worker wakes and the others stay blocked forever."
+ ]
+}

@@ -1,0 +1,18 @@
+{
+ "cases": [
+  {
+   "args": [
+    "d"
+   ],
+   "setup": "mkdir d; touch d/b d/c d/a",
+   "stdout": "a\nb\nc\nlisting finished\n"
+  },
+  {
+   "args": [
+    "e"
+   ],
+   "setup": "mkdir e",
+   "stdout": "listing finished\n"
+  }
+ ]
+}

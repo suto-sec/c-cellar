@@ -1,0 +1,15 @@
+{
+ "id": "t4-pipes-count-bytes",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "pipes",
+ "title": "Count the bytes that cross",
+ "stars": 3,
+ "minutes": 9,
+ "order": 4,
+ "summary": "Copy stdin into a pipe in chunks; the child counts until EOF.",
+ "hints": [
+  "Parent: `while ((n = read(0, buf, sizeof buf)) > 0) write(p[1], buf, n);` then close `p[1]`. Write exactly `n` bytes, not the whole buffer.",
+  "Child: `while ((n = read(p[0], buf, sizeof buf)) > 0) total += n;`. `read` may return fewer bytes than the buffer size."
+ ]
+}

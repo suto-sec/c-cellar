@@ -1,0 +1,15 @@
+{
+ "id": "t4-exec-argv",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "exec",
+ "title": "Run the command you are given",
+ "stars": 2,
+ "minutes": 7,
+ "order": 5,
+ "summary": "execvp with argv: pass your own arguments along.",
+ "hints": [
+  "`execvp(argv[1], &argv[1]);`: the new program's `argv` is your `argv` shifted by one, and it already ends with `NULL`.",
+  "If `execvp` returns it failed: `exit(127)` in the child, quietly."
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "id": "t4-threads-argument",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "threads",
+ "title": "Give the thread an argument",
+ "stars": 2,
+ "minutes": 5,
+ "order": 2,
+ "summary": "The void * argument carries your data to the thread.",
+ "hints": [
+  "Pass `&n` as the last argument of `pthread_create`; inside the thread, `int n = *(int *)arg;`.",
+  "`n` must still exist while the thread runs: keep it in `main` and join before `main` ends."
+ ]
+}

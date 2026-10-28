@@ -1,0 +1,15 @@
+{
+ "id": "t4-exec-ls-args",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "exec",
+ "title": "List a directory in a child",
+ "stars": 2,
+ "minutes": 5,
+ "order": 2,
+ "summary": "execlp with a command that takes arguments.",
+ "hints": [
+  "`execlp(\"ls\", \"ls\", \"-1\", argv[1], NULL);` runs `ls -1 DIR`.",
+  "After `exec` succeeds nothing below it runs in the child, so the line after it is only for the failure case: `exit(1)`."
+ ]
+}

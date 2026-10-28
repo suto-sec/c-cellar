@@ -1,0 +1,15 @@
+{
+ "id": "t4-pipes-parent-to-child",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "pipes",
+ "title": "A message down the pipe",
+ "stars": 2,
+ "minutes": 7,
+ "order": 1,
+ "summary": "pipe, fork, close the unused ends, write and read.",
+ "hints": [
+  "`int p[2]; pipe(p);` BEFORE the `fork`. `p[0]` is the end you read from, `p[1]` the end you write to.",
+  "Each process closes the end it does not use. Put a `'\\0'` after what `read` gave you before printing it as a string."
+ ]
+}

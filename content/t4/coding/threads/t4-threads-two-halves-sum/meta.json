@@ -1,0 +1,15 @@
+{
+ "id": "t4-threads-two-halves-sum",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "threads",
+ "title": "Two threads, two halves",
+ "stars": 3,
+ "minutes": 11,
+ "order": 7,
+ "summary": "Split an array between two threads and add the partial sums.",
+ "hints": [
+  "A struct per thread: pointer to the array, `from`, `to` (end excluded) and the partial `sum`. The two halves are `[0, n/2)` and `[n/2, n)`.",
+  "Join both threads, then add the two partial sums in the main thread."
+ ]
+}

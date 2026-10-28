@@ -1,0 +1,15 @@
+{
+ "id": "t4-pipes-fan-in",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "pipes",
+ "title": "Many writers, one reader",
+ "stars": 4,
+ "minutes": 11,
+ "order": 8,
+ "summary": "Several children write to the same pipe; the parent reads until EOF.",
+ "hints": [
+  "Create ONE pipe before the loop. Every child closes `p[0]`, writes its line with ONE `write` call and ends.",
+  "The parent closes `p[1]` before reading, otherwise it never sees EOF. The lines can arrive in any order: the checker sorts them."
+ ]
+}

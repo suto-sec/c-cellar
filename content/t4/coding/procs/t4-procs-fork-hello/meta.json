@@ -1,0 +1,15 @@
+{
+ "id": "t4-procs-fork-hello",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "procs",
+ "title": "Child first, parent second",
+ "stars": 1,
+ "minutes": 3,
+ "order": 1,
+ "summary": "fork, then wait for the child before the parent prints.",
+ "hints": [
+  "`fork()` returns 0 in the child and the child's pid in the parent; test the result with `if`.",
+  "To make the parent print last, call `wait(NULL)` in the parent before its `printf`. Include `<sys/wait.h>`."
+ ]
+}

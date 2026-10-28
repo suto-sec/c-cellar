@@ -248,7 +248,7 @@ def _clean(text, tmp):
 
 
 def compile_c(sources, out, cwd, extra=()):
-    cmd = [CC, "-std=gnu17", "-Wall", "-Wextra", "-g", "-o", str(out), *map(str, sources), *extra, "-lm"]
+    cmd = [CC, "-std=gnu17", "-Wall", "-Wextra", "-g", "-o", str(out), *map(str, sources), *extra, "-pthread", "-lm"]
     p = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=60)
     return p.returncode == 0, _clean(p.stderr, cwd)
 
@@ -402,7 +402,7 @@ def build_command(ex):
     harness = Path(ex["dir"]) / "harness.c"
     if harness.exists():   # the hidden main of a function exercise
         cmd += " " + shlex.quote(str(harness))
-    return cmd + " -lm"
+    return cmd + " -pthread -lm"
 
 
 def check_exercise(ex):

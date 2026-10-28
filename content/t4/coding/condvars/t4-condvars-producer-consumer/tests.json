@@ -1,0 +1,29 @@
+{
+ "cases": [
+  {
+   "args": [
+    "10"
+   ],
+   "stdout": "sum = 55\noverflow: no\n"
+  },
+  {
+   "args": [
+    "1"
+   ],
+   "stdout": "sum = 1\noverflow: no\n"
+  },
+  {
+   "args": [
+    "1000"
+   ],
+   "stdout": "sum = 500500\noverflow: no\n"
+  },
+  {
+   "args": [
+    "20000"
+   ],
+   "timeout": 10,
+   "stdout": "sum = 200010000\noverflow: no\n"
+  }
+ ]
+}

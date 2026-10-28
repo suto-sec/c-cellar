@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "child read: hello from parent\n"
+  }
+ ]
+}

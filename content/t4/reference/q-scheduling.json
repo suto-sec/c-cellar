@@ -1,0 +1,162 @@
+{
+ "order": 17,
+ "entries": [
+  {
+   "id": "t4-ref-scheduling",
+   "title": "scheduling",
+   "category": "Scheduling",
+   "summary": "How the OS decides which ready process gets the CPU next.",
+   "practice_chapters": [
+    "scheduling",
+    "concepts"
+   ],
+   "aliases": [
+    "scheduler",
+    "dispatcher",
+    "preemptive",
+    "cooperative",
+    "turnaround",
+    "waiting-time",
+    "throughput"
+   ],
+   "syntax": "ready queue -> scheduler -> CPU",
+   "description": "The **scheduler** picks, among the processes in the ready queue, the one that runs next; the **dispatcher** gives it the CPU (a **context switch**). Three levels: the **long-term** scheduler decides which new processes are admitted (the degree of multiprogramming), the **medium-term** one suspends and resumes processes (swapping), the **short-term** one picks the next process to run, very often, so it must be fast. A decision is needed when a process goes from running to waiting, from running to ready, from waiting to ready, or ends. Deciding only in the first and last cases is **cooperative** (non-preemptive); deciding in all four is **preemptive**. Criteria: **throughput** (processes finished per unit of time), **turnaround time** (arrival to finish), **waiting time** (time in the ready queue = turnaround - burst), **response time** (until the first output). A process alternates **CPU bursts** and **I/O bursts**.",
+   "mistakes": [
+    "Counting I/O time as waiting time: waiting time is only the time spent in the ready queue."
+   ],
+   "see": [
+    "t4-ref-fcfs",
+    "t4-ref-sjf",
+    "t4-ref-round-robin",
+    "t4-ref-priority-scheduling",
+    "t4-ref-context-switch"
+   ]
+  },
+  {
+   "id": "t4-ref-context-switch",
+   "title": "context-switch",
+   "category": "Scheduling",
+   "summary": "Saving one process's state and loading another's.",
+   "practice_chapters": [
+    "scheduling",
+    "concepts"
+   ],
+   "syntax": "save state in PCB(old); load state from PCB(new)",
+   "description": "When the CPU goes from process A to process B, the system saves the context of A (its state, registers, program counter and memory-management data) in A's PCB and restores B's from B's PCB. During the switch the CPU does no useful work, so switches are pure overhead and their cost depends on the hardware. Too many of them (a tiny round-robin quantum) waste time.",
+   "see": [
+    "t4-ref-scheduling",
+    "t4-ref-round-robin",
+    "t4-ref-process"
+   ]
+  },
+  {
+   "id": "t4-ref-fcfs",
+   "title": "fcfs",
+   "category": "Scheduling",
+   "summary": "First come, first served: a FIFO ready queue.",
+   "practice_chapters": [
+    "scheduling"
+   ],
+   "aliases": [
+    "fifo",
+    "convoy"
+   ],
+   "syntax": "order of arrival",
+   "description": "The CPU goes to the process that arrived first and it runs until it ends or blocks (cooperative). Easy to implement (a FIFO queue). The average waiting time can be bad: short processes stuck behind a long one is the **convoy effect**. Example: bursts 24, 3, 3 arriving together in that order wait 0, 24, 27 (average 17); in the order 3, 3, 24 they wait 0, 3, 6 (average 3).",
+   "see": [
+    "t4-ref-sjf",
+    "t4-ref-scheduling"
+   ]
+  },
+  {
+   "id": "t4-ref-sjf",
+   "title": "sjf",
+   "category": "Scheduling",
+   "summary": "Shortest job first: the shortest next CPU burst goes first.",
+   "practice_chapters": [
+    "scheduling"
+   ],
+   "aliases": [
+    "srtf",
+    "shortest-job-first"
+   ],
+   "syntax": "choose min(next CPU burst)",
+   "description": "The CPU goes to the process with the **shortest next CPU burst**; ties are broken by FCFS. It is **optimal** for the average waiting time. Cooperative: the chosen process runs until its burst ends. Preemptive (*shortest remaining time first*): a new process with a burst shorter than the time the running one has left takes the CPU. The real length of the next burst is unknown, so it is **estimated** from the past with an exponential average: `tau(n+1) = alpha * t(n) + (1 - alpha) * tau(n)`, where `t(n)` is the last real burst, `tau(n)` the last estimate and `alpha` is between 0 and 1. Long processes can starve.",
+   "mistakes": [
+    "Comparing the whole duration instead of the remaining time in the preemptive version."
+   ],
+   "see": [
+    "t4-ref-fcfs",
+    "t4-ref-priority-scheduling",
+    "t4-ref-scheduling"
+   ]
+  },
+  {
+   "id": "t4-ref-round-robin",
+   "title": "round-robin",
+   "category": "Scheduling",
+   "summary": "Time slices in turn: preempt after a quantum.",
+   "practice_chapters": [
+    "scheduling"
+   ],
+   "aliases": [
+    "rr",
+    "quantum"
+   ],
+   "syntax": "quantum q: run at most q, then go to the back of the queue",
+   "description": "Like FCFS but each process runs for at most a time **quantum**; if it has not finished it is preempted and goes to the **end of the ready queue**. Typical of time-sharing systems. A very large quantum behaves like FCFS; a very small one causes many context switches. The average turnaround time does not improve steadily with a bigger quantum. A convention to state when solving problems: a process that arrives exactly when a quantum ends enters the queue before the preempted one.",
+   "mistakes": [
+    "Forgetting that a process that finishes before its quantum ends gives the CPU up at once."
+   ],
+   "see": [
+    "t4-ref-fcfs",
+    "t4-ref-context-switch",
+    "t4-ref-scheduling"
+   ]
+  },
+  {
+   "id": "t4-ref-priority-scheduling",
+   "title": "priority-scheduling",
+   "category": "Scheduling",
+   "summary": "Each process has a priority; the highest goes first.",
+   "practice_chapters": [
+    "scheduling"
+   ],
+   "aliases": [
+    "priorities",
+    "aging",
+    "starvation"
+   ],
+   "syntax": "choose max(priority)",
+   "description": "The CPU goes to the ready process with the highest priority (in many systems a smaller number means higher priority). It can be cooperative or preemptive. SJF is the special case in which the priority is the length of the next CPU burst. The danger is **starvation**: low-priority processes may never run; the cure is **aging**, raising the priority of processes that have waited a long time.",
+   "mistakes": [
+    "Forgetting whether a smaller number is the higher or the lower priority."
+   ],
+   "see": [
+    "t4-ref-sjf",
+    "t4-ref-multilevel-queues",
+    "t4-ref-scheduling"
+   ]
+  },
+  {
+   "id": "t4-ref-multilevel-queues",
+   "title": "multilevel-queues",
+   "category": "Scheduling",
+   "summary": "Several ready queues, each with its own algorithm.",
+   "practice_chapters": [
+    "scheduling"
+   ],
+   "aliases": [
+    "feedback",
+    "mlfq"
+   ],
+   "syntax": "queue 0: RR 20   queue 1: RR 40   queue 2: FCFS",
+   "description": "The ready queue is split into several queues, each with its own algorithm (for example interactive processes with round robin and batch processes with FCFS). Between queues the scheduler can use fixed priorities (a lower queue runs only when the higher ones are empty) or share the time (80% / 20%). In **multilevel feedback queues** processes move between queues: a process that uses all its quantum drops to the next queue, so short and interactive jobs stay in the upper ones. To define one you choose: the number of queues, the algorithm of each, when to demote, when to promote and which queue a new process enters.",
+   "see": [
+    "t4-ref-round-robin",
+    "t4-ref-fcfs",
+    "t4-ref-priority-scheduling"
+   ]
+  }
+ ]
+}

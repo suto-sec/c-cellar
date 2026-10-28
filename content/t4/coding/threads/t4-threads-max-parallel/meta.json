@@ -1,0 +1,15 @@
+{
+ "id": "t4-threads-max-parallel",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "threads",
+ "title": "The maximum, four threads",
+ "stars": 4,
+ "minutes": 14,
+ "order": 8,
+ "summary": "Four threads, one slice each; the main thread combines the results.",
+ "hints": [
+  "Give every thread a slice `[from, to)`: with `k` the thread number, `from = k * n / 4` and `to = (k + 1) * n / 4`. When `n` is below 4 some slices are empty.",
+  "A thread with an empty slice must not report a made-up maximum: start each thread's `max` at `INT_MIN` (`<limits.h>`) and let the main thread take the largest."
+ ]
+}

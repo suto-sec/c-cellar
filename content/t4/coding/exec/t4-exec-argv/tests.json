@@ -1,0 +1,33 @@
+{
+ "cases": [
+  {
+   "args": [
+    "echo",
+    "a",
+    "b"
+   ],
+   "stdout": "a b\nfinished\n"
+  },
+  {
+   "args": [
+    "printf",
+    "%s-%s\\n",
+    "x",
+    "y"
+   ],
+   "stdout": "x-y\nfinished\n"
+  },
+  {
+   "args": [
+    "nosuchcommand_xyz"
+   ],
+   "stdout": "finished\n"
+  },
+  {
+   "args": [
+    "true"
+   ],
+   "stdout": "finished\n"
+  }
+ ]
+}

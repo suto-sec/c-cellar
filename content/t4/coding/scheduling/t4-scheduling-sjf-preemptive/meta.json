@@ -1,0 +1,15 @@
+{
+ "id": "t4-scheduling-sjf-preemptive",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "scheduling",
+ "title": "SJF with preemption",
+ "stars": 4,
+ "minutes": 18,
+ "order": 4,
+ "summary": "Shortest remaining time first: a short newcomer takes the CPU.",
+ "hints": [
+  "Simulate one millisecond at a time: at each tick pick, among the arrived processes with time left, the one with the SMALLEST REMAINING time (ties: earlier arrival, then listed first); run it for that millisecond.",
+  "A process finishes when its remaining time reaches 0, at time `t + 1` after that tick. Waiting time = finish - arrival - duration."
+ ]
+}

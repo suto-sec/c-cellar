@@ -1,0 +1,15 @@
+{
+ "id": "t4-semaphores-rendezvous",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "semaphores",
+ "title": "Wait for each other",
+ "stars": 4,
+ "minutes": 13,
+ "order": 7,
+ "summary": "Two threads meet: neither goes on until both have arrived.",
+ "hints": [
+  "Two semaphores at 0: A does `post(a_arrived); wait(b_arrived)`, B does `post(b_arrived); wait(a_arrived)`. Post FIRST, then wait: waiting first would deadlock both.",
+  "Print `before` before the meeting and `after` after it. The two `before` lines may come in either order, but both come before any `after`."
+ ]
+}

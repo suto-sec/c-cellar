@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "args": [
+    "4"
+   ],
+   "stdout": "sum of statuses: 10\n"
+  },
+  {
+   "args": [
+    "0"
+   ],
+   "stdout": "sum of statuses: 0\n"
+  },
+  {
+   "args": [
+    "1"
+   ],
+   "stdout": "sum of statuses: 1\n"
+  },
+  {
+   "args": [
+    "10"
+   ],
+   "stdout": "sum of statuses: 55\n"
+  }
+ ]
+}

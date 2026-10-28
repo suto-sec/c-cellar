@@ -1,0 +1,15 @@
+{
+ "id": "t4-races-n-threads",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "races",
+ "title": "N threads, one counter",
+ "stars": 3,
+ "minutes": 9,
+ "order": 2,
+ "summary": "The same protection with any number of threads.",
+ "hints": [
+  "Create the threads in one loop (an array of `pthread_t`) and join them in a second loop: if you join inside the creating loop, they run one after another and prove nothing.",
+  "Every thread does `100000` protected increments."
+ ]
+}

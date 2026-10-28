@@ -1,0 +1,247 @@
+{
+ "id": "t4-th-semaphores",
+ "tag": "t4",
+ "title": "Semaphores",
+ "chapter": "semaphores",
+ "questions": [
+  {
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "Which two operations does a semaphore offer (POSIX names)?",
+   "options": [
+    "sem_lock and sem_unlock",
+    "sem_wait and sem_post",
+    "sem_read and sem_write",
+    "sem_open and sem_close"
+   ],
+   "answer": 1,
+   "explain": "`sem_wait` decrements (blocking if there is nothing left) and `sem_post` increments (waking a waiter).",
+   "ref": [
+    "semaphore",
+    "sem_wait",
+    "sem_post"
+   ],
+   "id": "t4-q-semaphores-01"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "A semaphore initialised to 1 and used for mutual exclusion is called:",
+   "options": [
+    "A counting semaphore",
+    "A binary semaphore",
+    "A condition",
+    "A barrier"
+   ],
+   "answer": 1,
+   "explain": "It only takes the values 0 and 1: 1 = free, 0 = taken.",
+   "ref": [
+    "semaphore"
+   ],
+   "id": "t4-q-semaphores-02"
+  },
+  {
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "code": "#include <stdio.h>\n#include <semaphore.h>\n\nint main(void)\n{\n    sem_t s;\n    int v;\n\n    sem_init(&s, 0, 2);\n    sem_wait(&s);\n    sem_getvalue(&s, &v);\n    printf(\"%d\\n\", v);\n    sem_post(&s);\n    sem_post(&s);\n    sem_getvalue(&s, &v);\n    printf(\"%d\\n\", v);\n    return 0;\n}\n",
+   "answer": "1\n3",
+   "explain": "Start 2, `wait` gives 1, two `post` give 3. A semaphore is a counter: `post` can raise it above its initial value.",
+   "ref": [
+    "sem_init",
+    "sem_wait",
+    "sem_post",
+    "sem_getvalue"
+   ],
+   "id": "t4-q-semaphores-03"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "A semaphore `s` starts at 0. Thread 1 runs `sem_wait(&s); puts(\"B\");` and thread 2 runs `puts(\"A\"); sem_post(&s);`. What is printed?",
+   "options": [
+    "Always A then B",
+    "Always B then A",
+    "Either order",
+    "Nothing"
+   ],
+   "answer": 0,
+   "explain": "Thread 1 cannot print until thread 2 has posted, which happens after thread 2 printed `A`. A semaphore at 0 orders two events.",
+   "ref": [
+    "sem_wait",
+    "sem_post"
+   ],
+   "id": "t4-q-semaphores-04"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "To let at most 3 threads into a section at the same time, you initialise a semaphore to:",
+   "options": [
+    "0",
+    "1",
+    "3",
+    "The number of threads"
+   ],
+   "answer": 2,
+   "explain": "A counting semaphore starting at K admits K threads; the next one blocks until somebody posts.",
+   "ref": [
+    "semaphore",
+    "sem_init"
+   ],
+   "id": "t4-q-semaphores-05"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "In the bounded-buffer problem with semaphores, what are the starting values of `empty`, `full` and `mutex` for a buffer of N slots?",
+   "options": [
+    "N, 0, 1",
+    "0, N, 1",
+    "1, 1, 1",
+    "N, N, 0"
+   ],
+   "answer": 0,
+   "explain": "`empty` counts free slots (N), `full` counts filled slots (0) and `mutex` protects the buffer (1).",
+   "ref": [
+    "producer-consumer",
+    "semaphore"
+   ],
+   "id": "t4-q-semaphores-06"
+  },
+  {
+   "type": "single",
+   "difficulty": 4,
+   "prompt": "In the producer, `wait(mutex)` is placed BEFORE `wait(empty)`. What can happen when the buffer is full?",
+   "options": [
+    "Nothing",
+    "Deadlock: the producer holds the mutex and sleeps on `empty`, so the consumer can never take an item",
+    "The buffer overflows",
+    "The consumer runs twice"
+   ],
+   "answer": 1,
+   "explain": "Never wait for a slot while holding the lock the other side needs.",
+   "ref": [
+    "producer-consumer",
+    "deadlock"
+   ],
+   "id": "t4-q-semaphores-07"
+  },
+  {
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "`sem_init(&s, 0, 1)`: the 0 means the semaphore is shared only between the {{0}} of one process.",
+   "blanks": [
+    {
+     "accept": [
+      "threads",
+      "hilos",
+      "thread"
+     ]
+    }
+   ],
+   "explain": "A non-zero value means it may be shared between processes, but the `sem_t` must then be in shared memory.",
+   "ref": [
+    "sem_init"
+   ],
+   "id": "t4-q-semaphores-08"
+  },
+  {
+   "type": "multiple",
+   "difficulty": 4,
+   "prompt": "Which statements about `sem_post` are true?",
+   "options": [
+    "It increments the value",
+    "It wakes one waiting thread, if any",
+    "Only the thread that did `sem_wait` may call it",
+    "It may be called by a thread that never waited"
+   ],
+   "answer": [
+    0,
+    1,
+    3
+   ],
+   "explain": "A semaphore has no owner. That is what lets one thread signal an event to another.",
+   "ref": [
+    "sem_post"
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "False: that is the rule for a mutex.",
+    "True."
+   ],
+   "id": "t4-q-semaphores-09"
+  },
+  {
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each function with what it does.",
+   "pairs": [
+    [
+     "sem_init",
+     "sets the starting value"
+    ],
+    [
+     "sem_wait",
+     "decrements, or blocks if the value is 0"
+    ],
+    [
+     "sem_post",
+     "increments and wakes a waiter"
+    ],
+    [
+     "sem_getvalue",
+     "reads the current count"
+    ],
+    [
+     "sem_destroy",
+     "releases the semaphore"
+    ]
+   ],
+   "explain": "All of them live in `<semaphore.h>`.",
+   "ref": [
+    "sem_init",
+    "sem_wait",
+    "sem_post",
+    "sem_getvalue"
+   ],
+   "id": "t4-q-semaphores-10"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Two threads must meet: neither may go on before both have arrived. What pattern works?",
+   "options": [
+    "Each does `sem_wait` on its own semaphore first",
+    "Each posts ITS semaphore and then waits for the OTHER one's",
+    "Both use one semaphore starting at 0",
+    "Both use `sleep`"
+   ],
+   "answer": 1,
+   "explain": "If both waited first they would deadlock. Post first, then wait.",
+   "ref": [
+    "sem_wait",
+    "sem_post"
+   ],
+   "id": "t4-q-semaphores-11"
+  },
+  {
+   "type": "single",
+   "difficulty": 4,
+   "prompt": "A global `sem_t` initialised with `sem_init(&s, 1, 1)` is used by a parent and its forked child. Does the semaphore work between them?",
+   "options": [
+    "Yes, `pshared = 1` is enough",
+    "No: after `fork` each has its own copy; it must live in shared memory",
+    "Yes, but only for `sem_post`",
+    "No, semaphores only work between threads"
+   ],
+   "answer": 1,
+   "explain": "A copy made by `fork` is private memory. Put the `sem_t` in a shared mapping, or use a named semaphore (`sem_open`).",
+   "ref": [
+    "sem_init"
+   ],
+   "id": "t4-q-semaphores-12"
+  }
+ ]
+}

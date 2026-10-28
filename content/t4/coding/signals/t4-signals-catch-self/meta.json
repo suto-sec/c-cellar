@@ -1,0 +1,15 @@
+{
+ "id": "t4-signals-catch-self",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "signals",
+ "title": "Catch a signal",
+ "stars": 2,
+ "minutes": 6,
+ "order": 1,
+ "summary": "signal() installs a handler; raise() sends the signal to yourself.",
+ "hints": [
+  "`void handler(int sig)` is the function; `signal(SIGUSR1, handler);` installs it. Name the unused parameter in a cast: `(void)sig;`.",
+  "In the handler print with `write(STDOUT_FILENO, ..., len)`: it does not wait in a stdio buffer. Print the main line with `printf` after `raise` returns."
+ ]
+}

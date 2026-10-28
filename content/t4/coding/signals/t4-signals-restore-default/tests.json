@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "first\nchild died on the second SIGINT\n"
+  }
+ ]
+}

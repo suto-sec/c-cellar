@@ -1,0 +1,15 @@
+{
+ "id": "t4-scheduling-burst-estimate",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "scheduling",
+ "title": "Predict the next CPU burst",
+ "stars": 2,
+ "minutes": 9,
+ "order": 9,
+ "summary": "Exponential averaging: tau(n+1) = alpha * t(n) + (1 - alpha) * tau(n).",
+ "hints": [
+  "Keep a `double tau`. For each real burst `t`: print the current `tau` as the estimate for that burst, then update `tau = alpha * t + (1 - alpha) * tau`.",
+  "After the last burst print the estimate for the burst that has not happened yet (`next`). Use `%.2f`."
+ ]
+}

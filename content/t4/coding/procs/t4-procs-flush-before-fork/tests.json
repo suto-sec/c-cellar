@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "start child\nparent\n"
+  }
+ ]
+}

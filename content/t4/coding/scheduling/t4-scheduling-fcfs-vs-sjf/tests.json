@@ -1,0 +1,24 @@
+{
+ "cases": [
+  {
+   "stdin": "3\n24\n3\n3\n",
+   "stdout": "FCFS: 17.00\nSJF: 3.00\n"
+  },
+  {
+   "stdin": "3\n3\n3\n24\n",
+   "stdout": "FCFS: 3.00\nSJF: 3.00\n"
+  },
+  {
+   "stdin": "1\n5\n",
+   "stdout": "FCFS: 0.00\nSJF: 0.00\n"
+  },
+  {
+   "stdin": "4\n8\n4\n9\n5\n",
+   "stdout": "FCFS: 10.25\nSJF: 7.50\n"
+  },
+  {
+   "stdin": "4\n2\n2\n2\n2\n",
+   "stdout": "FCFS: 3.00\nSJF: 3.00\n"
+  }
+ ]
+}

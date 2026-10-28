@@ -1,0 +1,8 @@
+{
+ "cases": [
+  {
+   "timeout": 10,
+   "stdout": "counter = 300000\n"
+  }
+ ]
+}

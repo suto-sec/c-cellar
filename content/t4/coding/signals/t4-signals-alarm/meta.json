@@ -1,0 +1,15 @@
+{
+ "id": "t4-signals-alarm",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "signals",
+ "title": "Wake me in a second",
+ "stars": 3,
+ "minutes": 8,
+ "order": 4,
+ "summary": "alarm() sends SIGALRM later; pause() sleeps until a signal arrives.",
+ "hints": [
+  "`alarm(1);` asks for `SIGALRM` in one second; `pause();` returns after a handler has run. Install the handler first.",
+  "Mixing `printf` and `write` puts lines out of order, because `printf` waits in a buffer: `fflush(stdout)` after the first line."
+ ]
+}

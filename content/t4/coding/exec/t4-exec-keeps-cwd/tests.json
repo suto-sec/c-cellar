@@ -1,0 +1,23 @@
+{
+ "cases": [
+  {
+   "args": [
+    "/usr/bin"
+   ],
+   "stdout": "/usr/bin\n"
+  },
+  {
+   "args": [
+    "/usr"
+   ],
+   "stdout": "/usr\n"
+  },
+  {
+   "args": [
+    "/nonexistent_dir_x"
+   ],
+   "exit": 1,
+   "stdout": ""
+  }
+ ]
+}

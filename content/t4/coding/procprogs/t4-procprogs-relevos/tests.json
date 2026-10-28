@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "all runners created\ngo!\nrunner 1 running\nrunner 1 passes the baton to runner 2\nrunner 2 running\nrunner 2 passes the baton to runner 3\nrunner 3 running\nrunner 3 passes the baton to runner 4\nrunner 4 running\nrunner 4 finished the race\nall runners finished\n"
+  }
+ ]
+}

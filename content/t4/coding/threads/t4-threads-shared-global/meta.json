@@ -1,0 +1,15 @@
+{
+ "id": "t4-threads-shared-global",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "threads",
+ "title": "Threads share memory",
+ "stars": 2,
+ "minutes": 5,
+ "order": 3,
+ "summary": "A global changed by a thread is visible to the main thread.",
+ "hints": [
+  "Declare `int value = 1;` as a global. The thread sets it to `42`.",
+  "After `pthread_join` the change is guaranteed to be visible in the main thread."
+ ]
+}

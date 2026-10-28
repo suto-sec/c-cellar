@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "args": [
+    "1"
+   ],
+   "stdout": "down 1\nup 1\n"
+  },
+  {
+   "args": [
+    "2"
+   ],
+   "stdout": "down 1\ndown 2\nup 2\nup 1\n"
+  },
+  {
+   "args": [
+    "3"
+   ],
+   "stdout": "down 1\ndown 2\ndown 3\nup 3\nup 2\nup 1\n"
+  },
+  {
+   "args": [
+    "5"
+   ],
+   "stdout": "down 1\ndown 2\ndown 3\ndown 4\ndown 5\nup 5\nup 4\nup 3\nup 2\nup 1\n"
+  }
+ ]
+}

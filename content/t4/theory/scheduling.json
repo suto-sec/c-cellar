@@ -1,0 +1,501 @@
+{
+ "id": "t4-th-scheduling",
+ "tag": "t4",
+ "title": "CPU scheduling",
+ "chapter": "scheduling",
+ "questions": [
+  {
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "Which scheduling algorithm gives the CPU to the process that arrived first?",
+   "options": [
+    "SJF",
+    "FCFS",
+    "Round robin",
+    "Priorities"
+   ],
+   "answer": 1,
+   "explain": "First come, first served: a simple FIFO queue.",
+   "ref": [
+    "fcfs"
+   ],
+   "id": "t4-q-scheduling-01"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What is the convoy effect?",
+   "options": [
+    "Processes running in a circle",
+    "Short processes waiting behind a long one in FCFS",
+    "Too many context switches",
+    "Low-priority processes never running"
+   ],
+   "answer": 1,
+   "explain": "A long CPU burst at the head of the queue delays everyone behind it, so the average waiting time grows.",
+   "ref": [
+    "fcfs"
+   ],
+   "id": "t4-q-scheduling-02"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Which algorithm gives the minimum average waiting time?",
+   "options": [
+    "FCFS",
+    "Round robin",
+    "SJF",
+    "Random"
+   ],
+   "answer": 2,
+   "explain": "Shortest job first is optimal for the average waiting time (if the burst lengths are known).",
+   "ref": [
+    "sjf"
+   ],
+   "id": "t4-q-scheduling-03"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What is a cooperative (non-preemptive) scheduler?",
+   "options": [
+    "One that never changes the priorities",
+    "One that only chooses another process when the running one waits or ends",
+    "One that shares the CPU in equal slices",
+    "One that needs two CPUs"
+   ],
+   "answer": 1,
+   "explain": "A preemptive scheduler can also take the CPU away from a running process (a time slice ends, a better process arrives).",
+   "ref": [
+    "scheduling"
+   ],
+   "id": "t4-q-scheduling-04"
+  },
+  {
+   "type": "fill",
+   "difficulty": 1,
+   "prompt": "The time a process spends in the ready queue is its {{0}} time.",
+   "blanks": [
+    {
+     "accept": [
+      "waiting",
+      "wait",
+      "espera"
+     ]
+    }
+   ],
+   "explain": "Turnaround time is from arrival to finish; waiting time is only the time spent ready but not running.",
+   "ref": [
+    "scheduling"
+   ],
+   "id": "t4-q-scheduling-05"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "For a process with one CPU burst and no I/O, turnaround time equals:",
+   "options": [
+    "waiting time",
+    "waiting time + burst time",
+    "burst time - waiting time",
+    "arrival time + burst time"
+   ],
+   "answer": 1,
+   "explain": "Turnaround = finish - arrival = time waiting + time running.",
+   "ref": [
+    "scheduling"
+   ],
+   "id": "t4-q-scheduling-06"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "A round-robin scheduler with a VERY large quantum behaves like:",
+   "options": [
+    "SJF",
+    "FCFS",
+    "Priorities",
+    "Multilevel feedback"
+   ],
+   "answer": 1,
+   "explain": "Nobody is ever preempted, so processes run to the end in arrival order.",
+   "ref": [
+    "round-robin"
+   ],
+   "id": "t4-q-scheduling-07"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Priority scheduling can leave a low-priority process without CPU forever. What is that problem and its cure?",
+   "options": [
+    "Deadlock, solved with timeouts",
+    "Starvation, solved with aging",
+    "The convoy effect, solved with round robin",
+    "Thrashing, solved with swapping"
+   ],
+   "answer": 1,
+   "explain": "Aging raises the priority of processes that have waited a long time.",
+   "ref": [
+    "priority-scheduling"
+   ],
+   "id": "t4-q-scheduling-08"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "FCFS with bursts P1 = 24, P2 = 3, P3 = 3 ms, all arriving at time 0 in that order. What is the average waiting time?",
+   "options": [
+    "3 ms",
+    "9 ms",
+    "17 ms",
+    "27 ms"
+   ],
+   "answer": 2,
+   "explain": "P1 waits 0, P2 waits 24, P3 waits 27: (0 + 24 + 27) / 3 = 17 ms. In the order 3, 3, 24 it would be 3 ms: the convoy effect.",
+   "ref": [
+    "fcfs"
+   ],
+   "id": "t4-q-scheduling-09"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "The same three processes arrive in the order P2 = 3, P3 = 3, P1 = 24 (all at time 0). What is the average waiting time with FCFS?",
+   "options": [
+    "3 ms",
+    "9 ms",
+    "17 ms",
+    "24 ms"
+   ],
+   "answer": 0,
+   "explain": "They wait 0, 3 and 6 ms: (0 + 3 + 6) / 3 = 3 ms.",
+   "ref": [
+    "fcfs"
+   ],
+   "id": "t4-q-scheduling-10"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Cooperative SJF with P1 (arrives 0, burst 7), P2 (2, 4), P3 (4, 1), P4 (5, 4). Which process runs right after P1 finishes at time 7?",
+   "options": [
+    "P2",
+    "P3",
+    "P4",
+    "The CPU idles"
+   ],
+   "answer": 1,
+   "explain": "At time 7 the ready processes are P2 (4), P3 (1) and P4 (4): the shortest is P3.",
+   "ref": [
+    "sjf"
+   ],
+   "id": "t4-q-scheduling-11"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Cooperative SJF on that same set: what is the average waiting time?",
+   "options": [
+    "3 ms",
+    "4 ms",
+    "5 ms",
+    "6 ms"
+   ],
+   "answer": 1,
+   "explain": "The waits are 0, 6, 3 and 7: 16 / 4 = 4 ms.",
+   "ref": [
+    "sjf"
+   ],
+   "id": "t4-q-scheduling-12"
+  },
+  {
+   "type": "single",
+   "difficulty": 4,
+   "prompt": "Preemptive SJF (shortest remaining time) on the same set: which process is running at time 4?",
+   "options": [
+    "P1",
+    "P2",
+    "P3",
+    "P4"
+   ],
+   "answer": 2,
+   "explain": "At time 4, P3 arrives with a burst of 1, less than what P1 (5) and P2 (2) have left, so it takes the CPU.",
+   "ref": [
+    "sjf"
+   ],
+   "id": "t4-q-scheduling-13"
+  },
+  {
+   "type": "single",
+   "difficulty": 4,
+   "prompt": "Preemptive SJF on that set: what is the average waiting time?",
+   "options": [
+    "2 ms",
+    "3 ms",
+    "4 ms",
+    "5 ms"
+   ],
+   "answer": 1,
+   "explain": "The waits are 9, 1, 0 and 2: 12 / 4 = 3 ms, better than the cooperative 4 ms.",
+   "ref": [
+    "sjf"
+   ],
+   "id": "t4-q-scheduling-14"
+  },
+  {
+   "type": "single",
+   "difficulty": 4,
+   "prompt": "Round robin, quantum 20 ms. P1 = 53, P2 = 17, P3 = 68, P4 = 24 (all arrive at 0). What is the waiting time of P2?",
+   "options": [
+    "0 ms",
+    "17 ms",
+    "20 ms",
+    "37 ms"
+   ],
+   "answer": 2,
+   "explain": "P1 runs 0-20, then P2 runs 20-37 and finishes: it waited 20 ms (its turnaround is 37 and its burst is 17).",
+   "ref": [
+    "round-robin"
+   ],
+   "id": "t4-q-scheduling-15"
+  },
+  {
+   "type": "single",
+   "difficulty": 4,
+   "prompt": "Same system: what is the average waiting time?",
+   "options": [
+    "57 ms",
+    "73 ms",
+    "81 ms",
+    "94 ms"
+   ],
+   "answer": 1,
+   "explain": "The waits are 81, 20, 94 and 97: 292 / 4 = 73 ms.",
+   "ref": [
+    "round-robin"
+   ],
+   "id": "t4-q-scheduling-16"
+  },
+  {
+   "type": "order",
+   "difficulty": 3,
+   "prompt": "Round robin, quantum 4 ms, processes P1 = 10, P2 = 3, P3 = 5 (all arrive at 0). Put the CPU slices in order.",
+   "items": [
+    "P1 (0-4)",
+    "P2 (4-7)",
+    "P3 (7-11)",
+    "P1 (11-15)",
+    "P3 (15-16)",
+    "P1 (16-18)"
+   ],
+   "explain": "P2 finishes in its first slice (3 < 4). P3 needs two slices and P1 three. The finish times are 18, 7 and 16.",
+   "ref": [
+    "round-robin"
+   ],
+   "id": "t4-q-scheduling-17"
+  },
+  {
+   "type": "single",
+   "difficulty": 4,
+   "prompt": "In that round-robin schedule, what is the waiting time of P3 (burst 5)?",
+   "options": [
+    "4 ms",
+    "8 ms",
+    "11 ms",
+    "16 ms"
+   ],
+   "answer": 2,
+   "explain": "P3 finishes at 16 and runs for 5 ms, so it waited 16 - 5 = 11 ms.",
+   "ref": [
+    "round-robin"
+   ],
+   "id": "t4-q-scheduling-18"
+  },
+  {
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each algorithm with its main idea.",
+   "pairs": [
+    [
+     "FCFS",
+     "order of arrival"
+    ],
+    [
+     "SJF",
+     "shortest next CPU burst first"
+    ],
+    [
+     "Round robin",
+     "equal time slices in a circular queue"
+    ],
+    [
+     "Priorities",
+     "highest priority first (aging avoids starvation)"
+    ],
+    [
+     "Multilevel feedback queues",
+     "processes move between queues with different algorithms"
+    ]
+   ],
+   "explain": "These are the algorithms of the topic.",
+   "ref": [
+    "fcfs",
+    "sjf",
+    "round-robin",
+    "priority-scheduling",
+    "multilevel-queues"
+   ],
+   "id": "t4-q-scheduling-19"
+  },
+  {
+   "type": "fill",
+   "difficulty": 3,
+   "prompt": "In SJF the next burst is estimated as tau(n+1) = alpha * t(n) + (1 - alpha) * tau(n). With alpha = 1 the estimate is just the {{0}} real burst.",
+   "blanks": [
+    {
+     "accept": [
+      "last",
+      "previous",
+      "latest",
+      "most recent"
+     ]
+    }
+   ],
+   "explain": "alpha = 1 forgets the history; alpha = 0 ignores the new measurements and keeps the old estimate.",
+   "ref": [
+    "sjf"
+   ],
+   "id": "t4-q-scheduling-20"
+  },
+  {
+   "type": "single",
+   "difficulty": 4,
+   "prompt": "With alpha = 0.5, a previous estimate tau = 10 and a real burst t = 6, what is the next estimate?",
+   "options": [
+    "6",
+    "7",
+    "8",
+    "16"
+   ],
+   "answer": 2,
+   "explain": "0.5 * 6 + 0.5 * 10 = 8.",
+   "ref": [
+    "sjf"
+   ],
+   "id": "t4-q-scheduling-21"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Which scheduler decides which new processes enter the ready queue?",
+   "options": [
+    "Short-term",
+    "Medium-term",
+    "Long-term",
+    "The dispatcher"
+   ],
+   "answer": 2,
+   "explain": "The long-term scheduler controls the degree of multiprogramming; it runs rarely, so it can be slow.",
+   "ref": [
+    "scheduling"
+   ],
+   "id": "t4-q-scheduling-22"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What is the cost of a context switch?",
+   "options": [
+    "None: it is free",
+    "Time in which the CPU does no useful work",
+    "More memory for every process",
+    "A new pid"
+   ],
+   "answer": 1,
+   "explain": "Too many switches (a tiny quantum) waste CPU time.",
+   "ref": [
+    "context-switch"
+   ],
+   "id": "t4-q-scheduling-23"
+  },
+  {
+   "type": "sort",
+   "difficulty": 3,
+   "prompt": "Is each scheduling policy preemptive or cooperative?",
+   "categories": [
+    "Cooperative (non-preemptive)",
+    "Preemptive"
+   ],
+   "items": [
+    [
+     "FCFS",
+     "Cooperative (non-preemptive)"
+    ],
+    [
+     "SJF without preemption",
+     "Cooperative (non-preemptive)"
+    ],
+    [
+     "Priorities without preemption",
+     "Cooperative (non-preemptive)"
+    ],
+    [
+     "Shortest remaining time first",
+     "Preemptive"
+    ],
+    [
+     "Round robin",
+     "Preemptive"
+    ],
+    [
+     "Priorities with preemption",
+     "Preemptive"
+    ]
+   ],
+   "explain": "Preemptive policies can take the CPU from a running process; cooperative ones wait until it ends or blocks.",
+   "ref": [
+    "scheduling",
+    "fcfs",
+    "sjf",
+    "round-robin"
+   ],
+   "id": "t4-q-scheduling-24"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "A system has three queues: queue 0 is round robin with quantum 20, queue 1 round robin with quantum 40 and queue 2 FCFS. A new process enters queue 0. It uses its whole quantum without finishing. Where does it go?",
+   "options": [
+    "Back to queue 0",
+    "To queue 1",
+    "To queue 2",
+    "It ends"
+   ],
+   "answer": 1,
+   "explain": "In multilevel feedback queues a process that exhausts its quantum is demoted to the next queue.",
+   "ref": [
+    "multilevel-queues"
+   ],
+   "id": "t4-q-scheduling-25"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What is the main purpose of multilevel feedback queues?",
+   "options": [
+    "To avoid context switches",
+    "To keep short and interactive processes in the higher-priority queues while long CPU-bound ones sink",
+    "To run only one process",
+    "To remove the ready queue"
+   ],
+   "answer": 1,
+   "explain": "A process that uses little CPU stays up; one that always uses its whole quantum drops.",
+   "ref": [
+    "multilevel-queues"
+   ],
+   "id": "t4-q-scheduling-26"
+  }
+ ]
+}

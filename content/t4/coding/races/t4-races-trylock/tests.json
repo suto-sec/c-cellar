@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "trylock while locked: busy\ntrylock after unlock: ok\n"
+  }
+ ]
+}

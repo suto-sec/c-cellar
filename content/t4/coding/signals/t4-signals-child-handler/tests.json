@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "child: got SIGUSR1\nparent: child exited with 0\n"
+  }
+ ]
+}

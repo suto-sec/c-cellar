@@ -1,0 +1,15 @@
+{
+ "id": "t4-pipes-sum-until-eof",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "pipes",
+ "title": "Sum what arrives until the pipe closes",
+ "stars": 3,
+ "minutes": 11,
+ "order": 3,
+ "summary": "End of file on a pipe: read returns 0 when every write end is closed.",
+ "hints": [
+  "The child's loop is `while (read(p[0], &x, sizeof x) == sizeof x) sum += x;`. It ends only when ALL copies of the write end are closed.",
+  "The child must close its own copy of `p[1]` (right after the `fork`) and the parent must close `p[1]` after sending: otherwise `read` never returns 0 and the child hangs."
+ ]
+}

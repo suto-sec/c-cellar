@@ -1,0 +1,37 @@
+{
+ "cases": [
+  {
+   "args": [
+    "echo",
+    "hello",
+    "world"
+   ],
+   "stdout": "hello world\nthe command finished correctly\n"
+  },
+  {
+   "args": [
+    "nosuchcommand_xyz",
+    "-l"
+   ],
+   "stdout": "the command did not run correctly\n"
+  },
+  {
+   "args": [
+    "false"
+   ],
+   "stdout": "the command did not run correctly\n"
+  },
+  {
+   "cmd": "printf \"a\\n\" > f; \"$BIN\" cat f",
+   "setup": "true",
+   "stdout": "a\nthe command finished correctly\n"
+  },
+  {
+   "args": [
+    "ls",
+    "/nonexistent_dir_q"
+   ],
+   "stdout": "the command did not run correctly\n"
+  }
+ ]
+}

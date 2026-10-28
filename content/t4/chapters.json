@@ -1,0 +1,70 @@
+{
+ "chapters": [
+  {
+   "id": "concepts",
+   "title": "Processes: the concepts",
+   "track": "derusting",
+   "blurb": "What a process is, its states and its PCB, the queues, and the ways processes talk to each other."
+  },
+  {
+   "id": "procs",
+   "title": "Processes: fork, wait, exit",
+   "track": "derusting",
+   "blurb": "Creating a child with fork, waiting for it and reading its exit status."
+  },
+  {
+   "id": "exec",
+   "title": "Running other programs: exec",
+   "track": "derusting",
+   "blurb": "The exec family, running a command in a child, and what exec keeps."
+  },
+  {
+   "id": "pipes",
+   "title": "Pipes and redirection",
+   "track": "derusting",
+   "blurb": "pipe, close the unused ends, dup2, and joining commands the way the shell does."
+  },
+  {
+   "id": "signals",
+   "title": "Signals",
+   "track": "derusting",
+   "blurb": "signal, kill, raise, pause and alarm: events between processes."
+  },
+  {
+   "id": "threads",
+   "title": "Threads",
+   "track": "derusting",
+   "blurb": "pthread_create and pthread_join, passing data and getting results back."
+  },
+  {
+   "id": "races",
+   "title": "Race conditions and mutexes",
+   "track": "derusting",
+   "blurb": "Shared data, lost updates, critical sections and pthread mutexes."
+  },
+  {
+   "id": "semaphores",
+   "title": "Semaphores",
+   "track": "derusting",
+   "blurb": "sem_init, sem_wait and sem_post: order, limits and turns."
+  },
+  {
+   "id": "condvars",
+   "title": "Condition variables",
+   "track": "derusting",
+   "blurb": "Waiting for a condition with a mutex, and the producer/consumer problem."
+  },
+  {
+   "id": "scheduling",
+   "title": "CPU scheduling",
+   "track": "derusting",
+   "blurb": "FCFS, SJF, priorities and round robin: waiting times, turnaround and Gantt charts."
+  },
+  {
+   "id": "procprogs",
+   "title": "Process and thread programs",
+   "track": "exercises",
+   "blurb": "Exam-style programs that combine fork, pipes, signals, threads and synchronization."
+  }
+ ]
+}

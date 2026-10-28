@@ -1,0 +1,15 @@
+{
+ "id": "t4-procs-process-chain",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "procs",
+ "title": "A chain of processes",
+ "stars": 4,
+ "minutes": 10,
+ "order": 12,
+ "summary": "Each process creates the next one and waits for it.",
+ "hints": [
+  "Write a function `level(k, n)`: print `down k`, flush, and if `k < n` create a child that calls `level(k + 1, n)` and then exits; the parent waits; finally print `up k`.",
+  "`fflush(stdout)` before every `fork`, or the pending output is copied into the child."
+ ]
+}

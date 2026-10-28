@@ -1,0 +1,15 @@
+{
+ "id": "t4-semaphores-order",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "semaphores",
+ "title": "First this, then that",
+ "stars": 3,
+ "minutes": 9,
+ "order": 2,
+ "summary": "A semaphore starting at 0 forces an order between two threads.",
+ "hints": [
+  "Start the semaphore at `0`. The thread that must go second begins with `sem_wait`; the one that goes first ends its print with `sem_post`.",
+  "Create the thread that prints `second` FIRST: without the semaphore it would then usually print first."
+ ]
+}

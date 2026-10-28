@@ -1,0 +1,15 @@
+{
+ "id": "t4-exec-failure-report",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "exec",
+ "title": "Did the command run?",
+ "stars": 3,
+ "minutes": 9,
+ "order": 6,
+ "summary": "Distinguish a failed exec from a command that fails.",
+ "hints": [
+  "In the child, if `execvp` returns, call `exit(127)`. The parent tells the two cases apart by the status: 127 means the command could not be started.",
+  "`WIFEXITED(status)` first, then `WEXITSTATUS(status)`."
+ ]
+}

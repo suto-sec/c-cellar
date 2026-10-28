@@ -1,0 +1,15 @@
+{
+ "id": "t4-pipes-child-to-parent",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "pipes",
+ "title": "The child sends a number",
+ "stars": 2,
+ "minutes": 7,
+ "order": 2,
+ "summary": "The other direction: the child writes, the parent reads.",
+ "hints": [
+  "Send the bytes of an `int` directly: `write(p[1], &value, sizeof value)` and `read(p[0], &value, sizeof value)`.",
+  "The child closes `p[0]`, the parent closes `p[1]`."
+ ]
+}

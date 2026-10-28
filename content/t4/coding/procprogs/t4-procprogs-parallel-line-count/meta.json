@@ -1,0 +1,15 @@
+{
+ "id": "t4-procprogs-parallel-line-count",
+ "tag": "t4",
+ "track": "exercises",
+ "topic": "procprogs",
+ "title": "Count the lines of many files at once",
+ "stars": 5,
+ "minutes": 22,
+ "order": 7,
+ "summary": "One child and one pipe per file: the parent collects the results.",
+ "hints": [
+  "Per file: `pipe`, `fork`. The child opens the file with `fopen`, counts the `'\\n'` characters, writes the count (a `long`) into its pipe and ends; if the file cannot be opened it writes `-1`.",
+  "Create ALL the children first, then read the pipes in argument order (so the work is done in parallel and the output order is fixed). Keep the pipe read ends in an array."
+ ]
+}

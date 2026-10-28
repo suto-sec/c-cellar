@@ -1,0 +1,15 @@
+{
+ "id": "t4-exec-system",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "exec",
+ "title": "A tiny system()",
+ "stars": 3,
+ "minutes": 8,
+ "order": 8,
+ "summary": "Run a whole command line through sh -c.",
+ "hints": [
+  "`execl(\"/bin/sh\", \"sh\", \"-c\", line, NULL);` makes the shell parse the line: pipes, `;` and quotes then work.",
+  "Read the line with `fgets`. The trailing newline is harmless for `sh -c`."
+ ]
+}

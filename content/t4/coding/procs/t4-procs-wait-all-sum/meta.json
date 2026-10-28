@@ -1,0 +1,15 @@
+{
+ "id": "t4-procs-wait-all-sum",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "procs",
+ "title": "Collect every child",
+ "stars": 3,
+ "minutes": 9,
+ "order": 10,
+ "summary": "Loop on wait until there are no children left.",
+ "hints": [
+  "`wait` returns -1 when the process has no children to wait for, so `while (wait(&status) > 0)` collects them all, whatever their number.",
+  "The children end with different statuses, so add `WEXITSTATUS(status)` inside the loop."
+ ]
+}

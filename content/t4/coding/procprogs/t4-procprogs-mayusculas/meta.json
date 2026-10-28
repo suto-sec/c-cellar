@@ -1,0 +1,15 @@
+{
+ "id": "t4-procprogs-mayusculas",
+ "tag": "t4",
+ "track": "exercises",
+ "topic": "procprogs",
+ "title": "mayusculas: shout it back",
+ "stars": 4,
+ "minutes": 18,
+ "order": 2,
+ "summary": "Two pipes between parent and child: lines out, capital letters back.",
+ "hints": [
+  "Two pipes, made before the `fork`. The child reads lines from one (`fdopen(..., \"r\")` + `fgets`), uppercases them with `toupper` and writes them to the other (`fputs` + `fflush`).",
+  "The parent sends ONE line, flushes, and waits for the answer line before reading the next one. When the input ends, it closes the stream to the child so that the child stops, then waits."
+ ]
+}

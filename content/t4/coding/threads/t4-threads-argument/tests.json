@@ -1,0 +1,22 @@
+{
+ "cases": [
+  {
+   "args": [
+    "42"
+   ],
+   "stdout": "thread got 42\n"
+  },
+  {
+   "args": [
+    "-7"
+   ],
+   "stdout": "thread got -7\n"
+  },
+  {
+   "args": [
+    "0"
+   ],
+   "stdout": "thread got 0\n"
+  }
+ ]
+}

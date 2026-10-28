@@ -1,0 +1,233 @@
+{
+ "order": 13,
+ "entries": [
+  {
+   "id": "t4-ref-process",
+   "title": "process",
+   "category": "Processes",
+   "summary": "A program in execution: its memory, its pid, its state.",
+   "practice_chapters": [
+    "procs"
+   ],
+   "aliases": [
+    "pid",
+    "ppid",
+    "PCB"
+   ],
+   "syntax": "pid_t pid;   /* the identifier of a process */",
+   "header": "<sys/types.h>",
+   "description": "A process is a program that is running: its code, data, heap and stack, the CPU registers (with the program counter) and the files it has open. Several processes can run the same program and they are independent of each other. Every process has a number that identifies it, the **pid**, and knows the pid of the process that created it, the **ppid** (`getpid`, `getppid`). The operating system keeps what it needs about each process in a **process control block (PCB)**: pid and ppid, user and group, state, saved registers, accounting data, scheduling data (priority), memory tables, the table of open files, signals. All the PCBs together are the process table.",
+   "example": "int main(void)\n{\n    printf(\"I am %d, my parent is %d\\n\", (int)getpid(), (int)getppid());\n    return 0;\n}",
+   "mistakes": [
+    "Thinking that a process and a program are the same: one program can be several processes."
+   ],
+   "see": [
+    "t4-ref-getpid",
+    "t4-ref-process-states",
+    "t4-ref-fork"
+   ]
+  },
+  {
+   "id": "t4-ref-process-states",
+   "title": "states",
+   "category": "Processes",
+   "summary": "New, ready, running, waiting, terminated: the life of a process.",
+   "practice_chapters": [
+    "concepts"
+   ],
+   "aliases": [
+    "states",
+    "ready",
+    "running",
+    "blocked"
+   ],
+   "syntax": "new -> ready -> running -> terminated\n            ^   |\n            |   v\n         waiting",
+   "description": "A process moves between states: **new** (being created), **ready** (waiting for a CPU), **running** (its instructions are executing), **waiting** or **blocked** (waiting for an event: I/O, a signal, a lock) and **terminated**. The transitions: *admitted* (new to ready), *dispatch* (ready to running, chosen by the scheduler), *interrupt* or time slice expired (running to ready), *I/O or event wait* (running to waiting), *I/O or event completion* (waiting to ready) and *exit* (running to terminated). Only a running process uses the CPU. Some systems add **suspended** states for processes swapped out of memory to reduce the degree of multiprogramming.",
+   "mistakes": [
+    "A blocked process does not go straight back to running when its event happens: it goes to ready first and waits to be chosen."
+   ],
+   "see": [
+    "t4-ref-process",
+    "t4-ref-scheduling",
+    "t4-ref-context-switch"
+   ]
+  },
+  {
+   "id": "t4-ref-zombie",
+   "title": "zombie",
+   "category": "Processes",
+   "summary": "A child that ended but has not been waited for yet.",
+   "practice_chapters": [
+    "procs"
+   ],
+   "aliases": [
+    "orphan",
+    "defunct"
+   ],
+   "syntax": "ps aux | grep defunct",
+   "description": "When a child ends, the kernel keeps a small record of it (pid and exit status) until the parent collects it with `wait` or `waitpid`. Until then the child is a **zombie** (`<defunct>` in `ps`): it uses no CPU or memory but still occupies an entry of the process table. A parent that never waits for its children leaks these entries. If the parent ends first, its children are **orphans** and the system (`init`) adopts and reaps them. (Course wording: slide 17 speaks of *cascading termination*; on Linux the children of a dead parent are NOT killed.)",
+   "mistakes": [
+    "Forgetting to `wait` in a long-lived parent: zombies pile up."
+   ],
+   "see": [
+    "t4-ref-wait",
+    "t4-ref-waitpid",
+    "t4-ref-fork"
+   ]
+  },
+  {
+   "id": "t4-ref-fork",
+   "title": "fork",
+   "category": "Processes",
+   "summary": "Create a child process: a copy of the caller.",
+   "practice_chapters": [
+    "procs"
+   ],
+   "syntax": "pid_t fork(void);",
+   "header": "<unistd.h>",
+   "description": "Creates a new process, the **child**, that is a copy of the caller, the **parent**: same code, copies of the data, the same program counter (both continue right after the `fork`) and the same open files (they share the file offsets). The only difference is the return value: the parent receives the **pid of the child**, the child receives **0**, and `-1` means the call failed. The two then run concurrently and nobody knows which goes first; use `wait` to order them. Unflushed stdio buffers are copied too.",
+   "example": "pid_t pid = fork();\nif (pid < 0)\n    perror(\"fork\");\nelse if (pid == 0)\n    printf(\"child\\n\");\nelse\n    printf(\"parent of %d\\n\", (int)pid);",
+   "mistakes": [
+    "Not exiting in the child: it keeps running the rest of the parent's code (and may fork again).",
+    "Printing before `fork` without `fflush`: with output going to a pipe or file the buffered text appears twice.",
+    "`fork(); fork(); fork();` makes 8 processes, not 3."
+   ],
+   "see": [
+    "t4-ref-wait",
+    "t4-ref-exec",
+    "t4-ref-getpid",
+    "t4-ref-process"
+   ]
+  },
+  {
+   "id": "t4-ref-wait",
+   "title": "wait",
+   "category": "Processes",
+   "summary": "Wait for any child to end and get its status.",
+   "practice_chapters": [
+    "procs",
+    "exec"
+   ],
+   "aliases": [
+    "WIFEXITED",
+    "WEXITSTATUS"
+   ],
+   "syntax": "pid_t wait(int *status);",
+   "header": "<sys/wait.h>",
+   "description": "Blocks the caller until one of its children ends, and returns the pid of that child (`-1` if there are no children left to wait for, or on error). If `status` is not `NULL` it receives the exit information, which you decode with macros: `WIFEXITED(status)` is true if the child ended normally (by `exit` or `return` from `main`) and then `WEXITSTATUS(status)` is the exit code (0 to 255). A child killed by a signal does not count as exited normally. To collect all children: `while (wait(&status) > 0) ...`.",
+   "example": "int status;\npid_t who = wait(&status);\nif (WIFEXITED(status))\n    printf(\"%d exited with %d\\n\", (int)who, WEXITSTATUS(status));",
+   "mistakes": [
+    "Calling `WEXITSTATUS` without checking `WIFEXITED` first.",
+    "Waiting only once when there are several children."
+   ],
+   "see": [
+    "t4-ref-waitpid",
+    "t4-ref-fork",
+    "t4-ref-zombie",
+    "t3-ref-exit"
+   ]
+  },
+  {
+   "id": "t4-ref-waitpid",
+   "title": "waitpid",
+   "category": "Processes",
+   "summary": "Wait for a particular child, or poll without blocking.",
+   "practice_chapters": [
+    "procs",
+    "signals"
+   ],
+   "aliases": [
+    "WNOHANG"
+   ],
+   "syntax": "pid_t waitpid(pid_t pid, int *status, int options);",
+   "header": "<sys/wait.h>",
+   "description": "Like `wait`, but you choose whom to wait for: a pid, or `-1` for any child. `options` is `0` (block) or `WNOHANG`: return immediately with `0` when the child has not ended yet, without blocking. The `status` is decoded with `WIFEXITED` and `WEXITSTATUS`. Useful when a parent has several children and cares about one, or must keep working while it waits.",
+   "example": "pid_t r = waitpid(child, &status, WNOHANG);\nif (r == 0)\n    printf(\"still running\\n\");",
+   "mistakes": [
+    "Confusing the return `0` (child still running, with `WNOHANG`) with a child's exit code."
+   ],
+   "see": [
+    "t4-ref-wait",
+    "t4-ref-fork"
+   ]
+  },
+  {
+   "id": "t4-ref-exec",
+   "title": "exec",
+   "category": "Processes",
+   "summary": "Replace the running program by another one (execl, execv, execlp, execvp...).",
+   "practice_chapters": [
+    "exec",
+    "procprogs"
+   ],
+   "aliases": [
+    "execl",
+    "execlp",
+    "execv",
+    "execvp",
+    "execle",
+    "execve",
+    "execvpe"
+   ],
+   "syntax": "int execl(const char *path, const char *arg, ... /* NULL */);\nint execlp(const char *file, const char *arg, ... /* NULL */);\nint execv(const char *path, char *const argv[]);\nint execvp(const char *file, char *const argv[]);",
+   "header": "<unistd.h>",
+   "description": "The `exec` family loads a new program into the calling process. The pid, the parent, the open files (and the current directory and environment) stay; code, data and stack are replaced. On success it **never returns**; it returns `-1` only when it fails (program not found...). Letters in the name: **l** = the arguments are listed one by one and end with `NULL`; **v** = the arguments are in an array that ends with `NULL`; **p** = the program is searched in the `PATH` (without `p` you need its full path). The first argument after the path is the program's own `argv[0]`. It is normally used in a child created by `fork`.",
+   "example": "execlp(\"ls\", \"ls\", \"-l\", NULL);\nperror(\"execlp\");   /* only runs if exec failed */\nexit(127);",
+   "mistakes": [
+    "Forgetting the final `NULL`.",
+    "Forgetting `argv[0]`: `execlp(\"ls\", \"-l\", NULL)` runs `ls` with no options.",
+    "Unflushed output before `exec` is lost: `fflush` first.",
+    "Calling `exec` without `fork`: your own program is gone."
+   ],
+   "see": [
+    "t4-ref-fork",
+    "t4-ref-wait",
+    "t3-ref-dup2"
+   ]
+  },
+  {
+   "id": "t4-ref-getpid",
+   "title": "getpid",
+   "category": "Processes",
+   "summary": "The pid of this process (getppid: of its parent).",
+   "practice_chapters": [
+    "procs"
+   ],
+   "aliases": [
+    "getppid"
+   ],
+   "syntax": "pid_t getpid(void);\npid_t getppid(void);",
+   "header": "<unistd.h>",
+   "description": "`getpid` returns the pid of the calling process and `getppid` the pid of its parent. They never fail. After a `fork`, the child's `getppid()` is the parent's `getpid()`; if the parent ends first, `getppid()` becomes the pid of the adopting process.",
+   "example": "printf(\"%d %d\\n\", (int)getpid(), (int)getppid());",
+   "mistakes": [
+    "Printing a `pid_t` with `%d` without a cast works on Linux but the type is not guaranteed to be `int`."
+   ],
+   "see": [
+    "t4-ref-process",
+    "t4-ref-fork"
+   ]
+  },
+  {
+   "id": "t4-ref-sleep",
+   "title": "sleep",
+   "category": "Processes",
+   "summary": "Suspend the process for some seconds.",
+   "practice_chapters": [
+    "procs",
+    "signals"
+   ],
+   "syntax": "unsigned int sleep(unsigned int seconds);",
+   "header": "<unistd.h>",
+   "description": "Puts the calling process to sleep (state *waiting*) for the given number of seconds. A signal that is caught wakes it early; the return value is then the number of seconds that were left (0 if the full time passed). It is used in exercises to pretend that work takes time and to make a certain order of events likely; it is never a correct way to synchronise two processes.",
+   "example": "sleep(1);",
+   "mistakes": [
+    "Using `sleep` to \"wait for\" another process: use `wait`, a pipe, a semaphore or a condition."
+   ],
+   "see": [
+    "t4-ref-alarm",
+    "t4-ref-pause"
+   ]
+  }
+ ]
+}

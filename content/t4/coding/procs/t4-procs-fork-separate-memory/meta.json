@@ -1,0 +1,15 @@
+{
+ "id": "t4-procs-fork-separate-memory",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "procs",
+ "title": "Copies, not sharing",
+ "stars": 2,
+ "minutes": 5,
+ "order": 3,
+ "summary": "After fork the child has its own copy of every variable.",
+ "hints": [
+  "Declare `int x = 10;` before the `fork`. The child changes ITS copy; the parent's copy stays 10.",
+  "Make the parent print after `wait(NULL)` so the order of the two lines is always the same."
+ ]
+}

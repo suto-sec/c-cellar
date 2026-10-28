@@ -1,0 +1,15 @@
+{
+ "id": "t4-scheduling-fcfs-wait",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "scheduling",
+ "title": "FCFS: waiting times",
+ "stars": 2,
+ "minutes": 9,
+ "order": 1,
+ "summary": "First come, first served: who waits how long.",
+ "hints": [
+  "Sort the process numbers by arrival time (ties: the one listed first); keep a clock `t`. A process starts at `max(t, arrival)` and waits `start - arrival`; the clock then moves to `start + duration`.",
+  "A gap between processes (the CPU is idle until the next arrival) is why you take `max(t, arrival)`. Print the average as `%.2f` after dividing as `double`."
+ ]
+}

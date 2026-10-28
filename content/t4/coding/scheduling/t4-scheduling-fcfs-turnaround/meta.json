@@ -1,0 +1,15 @@
+{
+ "id": "t4-scheduling-fcfs-turnaround",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "scheduling",
+ "title": "FCFS: turnaround times",
+ "stars": 2,
+ "minutes": 8,
+ "order": 2,
+ "summary": "Turnaround = finish time minus arrival time.",
+ "hints": [
+  "It is the same simulation as for the waiting time: the turnaround is `finish - arrival`, with `finish = start + duration`.",
+  "Waiting time = turnaround - duration, so the two numbers are easy to check against each other."
+ ]
+}

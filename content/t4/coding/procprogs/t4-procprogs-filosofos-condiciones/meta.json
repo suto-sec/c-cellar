@@ -1,0 +1,15 @@
+{
+ "id": "t4-procprogs-filosofos-condiciones",
+ "tag": "t4",
+ "track": "exercises",
+ "topic": "procprogs",
+ "title": "filosofos: with condition variables",
+ "stars": 5,
+ "minutes": 26,
+ "order": 10,
+ "summary": "Dining philosophers with one mutex and a condition: eat only when both neighbours are not eating.",
+ "hints": [
+  "Keep `state[i]` (`THINKING`, `HUNGRY`, `EATING`). To pick up: lock, `state[i] = HUNGRY`, `while (state[left] == EATING || state[right] == EATING) pthread_cond_wait(&cv, &m);`, `state[i] = EATING`, unlock.",
+  "To put down: lock, `state[i] = THINKING`, `pthread_cond_broadcast(&cv)` (somebody waiting may now be able to eat), unlock. No semaphores."
+ ]
+}

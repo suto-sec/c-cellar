@@ -1,0 +1,340 @@
+{
+ "id": "t4-th-procs",
+ "tag": "t4",
+ "title": "Processes: fork, wait, exit",
+ "chapter": "procs",
+ "questions": [
+  {
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "What does `fork()` return in the CHILD process?",
+   "options": [
+    "The pid of the parent",
+    "The pid of the child",
+    "0",
+    "-1"
+   ],
+   "answer": 2,
+   "explain": "The child gets 0 and the parent gets the child's pid; -1 means the call failed. That difference is how the two tell themselves apart.",
+   "ref": [
+    "fork"
+   ],
+   "id": "t4-q-procs-01"
+  },
+  {
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "What does `fork()` return in the PARENT process?",
+   "options": [
+    "0",
+    "The pid of the new child",
+    "The pid of the parent",
+    "Nothing: it does not return in the parent"
+   ],
+   "answer": 1,
+   "explain": "The parent receives the pid of the child it has just created.",
+   "ref": [
+    "fork"
+   ],
+   "id": "t4-q-procs-02"
+  },
+  {
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print? (It runs with standard output going to a pipe.)",
+   "code": "#include <stdio.h>\n#include <stdlib.h>\n#include <unistd.h>\n#include <sys/wait.h>\n\nint main(void)\n{\n    int x = 1;\n\n    if (fork() == 0) {\n        x = 2;\n        printf(\"%d\\n\", x);\n        return 0;\n    }\n    wait(NULL);\n    printf(\"%d\\n\", x);\n    return 0;\n}\n",
+   "answer": "2\n1",
+   "explain": "The child changes ITS copy of `x`. The parent waits, then prints its own copy, which is still 1.",
+   "ref": [
+    "fork",
+    "wait"
+   ],
+   "id": "t4-q-procs-03"
+  },
+  {
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "How many lines does this program print? Type the lines (they are all alike).",
+   "code": "#include <stdio.h>\n#include <unistd.h>\n\nint main(void)\n{\n    fork();\n    fork();\n    printf(\"x\\n\");\n    return 0;\n}\n",
+   "answer": "x\nx\nx\nx",
+   "explain": "Both processes continue after each fork: after two forks there are four processes, and each prints one line.",
+   "ref": [
+    "fork"
+   ],
+   "id": "t4-q-procs-04"
+  },
+  {
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "code": "#include <stdio.h>\n#include <stdlib.h>\n#include <unistd.h>\n#include <sys/wait.h>\n\nint main(void)\n{\n    if (fork() == 0) {\n        printf(\"A\\n\");\n        return 0;\n    }\n    wait(NULL);\n    printf(\"B\\n\");\n    return 0;\n}\n",
+   "answer": "A\nB",
+   "explain": "The parent waits for the child to end before it prints, so the order is fixed.",
+   "ref": [
+    "wait",
+    "fork"
+   ],
+   "id": "t4-q-procs-05"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "How many processes exist (the original one included) after `fork(); fork(); fork();`?",
+   "options": [
+    "3",
+    "6",
+    "8",
+    "9"
+   ],
+   "answer": 2,
+   "explain": "Every fork doubles the number of processes: 2 x 2 x 2 = 8.",
+   "ref": [
+    "fork"
+   ],
+   "id": "t4-q-procs-06"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "How many processes exist after `for (i = 0; i < 3; i++) fork();`?",
+   "options": [
+    "3",
+    "4",
+    "6",
+    "8"
+   ],
+   "answer": 3,
+   "explain": "The children also run the loop, so every iteration doubles the count: 2^3 = 8.",
+   "ref": [
+    "fork"
+   ],
+   "id": "t4-q-procs-07"
+  },
+  {
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "A child that has ended but whose parent has not yet called `wait` is called a {{0}}.",
+   "blanks": [
+    {
+     "accept": [
+      "zombie",
+      "defunct",
+      "zombie process"
+     ]
+    }
+   ],
+   "explain": "The system keeps its pid and exit status until the parent collects them. `ps` shows it as `<defunct>`.",
+   "ref": [
+    "zombie"
+   ],
+   "id": "t4-q-procs-08"
+  },
+  {
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "What does a child get from its parent through `fork`?",
+   "options": [
+    "A copy of the variables",
+    "The open file descriptors",
+    "The same pid",
+    "The same point of execution (it continues after the fork)"
+   ],
+   "answer": [
+    0,
+    1,
+    3
+   ],
+   "explain": "The child is a clone: copies of the data, the same open files and the same program counter. Only the pid (and ppid) differ.",
+   "ref": [
+    "fork"
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "False: it has a new pid.",
+    "True."
+   ],
+   "id": "t4-q-procs-09"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Which call makes a parent wait until one of its children ends?",
+   "options": [
+    "sleep",
+    "pause",
+    "wait",
+    "kill"
+   ],
+   "answer": 2,
+   "explain": "`wait` blocks until a child ends and returns its pid.",
+   "ref": [
+    "wait"
+   ],
+   "id": "t4-q-procs-10"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What does `WEXITSTATUS(status)` give?",
+   "options": [
+    "The pid of the child",
+    "The value the child passed to `exit`",
+    "The signal that killed the child",
+    "1 if the child ended and 0 if it is running"
+   ],
+   "answer": 1,
+   "explain": "It extracts the exit code (0 to 255) from the status that `wait` stored.",
+   "ref": [
+    "wait"
+   ],
+   "id": "t4-q-procs-11"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "When is it correct to use `WEXITSTATUS(status)`?",
+   "options": [
+    "Always",
+    "Only if `WIFEXITED(status)` is true",
+    "Only if the child was killed",
+    "Only with `waitpid`"
+   ],
+   "answer": 1,
+   "explain": "A child killed by a signal has no exit code: check `WIFEXITED` first.",
+   "ref": [
+    "wait"
+   ],
+   "id": "t4-q-procs-12"
+  },
+  {
+   "type": "predict",
+   "difficulty": 4,
+   "prompt": "What does this program print when its standard output is a pipe or a file (not a terminal)?",
+   "code": "#include <stdio.h>\n#include <stdlib.h>\n#include <unistd.h>\n#include <sys/wait.h>\n\nint main(void)\n{\n    printf(\"a\");\n    if (fork() == 0) {\n        printf(\"b\\n\");\n        return 0;\n    }\n    wait(NULL);\n    printf(\"c\\n\");\n    return 0;\n}\n",
+   "answer": "ab\nac",
+   "explain": "Without a newline the `a` stays in the stdio buffer, and `fork` copies that buffer into the child. Each process then writes `a` in front of its own text: `ab` and `ac`. A `fflush(stdout)` before the fork would print it once.",
+   "ref": [
+    "fork"
+   ],
+   "id": "t4-q-procs-13"
+  },
+  {
+   "type": "order",
+   "difficulty": 3,
+   "prompt": "Put in order what happens when a parent creates a child and waits for it.",
+   "items": [
+    "The parent calls `fork`",
+    "The system creates the child as a copy of the parent",
+    "Both processes continue after the `fork`",
+    "The child calls `exit`",
+    "The parent's `wait` returns with the child's status"
+   ],
+   "explain": "After the fork two processes run concurrently; the parent's `wait` returns only when the child has ended.",
+   "ref": [
+    "fork",
+    "wait"
+   ],
+   "id": "t4-q-procs-14"
+  },
+  {
+   "type": "single",
+   "difficulty": 4,
+   "prompt": "In Linux, what happens to a child whose parent ends first?",
+   "options": [
+    "It is killed at once",
+    "It is adopted by `init` (or a subreaper) and keeps running",
+    "It becomes a zombie that never goes away",
+    "It ends with SIGPIPE"
+   ],
+   "answer": 1,
+   "explain": "Orphans are adopted by process 1, which reaps them when they end. (The slides mention \"cascading termination\"; that happens on other systems, not on Linux.)",
+   "ref": [
+    "zombie",
+    "process"
+   ],
+   "id": "t4-q-procs-15"
+  },
+  {
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each call with what it does.",
+   "pairs": [
+    [
+     "fork",
+     "creates a copy of the calling process"
+    ],
+    [
+     "wait",
+     "waits for a child to end"
+    ],
+    [
+     "exit",
+     "ends the calling process"
+    ],
+    [
+     "getppid",
+     "gives the pid of the parent"
+    ],
+    [
+     "exec",
+     "replaces the program that is running"
+    ]
+   ],
+   "explain": "These are the basic process calls of the topic.",
+   "ref": [
+    "fork",
+    "wait",
+    "exit",
+    "getpid",
+    "exec"
+   ],
+   "id": "t4-q-procs-16"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "`waitpid(pid, &st, WNOHANG)` returns 0. What does that mean?",
+   "options": [
+    "The child ended with status 0",
+    "The child has not ended yet",
+    "There is no such child",
+    "The call failed"
+   ],
+   "answer": 1,
+   "explain": "With `WNOHANG` the call does not block: 0 means the child exists but is still running.",
+   "ref": [
+    "waitpid"
+   ],
+   "id": "t4-q-procs-17"
+  },
+  {
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "Which statements about `wait(&status)` are true?",
+   "options": [
+    "It returns the pid of the child that ended",
+    "It returns -1 when the process has no children to wait for",
+    "It lets you choose which child to wait for",
+    "It blocks until some child ends"
+   ],
+   "answer": [
+    0,
+    1,
+    3
+   ],
+   "explain": "`wait` takes ANY child. To pick one, use `waitpid`.",
+   "ref": [
+    "wait",
+    "waitpid"
+   ],
+   "option_notes": [
+    "True.",
+    "True: that is how a loop `while (wait(&st) > 0)` ends.",
+    "False: that is `waitpid`.",
+    "True."
+   ],
+   "id": "t4-q-procs-18"
+  }
+ ]
+}

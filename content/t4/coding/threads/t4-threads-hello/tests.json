@@ -1,0 +1,7 @@
+{
+ "cases": [
+  {
+   "stdout": "hello from thread\njoined\n"
+  }
+ ]
+}

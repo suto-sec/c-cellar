@@ -1,0 +1,15 @@
+{
+ "id": "t4-scheduling-round-robin",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "scheduling",
+ "title": "Round robin",
+ "stars": 4,
+ "minutes": 20,
+ "order": 5,
+ "summary": "Time slices and a queue of ready processes.",
+ "hints": [
+  "Keep a circular queue of process numbers. Pop the first, run it for `min(quantum, remaining)`, advance the clock.",
+  "AFTER running, first push every process whose arrival time is now `<= t` (in arrival order), and only THEN push the process just preempted (if it has time left). If the queue is empty, jump the clock to the next arrival."
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "id": "t4-races-lock-ordering",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "races",
+ "title": "Two locks, no deadlock",
+ "stars": 4,
+ "minutes": 16,
+ "order": 7,
+ "summary": "Always take several locks in the same order.",
+ "hints": [
+  "If thread 1 takes lock A then B while thread 2 takes B then A, each can end up holding one lock and waiting for the other forever: a deadlock.",
+  "Take the locks in a fixed order (for example the account with the LOWER number first) in both threads, and release them in any order."
+ ]
+}

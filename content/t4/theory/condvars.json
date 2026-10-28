@@ -1,0 +1,175 @@
+{
+ "id": "t4-th-condvars",
+ "tag": "t4",
+ "title": "Condition variables",
+ "chapter": "condvars",
+ "questions": [
+  {
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "Why is `pthread_cond_wait` called inside a `while` loop and not an `if`?",
+   "options": [
+    "`if` does not compile",
+    "The condition must be checked again after waking up: it may be false again or the wakeup may be spurious",
+    "`while` is faster",
+    "It makes the mutex recursive"
+   ],
+   "answer": 1,
+   "explain": "Another thread may have changed the state in between, so the waiter always re-tests.",
+   "ref": [
+    "pthread_cond_wait",
+    "condition"
+   ],
+   "id": "t4-q-condvars-01"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does `pthread_cond_wait(&c, &m)` do with the mutex?",
+   "options": [
+    "Nothing",
+    "Unlocks it while sleeping and locks it again before returning",
+    "Destroys it",
+    "Locks it for the other threads"
+   ],
+   "answer": 1,
+   "explain": "It must be called with `m` locked: it releases it atomically so another thread can change the condition.",
+   "ref": [
+    "pthread_cond_wait"
+   ],
+   "id": "t4-q-condvars-02"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What must be true when you call `pthread_cond_wait`?",
+   "options": [
+    "The mutex must be unlocked",
+    "The calling thread must hold the mutex",
+    "The condition variable must be locked",
+    "Another thread must be waiting"
+   ],
+   "answer": 1,
+   "explain": "Calling it without the mutex is a bug.",
+   "ref": [
+    "pthread_cond_wait"
+   ],
+   "id": "t4-q-condvars-03"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Five threads wait for a single \"go\" flag. The main thread sets it. Which call wakes all of them?",
+   "options": [
+    "pthread_cond_signal",
+    "pthread_cond_broadcast",
+    "pthread_mutex_unlock",
+    "pthread_cond_wait"
+   ],
+   "answer": 1,
+   "explain": "`signal` wakes at least one waiter, `broadcast` wakes all.",
+   "ref": [
+    "pthread_cond_broadcast",
+    "pthread_cond_signal"
+   ],
+   "id": "t4-q-condvars-04"
+  },
+  {
+   "type": "order",
+   "difficulty": 3,
+   "prompt": "Put the steps of a thread that waits for a condition in order.",
+   "items": [
+    "`pthread_mutex_lock(&m)`",
+    "`while (!ready) pthread_cond_wait(&c, &m);`",
+    "Use the shared data",
+    "`pthread_mutex_unlock(&m)`"
+   ],
+   "explain": "Lock, wait in a loop, work while still holding the mutex, unlock.",
+   "ref": [
+    "pthread_cond_wait",
+    "pthread_mutex_lock"
+   ],
+   "id": "t4-q-condvars-05"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "In the cashier (bank) example, the wrong version makes the employee `sleep(5)` inside the critical section while the balance is too low. Why can the balance never change?",
+   "options": [
+    "`sleep` blocks the whole program",
+    "The bank thread needs the mutex, which the sleeping employee still holds",
+    "The balance is read-only",
+    "The bank thread ended"
+   ],
+   "answer": 1,
+   "explain": "A thread that waits for a condition must RELEASE the mutex while it waits: that is what `pthread_cond_wait` does.",
+   "ref": [
+    "condition",
+    "pthread_cond_wait"
+   ],
+   "id": "t4-q-condvars-06"
+  },
+  {
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "After changing the data, the thread that makes the condition true calls pthread_cond_{{0}} to wake one waiter.",
+   "blanks": [
+    {
+     "accept": [
+      "signal"
+     ]
+    }
+   ],
+   "explain": "Use `broadcast` to wake all of them.",
+   "ref": [
+    "pthread_cond_signal"
+   ],
+   "id": "t4-q-condvars-07"
+  },
+  {
+   "type": "single",
+   "difficulty": 4,
+   "prompt": "`pthread_cond_signal` is called when no thread is waiting. What happens?",
+   "options": [
+    "It is remembered for the next waiter",
+    "Nothing: the signal is lost",
+    "The program ends",
+    "The next `wait` returns at once, once"
+   ],
+   "answer": 1,
+   "explain": "Unlike a semaphore, a condition variable has no memory. That is why you test a real condition (a flag, a counter) in a `while` loop.",
+   "ref": [
+    "pthread_cond_signal",
+    "semaphore"
+   ],
+   "id": "t4-q-condvars-08"
+  },
+  {
+   "type": "multiple",
+   "difficulty": 4,
+   "prompt": "In a bounded buffer with one mutex and two conditions (`has_room`, `has_data`):",
+   "options": [
+    "The producer waits on `has_room` while the buffer is full",
+    "The consumer signals `has_room` after taking an item",
+    "The producer and the consumer use different mutexes for the buffer",
+    "The producer waits with `if` instead of `while`"
+   ],
+   "answer": [
+    0,
+    1
+   ],
+   "explain": "One mutex protects the buffer; each side waits for its own condition in a loop and signals the other after changing the count.",
+   "ref": [
+    "producer-consumer",
+    "pthread_cond_wait"
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "False: they must share one mutex.",
+    "False: it must be a loop."
+   ],
+   "id": "t4-q-condvars-09"
+  }
+ ]
+}

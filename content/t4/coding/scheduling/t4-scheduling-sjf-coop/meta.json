@@ -1,0 +1,15 @@
+{
+ "id": "t4-scheduling-sjf-coop",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "scheduling",
+ "title": "SJF without preemption",
+ "stars": 3,
+ "minutes": 14,
+ "order": 3,
+ "summary": "Shortest job first: the shortest ready process runs to the end.",
+ "hints": [
+  "Loop `N` times: among the processes that have ARRIVED (`arr <= t`) and are not done, pick the shortest duration; ties go to the earlier arrival, then to the one listed first.",
+  "If nobody has arrived yet, move the clock to the next arrival and look again. The process runs for its whole duration (nothing interrupts it)."
+ ]
+}

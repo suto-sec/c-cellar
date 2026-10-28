@@ -1,0 +1,15 @@
+{
+ "id": "t4-scheduling-priority-coop",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "scheduling",
+ "title": "Priorities without preemption",
+ "stars": 3,
+ "minutes": 14,
+ "order": 6,
+ "summary": "The highest-priority ready process goes first.",
+ "hints": [
+  "Like SJF, but the sort key is the PRIORITY (a smaller number means a higher priority); ties go to the earlier arrival, then to the one listed first.",
+  "Once a process starts it runs for its whole duration, even if a higher-priority one arrives."
+ ]
+}

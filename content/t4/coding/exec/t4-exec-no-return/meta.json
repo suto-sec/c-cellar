@@ -1,0 +1,15 @@
+{
+ "id": "t4-exec-no-return",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "exec",
+ "title": "A program that replaces itself",
+ "stars": 3,
+ "minutes": 6,
+ "order": 4,
+ "summary": "exec without fork: the buffer is lost if you do not flush it.",
+ "hints": [
+  "Without `fork`, `exec` replaces THIS program. The text you printed before is still in the stdio buffer when the image is replaced: it is lost unless you call `fflush(stdout)` first.",
+  "The line `after` must not appear: nothing after a successful `exec` runs."
+ ]
+}

@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "args": [
+    "12"
+   ],
+   "stdout": "square: 144\n"
+  },
+  {
+   "args": [
+    "-3"
+   ],
+   "stdout": "square: 9\n"
+  },
+  {
+   "args": [
+    "0"
+   ],
+   "stdout": "square: 0\n"
+  },
+  {
+   "args": [
+    "1000"
+   ],
+   "stdout": "square: 1000000\n"
+  }
+ ]
+}

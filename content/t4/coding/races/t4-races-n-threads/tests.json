@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "args": [
+    "4"
+   ],
+   "stdout": "counter = 400000\n"
+  },
+  {
+   "args": [
+    "1"
+   ],
+   "stdout": "counter = 100000\n"
+  },
+  {
+   "args": [
+    "8"
+   ],
+   "stdout": "counter = 800000\n"
+  },
+  {
+   "args": [
+    "3"
+   ],
+   "stdout": "counter = 300000\n"
+  }
+ ]
+}

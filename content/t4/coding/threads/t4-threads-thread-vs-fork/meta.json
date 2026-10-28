@@ -1,0 +1,15 @@
+{
+ "id": "t4-threads-thread-vs-fork",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "threads",
+ "title": "Thread or process?",
+ "stars": 3,
+ "minutes": 9,
+ "order": 9,
+ "summary": "The same change, made by a thread and by a child process.",
+ "hints": [
+  "A thread shares the variable, so its change survives `pthread_join`. A child process works on a copy, so the parent never sees its change.",
+  "Sequence: print the start value, thread sets `x = 2`, join, print; child process sets `x = 3`, wait, print again."
+ ]
+}

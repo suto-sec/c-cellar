@@ -1,0 +1,15 @@
+{
+ "id": "t4-procprogs-doscomandos",
+ "tag": "t4",
+ "track": "exercises",
+ "topic": "procprogs",
+ "title": "doscomandos: ls | tr",
+ "stars": 4,
+ "minutes": 16,
+ "order": 5,
+ "summary": "Two children and a pipe: the shell's | done by hand.",
+ "hints": [
+  "Pipe first, then two children. Child 1: `dup2(p[1], STDOUT_FILENO)`, close both ends, `execlp(\"ls\", ...)`. Child 2: `dup2(p[0], STDIN_FILENO)`, close both ends, `execlp(\"tr\", ...)`.",
+  "The parent closes both ends and waits twice. If any copy of the write end stays open, `tr` never sees the end of its input and hangs."
+ ]
+}

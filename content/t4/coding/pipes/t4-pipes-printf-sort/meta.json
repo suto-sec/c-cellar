@@ -1,0 +1,15 @@
+{
+ "id": "t4-pipes-printf-sort",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "pipes",
+ "title": "Two commands joined by a pipe",
+ "stars": 4,
+ "minutes": 14,
+ "order": 7,
+ "summary": "Two children, one pipe, dup2 on each side: printf | sort.",
+ "hints": [
+  "Create the pipe first. Child 1: `dup2(p[1], 1)`, close both pipe ends, `execlp(\"printf\", ...)`. Child 2: `dup2(p[0], 0)`, close both, `execlp(\"sort\", ...)`.",
+  "The PARENT must close both ends too, then wait for both children: `sort` only finishes when every copy of the write end is closed."
+ ]
+}

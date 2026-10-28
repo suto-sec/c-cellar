@@ -1,0 +1,28 @@
+{
+ "cases": [
+  {
+   "args": [
+    "5"
+   ],
+   "stdout": "received 5\n"
+  },
+  {
+   "args": [
+    "0"
+   ],
+   "stdout": "received 0\n"
+  },
+  {
+   "args": [
+    "1"
+   ],
+   "stdout": "received 1\n"
+  },
+  {
+   "args": [
+    "100"
+   ],
+   "stdout": "received 100\n"
+  }
+ ]
+}

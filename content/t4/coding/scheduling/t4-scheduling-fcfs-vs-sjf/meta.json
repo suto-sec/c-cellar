@@ -1,0 +1,15 @@
+{
+ "id": "t4-scheduling-fcfs-vs-sjf",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "scheduling",
+ "title": "The convoy effect",
+ "stars": 3,
+ "minutes": 12,
+ "order": 8,
+ "summary": "Same jobs, two algorithms: the average wait changes a lot.",
+ "hints": [
+  "All the jobs arrive at time 0, so FCFS is just the input order, and the waiting time of a job is the sum of the durations before it.",
+  "For SJF sort a copy of the durations in ascending order (a stable sort keeps equal ones in input order) and add up the waits the same way."
+ ]
+}

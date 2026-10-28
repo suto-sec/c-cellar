@@ -1,0 +1,15 @@
+{
+ "id": "t4-semaphores-ping-pong",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "semaphores",
+ "title": "Ping, pong, ping, pong",
+ "stars": 4,
+ "minutes": 11,
+ "order": 4,
+ "summary": "Two semaphores make two threads take turns.",
+ "hints": [
+  "One semaphore per thread: `can_ping` starts at 1, `can_pong` at 0. The ping thread does `wait(can_ping); print; post(can_pong)` and the pong thread the opposite.",
+  "Both threads loop `N` times; pass `N` to them through a global."
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "id": "t4-semaphores-as-mutex",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "semaphores",
+ "title": "A semaphore as a lock",
+ "stars": 3,
+ "minutes": 9,
+ "order": 3,
+ "summary": "A binary semaphore (value 1) protects a critical section.",
+ "hints": [
+  "`sem_init(&s, 0, 1)`: the first `sem_wait` finds 1 and goes on; the next one blocks until a `sem_post`.",
+  "`sem_wait(&s); counter++; sem_post(&s);` is the same pattern as lock / unlock."
+ ]
+}

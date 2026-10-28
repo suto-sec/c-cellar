@@ -1,0 +1,211 @@
+{
+ "id": "t4-th-exec",
+ "tag": "t4",
+ "title": "Running other programs: exec",
+ "chapter": "exec",
+ "questions": [
+  {
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "What does a SUCCESSFUL `exec` return?",
+   "options": [
+    "0",
+    "The pid of the new program",
+    "1",
+    "It never returns"
+   ],
+   "answer": 3,
+   "explain": "The old program is gone, replaced by the new one. `exec` returns (with -1) only if it fails.",
+   "ref": [
+    "exec"
+   ],
+   "id": "t4-q-exec-01"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "In `execlp(\"ls\", \"ls\", \"-l\", NULL)`, what is the second `\"ls\"`?",
+   "options": [
+    "The directory to list",
+    "The `argv[0]` of the new program",
+    "A copy of the first one that is ignored",
+    "The name of the file to search for"
+   ],
+   "answer": 1,
+   "explain": "The first argument is the file to find in the PATH; the arguments that follow are the new program's `argv`, which start with its own name.",
+   "ref": [
+    "exec"
+   ],
+   "id": "t4-q-exec-02"
+  },
+  {
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each letter in the `exec` function names with its meaning.",
+   "pairs": [
+    [
+     "l (execl)",
+     "the arguments are listed one by one"
+    ],
+    [
+     "v (execv)",
+     "the arguments are in an array"
+    ],
+    [
+     "p (execvp)",
+     "the program is searched in the PATH"
+    ],
+    [
+     "e (execle)",
+     "the environment is passed too"
+    ]
+   ],
+   "explain": "execl, execle, execlp take a list ending in NULL; execv, execve, execvp take an array ending in NULL.",
+   "ref": [
+    "exec"
+   ],
+   "id": "t4-q-exec-03"
+  },
+  {
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "What stays the same in a process across an `exec`?",
+   "options": [
+    "Its pid",
+    "Its open file descriptors (unless marked close-on-exec)",
+    "Its global variables",
+    "Its stack"
+   ],
+   "answer": [
+    0,
+    1
+   ],
+   "explain": "The process is the same (pid, parent, descriptors, current directory), but its code, data and stack are replaced.",
+   "ref": [
+    "exec"
+   ],
+   "option_notes": [
+    "True.",
+    "True: that is why redirections made before `exec` work.",
+    "False: the whole memory image is replaced.",
+    "False."
+   ],
+   "id": "t4-q-exec-04"
+  },
+  {
+   "type": "predict",
+   "difficulty": 4,
+   "prompt": "What does this program print when its output goes to a pipe (not a terminal)?",
+   "code": "#include <stdio.h>\n#include <unistd.h>\n\nint main(void)\n{\n    printf(\"one\\n\");\n    execlp(\"echo\", \"echo\", \"two\", NULL);\n    printf(\"three\\n\");\n    return 0;\n}\n",
+   "answer": "two",
+   "explain": "`\"one\\n\"` was waiting in the stdio buffer when `exec` replaced the program, so it is lost; the new `echo` prints `two`; `three` never runs. With `fflush(stdout)` before the `exec`, `one` would also appear.",
+   "ref": [
+    "exec"
+   ],
+   "id": "t4-q-exec-05"
+  },
+  {
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "code": "#include <stdio.h>\n#include <stdlib.h>\n#include <unistd.h>\n#include <sys/wait.h>\n\nint main(void)\n{\n    if (fork() == 0) {\n        execlp(\"echo\", \"echo\", \"hi\", NULL);\n        return 1;\n    }\n    wait(NULL);\n    printf(\"done\\n\");\n    return 0;\n}\n",
+   "answer": "hi\ndone",
+   "explain": "The child becomes `echo hi`; the parent waits and then prints `done`.",
+   "ref": [
+    "exec",
+    "fork",
+    "wait"
+   ],
+   "id": "t4-q-exec-06"
+  },
+  {
+   "type": "fill",
+   "difficulty": 3,
+   "prompt": "In `execvp(argv[1], &argv[1])` the letter `p` means that the command is searched in the {{0}}.",
+   "blanks": [
+    {
+     "accept": [
+      "PATH",
+      "path",
+      "$PATH"
+     ]
+    }
+   ],
+   "explain": "Without `p` (`execv`, `execl`) you must give the full path of the program.",
+   "ref": [
+    "exec"
+   ],
+   "id": "t4-q-exec-07"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "Why is `exec` usually called in a child created by `fork`?",
+   "options": [
+    "`exec` only works in a child",
+    "So that the parent keeps running its own program",
+    "To get a new pid",
+    "To make the program faster"
+   ],
+   "answer": 1,
+   "explain": "`exec` replaces the calling program. If the parent called it, the parent would disappear.",
+   "ref": [
+    "exec",
+    "fork"
+   ],
+   "id": "t4-q-exec-08"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "What should the code right after an `exec` call do?",
+   "options": [
+    "Nothing: it can never run",
+    "Report the error and exit: it only runs if `exec` failed",
+    "Continue as if `exec` had worked",
+    "Call `exec` again with the same arguments"
+   ],
+   "answer": 1,
+   "explain": "On failure `exec` returns -1 and the next line runs: print the reason and `exit` (the child must not go on running the parent's code).",
+   "ref": [
+    "exec"
+   ],
+   "id": "t4-q-exec-09"
+  },
+  {
+   "type": "single",
+   "difficulty": 4,
+   "prompt": "A child calls `dup2(fd, 1)` and then `execlp(\"ls\", ...)`. Where does `ls` write?",
+   "options": [
+    "To the screen",
+    "To the file behind `fd`",
+    "To standard error",
+    "Nowhere: `exec` closes the descriptors"
+   ],
+   "answer": 1,
+   "explain": "Descriptors survive `exec`, so the new program writes to its descriptor 1, which is now the file. That is how a shell implements `ls > file`.",
+   "ref": [
+    "exec",
+    "dup2"
+   ],
+   "id": "t4-q-exec-10"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "How must the argument list of `execl` or `execlp` end?",
+   "options": [
+    "With a newline",
+    "With a zero byte",
+    "With NULL",
+    "With the string \"end\""
+   ],
+   "answer": 2,
+   "explain": "The list of arguments ends with a null pointer (and so does the array of `execv`).",
+   "ref": [
+    "exec"
+   ],
+   "id": "t4-q-exec-11"
+  }
+ ]
+}

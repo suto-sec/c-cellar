@@ -1,0 +1,15 @@
+{
+ "id": "t4-semaphores-getvalue",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "semaphores",
+ "title": "Watch a semaphore count",
+ "stars": 2,
+ "minutes": 6,
+ "order": 1,
+ "summary": "sem_init, sem_wait, sem_post and sem_getvalue on a single thread.",
+ "hints": [
+  "`sem_t s; sem_init(&s, 0, 2);` starts the count at 2 (the `0` means: shared between threads, not processes). `sem_wait` lowers it by 1, `sem_post` raises it by 1.",
+  "`int v; sem_getvalue(&s, &v);` stores the current count in `v`. Include `<semaphore.h>`."
+ ]
+}
