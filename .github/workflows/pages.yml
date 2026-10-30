@@ -1,0 +1,45 @@
+# GitHub Pages deployment of the browser edition. Put this file in .github/workflows/ of the c-cellar repository (it is kept here until then).
+# The machine is built here (downloads pinned in site/fetch_parts.sh), so no binaries have to be committed: only the sources of the site.
+# In the repository: Settings > Pages > Build and deployment > Source: "GitHub Actions".
+name: Pages
+on:
+  push:
+    branches: [main]
+    paths: ["site/**", "content/**", "app/static/**", "app/server.py"]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Download the parts of the machine
+        run: bash site/fetch_parts.sh
+      - name: Pack the machine
+        run: bash site/build_vm.sh
+      - name: Build the site
+        run: python3 site/build_site.py
+      - name: Check the data and the checker (no machine needed)
+        run: |
+          node site/tools/verify_native.mjs --jobs 2
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

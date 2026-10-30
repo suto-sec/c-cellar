@@ -1,0 +1,17 @@
+[
+  {"goto": "http://localhost:8765/?mockvm#/coding/t4-procs-fork-hello"},
+  {"expectText": {"in": "#app", "text": "Check"}},
+  {"click": ".site-editor"},
+  {"type": {"selector": ".site-editor", "text": "int main(void) { return 0; }"}},
+  {"click": ".actions .btn.primary"},
+  {"expectText": {"in": "#app", "text": "checks passed"}},
+  {"screenshot": "out/http-exercise.png"},
+  {"goto": "http://localhost:8765/?mockvm#/coding"},
+  {"expectText": {"in": "#app", "text": "Coding exercises"}},
+  {"screenshot": "out/http-coding.png"},
+  {"goto": "http://localhost:8765/#/theory/t4-th-scheduling"},
+  {"expectText": {"in": "#app", "text": "Start all"}},
+  {"goto": "http://localhost:8765/#/reference"},
+  {"expectText": {"in": "#app", "text": "waitpid"}},
+  {"screenshot": "out/http-reference.png"}
+]

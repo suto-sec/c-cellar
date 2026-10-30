@@ -1,0 +1,6 @@
+work/
+dist/
+dist-test/
+out/
+*.log
+vm_parity_report*.json

@@ -1,0 +1,7 @@
+#!/bin/bash
+# lab-compile ID COMMAND [run]: unpack the sources the page left in /lab/work.tar into /tmp/work/ID, build them in front of the student as the
+# ordinary user "lab", and with "run" start the program in the terminal (stdin is the keyboard).
+d=/tmp/work/$1
+rm -rf "$d"; mkdir -p "$d"; tar -xf /lab/work.tar -C "$d" || exit 1
+chown -R lab:lab "$d"
+D=$d CMD=$2 RUN=$3 su lab -s /bin/bash -c 'bash /usr/local/bin/lab-build "$D" "$CMD" "$RUN"'

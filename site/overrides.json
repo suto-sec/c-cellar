@@ -1,0 +1,22 @@
+{
+  "_why": "Site-only changes. A test override changes only the command or the time allowed (never what is checked). Keyed by exercise id, then the index of the test case. _unavailable lists the exercises that need a 64-bit machine (the machine of the site is 32-bit, so `long` has 4 bytes there): they are shown with a note, Compile and run work, Check says it cannot grade them.",
+  "t3-build-shared-library": {
+    "1": {
+      "cmd": "ldd prog 2>&1 | grep -c libcalc"
+    },
+    "2": {
+      "cmd": "\"$BIN\" 2>&1 | grep -c -e 'cannot open shared object' -e 'Error loading shared library'"
+    }
+  },
+  "_unavailable": {
+    "t3-variables-type-sizes": "It asks for the sizes of the types on a 64-bit system (long is 8 bytes), and the machine of this site is 32-bit (long is 4).",
+    "t3-loops-sum-to-n": "Its results need a 64-bit long, and the machine of this site is 32-bit (long is 4 bytes).",
+    "t3-stdio-sum-numbers-file": "Its results need a 64-bit long, and the machine of this site is 32-bit (long is 4 bytes).",
+    "t3-functions-hanoi-moves": "Its function returns a long that must hold 64-bit values, and the machine of this site is 32-bit (long is 4 bytes).",
+    "t3-functions-recursive-factorial": "Its function returns a long that must hold 20!, which needs 64 bits, and the machine of this site is 32-bit (long is 4 bytes).",
+    "t3-errors-safe-number": "It converts numbers up to the largest 64-bit long, and the machine of this site is 32-bit (long is 4 bytes).",
+    "t3-functions-is-prime": "Its reference needs a 64-bit long to test 2147483647 (the largest int), and the machine of this site is 32-bit (long is 4 bytes).",
+    "t3-loops-prime-check": "Its reference needs a 64-bit long to test 2147483647 (the largest int), and the machine of this site is 32-bit (long is 4 bytes).",
+    "t4-semaphores-producer-consumer": "Its sum (up to about 5 billion) needs a 64-bit long, and the machine of this site is 32-bit (long is 4 bytes)."
+  }
+}

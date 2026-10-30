@@ -1,0 +1,8 @@
+[
+  {"goto": "dist-test/index.html#/theory"},
+  {"expectText": {"in": "#app", "text": "Hello"}},
+  {"screenshot": "out/theory.png"},
+  {"goto": "dist-test/index.html#/reference"},
+  {"expectText": {"in": "#app", "text": "printf"}},
+  {"screenshot": "out/reference.png"}
+]

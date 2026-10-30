@@ -1,0 +1,12 @@
+[
+  {"goto": "dist-test/index.html#/coding/t3-output-hello-world"},
+  {"expectText": {"in": "#app", "text": "Hello"}},
+  {"click": ".site-editor"},
+  {"type": {"selector": ".site-editor", "text": "#include <stdio.h>\nint main(void) { printf(\"Hello, world!\\n\"); return 0; }\n"}},
+  {"screenshot": "out/exercise-typed.png"},
+  {"click": ".actions .btn.primary"},
+  {"expectText": {"in": "#app", "text": "checks passed"}},
+  {"screenshot": "out/exercise-checked.png"},
+  {"click": ".actions .btn:nth-of-type(4)"},
+  {"screenshot": "out/exercise-hint.png"}
+]

@@ -1,0 +1,11 @@
+[
+  {"goto": "dist-test/index.html"},
+  {"expectText": {"in": "body", "text": "Practice C by writing it"}},
+  {"screenshot": "out/home.png"},
+  {"goto": "dist-test/index.html#/coding"},
+  {"expectText": {"in": "#app", "text": "Hello"}},
+  {"screenshot": "out/coding.png"},
+  {"goto": "dist-test/index.html#/coding/t3-output-hello-world"},
+  {"expectText": {"in": "#app", "text": "Check"}},
+  {"screenshot": "out/exercise.png"}
+]

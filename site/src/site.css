@@ -1,0 +1,15 @@
+/* The panels of the browser edition (editor and terminal in place of VS Code and ttyd). Colours follow the theme and the accent. */
+.dbody-wrap > .site-panel { position: absolute; inset: 0; display: flex; flex-direction: column; min-height: 0; background: var(--code); color: var(--text); }
+.site-editor { flex: 1; min-height: 0; width: 100%; box-sizing: border-box; border: 0; resize: none; padding: 12px 14px; outline: none;
+  font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; tab-size: 4; background: var(--code); color: var(--text); }
+.site-editor:focus { box-shadow: inset 0 0 0 2px var(--accent); }
+.site-tabs { display: flex; gap: 4px; padding: 6px 8px; border-bottom: 1px solid var(--line); background: var(--panel2); flex: none; }
+.site-tab { font: 13px ui-monospace, monospace; padding: 3px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--muted); cursor: pointer; }
+.site-tab.on { color: var(--accent); border-color: var(--accent); }
+.site-note { flex: none; font-size: 12px; padding: 4px 12px; color: var(--muted); border-top: 1px solid var(--line); background: var(--panel); }
+.site-note a { color: var(--accent); }
+.site-term-note { flex: none; font-size: 13px; padding: 6px 12px; color: var(--muted); background: var(--panel); border-bottom: 1px solid var(--line); }
+.site-term { flex: 1; min-height: 0; overflow: hidden; background: #1e1e1e; padding: 4px; }
+.site-term-plain { margin: 0; height: 100%; overflow: auto; border: 0; border-radius: 0; background: #1e1e1e; color: #ddd; font: 13px/1.4 ui-monospace, monospace; white-space: pre-wrap; outline: none; }
+#site-footer { font-size: 12px; color: var(--muted); padding: 10px 18px; border-top: 1px solid var(--line); background: var(--panel); }
+#site-footer a { color: var(--accent); }

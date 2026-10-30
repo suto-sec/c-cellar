@@ -1,0 +1,12 @@
+[
+  {"goto": "dist-test/index.html#/theory/t3-th-output"},
+  {"expectText": {"in": "#app", "text": "Start all"}},
+  {"click": ".btn.primary"},
+  {"type": {"selector": "#app input", "text": "zu"}},
+  {"click": ".btn.primary"},
+  {"screenshot": "out/theory-answer.png"},
+  {"goto": "dist-test/index.html#/reference"},
+  {"expectText": {"in": "#app", "text": "printf"}},
+  {"click": "#settings"},
+  {"screenshot": "out/settings.png"}
+]

@@ -1,0 +1,10 @@
+#!/bin/bash
+# lab-build DIR COMMAND [run]: the half of lab-compile that runs as the ordinary user.
+cd "$1" || exit 1
+echo "\$ $2"
+bash -c "$2" || { echo "[build failed: $?]"; exit 1; }
+if [ "$3" = run ]; then
+  echo '$ ./prog'
+  ./prog
+  echo "[exit status $?]"
+fi
