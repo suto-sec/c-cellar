@@ -13,10 +13,8 @@ V86_NPM=0.5.472
 KERNEL_URL=https://i.copy.sh/buildroot-bzimage.bin
 KERNEL_SHA=7befbaea31e249d9a518c4b95fa42b2a193d0e3de46250d617cbdeb866ee28b0
 ALPINE=https://dl-cdn.alpinelinux.org/alpine/v3.21
-MINIROOTFS=alpine-minirootfs-3.21.9-x86.tar.gz
-MINIROOTFS_SHA=d1f765c811308a8b971f43286b512ae622c3fd46e67b0a20bbac9d61d070466d
-APKSTATIC=apk-tools-static-2.14.6-r3.apk
-APKSTATIC_SHA=f0e0d34d6a8f1f9d8704bae6612b4627b96f13cd20db759e9b43085135cd234f
+# Alpine keeps only the newest file of a package in its repository, so these two cannot be pinned by name (a pinned apk-tools-static broke the build within
+# two weeks): the current names are read from the mirror at build time over HTTPS. The minirootfs is checked against the sha256 Alpine publishes with it.
 PACKAGES="bash coreutils grep sed findutils make binutils gcc musl-dev procps"
 
 check() { echo "$2  $1" | sha256sum -c --quiet - || { echo "checksum mismatch: $1" >&2; exit 1; }; }
@@ -36,10 +34,15 @@ check "$W/kernel/buildroot-bzimage.bin" "$KERNEL_SHA"
 
 if [ ! -x "$W/alpine/root/usr/bin/gcc" ]; then
   rm -rf "$W/alpine"; mkdir -p "$W/alpine/tools" "$W/alpine/root"
+  RELEASES=$(curl -fsSL "$ALPINE/releases/x86/latest-releases.yaml" | grep -A8 "flavor: alpine-minirootfs")
+  MINIROOTFS=$(echo "$RELEASES" | sed -n 's/^ *file: *//p' | head -n 1)
+  MINIROOTFS_SHA=$(echo "$RELEASES" | sed -n 's/^ *sha256: *//p' | head -n 1)
+  APKSTATIC=$(curl -fsSL "$ALPINE/main/x86_64/" | grep -o 'apk-tools-static-[0-9][0-9a-z._-]*\.apk' | sort -u | tail -n 1)
+  [ -n "$MINIROOTFS" ] && [ -n "$MINIROOTFS_SHA" ] && [ -n "$APKSTATIC" ] || { echo "could not find the current Alpine files at $ALPINE" >&2; exit 1; }
+  echo "Alpine: $MINIROOTFS, $APKSTATIC"
   curl -fsSL -o "$W/alpine/$MINIROOTFS" "$ALPINE/releases/x86/$MINIROOTFS"
   curl -fsSL -o "$W/alpine/$APKSTATIC" "$ALPINE/main/x86_64/$APKSTATIC"
   check "$W/alpine/$MINIROOTFS" "$MINIROOTFS_SHA"
-  check "$W/alpine/$APKSTATIC" "$APKSTATIC_SHA"
   tar -xzf "$W/alpine/$APKSTATIC" -C "$W/alpine/tools"
   tar -xzf "$W/alpine/$MINIROOTFS" -C "$W/alpine/root"
   # no root needed: user mode, and the packages' install scripts are skipped (the root filesystem only has to exist, not to boot by itself)
