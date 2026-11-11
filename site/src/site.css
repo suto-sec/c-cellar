@@ -13,3 +13,5 @@
 .site-term-plain { margin: 0; height: 100%; overflow: auto; border: 0; border-radius: 0; background: #1e1e1e; color: #ddd; font: 13px/1.4 ui-monospace, monospace; white-space: pre-wrap; outline: none; }
 #site-footer { font-size: 12px; color: var(--muted); padding: 10px 18px; border-top: 1px solid var(--line); background: var(--panel); }
 #site-footer a { color: var(--accent); }
+.site-monaco { flex: 1; min-height: 0; position: relative; }
+.site-monaco[hidden], .site-editor[hidden] { display: none; }

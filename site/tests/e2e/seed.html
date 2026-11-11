@@ -1,0 +1,8 @@
+<!doctype html><meta charset="utf-8"><title>seed</title>
+<script>
+// test helper: puts a program into the editor's storage, then opens the exercise (the screenshot tool cannot type)
+var code = '#include <stdio.h>\n#include <stdlib.h>\n\n/* print a greeting */\nint main(int argc, char *argv[])\n{\n    int i;\n    for (i = 0; i < 3; i++) {\n        printf("Hello, world! %d\\n", i);   // a comment\n    }\n    return EXIT_SUCCESS;\n}\n';
+localStorage.setItem("cellar.site.code.v1.t3-output-hello-world/answer.c", code);
+if (/[?&]dark/.test(location.search)) localStorage.setItem("cellar.theme", "dark"); else localStorage.removeItem("cellar.theme");
+location.href = "index.html" + (location.search || "?x=1") + "#/coding/t3-output-hello-world";
+</script>
