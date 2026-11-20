@@ -161,6 +161,38 @@ def check_skipped(coding):
     print("  ok   skipped exercises count nowhere")
 
 
+def check_custom_paths(coding):
+    """Importing a path: a good file is kept and listed, a bad one is refused with a message, a built-in id cannot be taken, a re-import replaces, delete removes."""
+    ids = sorted(coding)[:3]
+    saved = S.CUSTOM_PATHS
+    with tempfile.TemporaryDirectory() as tmp:
+        S.CUSTOM_PATHS = Path(tmp) / "paths"
+        try:
+            r = S.import_custom_path({"id": "mine", "title": "Mine", "phases": [{"title": "A", "note": "n", "items": ids[:2] + ["no-such-exercise"]}, {"title": "B", "items": ids[2:]}]})
+            if (r["count"], r["replaced"], len(r["warnings"])) != (3, False, 1):
+                err(f"import_custom_path: unexpected result {r}")
+            got = S.load_custom_paths()
+            if got and got[0].get("source", {}).get("id") != "mine":
+                err("load_custom_paths must carry the imported file as `source`")
+            if [p["id"] for p in got] != ["mine"] or got[0]["items"] != ids or [len(p["items"]) for p in got[0]["phases"]] != [2, 1]:
+                err(f"load_custom_paths: unexpected {got}")
+            if not S.import_custom_path({"id": "mine", "title": "Again", "items": ids[:1]})["replaced"] or S.load_custom_paths()[0]["title"] != "Again":
+                err("importing the same id again must replace the path")
+            for bad in ({"id": "course", "title": "x", "items": ids}, {"id": "Bad Id", "title": "x", "items": ids}, {"id": "ok", "title": "x", "items": ["nope"]},
+                        {"id": "ok", "title": "x"}, {"id": "ok", "title": "", "items": ids}, [], "text"):
+                try:
+                    S.import_custom_path(bad)
+                    err(f"import_custom_path accepted {bad!r}")
+                except ValueError:
+                    pass
+            S.delete_custom_path("mine")
+            if S.load_custom_paths():
+                err("delete_custom_path left the path behind")
+        finally:
+            S.CUSTOM_PATHS = saved
+    print("custom paths: import, replace, refuse, delete: ok")
+
+
 def main():
     chapters = S.load_chapters()
     chap = {(c["tag"], c["id"]): c for c in chapters}
@@ -413,6 +445,7 @@ def main():
     bare = [e["title"] for e in S.reference_with_links() if not e["practice"]["count"]]
     print(f"  note: {len(bare)} of {len(ref)} reference entries are used by no exercise yet")
     check_skipped(coding)
+    check_custom_paths(coding)
     if errors:
         print(f"\n{len(errors)} problem(s)")
         return 1

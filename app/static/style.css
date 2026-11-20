@@ -356,9 +356,19 @@ button.reflink { width: 100%; border: 0; background: none; font: inherit; font-s
 .plancard .plantitle { font-weight: 700; font-size: 15px; } .plancard .planmeta { font: 12px var(--mono); opacity: .75; }
 .plancard.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); } .plancard.on .planmeta { opacity: .9; }
 .pathchips { gap: 6px; }
+.importedgroup { border-top: 1px dashed var(--line); padding-top: 10px; }
+.chip.imported { border-style: dashed; }
 .pcount { font: 600 11px var(--mono); opacity: .7; margin-left: 2px; }
 .pathbody { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
 .pathblurb { font-size: 14px; }
+.pathact { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.pathimport { font-size: 14px; } .pathimport > summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+.pathimport p { margin: 8px 0; } .pathformat { margin: 4px 0 8px; } .pathformat summary { cursor: pointer; font-size: 13px; }
+.pathformat pre { background: var(--code); border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; overflow: auto; font: 13px var(--mono); margin: 6px 0; }
+.pathform { display: grid; gap: 8px; } .pathjson { min-height: 120px; }
+.pathmsg { display: flex; gap: 6px 10px; flex-wrap: wrap; align-items: center; margin-top: 6px; } .pathmsg > div { flex-basis: 100%; font-size: 13px; } .pathmsg .bad { color: var(--bad); }
+.phasenote { margin: 0 0 10px; padding: 8px 12px; border-left: 3px solid var(--accent); background: var(--panel2); border-radius: 0 8px 8px 0; font-size: 14px; }
+.phasenote p { margin: .4em 0; } .phasenote ul { margin: .4em 0; padding-left: 1.3em; }
 
 .stepsegs { display: flex; margin-top: 6px; } .stepsegs .seg { flex: 1; text-align: center; }   /* (the label is a flex box, so its span fills it even when the other option wraps to two lines) */
 

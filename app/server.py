@@ -102,6 +102,110 @@ def load_learning_paths():
     return out
 
 
+CUSTOM_PATHS = PROGRESS_DIR / "paths"   # the paths the student imported, one JSON file each (they belong to the student, not to the content)
+_SLUG = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
+
+
+def normalize_custom_path(raw, coding, chapters, taken):
+    """Checks a path file the student imports and returns (clean path, warnings). Raises ValueError with a message for the student when the file cannot be used.
+    A path file is {id, title, blurb?, items | phases}: `items` is a flat list of exercise ids; `phases` is a list of {title, note?, items, theory?} in the order to
+    study them (`theory` = chapters, as "t4/signals", whose theory questions belong to the phase). Exercises that do not exist here are dropped with a warning
+    (a path written for another version of the lab still works); `taken` are the ids of the built-in paths, which an imported one may not replace."""
+    if not isinstance(raw, dict):
+        raise ValueError("a path file is a JSON object ({\"id\": ..., \"title\": ..., \"phases\": [...]})")
+    pid = raw.get("id")
+    if not isinstance(pid, str) or not _SLUG.match(pid):
+        raise ValueError("`id` must be 1-40 characters: lowercase letters, digits and hyphens, not starting with a hyphen")
+    if pid in taken:
+        raise ValueError(f"`id` \"{pid}\" is the id of a built-in path: choose another")
+    title = raw.get("title")
+    if not isinstance(title, str) or not title.strip() or len(title) > 80:
+        raise ValueError("`title` must be a text of 1-80 characters")
+    blurb = raw.get("blurb", "")
+    if not isinstance(blurb, str) or len(blurb) > 600:
+        raise ValueError("`blurb` must be a text of at most 600 characters")
+    if ("phases" in raw) == ("items" in raw):
+        raise ValueError("give either `items` (a list of exercise ids) or `phases` (a list of {title, note, items}), not both and not neither")
+    phases_in = raw["phases"] if "phases" in raw else [{"title": title, "items": raw["items"]}]
+    if not isinstance(phases_in, list) or not 1 <= len(phases_in) <= 40:
+        raise ValueError("`phases` must be a list of 1-40 phases")
+    keys = {f"{c['tag']}/{c['id']}" for c in chapters}
+    warnings, seen, phases = [], set(), []
+    for n, ph in enumerate(phases_in, 1):
+        if not isinstance(ph, dict) or not isinstance(ph.get("items"), list):
+            raise ValueError(f"phase {n}: it must be an object with a list `items`")
+        ptitle, note = ph.get("title", f"Part {n}"), ph.get("note", "")
+        if not isinstance(ptitle, str) or not ptitle.strip() or len(ptitle) > 80:
+            raise ValueError(f"phase {n}: `title` must be a text of 1-80 characters")
+        if not isinstance(note, str) or len(note) > 6000:
+            raise ValueError(f"phase {n}: `note` must be a text of at most 6000 characters")
+        items = []
+        for i in ph["items"]:
+            if not isinstance(i, str):
+                raise ValueError(f"phase {n}: every item must be an exercise id (a text)")
+            if i not in coding:
+                warnings.append(f"phase {n}: there is no exercise \"{i}\" here: left out")
+            elif i in seen:
+                warnings.append(f"phase {n}: \"{i}\" is already in the path: kept only the first time")
+            else:
+                seen.add(i)
+                items.append(i)
+        theory = ph.get("theory", [])
+        if not isinstance(theory, list) or not all(isinstance(k, str) for k in theory):
+            raise ValueError(f"phase {n}: `theory` must be a list of chapters such as \"t4/signals\"")
+        for k in theory:
+            if k not in keys:
+                warnings.append(f"phase {n}: there is no chapter \"{k}\": left out")
+        phases.append({"title": ptitle.strip(), "note": note.strip(), "items": items, "theory": [k for k in theory if k in keys]})
+    total = sum(len(p["items"]) for p in phases)
+    if not total:
+        raise ValueError("none of the exercises of the file exists in this lab, so there is nothing to study")
+    if total > 600:
+        raise ValueError("a path may have at most 600 exercises")
+    return {"id": pid, "title": title.strip(), "blurb": blurb.strip(), "phases": phases if "phases" in raw else [], "items": [i for p in phases for i in p["items"]]}, warnings
+
+
+def load_custom_paths():
+    """[path]: the imported paths (oldest first), checked again against the exercises that exist now."""
+    out = []
+    if not CUSTOM_PATHS.is_dir():
+        return out
+    coding, chapters = load_coding(), load_chapters()
+    for f in sorted(CUSTOM_PATHS.glob("*.json"), key=lambda f: (f.stat().st_mtime, f.name)):
+        try:
+            raw = _read_json(f)
+            p, _ = normalize_custom_path(raw, coding, chapters, set())
+        except (OSError, ValueError):
+            continue   # (a file that no longer fits is ignored, not shown)
+        p["theory"] = [k for ph in p["phases"] for k in ph["theory"]]
+        p["source"] = raw   # the file as it was imported (the page offers it for download)
+        out.append(p)
+    return out
+
+
+def builtin_path_ids():
+    return {"course"} | {p["id"] for ps in load_learning_paths().values() for p in ps}
+
+
+def import_custom_path(raw):
+    """Saves an imported path file (replacing one with the same id). Returns {ok, id, title, count, replaced, warnings}; ValueError when it cannot be used."""
+    clean, warnings = normalize_custom_path(raw, load_coding(), load_chapters(), builtin_path_ids())
+    f = CUSTOM_PATHS / (clean["id"] + ".json")
+    replaced = f.exists()
+    CUSTOM_PATHS.mkdir(parents=True, exist_ok=True)
+    tmp = f.with_suffix(".tmp")
+    tmp.write_text(json.dumps(raw, indent=1, ensure_ascii=False), encoding="utf-8")   # (the file as the student wrote it: it is checked again every time it is loaded)
+    os.replace(tmp, f)
+    return {"ok": True, "id": clean["id"], "title": clean["title"], "count": len(clean["items"]), "replaced": replaced, "warnings": warnings}
+
+
+def delete_custom_path(pid):
+    f = CUSTOM_PATHS / (str(pid) + ".json")
+    if not _SLUG.match(str(pid)) or not f.is_file():
+        raise ValueError("there is no imported path with that id")
+    f.unlink()
+
+
 def load_theory():
     """{id: set}. A set mirrors one chapter (`chapter`); questions inside a set are ordered by difficulty."""
     order = {(c["tag"], c["id"]): c["order"] for c in load_chapters()}
@@ -825,7 +929,7 @@ class Handler(BaseHTTPRequestHandler):
     def api_get(self, route, query):
         parts = route.split("/")
         if route == "config":
-            return self._send(200, {"vscode_port": VSCODE_PORT, "term_port": TERM_PORT, "tags": sorted({p.name for p in CONTENT.iterdir() if p.is_dir()})})
+            return self._send(200, {"vscode_port": VSCODE_PORT, "term_port": TERM_PORT, "tags": sorted({p.name for p in CONTENT.iterdir() if p.is_dir() and not p.name.startswith(".") and (p / "chapters.json").is_file()})})
         if route == "index":
             prog = load_progress()
             coding = [{"id": e["id"], "tag": e["tag"], "track": e["track"], "topic": e["topic"], "title": e["title"],
@@ -842,7 +946,8 @@ class Handler(BaseHTTPRequestHandler):
                                "qs": [{"d": q.get("difficulty", 1), "s": question_seconds(q), "a": bool(x), "c": bool(x and x.get("last_correct"))} for q, x in zip(qs, st)]})
             ref = load_reference()
             return self._send(200, {"coding": coding, "theory": theory, "reference": len(ref),
-                                    "chapters": load_chapters(), "paths": load_paths(), "learning_paths": load_learning_paths()})
+                                    "chapters": load_chapters(), "paths": load_paths(), "learning_paths": load_learning_paths(),
+                                    "custom_paths": load_custom_paths()})
         if parts[0] == "coding" and len(parts) == 2:
             ex = get_exercise(parts[1])
             if not ex:
@@ -887,25 +992,38 @@ class Handler(BaseHTTPRequestHandler):
         levels = daily.parse_levels(q.get("levels"))
         chapters = daily.parse_chapters(q.get("chapters"))
         with LOCK:
-            ex = daily.find(DAILY_DIR, daily.daily_id(tags[0], day))
-            wanted = {t["chapter"] for t in daily.of_chapters(templates, tags[0], chapters)}   # (the chapters that really have a template)
-            if ex and (levels or chapters) and (ex["topic"] not in wanted or (levels and ex["stars"] not in levels)) and not started(ex):
-                # the topics or levels were changed after today's exercise was built and it is not started: build another one if there is one to build
-                template, _ = daily.choose(DAILY_DIR, templates, tags[0], day, levels, chapters)
-                if template["id"] != ex.get("template"):
-                    shutil.rmtree(ex["dir"], ignore_errors=True)
-                    shutil.rmtree(workspace_dir(ex["id"]), ignore_errors=True)   # (its answer.c belongs to the exercise that is gone)
-                    prog = load_progress()
-                    prog["coding"].pop(ex["id"], None)
-                    save_progress(prog)
-            ex = daily.for_date(DAILY_DIR, templates, tags[0], day, levels, chapters)
+            # today's exercise may already exist, whatever its topic; the chapters chosen decide the topic (tag) of a new one (none chosen: the first)
+            ex = next((e for e in (daily.find(DAILY_DIR, daily.daily_id(tg, day)) for tg in tags) if e), None)
+            tag = ex["tag"] if ex else tags[0]
+            wanted_tags = [tg for tg in tags if chapters and any(t["tag"] == tg and t["chapter"] in chapters for t in templates)]
+            if wanted_tags and tag not in wanted_tags and not (ex and started(ex)):
+                if ex:
+                    self._drop_daily(ex)
+                    ex = None
+                tag = wanted_tags[0]
+            if ex:
+                wanted = {t["chapter"] for t in daily.of_chapters(templates, tag, chapters)}   # (the chapters that really have a template)
+                if (levels or chapters) and (ex["topic"] not in wanted or (levels and ex["stars"] not in levels)) and not started(ex):
+                    # the topics or levels were changed after today's exercise was built and it is not started: build another one if there is one to build
+                    template, _ = daily.choose(DAILY_DIR, templates, tag, day, levels, chapters)
+                    if template["id"] != ex.get("template"):
+                        self._drop_daily(ex)
+            ex = daily.for_date(DAILY_DIR, templates, tag, day, levels, chapters)
         coding = load_progress()["coding"]
         chapter = next((c for c in load_chapters() if c["tag"] == ex["tag"] and c["id"] == ex["topic"]), None)
         days = {v["streak_day"] for v in coding.values() if v.get("streak_day")}
         return self._send(200, {"id": ex["id"], "date": day.isoformat(), "title": ex["title"], "stars": ex["stars"], "tag": ex["tag"],
                                 "chapter": chapter["title"] if chapter else ex["topic"], "status": coding_status(coding.get(ex["id"])), "minutes": minutes_of(ex),
-                                "streak": daily.streak(days, day.isoformat()), "levels_available": daily.available_stars(templates, ex["tag"]),
-                                "chapters_available": sorted({t["chapter"] for t in templates if t["tag"] == ex["tag"]})})
+                                "streak": daily.streak(days, day.isoformat()), "levels_available": sorted({n for tg in tags for n in daily.available_stars(templates, tg)}),
+                                "chapters_available": sorted({t["chapter"] for t in templates})})
+
+    def _drop_daily(self, ex):
+        """Delete a daily exercise that was built but not started (and its workspace and progress entry): another one takes its day."""
+        shutil.rmtree(ex["dir"], ignore_errors=True)
+        shutil.rmtree(workspace_dir(ex["id"]), ignore_errors=True)   # (its answer.c belongs to the exercise that is gone)
+        prog = load_progress()
+        prog["coding"].pop(ex["id"], None)
+        save_progress(prog)
 
     def _daily_history(self, q):
         """The past daily challenges that exist (days on which the app generated one), newest first, with how each went."""
@@ -1007,6 +1125,19 @@ class Handler(BaseHTTPRequestHandler):
                 p["favorites"] = fav
                 save_progress(p)
             return self._send(200, {"favorites": fav})
+        if route == "paths/import":
+            try:
+                with LOCK:
+                    return self._send(200, import_custom_path(body.get("path", body)))
+            except ValueError as e:
+                return self._send(400, {"error": str(e)})
+        if route == "paths/delete":
+            try:
+                with LOCK:
+                    delete_custom_path(body.get("id"))
+                return self._send(200, {"ok": True})
+            except ValueError as e:
+                return self._send(404, {"error": str(e)})
         if route == "progress/reset":
             with LOCK:
                 save_progress({"coding": {}, "theory": {}, "favorites": load_progress().get("favorites", [])})

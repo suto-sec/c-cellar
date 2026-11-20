@@ -5,7 +5,8 @@
   "use strict";
   const PROGRESS_KEY = "cellar.site.progress.v1";
   const CODE_KEY = "cellar.site.code.v1.";
-  const mem = { progress: null, code: {} };   // used when localStorage is not available (a private window...)
+  const PATHS_KEY = "cellar.site.paths.v1";   // the paths the student imported: a list of the files as they were written
+  const mem = { progress: null, code: {}, paths: null };   // used when localStorage is not available (a private window...)
 
   // ------------------------------------------------------------------ storage
   function ls() { try { return root.localStorage; } catch (e) { return null; } }
@@ -20,6 +21,16 @@
   }
   function saveProgress() {
     try { ls().setItem(PROGRESS_KEY, JSON.stringify(mem.progress)); } catch (e) { /* kept in memory only */ }
+  }
+  function loadPaths() {
+    if (mem.paths) return mem.paths;
+    let l = null;
+    try { l = JSON.parse(ls().getItem(PATHS_KEY)); } catch (e) { l = null; }
+    mem.paths = Array.isArray(l) ? l.filter((p) => p && typeof p === "object") : [];
+    return mem.paths;
+  }
+  function savePaths() {
+    try { ls().setItem(PATHS_KEY, JSON.stringify(mem.paths)); } catch (e) { /* kept in memory only */ }
   }
   const store = {
     getCode(id, name) {
@@ -40,12 +51,13 @@
       }
     },
     exportAll() {
-      const out = { progress: loadProgress(), code: {} };
+      const out = { progress: loadProgress(), code: {}, paths: loadPaths() };
       try { for (let i = 0; i < ls().length; i++) { const k = ls().key(i); if (k.startsWith(CODE_KEY)) out.code[k] = ls().getItem(k); } } catch (e) { /* nothing */ }
       return out;
     },
     importAll(data) {
       mem.progress = data.progress; saveProgress();
+      if (Array.isArray(data.paths)) { mem.paths = data.paths; savePaths(); }
       for (const [k, v] of Object.entries(data.code || {})) { try { ls().setItem(k, v); } catch (e) { mem.code[k] = v; } }
     },
   };
@@ -150,6 +162,57 @@
     return out;
   }
 
+  // ------------------------------------------------------------------ imported paths (port of normalize_custom_path / load_custom_paths in app/server.py)
+  const SLUG = /^[a-z0-9][a-z0-9-]{0,39}$/;
+  const isText = (x) => typeof x === "string";
+  const isObject = (x) => x !== null && typeof x === "object" && !Array.isArray(x);
+  /** Checks a path file and returns {path, warnings}; throws an Error with a message for the student when it cannot be used. */
+  function normalizeCustomPath(raw, codingIds, chapterKeys, taken) {
+    if (!isObject(raw)) throw new Error('a path file is a JSON object ({"id": ..., "title": ..., "phases": [...]})');
+    const pid = raw.id;
+    if (!isText(pid) || !SLUG.test(pid)) throw new Error("`id` must be 1-40 characters: lowercase letters, digits and hyphens, not starting with a hyphen");
+    if (taken.has(pid)) throw new Error(`\`id\` "${pid}" is the id of a built-in path: choose another`);
+    const title = raw.title;
+    if (!isText(title) || !title.trim() || title.length > 80) throw new Error("`title` must be a text of 1-80 characters");
+    const blurb = "blurb" in raw ? raw.blurb : "";
+    if (!isText(blurb) || blurb.length > 600) throw new Error("`blurb` must be a text of at most 600 characters");
+    if (("phases" in raw) === ("items" in raw)) throw new Error("give either `items` (a list of exercise ids) or `phases` (a list of {title, note, items}), not both and not neither");
+    const phasesIn = "phases" in raw ? raw.phases : [{ title, items: raw.items }];
+    if (!Array.isArray(phasesIn) || phasesIn.length < 1 || phasesIn.length > 40) throw new Error("`phases` must be a list of 1-40 phases");
+    const warnings = [], seen = new Set(), phases = [];
+    phasesIn.forEach((ph, k) => {
+      const n = k + 1;
+      if (!isObject(ph) || !Array.isArray(ph.items)) throw new Error(`phase ${n}: it must be an object with a list \`items\``);
+      const ptitle = "title" in ph ? ph.title : `Part ${n}`, note = "note" in ph ? ph.note : "";
+      if (!isText(ptitle) || !ptitle.trim() || ptitle.length > 80) throw new Error(`phase ${n}: \`title\` must be a text of 1-80 characters`);
+      if (!isText(note) || note.length > 6000) throw new Error(`phase ${n}: \`note\` must be a text of at most 6000 characters`);
+      const items = [];
+      for (const i of ph.items) {
+        if (!isText(i)) throw new Error(`phase ${n}: every item must be an exercise id (a text)`);
+        if (!codingIds.has(i)) warnings.push(`phase ${n}: there is no exercise "${i}" here: left out`);
+        else if (seen.has(i)) warnings.push(`phase ${n}: "${i}" is already in the path: kept only the first time`);
+        else { seen.add(i); items.push(i); }
+      }
+      const theory = "theory" in ph ? ph.theory : [];
+      if (!Array.isArray(theory) || !theory.every(isText)) throw new Error(`phase ${n}: \`theory\` must be a list of chapters such as "t4/signals"`);
+      for (const c of theory) if (!chapterKeys.has(c)) warnings.push(`phase ${n}: there is no chapter "${c}": left out`);
+      phases.push({ title: ptitle.trim(), note: note.trim(), items, theory: theory.filter((c) => chapterKeys.has(c)) });
+    });
+    const total = phases.reduce((a, p) => a + p.items.length, 0);
+    if (!total) throw new Error("none of the exercises of the file exists in this lab, so there is nothing to study");
+    if (total > 600) throw new Error("a path may have at most 600 exercises");
+    return { path: { id: pid, title: title.trim(), blurb: blurb.trim(), phases: "phases" in raw ? phases : [], items: phases.flatMap((p) => p.items) }, warnings };
+  }
+  const idsOf = (idx) => ({ coding: new Set(idx.coding.map((c) => c.id)), chapters: new Set(idx.chapters.map((c) => c.tag + "/" + c.id)),
+    builtin: new Set(["course", ...Object.values(idx.learning_paths || {}).flat().map((p) => p.id)]) });
+  function customPaths(idx) {
+    const k = idsOf(idx), out = [];
+    for (const raw of loadPaths()) {
+      try { const { path } = normalizeCustomPath(raw, k.coding, k.chapters, new Set()); path.theory = path.phases.flatMap((p) => p.theory); path.source = raw; out.push(path); } catch (e) { /* no longer fits: not shown */ }
+    }
+    return out;
+  }
+
   // ------------------------------------------------------------------ routes
   const notHere = () => { throw new Error("this part is only in the lab version (daily challenge and readiness need the server)"); };
 
@@ -174,7 +237,23 @@
         }
         s.answered = answered; s.correct = correct;
       }
+      idx.custom_paths = customPaths(idx);
       return idx;
+    }
+    if (route === "paths/import" && post) {
+      const idx = await getJson("data/index.json"), k = idsOf(idx);
+      const raw = body.path !== undefined ? body.path : body;
+      const { path, warnings } = normalizeCustomPath(raw, k.coding, k.chapters, k.builtin);
+      const list = loadPaths(), at = list.findIndex((p) => p && p.id === path.id);
+      if (at >= 0) list[at] = raw; else list.push(raw);
+      savePaths();
+      return { ok: true, id: path.id, title: path.title, count: path.items.length, replaced: at >= 0, warnings };
+    }
+    if (route === "paths/delete" && post) {
+      const list = loadPaths(), at = list.findIndex((p) => p && p.id === body.id);
+      if (at < 0) throw new Error("there is no imported path with that id");
+      list.splice(at, 1); savePaths();
+      return { ok: true };
     }
     if (parts[0] === "coding" && parts.length === 2 && !post) {
       const ex = clone(await getJson(`data/coding/${parts[1]}.json`));
@@ -266,5 +345,5 @@
   root.CELLAR_API = api;
   root.CellarStore = store;
   root.CellarGrade = { grade, blanksOk, pairsOk, outputLines, predictHints, answerReveal, publicQuestion, codingStatus };
-  if (typeof module !== "undefined" && module.exports) module.exports = { api, grade, blanksOk, pairsOk, predictHints, answerReveal, publicQuestion };
+  if (typeof module !== "undefined" && module.exports) module.exports = { api, normalizeCustomPath, grade, blanksOk, pairsOk, predictHints, answerReveal, publicQuestion };
 })(typeof window !== "undefined" ? window : globalThis);

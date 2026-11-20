@@ -157,6 +157,14 @@ function codingModel(idx, tags = []) {
     const its = p.ids.map((id) => byId.get(id)).filter(Boolean);
     return { ...p, items: its, live: its.filter(live), setKeys: p.chapterKeys || (p.id === "course" ? null : [...new Set(its.map((i) => i.tag + "/" + i.topic))]) };
   }).filter((p) => p.items.length);
+  // the paths the student imported: they may mix topics, so they are not joined per tag; a path with phases keeps the order and the notes of its file
+  for (const c of idx.custom_paths || []) {
+    const phases = c.phases.map((ph) => { const its = ph.items.map((id) => byId.get(id)).filter(Boolean); return { title: ph.title, note: ph.note, theory: ph.theory || [], items: its, live: its.filter(live) }; }).filter((ph) => ph.items.length);
+    const its = c.phases.length ? phases.flatMap((ph) => ph.items) : c.items.map((id) => byId.get(id)).filter(Boolean);
+    if (!its.length) continue;
+    const setKeys = [...new Set((c.phases.length ? phases : [{ items: its, theory: [] }]).flatMap((ph) => [...ph.items.map((i) => i.tag + "/" + i.topic), ...ph.theory]))];
+    paths.push({ id: c.id, title: c.title, blurb: c.blurb, kind: "topic", custom: true, chapterKeys: null, ids: its.map((i) => i.id), items: its, live: its.filter(live), setKeys, phases: c.phases.length ? phases : null, source: c.source });
+  }
   const course = paths.find((p) => p.id === "course") || (() => { const its = chapters.flatMap((c) => c.items); return { id: "course", title: "Mastery", blurb: "", kind: "plan", chapterKeys: null, setKeys: null, items: its, live: its.filter(live) }; })();
   if (!paths.length) paths = [course];
   const path = paths.find((p) => p.id === readPathId()) || course;
@@ -214,9 +222,17 @@ const timeDot = (i) => (exMin(i) ? [" · ", timeTag(i)] : null);
  *  `count(path)` is the number on each card/chip, `unit` its noun; `minutes(path)` (optional) the time of a path's exercises that are not passed yet;
  *  `done`/`total`/`noun` feed the progress bar; `action` is the Continue button. */
 function pathPanel(model, onPick, { count, unit, minutes, done, total, noun, action }) {
+  const saveBtn = model.path.custom && model.path.source ? h("button", { class: "btn small", title: "Save this path as a JSON file, to keep it or to import it somewhere else", onclick: () => {
+    const a = h("a", { href: URL.createObjectURL(new Blob([JSON.stringify(model.path.source, null, 1)], { type: "application/json" })), download: model.path.id + ".json" });
+    a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  } }, "Download this path") : null;
+  const removeBtn = model.path.custom ? h("button", { class: "btn small", title: "Remove this imported path (your progress on the exercises is kept)", onclick: async () => {
+    if (!confirm(`Remove the path “${model.path.title}”? Your progress on its exercises is kept.`)) return;
+    try { await api("paths/delete", { id: model.path.id }); writePathId("course"); location.reload(); } catch (e) { toast(e.message); }
+  } }, "Remove this path") : null;
   const p = model.path;
   const pick = (x) => () => { writePathId(x.id); onPick(x.id); };
-  const plans = model.paths.filter((x) => x.kind === "plan"), topics = model.paths.filter((x) => x.kind !== "plan");
+  const plans = model.paths.filter((x) => x.kind === "plan"), topics = model.paths.filter((x) => x.kind !== "plan" && !x.custom), imported = model.paths.filter((x) => x.custom);
   const mins = (x, whole) => (minutes ? minutes(x, whole) : null);   // (null: no estimate known)
   const left = total > done ? mins(p) : 0, whole = mins(p, true);
   return h("div", { class: "panel pathpanel" },
@@ -230,11 +246,52 @@ function pathPanel(model, onPick, { count, unit, minutes, done, total, noun, act
       h("div", { class: "pathlabel" }, h("b", {}, "Topics"), h("span", { class: "muted" }, "by what you want to learn")),
       h("div", { class: "fgroup pathchips" }, topics.map((x) => h("button", { class: "chip" + (x.id === p.id ? " on" : ""), "aria-pressed": String(x.id === p.id), title: x.blurb, onclick: pick(x) },
         x.title, " ", h("span", { class: "pcount" }, String(count(x)) + (mins(x, true) ? " · " + timeText(mins(x, true)) : "")))))) : null,
+    imported.length ? h("div", { class: "pathgroup importedgroup" },
+      h("div", { class: "pathlabel" }, h("b", {}, "Imported paths"), h("span", { class: "muted" }, "added by you, not part of the course")),
+      h("div", { class: "fgroup pathchips" }, imported.map((x) => h("button", { class: "chip imported" + (x.id === p.id ? " on" : ""), "aria-pressed": String(x.id === p.id), title: x.blurb, onclick: pick(x) },
+        x.title, " ", h("span", { class: "pcount" }, String(count(x)) + (mins(x, true) ? " · " + timeText(mins(x, true)) : "")))))) : null,
     h("div", { class: "pathbody" },
-      h("div", { style: "flex:1;min-width:220px" }, h("div", { class: "pathblurb" }, h("b", {}, p.title), h("span", { class: "muted" }, p.kind === "plan" ? " · study plan" : " · topic"), h("div", {}, p.blurb)),
+      h("div", { style: "flex:1;min-width:220px" }, h("div", { class: "pathblurb" }, h("b", {}, p.title), h("span", { class: "muted" }, p.kind === "plan" ? " · study plan" : p.custom ? " · imported path" : " · topic"), h("div", {}, p.blurb)),
         h("div", { class: "muted", style: "font-size:13px;margin-top:4px" }, `${done} of ${total} ${noun}`, whole ? (left ? ` · about ${timeText(left)} left of ${timeText(whole)}` : ` · about ${timeText(whole)} in total`) : ""),
         h("div", { class: "bar", style: "margin-top:6px" }, h("span", { style: `width:${total ? (done / total) * 100 : 0}%` }))),
-      action));
+      h("div", { class: "pathact" }, action, saveBtn, removeBtn)),
+    pathImportBox());
+}
+
+const PATH_EXAMPLE = `{
+  "id": "my-path",
+  "title": "My path",
+  "blurb": "One line about what it is for",
+  "phases": [
+    { "title": "First step", "note": "What to learn here, in your own words.",
+      "items": ["t4-procs-fork-hello", "t4-procs-exit-status"],
+      "theory": ["t4/procs"] },
+    { "title": "Second step", "items": ["t4-pipes-parent-to-child"] }
+  ]
+}`;
+/** "Import a path": a path is a small JSON file (an id, a title and the exercises in the order to do them, optionally in phases with a note each) that
+ *  joins the chooser above. The student writes it, or somebody writes it for them; it is kept with their progress, not with the course content. */
+function pathImportBox() {
+  const msg = h("div", { class: "pathmsg" });
+  const text = h("textarea", { class: "predict pathjson", rows: 7, spellcheck: false, placeholder: "Paste the JSON of a path here, or choose its file" });
+  const file = h("input", { type: "file", accept: ".json,application/json", "aria-label": "Path file" });
+  file.addEventListener("change", async () => { if (file.files[0]) { text.value = await file.files[0].text(); msg.replaceChildren(); } });
+  const go = async () => {
+    let raw;
+    try { raw = JSON.parse(text.value); } catch (e) { msg.replaceChildren(h("span", { class: "bad" }, "That is not valid JSON: " + e.message)); return; }
+    try {
+      const r = await api("paths/import", { path: raw });
+      writePathId(r.id);
+      msg.replaceChildren(h("b", {}, `${r.replaced ? "Updated" : "Imported"} “${r.title}” (${r.count} exercises). `),
+        h("button", { class: "btn small primary", onclick: () => location.reload() }, "Open it"),
+        ...(r.warnings || []).map((w) => h("div", { class: "muted" }, w)));
+    } catch (e) { msg.replaceChildren(h("span", { class: "bad" }, e.message)); }
+  };
+  return h("details", { class: "pathimport" }, h("summary", {}, "Import a path…"),
+    h("p", { class: "muted" }, "A path is a JSON file: an id, a title and the exercises in the order to do them, optionally split into phases with a note each. Importing a file with the id of one you already imported replaces it."),
+    h("details", { class: "pathformat" }, h("summary", {}, "What the file looks like"), h("pre", {}, h("code", {}, PATH_EXAMPLE)),
+      h("p", { class: "muted" }, "`items` are exercise ids (the id is in the address of an exercise: #/coding/<id>). `theory` is optional: chapters whose theory questions belong to the phase. Use `items` instead of `phases` for a plain list.")),
+    h("div", { class: "pathform" }, file, text, h("div", { class: "pathgo" }, h("button", { class: "btn small primary", onclick: go }, "Import"))), msg);
 }
 
 /** The local calendar date as YYYY-MM-DD (not UTC: the daily exercise changes at the user's midnight). */
@@ -411,9 +468,12 @@ async function viewCodingList() {
     const m = codingModel(idx, filters.tags);
     // the whole course shows everything, in tracks; a study plan shows its exercises in the same tracks; a topic shows its chapters in its own order
     const inPath = m.path === m.course ? null : new Set(m.path.items.map((i) => i.id));
-    const byTopic = !!m.path.chapterKeys;
-    let chapterList = !inPath ? m.chapters : m.chapters.map((c) => { const its = c.items.filter((i) => inPath.has(i.id)); return { ...c, items: its, live: its.filter(live) }; }).filter((c) => c.items.length);
-    if (byTopic) chapterList = chapterList.sort((a, b) => m.path.chapterKeys.indexOf(a.key) - m.path.chapterKeys.indexOf(b.key));
+    const phased = !!m.path.phases;   // an imported path with phases: each phase is a section of its own, with its note, in the order of the file
+    const byTopic = !!m.path.chapterKeys || phased;
+    const hideSk = readHideSkipped();
+    let chapterList = phased ? m.path.phases.map((ph, n) => { const its = ph.items.filter((i) => !(hideSk && i.skipped)); return { id: "phase-" + n, key: "phase/" + m.path.id + "/" + n, title: `${n + 1}. ${ph.title}`, blurb: "", note: ph.note, items: its, live: its.filter(live) }; }).filter((c) => c.items.length)
+      : !inPath ? m.chapters : m.chapters.map((c) => { const its = c.items.filter((i) => inPath.has(i.id)); return { ...c, items: its, live: its.filter(live) }; }).filter((c) => c.items.length);
+    if (byTopic && !phased) chapterList = chapterList.sort((a, b) => m.path.chapterKeys.indexOf(a.key) - m.path.chapterKeys.indexOf(b.key));
     const groups = byTopic ? [[null, m.path.title, m.path.blurb]] : TRACKS;
     const q = search.value.toLowerCase();
     const narrowed = isNarrowed();
@@ -433,6 +493,7 @@ async function viewCodingList() {
         const det = h("details", { class: "chapter", "data-key": c.key, open: openState.has(c.key) ? openState.get(c.key) : narrowed ? true : isNext || done === 0 && c === chs[0] },
           h("summary", {}, h("span", { class: "ctitle" }, c.title), h("span", { class: "muted csub" }, c.blurb), narrowed ? h("span", { class: "muted", style: "font-size:13px" }, `${rows.length} shown`) : null, c.live.length && timeLabel(c.live) ? h("span", { class: "muted ctime", title: "Estimated time of the chapter, and what is left of it" }, timeLabel(c.live)) : null, c.live.length ? h("span", { class: "cprog" }, `${done}/${c.live.length}`) : h("span", { class: "cprog muted" }, "skipped"),
             h("span", { class: "bar", style: "width:70px" }, h("span", { style: `width:${c.live.length ? (done / c.live.length) * 100 : 0}%` }))),
+          c.note ? h("div", { class: "phasenote md", html: md(c.note) }) : null,
           h("div", { class: "list" }, rows.map((i) => h("a", { class: "row" + (i.skipped ? " skipped" : ""), href: "#/coding/" + i.id },
             i.skipped ? h("span", { class: "st skip", title: "Skipped: it does not count" }, "⊘") : h("span", { class: "st " + i.status, title: STATUS[i.status][1] }, STATUS[i.status][0]),
             h("div", { class: "main" }, h("div", { class: "title" }, i.title), h("div", { class: "sub" }, i.summary)), timeTag(i), h("span", { class: "tag", title: "Course topic " + T(i.tag) }, T(i.tag)), stars(i.stars)))));
@@ -930,17 +991,19 @@ async function viewTheoryList() {
   const bar = makeFilters(FILTER_KEYS.theory, { levels: uniqueSorted(idx.theory.flatMap((t) => t.qs.map((q) => q.d))), levelLabel: (n) => "★".repeat(n), levelTitle: (n) => n + (n === 1 ? " star" : " stars"), done: true, onChange: () => render() });
   // the sets of the chosen path: a set mirrors one coding chapter, so a path selects the sets of its chapters (a study plan, those it has exercises of)
   const inPathOf = (model) => { const keys = model.path.setKeys; return (t) => !keys || keys.includes(t.tag + "/" + t.chapter); };
+  // the order of the sets: a topic and an imported path put them in their own order (the list and the Start/Continue button both follow it)
+  const setOrderOf = (model) => { const pk = model.path.chapterKeys || (model.path.custom ? model.path.setKeys : null); return pk ? (a, b) => pk.indexOf(a.tag + "/" + a.chapter) - pk.indexOf(b.tag + "/" + b.chapter) : null; };
   const setTime = (qs) => leftLabel(qSpend(qs), qSpend(qs.filter((q) => !q.c)));
   let render = () => {
     const f = bar.f;
     const model = codingModel(idx, f.tags), inPath = inPathOf(model);
-    const pk = model.path.chapterKeys;   // (only a topic puts its sets in its own order)
+    const byPath = setOrderOf(model);
     // a set shows only the questions that match the difficulty filter, with progress counted on those
     const sets = idx.theory.filter((t) => (!f.tags.length || f.tags.includes(t.tag)) && inPath(t)).map((t) => {
       const qs = t.qs.filter((q) => !f.levels.length || f.levels.includes(q.d));
       return { ...t, qs, count: qs.length, answered: qs.filter((q) => q.a).length, correct: qs.filter((q) => q.c).length };
     }).filter((t) => t.count && !(f.hideDone && t.correct === t.count));   // (a set you have answered correctly all through counts as completed)
-    if (pk) sets.sort((a, b) => pk.indexOf(a.tag + "/" + a.chapter) - pk.indexOf(b.tag + "/" + b.chapter));
+    if (byPath) sets.sort(byPath);
     const total = idx.theory.filter((t) => (!f.tags.length || f.tags.includes(t.tag)) && inPath(t)).reduce((a, t) => a + t.count, 0);
     const shown = sets.reduce((a, t) => a + t.count, 0);
     holder.replaceChildren(
@@ -959,6 +1022,8 @@ async function viewTheoryList() {
     const f = bar.f;
     const model = codingModel(idx, f.tags), inPath = inPathOf(model);
     const visible = idx.theory.filter((t) => (!f.tags.length || f.tags.includes(t.tag)) && inPath(t));
+    const byPath = setOrderOf(model);
+    if (byPath) visible.sort(byPath);
     const qs = visible.flatMap((t) => t.qs.filter((q) => !f.levels.length || f.levels.includes(q.d)).map((q) => ({ ...q, set: t })));
     const done = qs.filter((q) => q.c).length;
     const next = qs.find((q) => !q.c);
