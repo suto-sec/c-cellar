@@ -1,0 +1,17 @@
+{
+ "id": "t4-procprogs-line-batches",
+ "tag": "t4",
+ "track": "exercises",
+ "topic": "procprogs",
+ "title": "line-batches: children that wait for a signal",
+ "stars": 4,
+ "minutes": 28,
+ "order": 14,
+ "summary": "A chain of children, each paused until the parent signals it, each reading its share of a file through a shared descriptor.",
+ "hints": [
+  "Open the file in the PARENT, before the `fork`: parent and children share the same file offset. Read with `read` one byte at a time (a `FILE *` would read ahead and steal the lines of the next child).",
+  "Install the `SIGUSR1` handler before the `fork`; the child waits with `while (!go) pause();`, where `go` is set by the handler. The parent sends the signal a moment after the `fork` (`usleep(100000)`).",
+  "A child tells the parent how many lines it read with `exit(lines)`; the parent reads it with `WEXITSTATUS`. A child that read fewer lines than asked found the end of the file.",
+  "If the file ends exactly where a batch ends, the next child reads 0 lines: that is allowed, and it is the one that tells the parent that the file is over."
+ ]
+}

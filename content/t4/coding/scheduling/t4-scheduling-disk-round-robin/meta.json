@@ -1,0 +1,16 @@
+{
+ "id": "t4-scheduling-disk-round-robin",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "scheduling",
+ "title": "Round robin with a disk",
+ "stars": 4,
+ "minutes": 24,
+ "order": 15,
+ "summary": "A quantum, a queue, and processes that leave for the disk before their quantum ends.",
+ "hints": [
+  "A process whose burst ends before the quantum does goes to the disk (or terminates): it is not put back in the queue.",
+  "Reset the quantum every time a process is put in the ready queue.",
+  "When a process has used the whole quantum but its burst ends at that very instant, the burst ending wins: it goes to the disk and is not preempted."
+ ]
+}

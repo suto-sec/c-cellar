@@ -1,0 +1,23 @@
+{
+ "cases": [
+  {
+   "cmd": "printf 'hello\\nworld\\n' > d.txt; \"$BIN\" 3 1 d.txt",
+   "stdout": "characters: 12\nfinished in time\n"
+  },
+  {
+   "cmd": "printf 'hello\\nworld\\n' > d.txt; \"$BIN\" 1 5 d.txt",
+   "stdout": "(characters: 12\n)?timeout: children aborted\n",
+   "match": "regex"
+  },
+  {
+   "cmd": "seq 1 5000 > d.txt; \"$BIN\" 4 1 d.txt",
+   "stdout": "characters: 23893\nfinished in time\n",
+   "hidden": true
+  },
+  {
+   "cmd": ": > d.txt; \"$BIN\" 2 0 d.txt",
+   "stdout": "characters: 0\nfinished in time\n",
+   "hidden": true
+  }
+ ]
+}

@@ -74,7 +74,8 @@
    "summary": "A one-way channel between processes (a pair of file descriptors).",
    "practice_chapters": [
     "pipes",
-    "procprogs"
+    "procprogs",
+    "mechanics"
    ],
    "aliases": [
     "pipes"
@@ -104,7 +105,8 @@
    "summary": "Notifications sent to a process: SIGINT, SIGTERM, SIGKILL, SIGUSR1...",
    "practice_chapters": [
     "signals",
-    "concepts"
+    "concepts",
+    "mechanics"
    ],
    "aliases": [
     "SIGINT",
@@ -140,7 +142,8 @@
    "category": "Signals",
    "summary": "Choose what a process does when it receives a signal.",
    "practice_chapters": [
-    "signals"
+    "signals",
+    "mechanics"
    ],
    "aliases": [
     "SIG_IGN",
@@ -169,7 +172,8 @@
    "summary": "Send a signal to a process.",
    "practice_chapters": [
     "signals",
-    "procprogs"
+    "procprogs",
+    "mechanics"
    ],
    "syntax": "int kill(pid_t pid, int sig);",
    "header": "<signal.h>",

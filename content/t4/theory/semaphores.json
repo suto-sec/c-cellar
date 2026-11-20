@@ -242,6 +242,47 @@
     "sem_init"
    ],
    "id": "t4-q-semaphores-12"
+  },
+  {
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "The semaphore starts at 0, so `sem_wait` in `main` blocks until the thread has printed `B` and posted. Then `main` prints `A`.",
+   "ref": [
+    "sem_wait",
+    "semaphore"
+   ],
+   "code": "#include <stdio.h>\n#include <pthread.h>\n#include <semaphore.h>\n\nstatic sem_t s;\n\nstatic void *worker(void *arg)\n{\n    (void)arg;\n    printf(\"B\\n\");\n    sem_post(&s);\n    return NULL;\n}\n\nint main(void)\n{\n    pthread_t t;\n\n    sem_init(&s, 0, 0);\n    pthread_create(&t, NULL, worker, NULL);\n    sem_wait(&s);\n    printf(\"A\\n\");\n    pthread_join(t, NULL);\n    return 0;\n}\n",
+   "answer": "B\nA",
+   "id": "t4-q-semaphores-13"
+  },
+  {
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "The value starts at 2, two `sem_wait` take it to 0 and the `sem_post` brings it to 1.",
+   "ref": [
+    "sem_wait",
+    "sem_post",
+    "semaphore"
+   ],
+   "code": "#include <stdio.h>\n#include <semaphore.h>\n\nint main(void)\n{\n    sem_t s;\n    int v;\n\n    sem_init(&s, 0, 2);\n    sem_wait(&s);\n    sem_wait(&s);\n    sem_post(&s);\n    sem_getvalue(&s, &v);\n    printf(\"%d\\n\", v);\n    return 0;\n}\n",
+   "answer": "1",
+   "id": "t4-q-semaphores-14"
+  },
+  {
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "explain": "Two semaphores make the threads take turns: `ping` can go first (its semaphore is 1); after printing it lets `pong` go, and so on, twice.",
+   "ref": [
+    "sem_wait",
+    "sem_post",
+    "semaphore"
+   ],
+   "code": "#include <stdio.h>\n#include <pthread.h>\n#include <semaphore.h>\n\nstatic sem_t ping_turn, pong_turn;\n\nstatic void *ping(void *arg)\n{\n    int i;\n\n    (void)arg;\n    for (i = 0; i < 2; i++) {\n        sem_wait(&ping_turn);\n        printf(\"ping\\n\");\n        sem_post(&pong_turn);\n    }\n    return NULL;\n}\n\nstatic void *pong(void *arg)\n{\n    int i;\n\n    (void)arg;\n    for (i = 0; i < 2; i++) {\n        sem_wait(&pong_turn);\n        printf(\"pong\\n\");\n        sem_post(&ping_turn);\n    }\n    return NULL;\n}\n\nint main(void)\n{\n    pthread_t a, b;\n\n    sem_init(&ping_turn, 0, 1);\n    sem_init(&pong_turn, 0, 0);\n    pthread_create(&b, NULL, pong, NULL);\n    pthread_create(&a, NULL, ping, NULL);\n    pthread_join(a, NULL);\n    pthread_join(b, NULL);\n    return 0;\n}\n",
+   "answer": "ping\npong\nping\npong",
+   "id": "t4-q-semaphores-15"
   }
  ]
 }

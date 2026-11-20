@@ -58,7 +58,8 @@
    "category": "Processes",
    "summary": "A child that ended but has not been waited for yet.",
    "practice_chapters": [
-    "procs"
+    "procs",
+    "mechanics"
    ],
    "aliases": [
     "orphan",
@@ -81,7 +82,8 @@
    "category": "Processes",
    "summary": "Create a child process: a copy of the caller.",
    "practice_chapters": [
-    "procs"
+    "procs",
+    "mechanics"
    ],
    "syntax": "pid_t fork(void);",
    "header": "<unistd.h>",
@@ -106,16 +108,19 @@
    "summary": "Wait for any child to end and get its status.",
    "practice_chapters": [
     "procs",
-    "exec"
+    "exec",
+    "mechanics"
    ],
    "aliases": [
     "WIFEXITED",
-    "WEXITSTATUS"
+    "WEXITSTATUS",
+    "WIFSIGNALED",
+    "WTERMSIG"
    ],
    "syntax": "pid_t wait(int *status);",
    "header": "<sys/wait.h>",
-   "description": "Blocks the caller until one of its children ends, and returns the pid of that child (`-1` if there are no children left to wait for, or on error). If `status` is not `NULL` it receives the exit information, which you decode with macros: `WIFEXITED(status)` is true if the child ended normally (by `exit` or `return` from `main`) and then `WEXITSTATUS(status)` is the exit code (0 to 255). A child killed by a signal does not count as exited normally. To collect all children: `while (wait(&status) > 0) ...`.",
-   "example": "int status;\npid_t who = wait(&status);\nif (WIFEXITED(status))\n    printf(\"%d exited with %d\\n\", (int)who, WEXITSTATUS(status));",
+   "description": "Blocks the caller until one of its children ends, and returns the pid of that child (`-1` if there are no children left to wait for, or on error). If `status` is not `NULL` it receives the exit information, which you decode with macros: `WIFEXITED(status)` is true if the child ended normally (by `exit` or `return` from `main`) and then `WEXITSTATUS(status)` is the exit code (0 to 255). A child killed by a signal does not count as exited normally: `WIFSIGNALED(status)` is true then, and `WTERMSIG(status)` is the number of the signal that killed it (2 for `SIGINT`, 9 for `SIGKILL`, 11 for `SIGSEGV`). To collect all children: `while (wait(&status) > 0) ...`.",
+   "example": "int status;\npid_t who = wait(&status);\nif (WIFEXITED(status))\n    printf(\"%d exited with %d\\n\", (int)who, WEXITSTATUS(status));\nif (WIFSIGNALED(status))\n    printf(\"killed by signal %d\\n\", WTERMSIG(status));",
    "mistakes": [
     "Calling `WEXITSTATUS` without checking `WIFEXITED` first.",
     "Waiting only once when there are several children."
@@ -134,7 +139,8 @@
    "summary": "Wait for a particular child, or poll without blocking.",
    "practice_chapters": [
     "procs",
-    "signals"
+    "signals",
+    "mechanics"
    ],
    "aliases": [
     "WNOHANG"
@@ -158,7 +164,8 @@
    "summary": "Replace the running program by another one (execl, execv, execlp, execvp...).",
    "practice_chapters": [
     "exec",
-    "procprogs"
+    "procprogs",
+    "mechanics"
    ],
    "aliases": [
     "execl",
@@ -212,21 +219,48 @@
    "id": "t4-ref-sleep",
    "title": "sleep",
    "category": "Processes",
-   "summary": "Suspend the process for some seconds.",
+   "summary": "Suspend the process for some seconds (or microseconds with usleep).",
    "practice_chapters": [
     "procs",
-    "signals"
+    "signals",
+    "mechanics"
    ],
-   "syntax": "unsigned int sleep(unsigned int seconds);",
+   "syntax": "unsigned int sleep(unsigned int seconds);\nint usleep(useconds_t microseconds);",
    "header": "<unistd.h>",
-   "description": "Puts the calling process to sleep (state *waiting*) for the given number of seconds. A signal that is caught wakes it early; the return value is then the number of seconds that were left (0 if the full time passed). It is used in exercises to pretend that work takes time and to make a certain order of events likely; it is never a correct way to synchronise two processes.",
-   "example": "sleep(1);",
+   "description": "Puts the calling process to sleep (state *waiting*) for the given number of seconds. A signal that is caught wakes it early; the return value is then the number of seconds that were left (0 if the full time passed). It is used in exercises to pretend that work takes time and to make a certain order of events likely; it is never a correct way to synchronise two processes. `usleep` does the same with microseconds (`usleep(50000)` is 50 ms), which is handy to poll or to order events that are fractions of a second apart; the same warning applies: it is not synchronisation.",
+   "example": "sleep(1);\nusleep(50000);   /* 50 ms */",
    "mistakes": [
     "Using `sleep` to \"wait for\" another process: use `wait`, a pipe, a semaphore or a condition."
    ],
    "see": [
     "t4-ref-alarm",
     "t4-ref-pause"
+   ],
+   "aliases": [
+    "usleep"
+   ]
+  },
+  {
+   "id": "t4-ref-_exit",
+   "title": "_exit",
+   "category": "Processes",
+   "summary": "End the process at once, without flushing the stdio buffers.",
+   "practice_chapters": [
+    "mechanics",
+    "procs"
+   ],
+   "syntax": "void _exit(int status);",
+   "header": "<unistd.h>",
+   "description": "Ends the process immediately with `status`, like `exit`, but it does NOT run the exit handlers and does NOT flush the stdio buffers. In a child created with `fork` that is exactly what you want after a failed `exec` (or when the child has nothing more to do): the child holds a copy of the parent's unflushed `printf` text, and `exit` would write that text a second time. The parent still sees the status with `WEXITSTATUS`. By convention a child whose `exec` failed ends with status `127`.",
+   "example": "execlp(\"nosuchcmd\", \"nosuchcmd\", (char *)NULL);\n_exit(127);   /* exec only returns when it failed */",
+   "mistakes": [
+    "Calling `exit` in a child after a failed `exec`: buffered output of the parent may be printed twice.",
+    "Using `_exit` in a program that wrote with `printf` and expects that text to appear: it is never flushed."
+   ],
+   "see": [
+    "t4-ref-fork",
+    "t4-ref-exec",
+    "t3-ref-exit"
    ]
   }
  ]

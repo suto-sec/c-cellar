@@ -1,0 +1,8 @@
+{
+ "cases": [
+  {
+   "args": [],
+   "stdout": "child 2 finished\nchild 3 finished\nchild 1 finished\nparent kept working\n"
+  }
+ ]
+}

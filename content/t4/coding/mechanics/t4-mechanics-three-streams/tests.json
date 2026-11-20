@@ -1,0 +1,21 @@
+{
+ "cases": [
+  {
+   "cmd": "printf 'pear\\napple\\n' > in.txt; \"$BIN\" in.txt out.txt err.txt; cat out.txt err.txt",
+   "stdout": "exit status 0\napple\npear\nsort done\n"
+  },
+  {
+   "cmd": "\"$BIN\" nope.txt out.txt err.txt 2>&1",
+   "stdout": "nope.txt: Error. No such file or directory\nexit status 1\n"
+  },
+  {
+   "cmd": "echo b > in.txt; echo OLD-CONTENT-THAT-IS-LONG > out.txt; \"$BIN\" in.txt out.txt err.txt; cat out.txt",
+   "stdout": "exit status 0\nb\n"
+  },
+  {
+   "cmd": "echo x > in.txt; \"$BIN\" in.txt nodir/out.txt err.txt 2>&1; ls err.txt 2>&1 | wc -l",
+   "stdout": "nodir/out.txt: Error. No such file or directory\nexit status 1\n1\n",
+   "hidden": true
+  }
+ ]
+}

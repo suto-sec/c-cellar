@@ -1,0 +1,16 @@
+{
+ "id": "t4-mechanics-zombie-check",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "mechanics",
+ "title": "Is it still there?",
+ "stars": 2,
+ "minutes": 8,
+ "order": 1,
+ "summary": "A child that ended but was not collected: kill(pid, 0) still finds it.",
+ "hints": [
+  "`kill(pid, 0)` sends no signal: it only reports (`0` = the process exists, `-1` = it does not).",
+  "The child must have ended before you look: `sleep(1)` in the parent is enough here.",
+  "A child that has ended and has not been collected with `wait`/`waitpid` is a zombie, and a zombie still counts as existing."
+ ]
+}

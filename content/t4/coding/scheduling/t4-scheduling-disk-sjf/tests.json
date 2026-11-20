@@ -1,0 +1,38 @@
+{
+ "cases": [
+  {
+   "stdin": "1\n0 3 20 10 15\n",
+   "stdout": "P1: finish 45 ready 0 disk-wait 0\naverage turnaround: 45.00\n"
+  },
+  {
+   "stdin": "2\n15 7 10 10 10 30 15 10 5\n5 7 5 10 10 5 20 20 40\n",
+   "stdout": "P1: finish 140 ready 30 disk-wait 5\nP2: finish 135 ready 10 disk-wait 10\naverage turnaround: 127.50\n"
+  },
+  {
+   "stdin": "3\n25 3 15 20 40\n25 5 30 5 30 30 20\n10 5 10 20 60 30 10\n",
+   "stdout": "P1: finish 110 ready 10 disk-wait 0\nP2: finish 220 ready 80 disk-wait 0\nP3: finish 240 ready 100 disk-wait 0\naverage turnaround: 170.00\n"
+  },
+  {
+   "stdin": "3\n35 3 30 10 30\n40 5 20 20 10 30 60\n30 5 15 10 30 10 10\n",
+   "stdout": "P1: finish 165 ready 60 disk-wait 0\nP2: finish 235 ready 55 disk-wait 0\nP3: finish 175 ready 70 disk-wait 0\naverage turnaround: 156.67\n"
+  },
+  {
+   "stdin": "4\n15 7 60 20 5 20 5 10 10\n5 5 20 10 40 10 30\n30 7 30 30 10 30 15 20 15\n10 1 5\n",
+   "stdout": "P1: finish 285 ready 140 disk-wait 0\nP2: finish 140 ready 25 disk-wait 0\nP3: finish 230 ready 50 disk-wait 0\nP4: finish 30 ready 15 disk-wait 0\naverage turnaround: 156.25\n"
+  },
+  {
+   "stdin": "4\n15 7 30 10 20 10 10 30 10\n50 1 40\n10 5 5 20 30 5 5\n20 1 40\n",
+   "stdout": "P1: finish 200 ready 65 disk-wait 0\nP2: finish 190 ready 100 disk-wait 0\nP3: finish 100 ready 25 disk-wait 0\nP4: finish 140 ready 80 disk-wait 0\naverage turnaround: 133.75\n"
+  },
+  {
+   "stdin": "5\n25 5 10 20 30 5 5\n15 3 60 30 60\n40 3 20 5 40\n15 3 10 10 40\n30 5 15 10 15 30 20\n",
+   "stdout": "P1: finish 140 ready 45 disk-wait 0\nP2: finish 370 ready 205 disk-wait 0\nP3: finish 220 ready 115 disk-wait 0\nP4: finish 180 ready 105 disk-wait 0\nP5: finish 135 ready 10 disk-wait 5\naverage turnaround: 184.00\n",
+   "hidden": true
+  },
+  {
+   "stdin": "6\n5 7 30 20 5 10 40 20 10\n40 5 5 10 15 20 60\n10 3 5 10 40\n25 1 10\n20 3 20 10 40\n35 3 10 5 30\n",
+   "stdout": "P1: finish 265 ready 110 disk-wait 15\nP2: finish 325 ready 155 disk-wait 20\nP3: finish 175 ready 95 disk-wait 15\nP4: finish 55 ready 20 disk-wait 0\nP5: finish 255 ready 165 disk-wait 0\nP6: finish 135 ready 40 disk-wait 15\naverage turnaround: 179.17\n",
+   "hidden": true
+  }
+ ]
+}

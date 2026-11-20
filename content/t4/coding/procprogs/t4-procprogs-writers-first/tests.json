@@ -1,0 +1,9 @@
+{
+ "cases": [
+  {
+   "args": [],
+   "stdout": "start order: R0 W1 R[23] R[23]\nmax readers at once: 2\nviolations: 0\n",
+   "match": "regex"
+  }
+ ]
+}

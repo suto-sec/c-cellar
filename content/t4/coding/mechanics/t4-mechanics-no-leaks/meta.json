@@ -1,0 +1,16 @@
+{
+ "id": "t4-mechanics-no-leaks",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "mechanics",
+ "title": "Leave no descriptors behind",
+ "stars": 3,
+ "minutes": 15,
+ "order": 4,
+ "summary": "Two hundred pipes in a loop: close every end, and the next free descriptor is still 3.",
+ "hints": [
+  "Both ends of every pipe must be closed in the parent: the write end right after the `fork` (or the reader never sees the end of the data) and the read end when you are done.",
+  "The child closes the two original ends after `dup2`, before the `exec`.",
+  "`dup(0)` returns the LOWEST free descriptor. With only 0, 1 and 2 open it returns `3`; if you leaked descriptors it returns a bigger number."
+ ]
+}

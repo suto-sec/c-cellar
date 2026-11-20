@@ -1,0 +1,15 @@
+{
+ "id": "t4-scheduling-disk-priority",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "scheduling",
+ "title": "Priorities with preemption and a disk",
+ "stars": 4,
+ "minutes": 20,
+ "order": 14,
+ "summary": "The best priority always runs; a better one that becomes ready preempts.",
+ "hints": [
+  "The line of a process is `arrival priority k burst1 ... burstk`.",
+  "A preempted process keeps what is left of its burst."
+ ]
+}

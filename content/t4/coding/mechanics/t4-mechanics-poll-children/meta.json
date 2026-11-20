@@ -1,0 +1,16 @@
+{
+ "id": "t4-mechanics-poll-children",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "mechanics",
+ "title": "Keep working while they run",
+ "stars": 3,
+ "minutes": 14,
+ "order": 3,
+ "summary": "Collect children as they finish, without ever blocking.",
+ "hints": [
+  "`waitpid(-1, &status, WNOHANG)` returns the pid of a child that has ended, `0` if none has yet, and `-1` if there are no children.",
+  "The child can tell the parent who it is through its exit status: `_exit(i)` and `WEXITSTATUS(status)`.",
+  "Count a poll only when nothing had finished (the call returned `0`), and wait between polls with `usleep(50000)`."
+ ]
+}

@@ -31,6 +31,12 @@
    "blurb": "signal, kill, raise, pause and alarm: events between processes."
   },
   {
+   "id": "mechanics",
+   "title": "How a shell works",
+   "track": "derusting",
+   "blurb": "Small drills on what any shell relies on: zombies, polling children, descriptor leaks, redirecting the three streams, signals across exec and chains of pipes."
+  },
+  {
    "id": "threads",
    "title": "Threads",
    "track": "derusting",

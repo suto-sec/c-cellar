@@ -1,0 +1,16 @@
+{
+ "id": "t4-mechanics-three-streams",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "mechanics",
+ "title": "Three streams, three files",
+ "stars": 3,
+ "minutes": 16,
+ "order": 5,
+ "summary": "In a child: stdin from a file, stdout and stderr to two others, then exec.",
+ "hints": [
+  "Do all the work in the CHILD, between `fork` and `exec`: open, `dup2` onto 0, 1 or 2, then `close` the original descriptor.",
+  "Input: `O_RDONLY`. Outputs: `O_WRONLY | O_CREAT | O_TRUNC`, mode `0644`. Redirect standard error LAST, so that if an `open` fails the message can still reach the real standard error.",
+  "Wait with `waitpid` and decode with `WEXITSTATUS`. If a file cannot be opened the child ends with status 1 and does not run the command."
+ ]
+}

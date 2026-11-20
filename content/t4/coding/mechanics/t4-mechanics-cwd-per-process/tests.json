@@ -1,0 +1,32 @@
+{
+ "cases": [
+  {
+   "setup": "mkdir sub",
+   "args": [
+    "sub"
+   ],
+   "stdout": "child: sub\nparent: unchanged\n"
+  },
+  {
+   "setup": "mkdir -p a/b/deep",
+   "args": [
+    "a/b/deep"
+   ],
+   "stdout": "child: deep\nparent: unchanged\n"
+  },
+  {
+   "args": [
+    "nosuch"
+   ],
+   "stdout": "child: cannot go to nosuch: No such file or directory\nparent: unchanged\n"
+  },
+  {
+   "setup": "touch plain",
+   "args": [
+    "plain"
+   ],
+   "stdout": "child: cannot go to plain: Not a directory\nparent: unchanged\n",
+   "hidden": true
+  }
+ ]
+}

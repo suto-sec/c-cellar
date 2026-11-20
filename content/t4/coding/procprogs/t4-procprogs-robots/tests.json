@@ -1,0 +1,30 @@
+{
+ "cases": [
+  {
+   "args": [
+    "500"
+   ],
+   "stdout": "T3 made: 500\ntray limits respected: yes\npieces used: T1=1000 T2=1000\n"
+  },
+  {
+   "args": [
+    "1"
+   ],
+   "stdout": "T3 made: 1\ntray limits respected: yes\npieces used: T1=2 T2=2\n"
+  },
+  {
+   "args": [
+    "100"
+   ],
+   "stdout": "T3 made: 100\ntray limits respected: yes\npieces used: T1=200 T2=200\n",
+   "hidden": true
+  },
+  {
+   "args": [
+    "3000"
+   ],
+   "stdout": "T3 made: 3000\ntray limits respected: yes\npieces used: T1=6000 T2=6000\n",
+   "hidden": true
+  }
+ ]
+}

@@ -1,0 +1,364 @@
+{
+ "id": "t4-th-mechanics",
+ "tag": "t4",
+ "title": "How a shell works",
+ "chapter": "mechanics",
+ "questions": [
+  {
+   "type": "single",
+   "difficulty": 1,
+   "prompt": "Why can `cd` not be an ordinary program that a shell starts in a child process?",
+   "explain": "Every process has its own current directory. A child that calls `chdir` changes only its own; when it ends, the shell is still where it was. So the shell must call `chdir` itself, in its own process: `cd` is a **built-in**.",
+   "ref": [
+    "chdir",
+    "fork"
+   ],
+   "options": [
+    "There is no `chdir` function for programs other than the shell",
+    "The directory of a process belongs to that process: a child would change its own and the shell's would stay the same",
+    "A child cannot read the `HOME` variable",
+    "Only the root user is allowed to change the directory"
+   ],
+   "answer": 1,
+   "id": "t4-q-mechanics-01"
+  },
+  {
+   "type": "order",
+   "difficulty": 2,
+   "prompt": "Put in order what a shell does for the foreground line `ls -l`.",
+   "explain": "The prompt and the read come first. The `fork` creates the child, the child replaces itself with `ls` (`exec`) and the parent waits for it before showing the next prompt.",
+   "ref": [
+    "fork",
+    "exec",
+    "waitpid"
+   ],
+   "items": [
+    "Show the prompt and read a line",
+    "`fork` to create a child",
+    "The child calls `exec` with the command",
+    "The parent waits for the child with `waitpid`",
+    "Show the prompt again"
+   ],
+   "id": "t4-q-mechanics-02"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "In a child, `execvp(...)` has returned. What does that tell you, and what should the child do?",
+   "explain": "`exec` never returns when it works: the new program takes over. If it returned, the command could not be run. The child must report it and end (`_exit` with a non-zero status, 127 by convention); if it carried on it would go on running the parent's code as a second copy of the shell.",
+   "ref": [
+    "exec",
+    "_exit"
+   ],
+   "options": [
+    "The command is still running in the background; the child should wait for it",
+    "The exec failed: report the error and end the child with `_exit` and a non-zero status",
+    "Nothing: when `exec` fails the child ends by itself",
+    "The command ran correctly; the child continues with the next line"
+   ],
+   "answer": 1,
+   "id": "t4-q-mechanics-03"
+  },
+  {
+   "type": "multiple",
+   "difficulty": 2,
+   "prompt": "Which statements are true when a program runs `a | b | c` with three children and two pipes, without a shell?",
+   "explain": "The pipes must exist before the forks so the children inherit them. A pipe end that stays open in a process that does not need it can keep a reader from ever seeing the end of the data, so every process closes what it does not use, the parent included. And there are three children to wait for.",
+   "ref": [
+    "pipe",
+    "fork",
+    "close",
+    "wait"
+   ],
+   "options": [
+    "Every child closes the pipe ends it does not use",
+    "Both pipes are created before the children are created",
+    "The parent closes its own copies of all the pipe ends once the children exist",
+    "The parent has to wait for the three children",
+    "One single pipe shared by the three processes is enough"
+   ],
+   "answer": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "option_notes": [
+    "True.",
+    "True.",
+    "True.",
+    "True.",
+    "False: a pipe is one-way between one writer side and one reader side; each link between two neighbours needs its own pipe."
+   ],
+   "id": "t4-q-mechanics-04"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "The last command of a chain keeps waiting for input forever, although the commands before it have ended. What is the most likely cause?",
+   "explain": "A reader sees the end of the data only when **every** copy of the write end is closed. If the parent (or another child) still holds one open, the reader waits for more data that will never come.",
+   "ref": [
+    "pipe",
+    "close"
+   ],
+   "options": [
+    "`dup2` can only be used once per program",
+    "The reader forgot to call `wait`",
+    "The pipe was created after the `fork`",
+    "Some process, for example the parent, still has the write end of the pipe open"
+   ],
+   "answer": 3,
+   "id": "t4-q-mechanics-05"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "A shell runs `sort < data > result`. Where does it open the two files and change descriptors 0 and 1?",
+   "explain": "In the child, between `fork` and `exec`. The shell must keep its own standard input and output for the next lines; a descriptor change survives the `exec`, so the new program finds the files already in place.",
+   "ref": [
+    "fork",
+    "dup2",
+    "exec"
+   ],
+   "options": [
+    "The kernel does it by itself when it sees `<` and `>`",
+    "In the new program, after `exec`",
+    "In the child, after `fork` and before `exec`",
+    "In the parent, before the `fork`, for good"
+   ],
+   "answer": 2,
+   "id": "t4-q-mechanics-06"
+  },
+  {
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "explain": "`SIGINT` is ignored in the parent; `fork` copies that and `exec` keeps it, so the shell the child becomes ignores the signal it sends to itself, and goes on to print `alive`.",
+   "ref": [
+    "signal",
+    "exec",
+    "kill"
+   ],
+   "code": "#include <stdio.h>\n#include <signal.h>\n#include <unistd.h>\n#include <sys/wait.h>\n\nint main(void)\n{\n    signal(SIGINT, SIG_IGN);\n    if (fork() == 0) {\n        execlp(\"sh\", \"sh\", \"-c\", \"kill -INT $$; echo alive\", (char *)NULL);\n        _exit(127);\n    }\n    wait(NULL);\n    return 0;\n}\n",
+   "answer": "alive",
+   "id": "t4-q-mechanics-07"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "A shell ignores `SIGINT` so that Ctrl+C does not kill it. How does a foreground command it starts still die with Ctrl+C?",
+   "explain": "An ignored signal stays ignored after `exec`, so the child must put the default action back with `signal(SIGINT, SIG_DFL)` before calling `exec`.",
+   "ref": [
+    "signal",
+    "exec"
+   ],
+   "options": [
+    "The child restores the default action with `signal(SIGINT, SIG_DFL)` before the `exec`",
+    "The child must call `kill(getppid(), SIGINT)`",
+    "The kernel resets every signal to the default when it creates the child",
+    "It cannot: a program started by a shell ignores Ctrl+C"
+   ],
+   "answer": 0,
+   "id": "t4-q-mechanics-08"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "A process had installed a handler function for `SIGINT` and then calls `exec`. What happens to `SIGINT` in the new program?",
+   "explain": "The handler was code of the old program, which `exec` replaces, so the disposition goes back to the default. Only the **ignored** signals stay ignored.",
+   "ref": [
+    "signal",
+    "exec"
+   ],
+   "options": [
+    "It still runs the same handler",
+    "Back to the default action: handlers do not survive `exec`, ignoring does",
+    "The program cannot be started until the handler is removed",
+    "It is ignored"
+   ],
+   "answer": 1,
+   "id": "t4-q-mechanics-09"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Why does a shell itself ignore `SIGINT` (Ctrl+C)?",
+   "explain": "Ctrl+C is sent by the terminal to everything that runs in the foreground, the shell included, not only to the command it started. Without ignoring it the shell would die together with the command.",
+   "ref": [
+    "signal",
+    "kill"
+   ],
+   "options": [
+    "Because a shell is not allowed to receive signals",
+    "Because the kernel never sends `SIGINT` to the foreground command",
+    "Because Ctrl+C also reaches the shell, which must stay alive when the command it started is stopped",
+    "To make commands run faster"
+   ],
+   "answer": 2,
+   "id": "t4-q-mechanics-10"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "A shell has a background job that already ended. It then starts a foreground command and waits with `wait(NULL)`. What can go wrong?",
+   "explain": "`wait` returns for **any** child that has ended: here the old background one, which makes the shell believe that the foreground command finished and show the prompt too early. `waitpid(pid_of_the_foreground_child, ...)` waits for the one that matters.",
+   "ref": [
+    "wait",
+    "waitpid"
+   ],
+   "options": [
+    "Nothing: `wait` always waits for the last child created",
+    "`wait` can return for the finished background job, so the shell stops waiting for the foreground command too early",
+    "`wait` can only be called once in the whole program",
+    "The foreground command will never start"
+   ],
+   "answer": 1,
+   "id": "t4-q-mechanics-11"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What does a shell do differently with a command that ends in `&`?",
+   "explain": "It starts the command like any other but does not wait for it: the prompt comes back at once. The shell has to collect the child later (for example with `waitpid` and `WNOHANG`), or it stays a zombie.",
+   "ref": [
+    "fork",
+    "waitpid",
+    "zombie"
+   ],
+   "options": [
+    "It runs the command twice",
+    "It does not wait for the child: it shows the prompt again at once and collects the child later",
+    "It runs the command in the shell's own process",
+    "It waits for the child with a longer time limit"
+   ],
+   "answer": 1,
+   "id": "t4-q-mechanics-12"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "What is a zombie process?",
+   "explain": "A zombie has finished, but its parent has not read its exit status yet with `wait`/`waitpid`. The system keeps a small record so the parent can still read it. `kill(pid, 0)` still finds it; after the `wait` it is gone.",
+   "ref": [
+    "zombie",
+    "wait"
+   ],
+   "options": [
+    "A child whose parent has ended",
+    "A child that has ended and whose status its parent has not collected yet",
+    "A child that is stuck in an infinite loop",
+    "A child blocked in `read`"
+   ],
+   "answer": 1,
+   "id": "t4-q-mechanics-13"
+  },
+  {
+   "type": "fill",
+   "difficulty": 2,
+   "prompt": "`waitpid(-1, &status, {{0}})` returns `0` at once, without blocking, when no child has ended yet.",
+   "explain": "`WNOHANG` turns `waitpid` into a poll: `0` means \"children exist, none has ended\".",
+   "ref": [
+    "waitpid"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "WNOHANG"
+     ]
+    }
+   ],
+   "id": "t4-q-mechanics-14"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "After `dup2(fd, STDOUT_FILENO)` the child calls `close(fd)`. Why?",
+   "explain": "After `dup2`, descriptor 1 is a second name for the same open file. `fd` is a useless extra copy; closing it avoids wasting a descriptor, and the program started by `exec` would inherit it too.",
+   "ref": [
+    "dup2",
+    "close"
+   ],
+   "options": [
+    "`fd` is now an unneeded extra copy of the same open file; leaving it open wastes a descriptor and leaks into the new program",
+    "Because `fd` would be closed by the kernel anyway, at the end of `dup2`",
+    "Without it `dup2` does not work",
+    "To flush the output"
+   ],
+   "answer": 0,
+   "id": "t4-q-mechanics-15"
+  },
+  {
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each call with what it is used for.",
+   "explain": "`chdir` and `getcwd` act on the directory of the calling process only; `strerror` makes the text of an error number readable; `waitpid` with `WNOHANG` checks without blocking.",
+   "ref": [
+    "chdir",
+    "getcwd",
+    "getenv",
+    "strerror",
+    "waitpid"
+   ],
+   "pairs": [
+    [
+     "chdir",
+     "changes the current directory of the calling process"
+    ],
+    [
+     "getcwd",
+     "tells the current directory of the calling process"
+    ],
+    [
+     "getenv(\"HOME\")",
+     "reads an environment variable such as the home directory"
+    ],
+    [
+     "strerror(errno)",
+     "turns an error number into a readable message"
+    ],
+    [
+     "waitpid(..., WNOHANG)",
+     "checks a child without blocking"
+    ]
+   ],
+   "id": "t4-q-mechanics-16"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "A program prints a prompt such as `$ ` with no newline and then waits for input with `fgets`. Why is `fflush(stdout)` needed after the `printf`?",
+   "explain": "Text without a newline can stay in the output buffer, particularly when the output is not a terminal. Without the flush the prompt may not appear before the program blocks reading.",
+   "ref": [
+    "fflush",
+    "fgets"
+   ],
+   "options": [
+    "`fgets` does not work after `printf`",
+    "It clears the screen",
+    "It is only needed after `fork`",
+    "Without it the prompt may stay in the buffer and not appear before the program waits for input"
+   ],
+   "answer": 3,
+   "id": "t4-q-mechanics-17"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "The middle child of `a | b | c` is about to run `b`. Which pipe ends should it have as descriptors 0 and 1, and what else about the pipes?",
+   "explain": "It reads from the pipe that comes from `a` (descriptor 0) and writes into the pipe that goes to `c` (descriptor 1). Every other pipe end, including the original copies it just duplicated, must be closed, or readers further along may never see the end of the data.",
+   "ref": [
+    "pipe",
+    "dup2",
+    "close"
+   ],
+   "options": [
+    "Both ends of both pipes, so it can choose",
+    "It needs no pipe ends: the parent moves the data for it",
+    "0 is the read end of the first pipe, 1 is the write end of the second pipe, and all other pipe ends are closed",
+    "0 and 1 are the two ends of the second pipe"
+   ],
+   "answer": 2,
+   "id": "t4-q-mechanics-18"
+  }
+ ]
+}

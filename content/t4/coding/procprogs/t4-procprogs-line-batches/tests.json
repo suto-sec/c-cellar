@@ -1,0 +1,22 @@
+{
+ "cases": [
+  {
+   "cmd": "seq 1 54 > f.txt; \"$BIN\" f.txt 20",
+   "stdout": "Process 1: read 20 lines\nProcess 2: read 20 lines\nProcess 3: read 14 lines\nParent: the file has 54 lines\n"
+  },
+  {
+   "cmd": "seq 1 5 > f.txt; \"$BIN\" f.txt 100",
+   "stdout": "Process 1: read 5 lines\nParent: the file has 5 lines\n"
+  },
+  {
+   "cmd": "seq 1 40 > f.txt; \"$BIN\" f.txt 20",
+   "stdout": "Process 1: read 20 lines\nProcess 2: read 20 lines\nProcess 3: read 0 lines\nParent: the file has 40 lines\n",
+   "hidden": true
+  },
+  {
+   "cmd": "seq 1 7 > f.txt; \"$BIN\" f.txt 3",
+   "stdout": "Process 1: read 3 lines\nProcess 2: read 3 lines\nProcess 3: read 1 lines\nParent: the file has 7 lines\n",
+   "hidden": true
+  }
+ ]
+}

@@ -1,0 +1,16 @@
+{
+ "id": "t4-scheduling-disk-timeline",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "scheduling",
+ "title": "Draw the state diagram",
+ "stars": 3,
+ "minutes": 15,
+ "order": 11,
+ "summary": "The same FCFS machine, printing the state of every process at every millisecond.",
+ "hints": [
+  "Record the state of every process in a table `[process][time]` while you simulate, and print it at the end.",
+  "A process that has terminated shows `T` until the last process ends; a process not yet arrived shows `.`.",
+  "The line of every process is as long as the whole simulation (the instant at which the last process terminates)."
+ ]
+}

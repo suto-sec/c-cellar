@@ -1,0 +1,8 @@
+{
+ "cases": [
+  {
+   "args": [],
+   "stdout": "before wait: still there\nafter wait: gone\n"
+  }
+ ]
+}

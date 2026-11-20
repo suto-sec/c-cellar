@@ -1,0 +1,17 @@
+{
+ "id": "t4-procprogs-robots",
+ "tag": "t4",
+ "track": "exercises",
+ "topic": "procprogs",
+ "title": "robots: pieces on a shared tray",
+ "stars": 4,
+ "minutes": 26,
+ "order": 13,
+ "summary": "Two robots fill a tray with room for two pieces of each kind; a third needs all four at once.",
+ "hints": [
+  "Counters `t1` and `t2` (pieces on the tray), one mutex and one condition variable for everything.",
+  "R1 waits while `t1 == 2`, R2 while `t2 == 2`, R3 while it does not have `t1 == 2 && t2 == 2`. Always wait inside a `while` loop.",
+  "To stop: when R3 has made `N` pieces it sets a `done` flag and broadcasts; R1 and R2 check the flag every time they wake up. Do not forget that they may be waiting at that moment.",
+  "Record the largest value of `t1` and `t2` (under the mutex) to check that the tray was never overfull."
+ ]
+}

@@ -1,0 +1,17 @@
+{
+ "id": "t4-mechanics-chain-workers",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "mechanics",
+ "title": "An assembly line of processes",
+ "stars": 4,
+ "minutes": 24,
+ "order": 7,
+ "summary": "N processes joined by N+1 pipes: close the right ends, and the end of the data travels down the line.",
+ "hints": [
+  "Create all N+1 pipes BEFORE the forks: worker `k` reads from pipe `k-1` and writes to pipe `k`. The parent writes into pipe 0 and reads from pipe N.",
+  "Every process must close every pipe end it does not use. If any copy of a write end stays open somewhere (the parent's too), the processes after it never see the end of the data and the program hangs.",
+  "`read(fd, &v, sizeof v) == sizeof v` is the loop condition of a worker; at the end of the data `read` returns `0`.",
+  "The array of pipes: `int (*p)[2] = malloc((n + 1) * sizeof *p);`"
+ ]
+}

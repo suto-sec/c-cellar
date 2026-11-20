@@ -204,6 +204,31 @@
     "exit"
    ],
    "id": "t4-q-threads-11"
+  },
+  {
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "The thread receives the address of `x` and changes the same variable, because threads share memory. After `pthread_join`, `x` is 2.",
+   "ref": [
+    "pthread_create",
+    "pthread_join"
+   ],
+   "code": "#include <stdio.h>\n#include <pthread.h>\n\nstatic void *inc(void *arg)\n{\n    int *p = arg;\n\n    (*p)++;\n    return NULL;\n}\n\nint main(void)\n{\n    pthread_t t;\n    int x = 1;\n\n    pthread_create(&t, NULL, inc, &x);\n    pthread_join(t, NULL);\n    printf(\"%d\\n\", x);\n    return 0;\n}\n",
+   "answer": "2",
+   "id": "t4-q-threads-12"
+  },
+  {
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "explain": "The value the thread returns is collected by `pthread_join` through its second argument: `(void *)42` comes back as 42.",
+   "ref": [
+    "pthread_join"
+   ],
+   "code": "#include <stdio.h>\n#include <pthread.h>\n\nstatic void *answer(void *arg)\n{\n    (void)arg;\n    return (void *)42L;\n}\n\nint main(void)\n{\n    pthread_t t;\n    void *result;\n\n    pthread_create(&t, NULL, answer, NULL);\n    pthread_join(t, &result);\n    printf(\"%ld\\n\", (long)result);\n    return 0;\n}\n",
+   "answer": "42",
+   "id": "t4-q-threads-13"
   }
  ]
 }

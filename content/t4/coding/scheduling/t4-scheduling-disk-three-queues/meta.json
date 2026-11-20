@@ -1,0 +1,16 @@
+{
+ "id": "t4-scheduling-disk-three-queues",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "scheduling",
+ "title": "Three queues with feedback",
+ "stars": 5,
+ "minutes": 32,
+ "order": 17,
+ "summary": "RR 20, RR 40, FCFS: processes that use their whole quantum sink to a lower queue.",
+ "hints": [
+  "Keep the level of every process; it only grows, when a quantum is used up.",
+  "Queue 2 has no quantum: give it a huge one.",
+  "Same head-of-queue trick as in the previous exercise."
+ ]
+}

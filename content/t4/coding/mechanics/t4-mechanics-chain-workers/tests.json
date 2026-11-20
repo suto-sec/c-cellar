@@ -1,0 +1,36 @@
+{
+ "cases": [
+  {
+   "args": [
+    "1"
+   ],
+   "stdout": "2\n3\n4\n5\n6\n"
+  },
+  {
+   "args": [
+    "2"
+   ],
+   "stdout": "4\n5\n6\n7\n8\n"
+  },
+  {
+   "args": [
+    "5"
+   ],
+   "stdout": "16\n17\n18\n19\n20\n"
+  },
+  {
+   "args": [
+    "20"
+   ],
+   "stdout": "211\n212\n213\n214\n215\n",
+   "hidden": true
+  },
+  {
+   "args": [
+    "60"
+   ],
+   "stdout": "1831\n1832\n1833\n1834\n1835\n",
+   "hidden": true
+  }
+ ]
+}

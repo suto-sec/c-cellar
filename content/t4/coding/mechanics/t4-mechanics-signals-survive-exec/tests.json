@@ -1,0 +1,8 @@
+{
+ "cases": [
+  {
+   "args": [],
+   "stdout": "ignored: child exited with 5\ncaught: child killed by signal 2\nrestored: child killed by signal 2\n"
+  }
+ ]
+}

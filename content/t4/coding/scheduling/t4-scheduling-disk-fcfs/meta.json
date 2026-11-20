@@ -1,0 +1,17 @@
+{
+ "id": "t4-scheduling-disk-fcfs",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "scheduling",
+ "title": "FCFS with a disk",
+ "stars": 3,
+ "minutes": 25,
+ "order": 10,
+ "summary": "Processes alternate CPU and disk: when does each one finish, and how long did it wait?",
+ "hints": [
+  "Simulate millisecond by millisecond. Per process keep: the index of its current burst, how much is left of it, and its state.",
+  "Follow the order of events of the statement exactly at each instant: disk finishing, CPU finishing, arrivals, disk start, CPU.",
+  "`ready` counts the milliseconds in state `L`, `disk-wait` the ones in state `W` (queued for the disk, not using it).",
+  "Keep a counter that numbers the moments in which processes become ready; the smallest number among the ready ones is the one that has waited longest."
+ ]
+}

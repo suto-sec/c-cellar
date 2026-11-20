@@ -1,0 +1,16 @@
+{
+ "id": "t4-scheduling-disk-two-queues",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "scheduling",
+ "title": "Two queues: FCFS above, RR below",
+ "stars": 5,
+ "minutes": 30,
+ "order": 16,
+ "summary": "High priority runs FCFS; low priority shares the CPU in round robin; a high process preempts a low one.",
+ "hints": [
+  "The priority of a process is its queue: `0` high, `1` low. The line of a process is `arrival queue k burst1 ... burstk`.",
+  "For the head of the queue use a number smaller than all the others (a counter that goes down), so the same 'smallest first' rule finds it.",
+  "A high process is never preempted: its quantum is as good as infinite."
+ ]
+}

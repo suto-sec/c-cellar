@@ -1,0 +1,8 @@
+{
+ "cases": [
+  {
+   "args": [],
+   "stdout": "bytes: 600\nnext free descriptor: 3\n"
+  }
+ ]
+}

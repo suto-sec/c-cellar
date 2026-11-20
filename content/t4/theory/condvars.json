@@ -170,6 +170,32 @@
     "False: it must be a loop."
    ],
    "id": "t4-q-condvars-09"
+  },
+  {
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print?",
+   "explain": "`main` waits in a `while (!ready)` loop (releasing the mutex) until the worker has printed, set `ready` and signalled. Only then can `main` print.",
+   "ref": [
+    "pthread_cond_wait",
+    "pthread_cond_signal"
+   ],
+   "code": "#include <stdio.h>\n#include <pthread.h>\n\nstatic int ready;\nstatic pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;\nstatic pthread_cond_t c = PTHREAD_COND_INITIALIZER;\n\nstatic void *worker(void *arg)\n{\n    (void)arg;\n    pthread_mutex_lock(&m);\n    printf(\"worker\\n\");\n    ready = 1;\n    pthread_cond_signal(&c);\n    pthread_mutex_unlock(&m);\n    return NULL;\n}\n\nint main(void)\n{\n    pthread_t t;\n\n    pthread_create(&t, NULL, worker, NULL);\n    pthread_mutex_lock(&m);\n    while (!ready)\n        pthread_cond_wait(&c, &m);\n    pthread_mutex_unlock(&m);\n    printf(\"main\\n\");\n    pthread_join(t, NULL);\n    return 0;\n}\n",
+   "answer": "worker\nmain",
+   "id": "t4-q-condvars-10"
+  },
+  {
+   "type": "predict",
+   "difficulty": 4,
+   "prompt": "What does this program print?",
+   "explain": "Both waiters sleep until the gate is opened; `pthread_cond_broadcast` wakes them both, and each adds its number. The sum is printed after joining: 1 + 2 = 3.",
+   "ref": [
+    "pthread_cond_broadcast",
+    "pthread_cond_wait"
+   ],
+   "code": "#include <stdio.h>\n#include <pthread.h>\n\nstatic int open_gate, total;\nstatic pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;\nstatic pthread_cond_t c = PTHREAD_COND_INITIALIZER;\n\nstatic void *waiter(void *arg)\n{\n    pthread_mutex_lock(&m);\n    while (!open_gate)\n        pthread_cond_wait(&c, &m);\n    total += (int)(long)arg;\n    pthread_mutex_unlock(&m);\n    return NULL;\n}\n\nint main(void)\n{\n    pthread_t a, b;\n\n    pthread_create(&a, NULL, waiter, (void *)1L);\n    pthread_create(&b, NULL, waiter, (void *)2L);\n    pthread_mutex_lock(&m);\n    open_gate = 1;\n    pthread_cond_broadcast(&c);\n    pthread_mutex_unlock(&m);\n    pthread_join(a, NULL);\n    pthread_join(b, NULL);\n    printf(\"%d\\n\", total);\n    return 0;\n}\n",
+   "answer": "3",
+   "id": "t4-q-condvars-11"
   }
  ]
 }

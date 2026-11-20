@@ -1,0 +1,16 @@
+{
+ "id": "t4-mechanics-cwd-per-process",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "mechanics",
+ "title": "A directory change that does not last",
+ "stars": 2,
+ "minutes": 9,
+ "order": 2,
+ "summary": "chdir in a child changes the child only.",
+ "hints": [
+  "`getcwd(buf, size)` fills `buf` with the absolute path. The name of the last directory is what follows the last `/` (`strrchr(buf, '/')`).",
+  "Remember the parent's directory BEFORE the `fork` and compare it after the `wait`.",
+  "If `chdir` fails, `strerror(errno)` gives the reason."
+ ]
+}

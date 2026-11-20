@@ -1,0 +1,17 @@
+{
+ "id": "t4-procprogs-factory",
+ "tag": "t4",
+ "track": "exercises",
+ "topic": "procprogs",
+ "title": "factory: two stores and an assembler",
+ "stars": 5,
+ "minutes": 32,
+ "order": 11,
+ "summary": "Chassis and engines made by two threads into stores of a size given at run time; a third thread assembles cars, then everything closes in order.",
+ "hints": [
+  "Each store is a circular buffer allocated with `malloc` of the size given in the arguments. Protect it as in the producer/consumer exercises: one semaphore counts free slots, another counts items, a mutex protects the indices.",
+  "Every producer makes exactly `CARS` items, so nobody has to be woken up to stop: the assembler takes `CARS` chassis and `CARS` engines and all three threads simply end.",
+  "Keep the highest number of items each store ever held (under its mutex) to prove that the size was respected.",
+  "Join the three threads, then free the memory and destroy the semaphores and mutexes, and only then print `Factory closed`."
+ ]
+}

@@ -496,6 +496,272 @@
     "multilevel-queues"
    ],
    "id": "t4-q-scheduling-26"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "A process is in the middle of a disk burst. What does it need from the CPU while it lasts?",
+   "explain": "Nothing. A disk burst is done by the disk, not by the CPU, so the CPU can run another ready process meanwhile. Overlapping the two is the whole point of multiprogramming.",
+   "ref": [
+    "scheduling"
+   ],
+   "options": [
+    "Nothing: the CPU can run other processes meanwhile",
+    "The CPU, because it has to wait actively for the disk",
+    "One CPU quantum at a time",
+    "Only the CPU if its priority is high"
+   ],
+   "answer": 0,
+   "id": "t4-q-scheduling-27"
+  },
+  {
+   "type": "order",
+   "difficulty": 2,
+   "prompt": "Put the life of a process that has one CPU burst, one disk burst and one more CPU burst in order.",
+   "explain": "It is ready after arriving, runs, asks for the disk and may have to queue for it, uses it, becomes ready again for its last CPU burst and finally terminates.",
+   "ref": [
+    "scheduling"
+   ],
+   "items": [
+    "It arrives and is ready (L)",
+    "It runs on the CPU (E)",
+    "Its CPU burst ends and it asks for the disk (W if the disk is busy)",
+    "It uses the disk (D)",
+    "It is ready again (L) and runs its last CPU burst (E)",
+    "It terminates (T)"
+   ],
+   "id": "t4-q-scheduling-28"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Which process does a FCFS disk serve next?",
+   "explain": "The one whose request arrived first. The disk of these problems does not look at priorities or burst lengths; it only keeps the order of the requests.",
+   "ref": [
+    "scheduling"
+   ],
+   "options": [
+    "The one with the shortest disk burst",
+    "The one that has used the CPU least",
+    "The one that asked for the disk first",
+    "The one with the best CPU priority"
+   ],
+   "answer": 2,
+   "id": "t4-q-scheduling-29"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "With round robin and a quantum of 20 ms, a process runs a CPU burst of 8 ms and then asks for the disk. What happens to the rest of its quantum?",
+   "explain": "The process gives up the CPU when its burst ends, so the CPU is assigned to the next ready process at once with a fresh quantum. Quanta are not saved for later.",
+   "ref": [
+    "round-robin"
+   ],
+   "options": [
+    "The remaining 12 ms are added to the quantum of the next burst",
+    "The process goes to the end of the ready queue",
+    "The CPU stays idle until the 20 ms are over",
+    "Nothing is waited for: the CPU goes to the next ready process right away"
+   ],
+   "answer": 3,
+   "id": "t4-q-scheduling-30"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "With preemptive priorities, a process comes back from the disk with a better priority than the one that is running. What happens at that instant?",
+   "explain": "A process that becomes ready with a strictly better priority preempts the running one, wherever it comes from (new arrival or return from the disk). The preempted process goes back to the ready queue with what was left of its burst.",
+   "ref": [
+    "scheduling"
+   ],
+   "options": [
+    "It preempts the running process",
+    "It goes to the end of the disk queue",
+    "It waits until the running burst ends",
+    "It waits until the end of the quantum"
+   ],
+   "answer": 0,
+   "id": "t4-q-scheduling-31"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "In a system with a high-priority FCFS queue and a low-priority round robin queue, a high process preempts a low one. Where does the low process go, and what does it keep?",
+   "explain": "Being preempted is not its fault, so the scheduler puts it back at the head of its queue and remembers how much of the quantum it had left, so that it is not punished.",
+   "ref": [
+    "scheduling"
+   ],
+   "options": [
+    "To the disk queue",
+    "To the high queue",
+    "To the head of the low queue, remembering the rest of its quantum",
+    "To the end of the low queue, with a fresh quantum"
+   ],
+   "answer": 2,
+   "id": "t4-q-scheduling-32"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "In a multilevel feedback queue, why is a process that uses its whole quantum moved to a lower queue?",
+   "explain": "A process that uses all its quantum is probably CPU-bound. Moving it down keeps the short, interactive or I/O-bound processes (which give the CPU back early) in the higher queues, where they are served first.",
+   "ref": [
+    "scheduling"
+   ],
+   "options": [
+    "Because the quantum of the lower queue is shorter",
+    "To free memory",
+    "It looks CPU-bound, and the short or I/O-bound processes should be served first",
+    "Because it has been waiting for the disk"
+   ],
+   "answer": 2,
+   "id": "t4-q-scheduling-33"
+  },
+  {
+   "type": "single",
+   "difficulty": 3,
+   "prompt": "One process is CPU-bound and long, another uses 2 ms of CPU and then the disk, over and over. With FCFS on the CPU, what is the typical problem?",
+   "explain": "The short one has to wait behind the long CPU burst each time it comes back, so the disk is idle most of the time and the overall use of the machine is poor: the convoy effect.",
+   "ref": [
+    "scheduling"
+   ],
+   "options": [
+    "The short process never asks for the disk",
+    "The disk stays idle while the short process waits behind the long CPU burst (convoy effect)",
+    "The long process starves forever",
+    "Nothing: FCFS is optimal for this mix"
+   ],
+   "answer": 1,
+   "id": "t4-q-scheduling-34"
+  },
+  {
+   "type": "fill",
+   "difficulty": 3,
+   "prompt": "FCFS on the CPU and on the disk. P1 arrives at 0 and has bursts CPU 10, disk 10, CPU 10. P2 arrives at 5 and has a single CPU burst of 10. P1 terminates at t = {{0}}.",
+   "explain": "P1 runs 0-10 and uses the disk 10-20. P2 arrived at 5 and runs 10-20. At 20 P1 is ready again and runs 20-30.",
+   "ref": [
+    "scheduling"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "30"
+     ]
+    }
+   ],
+   "id": "t4-q-scheduling-35"
+  },
+  {
+   "type": "fill",
+   "difficulty": 3,
+   "prompt": "Same system: P1 arrives at 0 with CPU 10, disk 10, CPU 10; P2 arrives at 5 with a single CPU burst of 10. In ms, P2 spends {{0}} ms in the ready state (waiting for the CPU) before it first runs.",
+   "explain": "P2 arrives at 5, but the CPU is busy with P1 until 10, so it waits 5 ms.",
+   "ref": [
+    "scheduling"
+   ],
+   "blanks": [
+    {
+     "accept": [
+      "5"
+     ]
+    }
+   ],
+   "id": "t4-q-scheduling-36"
+  },
+  {
+   "type": "single",
+   "difficulty": 2,
+   "prompt": "Why does it make the CPU busier to have several processes in memory that use the disk?",
+   "explain": "While one process waits for the disk, the CPU can run another: with enough processes it almost never has to wait with nothing to do.",
+   "ref": [
+    "scheduling"
+   ],
+   "options": [
+    "Because the processes share their quantum",
+    "While one waits for the disk another can use the CPU",
+    "Because the disk makes the CPU faster",
+    "Because the disk runs the processes itself"
+   ],
+   "answer": 1,
+   "id": "t4-q-scheduling-37"
+  },
+  {
+   "type": "match",
+   "difficulty": 2,
+   "prompt": "Match each scheduling algorithm with the property or problem it is known for.",
+   "explain": "FCFS suffers the convoy effect; SJF gives the minimum average waiting time (but needs the burst length and can starve long jobs); round robin shares the CPU in turns of one quantum; priorities can starve low-priority processes, which aging fixes.",
+   "ref": [
+    "fcfs",
+    "sjf",
+    "round-robin",
+    "scheduling"
+   ],
+   "pairs": [
+    [
+     "FCFS",
+     "convoy effect: short processes wait behind a long one"
+    ],
+    [
+     "SJF",
+     "minimum average waiting time, but long jobs can starve"
+    ],
+    [
+     "Round robin",
+     "everyone gets the CPU in turns of one quantum"
+    ],
+    [
+     "Priorities",
+     "low-priority processes may starve; aging helps"
+    ]
+   ],
+   "id": "t4-q-scheduling-38"
+  },
+  {
+   "type": "multiple",
+   "difficulty": 3,
+   "prompt": "Which statements about the quantum of round robin are true?",
+   "explain": "A huge quantum makes round robin behave like FCFS. A tiny one makes the processes share the CPU almost evenly, but the context switches then take a large part of the time.",
+   "ref": [
+    "round-robin",
+    "scheduling"
+   ],
+   "options": [
+    "With a very small quantum the context switches cost a lot",
+    "The quantum is the time a process may wait in the queue",
+    "With a very large quantum it behaves like FCFS",
+    "A process always uses its whole quantum",
+    "A process whose burst ends before the quantum is over leaves the CPU at that moment"
+   ],
+   "answer": [
+    0,
+    2,
+    4
+   ],
+   "option_notes": [
+    "True.",
+    "False: the quantum limits the time ON the CPU.",
+    "True.",
+    "False: it leaves earlier if its burst ends or it waits for the disk.",
+    "True."
+   ],
+   "id": "t4-q-scheduling-39"
+  },
+  {
+   "type": "order",
+   "difficulty": 3,
+   "prompt": "Sort these processes by their finish time under non-preemptive SJF on one CPU. All arrive at time 0: P1 needs 8 ms, P2 needs 3 ms, P3 needs 5 ms, P4 needs 1 ms.",
+   "explain": "SJF runs them from the shortest to the longest: P4 (1), P2 (3), P3 (5) and P1 (8).",
+   "ref": [
+    "sjf",
+    "scheduling"
+   ],
+   "items": [
+    "P4 (finishes at 1)",
+    "P2 (finishes at 4)",
+    "P3 (finishes at 9)",
+    "P1 (finishes at 17)"
+   ],
+   "id": "t4-q-scheduling-40"
   }
  ]
 }

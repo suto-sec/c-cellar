@@ -273,6 +273,31 @@
     "critical-section"
    ],
    "id": "t4-q-races-14"
+  },
+  {
+   "type": "predict",
+   "difficulty": 2,
+   "prompt": "What does this program print?",
+   "explain": "Each thread adds 1000 times while holding the mutex, so no update is lost: 2 x 1000.",
+   "ref": [
+    "pthread_mutex_lock",
+    "race-condition"
+   ],
+   "code": "#include <stdio.h>\n#include <pthread.h>\n\nstatic int counter;\nstatic pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;\n\nstatic void *add(void *arg)\n{\n    int i;\n\n    (void)arg;\n    for (i = 0; i < 1000; i++) {\n        pthread_mutex_lock(&m);\n        counter++;\n        pthread_mutex_unlock(&m);\n    }\n    return NULL;\n}\n\nint main(void)\n{\n    pthread_t a, b;\n\n    pthread_create(&a, NULL, add, NULL);\n    pthread_create(&b, NULL, add, NULL);\n    pthread_join(a, NULL);\n    pthread_join(b, NULL);\n    printf(\"%d\\n\", counter);\n    return 0;\n}\n",
+   "answer": "2000",
+   "id": "t4-q-races-15"
+  },
+  {
+   "type": "predict",
+   "difficulty": 3,
+   "prompt": "What does this program print? (`pthread_mutex_trylock` does not wait: it returns 0 if it got the lock)",
+   "explain": "`pthread_mutex_trylock` returns 0 when it gets the lock and a non-zero error code (`EBUSY`) when somebody else holds it. The main thread holds the lock while the second call is made, so the second `trylock` fails.",
+   "ref": [
+    "pthread_mutex_lock"
+   ],
+   "code": "#include <stdio.h>\n#include <pthread.h>\n\nint main(void)\n{\n    pthread_mutex_t m;\n    int first, second;\n\n    pthread_mutex_init(&m, NULL);\n    first = pthread_mutex_trylock(&m);\n    second = pthread_mutex_trylock(&m);\n    printf(\"%s %s\\n\", first == 0 ? \"got\" : \"busy\", second == 0 ? \"got\" : \"busy\");\n    return 0;\n}\n",
+   "answer": "got busy",
+   "id": "t4-q-races-16"
   }
  ]
 }

@@ -1,0 +1,17 @@
+{
+ "id": "t4-procprogs-writers-first",
+ "tag": "t4",
+ "track": "exercises",
+ "topic": "procprogs",
+ "title": "writers-first: readers and writers",
+ "stars": 5,
+ "minutes": 28,
+ "order": 12,
+ "summary": "Many readers at once, one writer alone, and a waiting writer goes before any new reader.",
+ "hints": [
+  "One mutex and one condition variable are enough. State: `readers` (how many are reading), `writing` (0 or 1) and `waiting_writers`.",
+  "A reader may start when nobody writes **and nobody is waiting to write**; a writer may start when nobody reads and nobody writes. Re-check these conditions in a `while` loop around `pthread_cond_wait`.",
+  "A writer registers as waiting BEFORE it waits and stops being 'waiting' when it starts writing. Wake everybody with `pthread_cond_broadcast` whenever a reader or a writer ends.",
+  "Record the order in which operations start inside the critical section (`strcat` onto a buffer), not outside."
+ ]
+}

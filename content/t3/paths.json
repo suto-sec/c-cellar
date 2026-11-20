@@ -4,7 +4,7 @@
    "id": "essentials",
    "kind": "plan",
    "title": "Essentials",
-   "blurb": "The shortest way through the syllabus: a few exercises for every topic, from printing to directories, and the classic class exercises. Pick this when time is short.",
+   "blurb": "The shortest way through the syllabus: a few exercises for every topic, and the classic class exercises. Pick this when time is short.",
    "items": [
     "t3-output-hello-world",
     "t3-output-numbers",
@@ -265,6 +265,28 @@
    "title": "Mastery",
    "course": true,
    "blurb": "Everything, in one order that climbs gradually: the chapters are mixed so a hard exercise never comes right after an easy one. For when you want to master all of it."
+  },
+  {
+   "id": "shell-prep",
+   "kind": "topic",
+   "title": "Before writing a shell",
+   "blurb": "The knowledge a small shell project leans on, in learning order: errors and descriptors, fork and wait, exec, redirection, pipes and signals. It practises the mechanisms, it does not build a shell for you.",
+   "items": [
+    "t3-errors-report-open-failure",
+    "t3-errors-use-perror",
+    "t3-errors-exit-with-status",
+    "t3-errors-mkdir-errno",
+    "t3-args-home-variable",
+    "t3-directories-print-cwd",
+    "t3-directories-cd-and-print",
+    "t3-syscalls-open-and-close",
+    "t3-syscalls-redirect-stdout",
+    "t3-syscalls-save-and-restore-stdout",
+    "t3-fdprogs-lowest-descriptor",
+    "t3-fdprogs-redirect-both",
+    "t3-fdprogs-swap-fds",
+    "t3-memory-my-strdup"
+   ]
   },
   {
    "id": "basics",

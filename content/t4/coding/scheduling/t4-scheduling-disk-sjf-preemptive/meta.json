@@ -1,0 +1,15 @@
+{
+ "id": "t4-scheduling-disk-sjf-preemptive",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "scheduling",
+ "title": "SJF with preemption and a disk",
+ "stars": 4,
+ "minutes": 20,
+ "order": 13,
+ "summary": "Shortest remaining time first: a process that becomes ready can take the CPU.",
+ "hints": [
+  "Decide at every millisecond: compare the best ready process with the one that is running.",
+  "The preempted process keeps what is left of its burst (`rem`), it does not start it again."
+ ]
+}

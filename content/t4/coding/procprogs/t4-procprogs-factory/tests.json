@@ -1,0 +1,46 @@
+{
+ "cases": [
+  {
+   "args": [
+    "5",
+    "3",
+    "2000"
+   ],
+   "stdout": "cars: 2000\nstore limits respected: yes\nleft over: 0 chassis, 0 engines\nFactory closed\n"
+  },
+  {
+   "args": [
+    "1",
+    "1",
+    "400"
+   ],
+   "stdout": "cars: 400\nstore limits respected: yes\nleft over: 0 chassis, 0 engines\nFactory closed\n"
+  },
+  {
+   "args": [
+    "75",
+    "90",
+    "1000"
+   ],
+   "stdout": "cars: 1000\nstore limits respected: yes\nleft over: 0 chassis, 0 engines\nFactory closed\n"
+  },
+  {
+   "args": [
+    "2",
+    "7",
+    "1"
+   ],
+   "stdout": "cars: 1\nstore limits respected: yes\nleft over: 0 chassis, 0 engines\nFactory closed\n",
+   "hidden": true
+  },
+  {
+   "args": [
+    "3",
+    "1",
+    "3000"
+   ],
+   "stdout": "cars: 3000\nstore limits respected: yes\nleft over: 0 chassis, 0 engines\nFactory closed\n",
+   "hidden": true
+  }
+ ]
+}

@@ -1,0 +1,17 @@
+{
+ "id": "t4-procprogs-deadline",
+ "tag": "t4",
+ "track": "exercises",
+ "topic": "procprogs",
+ "title": "deadline: abort the children after a time limit",
+ "stars": 5,
+ "minutes": 28,
+ "order": 15,
+ "summary": "A producer and a consumer joined by a pipe; if they are not done in time, the parent kills both.",
+ "hints": [
+  "The producer must close its end of the pipe when it is done, and the consumer reads until it sees the end of the data. The parent closes BOTH ends of the pipe or the consumer never sees the end.",
+  "The parent must not block in `wait`: poll both children with `waitpid(pid, &st, WNOHANG)` every 100 ms (`usleep(100000)`) for at most `SECONDS` seconds. (`alarm` with a handler also works.)",
+  "To abort: `kill(pid, SIGKILL)` for each child that is still alive, then `waitpid` them so they do not stay zombies.",
+  "The consumer prints with `printf` and must end with `exit` (not `_exit`) or its output is lost."
+ ]
+}

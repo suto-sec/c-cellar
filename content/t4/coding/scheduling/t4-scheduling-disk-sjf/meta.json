@@ -1,0 +1,15 @@
+{
+ "id": "t4-scheduling-disk-sjf",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "scheduling",
+ "title": "SJF with a disk",
+ "stars": 3,
+ "minutes": 18,
+ "order": 12,
+ "summary": "Shortest next CPU burst first, without preemption, with disk bursts in between.",
+ "hints": [
+  "Only the length of the CPU burst a process is about to run counts; the disk bursts and the rest of the process do not.",
+  "It is the previous exercise with a different rule to choose the process."
+ ]
+}

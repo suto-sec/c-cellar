@@ -1,0 +1,16 @@
+{
+ "id": "t4-mechanics-signals-survive-exec",
+ "tag": "t4",
+ "track": "derusting",
+ "topic": "mechanics",
+ "title": "What survives an exec",
+ "stars": 3,
+ "minutes": 16,
+ "order": 6,
+ "summary": "An ignored signal stays ignored after exec; a handler does not.",
+ "hints": [
+  "Ignoring is inherited by `fork` AND kept by `exec`. A handler function is inherited by `fork`, but `exec` replaces the program, so the disposition goes back to the default.",
+  "`signal(SIGINT, SIG_IGN)` ignores, `signal(SIGINT, SIG_DFL)` restores the default, `signal(SIGINT, f)` installs a handler `void f(int)` (an empty one is enough).",
+  "`WIFSIGNALED(status)` is true when the child was killed by a signal and `WTERMSIG(status)` tells which; otherwise use `WEXITSTATUS`."
+ ]
+}
